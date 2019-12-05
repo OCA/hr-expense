@@ -8,7 +8,7 @@
     "category": "Human Resources",
     "author": "Tecnativa, " "Odoo Community Association (OCA)",
     "license": "AGPL-3",
-    "website": "https://github.com/OCA/hr",
+    "website": "https://github.com/OCA/hr-expense",
     "depends": ["hr_expense"],
     "data": ["views/hr_expense_views.xml", "wizard/expense_create_invoice.xml"],
     "installable": True,
