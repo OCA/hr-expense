@@ -10,7 +10,6 @@ class HrExpense(models.Model):
 
     advance = fields.Boolean(string="Employee Advance", default=False)
 
-    @api.multi
     @api.constrains("advance")
     def _check_advance(self):
         for expense in self.filtered("advance"):
@@ -42,7 +41,6 @@ class HrExpense(models.Model):
         else:
             self.product_id = False
 
-    @api.multi
     def _get_account_move_line_values(self):
         move_line_values_by_expense = super()._get_account_move_line_values()
         # Only when do the clearing, change cr payable to cr advance
@@ -56,7 +54,7 @@ class HrExpense(models.Model):
             )
         for sheet in sheets:
             advance_to_clear = sheet.advance_sheet_residual
-            for expense_id, move_lines in move_line_values_by_expense.items():
+            for move_lines in move_line_values_by_expense.values():
                 payable_move_line = False
                 for move_line in move_lines:
                     credit = move_line["credit"]
