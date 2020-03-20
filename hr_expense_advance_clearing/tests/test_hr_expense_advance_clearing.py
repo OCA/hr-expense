@@ -15,21 +15,10 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
             [("type", "=", "bank")], limit=1
         )
         cls.product = cls.env["product.product"].create(
-            {"name": "Service 1", "type": "service",}
-        )
-        tax_account = cls.env["account.account"].search(
-            [
-                ("company_id", "=", company.id),
-                (
-                    "user_type_id",
-                    "=",
-                    cls.env.ref("account.data_account_type_non_current_liabilities").id,
-                ),
-            ],
-            limit=1,
+            {"name": "Service 1", "type": "service"}
         )
         tax_group = cls.env["account.tax.group"].create(
-            {"name": "Tax Group 1", "sequence": 1,}
+            {"name": "Tax Group 1", "sequence": 1}
         )
         cls.tax = cls.env["account.tax"].create(
             {
@@ -37,17 +26,13 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
                 "amount": 10.0,
                 "amount_type": "percent",
                 "type_tax_use": "purchase",
-                "account_id": tax_account.id,
                 "company_id": company.id,
-                "refund_account_id": tax_account.id,
                 "tax_group_id": tax_group.id,
             }
         )
-        employee_home = cls.env["res.partner"].create(
-            {"name": "Employee Home Address",}
-        )
+        employee_home = cls.env["res.partner"].create({"name": "Employee Home Address"})
         cls.employee = cls.env["hr.employee"].create(
-            {"name": "Employee A", "address_home_id": employee_home.id,}
+            {"name": "Employee A", "address_home_id": employee_home.id}
         )
         advance_account = cls.env["account.account"].create(
             {
@@ -121,6 +106,7 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
             "active_ids": [expense_sheet.id],
             "active_id": expense_sheet.id,
             "hr_return_advance": hr_return_advance,
+            "active_model": "hr.expense.sheet",
         }
         PaymentWizard = self.env["hr.expense.sheet.register.payment.wizard"]
         with Form(PaymentWizard.with_context(ctx)) as f:
