@@ -3,7 +3,6 @@
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
-from odoo.tools import pycompat
 from odoo.tools.safe_eval import safe_eval
 
 
@@ -11,7 +10,7 @@ class HrExpenseSheet(models.Model):
     _inherit = "hr.expense.sheet"
 
     advance = fields.Boolean(
-        string="Employee Advance", compute="_compute_advance", store=True,
+        string="Employee Advance", compute="_compute_advance", store=True
     )
     advance_sheet_id = fields.Many2one(
         comodel_name="hr.expense.sheet",
@@ -44,7 +43,6 @@ class HrExpenseSheet(models.Model):
         help="Final regiter payment amount even after advance clearing",
     )
 
-    @api.multi
     @api.depends("expense_line_ids")
     def _compute_advance(self):
         for sheet in self:
@@ -54,33 +52,29 @@ class HrExpenseSheet(models.Model):
             )
         return
 
-    @api.one
     @api.constrains("advance_sheet_id", "expense_line_ids")
     def _check_advance_expense(self):
         advance_lines = self.expense_line_ids.filtered("advance")
         if self.advance_sheet_id and advance_lines:
             raise ValidationError(
-                _("Advance clearing must not contain any " "advance expense line")
+                _("Advance clearing must not contain any advance expense line")
             )
         if advance_lines and len(self.expense_line_ids) != 1:
-            raise ValidationError(
-                _("Advance must contain only 1 " "advance expense line")
-            )
+            raise ValidationError(_("Advance must contain only 1 advance expense line"))
 
-    @api.one
     @api.depends("account_move_id.line_ids.amount_residual")
     def _compute_residual(self):
-        residual_company = 0.0
         emp_advance = self.env.ref(
-            "hr_expense_advance_clearing." "product_emp_advance", False
+            "hr_expense_advance_clearing.product_emp_advance", False
         )
-        if emp_advance:
-            for line in self.sudo().account_move_id.line_ids:
-                if line.account_id == emp_advance.property_account_expense_id:
-                    residual_company += line.amount_residual
-        self.residual = residual_company
+        for sheet in self:
+            residual_company = 0.0
+            if emp_advance:
+                for line in sheet.sudo().account_move_id.line_ids:
+                    if line.account_id == emp_advance.property_account_expense_id:
+                        residual_company += line.amount_residual
+            sheet.residual = residual_company
 
-    @api.multi
     def _compute_amount_payable(self):
         for sheet in self:
             rec_lines = sheet.account_move_id.line_ids.filtered(
@@ -88,11 +82,10 @@ class HrExpenseSheet(models.Model):
             )
             sheet.amount_payable = -sum(rec_lines.mapped("amount_residual"))
 
-    @api.multi
     def action_sheet_move_create(self):
         res = super(HrExpenseSheet, self).action_sheet_move_create()
         # Reconcile advance of this sheet with the advance_sheet
-        emp_advance = self.env.ref("hr_expense_advance_clearing." "product_emp_advance")
+        emp_advance = self.env.ref("hr_expense_advance_clearing.product_emp_advance")
         for sheet in self:
             move_lines = (
                 sheet.account_move_id.line_ids
@@ -107,7 +100,6 @@ class HrExpenseSheet(models.Model):
             adv_move_lines.reconcile()
         return res
 
-    @api.multi
     def open_clear_advance(self):
         self.ensure_one()
         action = self.env.ref(
@@ -115,7 +107,7 @@ class HrExpenseSheet(models.Model):
         )
         vals = action.read()[0]
         context1 = vals.get("context", {})
-        if isinstance(context1, pycompat.string_types):
+        if context1:
             context1 = safe_eval(context1)
         context1["default_advance_sheet_id"] = self.id
         vals["context"] = context1
