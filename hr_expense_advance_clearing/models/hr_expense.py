@@ -8,14 +8,13 @@ from odoo.exceptions import ValidationError
 class HrExpense(models.Model):
     _inherit = "hr.expense"
 
-    advance = fields.Boolean(string="Employee Advance", default=False,)
+    advance = fields.Boolean(string="Employee Advance", default=False)
 
-    @api.multi
     @api.constrains("advance")
     def _check_advance(self):
         for expense in self.filtered("advance"):
             emp_advance = self.env.ref(
-                "hr_expense_advance_clearing." "product_emp_advance"
+                "hr_expense_advance_clearing.product_emp_advance"
             )
             if not emp_advance.property_account_expense_id:
                 raise ValidationError(
@@ -42,11 +41,10 @@ class HrExpense(models.Model):
         else:
             self.product_id = False
 
-    @api.multi
     def _get_account_move_line_values(self):
         move_line_values_by_expense = super()._get_account_move_line_values()
         # Only when do the clearing, change cr payable to cr advance
-        emp_advance = self.env.ref("hr_expense_advance_clearing." "product_emp_advance")
+        emp_advance = self.env.ref("hr_expense_advance_clearing.product_emp_advance")
         sheets = self.mapped("sheet_id").filtered("advance_sheet_id")
         sheets_x = sheets.filtered(lambda x: x.advance_sheet_residual <= 0.0)
         if sheets_x:  # Advance Sheets with no residual left
@@ -56,7 +54,7 @@ class HrExpense(models.Model):
             )
         for sheet in sheets:
             advance_to_clear = sheet.advance_sheet_residual
-            for expense_id, move_lines in move_line_values_by_expense.items():
+            for move_lines in move_line_values_by_expense.values():
                 payable_move_line = False
                 for move_line in move_lines:
                     credit = move_line["credit"]
