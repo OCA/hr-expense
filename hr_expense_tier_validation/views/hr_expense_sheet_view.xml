@@ -81,10 +81,12 @@
             </xpath>
         </field>
     </record>
-    <record id="view_hr_expense_sheet_filter" model="ir.ui.view">
-        <field name="name">hr.expense.sheet.filter - hr_expense_tier_validation</field>
+    <record id="hr_expense_sheet_view_search" model="ir.ui.view">
+        <field
+            name="name"
+        >hr.expense.sheet.view.search - hr_expense_tier_validation</field>
         <field name="model">hr.expense.sheet</field>
-        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_filter" />
+        <field name="inherit_id" ref="hr_expense.hr_expense_sheet_view_search" />
         <field name="arch" type="xml">
             <filter name="my_team_reports" position="after">
                 <separator />
