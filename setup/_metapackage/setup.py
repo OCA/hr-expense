@@ -8,6 +8,7 @@ setuptools.setup(
     description="Meta package for oca-hr-expense Odoo addons",
     version=version,
     install_requires=[
+        'odoo13-addon-hr_expense_invoice',
         'odoo13-addon-hr_expense_tier_validation',
     ],
     classifiers=[
