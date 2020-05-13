@@ -101,12 +101,17 @@ msgid "Invoice Fully Created"
 msgstr ""
 
 #. module: hr_expense_invoice
-#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:75
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
 #: model_terms:ir.ui.view,arch_db:hr_expense_invoice.hr_expense_sheet_form_view_inherit_sale_expense
 #, fuzzy, python-format
 #| msgid "Invoice"
 msgid "Invoices"
 msgstr "Rechnung"
+
+#. module: hr_expense_invoice
+#: model:ir.model,name:hr_expense_invoice.model_account_move
+msgid "Journal Entries"
+msgstr ""
 
 #. module: hr_expense_invoice
 #: model:ir.model,name:hr_expense_invoice.model_account_move_line
@@ -129,7 +134,7 @@ msgid "Last Updated on"
 msgstr ""
 
 #. module: hr_expense_invoice
-#: code:addons/hr_expense_invoice/wizard/expense_create_invoice.py:40
+#: code:addons/hr_expense_invoice/wizard/expense_create_invoice.py:0
 #, python-format
 msgid "No valid expenses to create invoice"
 msgstr ""
@@ -145,13 +150,13 @@ msgid "Please select expense line to create new vendor bill:"
 msgstr ""
 
 #. module: hr_expense_invoice
-#: code:addons/hr_expense_invoice/models/account_payment.py:15
+#: code:addons/hr_expense_invoice/models/account_payment.py:0
 #, python-format
 msgid "Register payment on expense's invoice is not allowed"
 msgstr ""
 
 #. module: hr_expense_invoice
-#: code:addons/hr_expense_invoice/wizard/expense_create_invoice.py:23
+#: code:addons/hr_expense_invoice/wizard/expense_create_invoice.py:0
 #, python-format
 msgid "This action is allowed only in Approved sate"
 msgstr ""
@@ -162,7 +167,7 @@ msgid "Vendor Bill"
 msgstr "Lieferantenrechnung"
 
 #. module: hr_expense_invoice
-#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:68
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
 #, python-format
 msgid ""
 "Vendor bill amount mismatch!\n"
@@ -170,10 +175,10 @@ msgid ""
 msgstr ""
 
 #. module: hr_expense_invoice
-#: code:addons/hr_expense_invoice/models/hr_expense.py:26
-#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:62
+#: code:addons/hr_expense_invoice/models/hr_expense.py:0
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
 #, python-format
-msgid "Vendor bill state must be Open"
+msgid "Vendor bill state must be Posted"
 msgstr ""
 
 #~ msgid ""
