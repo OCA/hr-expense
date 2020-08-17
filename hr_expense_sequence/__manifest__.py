@@ -9,7 +9,7 @@
     "category": "Human Resources",
     "author": "Serv. Tecnol. Avanzados - Pedro M. Baeza,"
     "Odoo Community Association (OCA)",
-    "website": "https://github.com/OCA/hr",
+    "website": "https://github.com/OCA/hr-expense",
     "depends": ["hr_expense"],
     "data": [
         "data/hr_expense_data.xml",
