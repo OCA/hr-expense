@@ -1,5 +1,6 @@
-# Copyright 2015 Pedro M. Baeza <pedro.baeza@tecnativa.com>
-# Copyright 2017 Vicent Cubells <vicent.cubells@tecnativa.com>
+# Copyright 2015 Tecnativa - Pedro M. Baeza
+# Copyright 2017 Tecnativa - Vicent Cubells
+# Copyright 2020 Tecnativa - David Vidal
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import _, api, fields, models
@@ -41,3 +42,11 @@ class HrExpense(models.Model):
                         lambda l: l.account_internal_type == "payable"
                     ).account_id.id
         return move_line_values_by_expense
+
+    @api.onchange("invoice_id")
+    def _onchange_invoice_id(self):
+        """Get expense amount from invoice amount. Otherwise it will do a
+           mismatch when trying to post the account move."""
+        if self.invoice_id:
+            self.quantity = 1
+            self.unit_amount = self.invoice_id.amount_total
