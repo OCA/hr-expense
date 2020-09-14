@@ -47,6 +47,7 @@ class HRExpenseCreateInvoice(models.TransientModel):
                     "price_unit": x.unit_amount,
                     "quantity": x.quantity,
                     "account_id": x.account_id.id,
+                    "account_analytic_id": x.analytic_account_id.id,
                     "tax_ids": [(6, 0, x.tax_ids.ids)],
                 },
             )
