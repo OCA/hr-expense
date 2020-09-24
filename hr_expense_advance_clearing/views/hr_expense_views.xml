@@ -50,6 +50,11 @@
                 <field name="advance" />
                 <label for="advance" />
             </h1>
+            <field name="analytic_account_id" position="attributes">
+                <attribute
+                    name="attrs"
+                >{'invisible': [('advance', '!=', False)]}</attribute>
+            </field>
         </field>
     </record>
     <record id="view_hr_expense_sheet_form" model="ir.ui.view">
