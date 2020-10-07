@@ -1,15 +1,24 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo noupdate="1">
     <record id="overdue_advance_reminder_mail_template" model="mail.template">
         <field name="name">Overdue Advance Reminder</field>
-        <field name="model_id" ref="hr_expense_advance_overdue_reminder.model_advance_overdue_reminder_step"/>
-        <field name="auto_delete" eval="False"/>
+        <field
+            name="model_id"
+            ref="hr_expense_advance_overdue_reminder.model_advance_overdue_reminder_step"
+        />
+        <field name="auto_delete" eval="False" />
         <field name="lang">${object.partner_id.lang}</field>
-        <field name="user_signature" eval="True"/>
-        <field name="email_from">${object.user_id.email or object.company_id.email}</field>
+        <field name="user_signature" eval="True" />
+        <field
+            name="email_from"
+        >${object.user_id.email or object.company_id.email}</field>
         <field name="email_to">${object.partner_id.email}</field>
-        <field name="subject">${object.company_id.name} - Overdue advance reminder n°${object.counter}</field>
-        <field name="body_html"><![CDATA[
+        <field
+            name="subject"
+        >${object.company_id.name} - Overdue advance reminder n°${object.counter}</field>
+        <field
+            name="body_html"
+        ><![CDATA[
 <div style="margin: 0px; padding: 0px; font-size: 13px;">
 <p>Dear ${object.partner_id.name},</p>
 

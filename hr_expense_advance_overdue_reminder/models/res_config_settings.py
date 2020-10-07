@@ -5,7 +5,8 @@ from odoo import fields, models
 
 
 class ResConfigSettings(models.TransientModel):
-    _inherit = 'res.config.settings'
+    _inherit = "res.config.settings"
 
     terms_date_due_days = fields.Integer(
-        related='company_id.terms_date_due_days', readonly=False)
+        related="company_id.terms_date_due_days", readonly=False
+    )
