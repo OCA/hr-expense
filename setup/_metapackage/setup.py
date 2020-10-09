@@ -11,6 +11,7 @@ setuptools.setup(
         'odoo13-addon-hr_expense_advance_clearing',
         'odoo13-addon-hr_expense_cancel',
         'odoo13-addon-hr_expense_invoice',
+        'odoo13-addon-hr_expense_sequence',
         'odoo13-addon-hr_expense_tier_validation',
     ],
     classifiers=[
