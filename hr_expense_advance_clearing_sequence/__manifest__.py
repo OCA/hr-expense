@@ -3,13 +3,13 @@
 
 {
     "name": "HR Expense Advance Clearing Sequence",
-    "version": "12.0.1.0.0",
+    "version": "13.0.1.0.0",
     "license": "AGPL-3",
     "category": "Human Resources",
     "author": "Ecosoft, Odoo Community Association (OCA)",
-    "website": "https://github.com/OCA/hr",
+    "website": "https://github.com/OCA/hr-expense",
     "depends": ["hr_expense_sequence", "hr_expense_advance_clearing"],
     "data": ["data/hr_expense_data.xml"],
     "installable": True,
-    "maintainer": "ps-tubtim",
+    "maintainer": ["ps-tubtim"],
 }
