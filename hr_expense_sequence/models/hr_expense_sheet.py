@@ -16,4 +16,4 @@ class HrExpenseSheet(models.Model):
         if vals.get("number", "/") == "/":
             number = self.env["ir.sequence"].next_by_code("hr.expense.sheet")
             vals["number"] = number
-        return super(HrExpenseSheet, self).create(vals)
+        return super().create(vals)
