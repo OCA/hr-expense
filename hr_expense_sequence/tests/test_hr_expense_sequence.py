@@ -8,7 +8,7 @@ from odoo.tests.common import SavepointCase
 class TestHrExpenseSequence(SavepointCase):
     @classmethod
     def setUpClass(cls):
-        super(TestHrExpenseSequence, cls).setUpClass()
+        super().setUpClass()
         cls.expense_model = cls.env["hr.expense"]
         cls.expense_sheet_model = cls.env["hr.expense.sheet"]
         cls.product = cls.env.ref("product.product_product_4")
