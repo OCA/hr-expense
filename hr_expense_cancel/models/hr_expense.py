@@ -25,7 +25,6 @@ class HrExpenseSheet(models.Model):
                     # In this case, during the cancellation the journal entry
                     # will be deleted
                     self._cancel_payments(payments)
-                    payments.unlink()
             # Deleting the Journal entry if in the previous steps
             # (if the expense sheet is paid and payment_mode == 'own_account')
             # it has not been deleted
@@ -37,10 +36,9 @@ class HrExpenseSheet(models.Model):
 
     def action_sheet_move_create(self):
         res = super().action_sheet_move_create()
+        payment = self.env["account.payment"].search([], order="id desc", limit=1)
         if self.expense_line_ids[0].payment_mode == "company_account":
-            self.account_move_id.mapped("line_ids.payment_id").write(
-                {"expense_sheet_id": self.id}
-            )
+            payment.write({"expense_sheet_id": self.id})
         return res
 
     def _remove_reconcile_hr_invoice(self, account_move):
@@ -58,8 +56,7 @@ class HrExpenseSheet(models.Model):
         """Delete only reconciliations made with the payments generated
         by hr_expense module automatically"""
         reconcile = account_move.mapped("line_ids.full_reconcile_id")
-
-        payments_aml = payments.mapped("move_line_ids")
+        payments_aml = payments.move_id.line_ids
         aml_unreconcile = payments_aml.filtered(
             lambda r: r.full_reconcile_id in reconcile
         )
@@ -68,7 +65,10 @@ class HrExpenseSheet(models.Model):
 
     def _cancel_payments(self, payments):
         for rec in payments:
-            for move in rec.move_line_ids.mapped("move_id"):
-                move.button_cancel()
-                move.with_context({"force_delete": True}).unlink()
-            rec.state = "cancelled"
+            rec.move_id.with_context({"force_delete": True}).unlink()
+
+    def action_register_payment(self):
+        action = super().action_register_payment()
+        if self._name == "hr.expense.sheet":
+            action["context"].update({"expense_sheet_ids": self.ids})
+        return action
