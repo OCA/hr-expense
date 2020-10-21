@@ -7,11 +7,11 @@
     "category": "Human Resources",
     "author": "Ecosoft, Odoo Community Association (OCA)",
     "license": "AGPL-3",
-    "website": "https://github.com/OCA/hr",
+    "website": "https://github.com/OCA/hr-expense",
     "depends": ["hr_expense"],
     "data": [
         "security/ir.model.access.csv",
-        "views/account_invoice_views.xml",
+        "views/account_move_views.xml",
         "views/hr_expense_sheet_views.xml",
         "views/hr_expense_views.xml",
         "views/petty_cash_views.xml",
