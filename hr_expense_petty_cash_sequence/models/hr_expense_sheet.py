@@ -10,15 +10,12 @@ class HrExpenseSheet(models.Model):
     @api.model
     def create(self, vals):
         if "expense_line_ids" in vals.keys():
-            from_expense = vals["expense_line_ids"][0][1]
-            if from_expense:
-                expense = self.env["hr.expense"].browse(from_expense)
-            else:
-                from_report = vals["expense_line_ids"][0][2][0]
-                expense = self.env["hr.expense"].browse(from_report)
-            if vals.get("number", "/") == "/" and expense.payment_mode == "petty_cash":
+            from_expense = vals["expense_line_ids"][0][2]
+            expenses = self.env["hr.expense"].browse(from_expense)
+            exp_petty_cash = all(exp.payment_mode == "petty_cash" for exp in expenses)
+            if vals.get("number", "/") == "/" and exp_petty_cash:
                 number = self.env["ir.sequence"].next_by_code(
                     "hr.expense.sheet.petty.cash"
                 )
                 vals["number"] = number
-        return super(HrExpenseSheet, self).create(vals)
+        return super().create(vals)

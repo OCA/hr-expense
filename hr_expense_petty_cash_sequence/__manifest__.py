@@ -3,7 +3,7 @@
 
 {
     "name": "HR Expense Petty Cash Sequence",
-    "version": "12.0.1.0.0",
+    "version": "13.0.1.0.0",
     "license": "AGPL-3",
     "category": "Human Resources",
     "author": "Ecosoft, Odoo Community Association (OCA)",
