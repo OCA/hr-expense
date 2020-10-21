@@ -8,10 +8,7 @@
                 <sheet>
                     <group>
                         <group name="data">
-                            <field
-                                name="partner_id"
-                                context="{'default_supplier': True, 'default_customer': False}"
-                            />
+                            <field name="partner_id" />
                             <field name="account_id" />
                             <field name="journal_id" />
                         </group>
@@ -28,7 +25,7 @@
         <field name="name">petty.cash.list</field>
         <field name="model">petty.cash</field>
         <field name="arch" type="xml">
-            <tree string="Petty Cash" toolbar="1">
+            <tree string="Petty Cash">
                 <field name="partner_id" />
                 <field name="account_id" />
                 <field name="journal_id" />
@@ -75,7 +72,6 @@
     <record id="action_petty_cash" model="ir.actions.act_window">
         <field name="name">Petty Cash</field>
         <field name="res_model">petty.cash</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,kanban,form</field>
         <field name="search_view_id" ref="view_petty_cash_search" />
         <field name="view_id" ref="view_petty_cash_list" />

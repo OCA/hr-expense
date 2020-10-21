@@ -20,12 +20,10 @@ class HrExpenseSheet(models.Model):
             journal = petty_cash_id.journal_id.id or journal
         return journal
 
-    payment_mode = fields.Selection(selection_add=[("petty_cash", "Petty Cash")],)
     petty_cash_id = fields.Many2one(
         string="Petty cash holder",
         comodel_name="petty.cash",
         ondelete="restrict",
-        readonly=True,
         compute="_compute_petty_cash",
     )
     journal_id = fields.Many2one(default=_default_journal_id)
@@ -33,6 +31,7 @@ class HrExpenseSheet(models.Model):
     @api.depends("expense_line_ids", "payment_mode")
     def _compute_petty_cash(self):
         for rec in self:
+            rec.petty_cash_id = False
             if rec.payment_mode == "petty_cash":
                 set_petty_cash_ids = set()
                 for line in rec.expense_line_ids:
@@ -43,10 +42,9 @@ class HrExpenseSheet(models.Model):
                     )
                 else:
                     raise ValidationError(
-                        _("You cannot create report from " "many petty cash holders.")
+                        _("You cannot create report from many petty cash holders.")
                     )
 
-    @api.multi
     @api.constrains("expense_line_ids", "total_amount")
     def _check_petty_cash_amount(self):
         for rec in self:
