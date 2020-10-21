@@ -10,10 +10,7 @@ class PettyCash(models.Model):
     _rec_name = "partner_id"
 
     partner_id = fields.Many2one(
-        comodel_name="res.partner",
-        string="Petty Cash Holder",
-        domain=[("supplier", "=", True)],
-        required=True,
+        comodel_name="res.partner", string="Petty Cash Holder", required=True,
     )
     account_id = fields.Many2one(
         comodel_name="account.account", string="Petty Cash Account", required=True,
@@ -35,6 +32,7 @@ class PettyCash(models.Model):
                 [
                     ("partner_id", "=", rec.partner_id.id),
                     ("account_id", "=", rec.account_id.id),
+                    ("parent_state", "=", "posted"),
                 ]
             )
             balance = sum([line.debit - line.credit for line in aml])
