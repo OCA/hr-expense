@@ -22,7 +22,6 @@ class TestHrExpensePaymentDifference(SavepointCase):
             {"name": "Employee 1", "address_home_id": employee_home.id}
         )
         cls.expense_1 = cls.create_expense(cls, "Expense Test1")
-        cls.expense_2 = cls.create_expense(cls, "Expense Test2")
         cls.sheet = cls.expense_sheet_model.create(
             {"name": "Report Expense 1", "employee_id": cls.employee_1.id}
         )
@@ -64,3 +63,4 @@ class TestHrExpensePaymentDifference(SavepointCase):
         payment_wizard = f.save()
         self.assertEqual(payment_wizard.payment_difference, 20.0)
         payment_wizard.expense_post_payment()
+        self.assertEqual(self.sheet.state, "done")

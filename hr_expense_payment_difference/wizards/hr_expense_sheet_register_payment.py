@@ -47,7 +47,6 @@ class HrExpenseSheetRegisterPaymentWizard(models.TransientModel):
         )
         return res
 
-    @api.multi
     def _compute_payment_amount(self):
         active_id = self._context.get("active_id", False)
         expense_sheet = self.env["hr.expense.sheet"].browse(active_id)
@@ -57,3 +56,10 @@ class HrExpenseSheetRegisterPaymentWizard(models.TransientModel):
     def _compute_payment_difference(self):
         for pay in self:
             pay.payment_difference = pay._compute_payment_amount() - pay.amount
+
+    def expense_post_payment(self):
+        context = self._context.copy()
+        context.update({"default_amount": self.amount})
+        return super(
+            HrExpenseSheetRegisterPaymentWizard, self.with_context(context)
+        ).expense_post_payment()
