@@ -19,12 +19,12 @@
         </field>
     </record>
     <!-- Add Petty Cash filter -->
-    <record id="view_hr_expense_sheet_filter_inherit" model="ir.ui.view">
-        <field name="name">hr.expense.sheet.filter.inherit</field>
+    <record id="hr_expense_sheet_view_search_inherit" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.search.inherit</field>
         <field name="model">hr.expense.sheet</field>
-        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_filter" />
+        <field name="inherit_id" ref="hr_expense.hr_expense_sheet_view_search" />
         <field name="arch" type="xml">
-            <xpath expr="//filter[@name='my_team_reports']" position="after">
+            <xpath expr="//filter[@name='inactive']" position="after">
                 <filter
                     string="Petty Cash"
                     name="petty_cash"
