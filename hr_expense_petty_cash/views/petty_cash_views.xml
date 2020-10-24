@@ -1,5 +1,32 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
+    <record id="view_move_tree" model="ir.ui.view">
+        <field name="name">account.move.petty.cash.tree</field>
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <tree
+                editable="bottom"
+                decoration-info="state == 'draft'"
+                decoration-muted="state == 'cancel'"
+                default_order="date desc, name desc"
+            >
+                <field name="name" />
+                <field name="invoice_date" optional="show" string="Bill Date" />
+                <field name="invoice_payment_ref" optional="hide" />
+                <field name="ref" optional="hide" />
+                <field
+                    name="company_id"
+                    groups="base.group_multi_company"
+                    options="{'no_create': True}"
+                    optional="show"
+                />
+                <field name="invoice_date_due" optional="hide" />
+                <field name="amount_total" string="Total" sum="Total" optional="show" />
+                <field name="state" optional="show" />
+                <field name="invoice_payment_state" optional="show" />
+            </tree>
+        </field>
+    </record>
     <record id="view_petty_cash_form" model="ir.ui.view">
         <field name="name">petty.cash.form</field>
         <field name="model">petty.cash</field>
@@ -17,6 +44,20 @@
                             <field name="petty_cash_balance" />
                         </group>
                     </group>
+                    <notebook>
+                        <page name="bills" string="Bills">
+                            <field
+                                name="bill_ids"
+                                context="{'tree_view_ref':'hr_expense_petty_cash.view_move_tree'}"
+                            />
+                        </page>
+                        <page name="expenses" string="Expenses">
+                            <field
+                                name="expense_ids"
+                                context="{'form_view_ref' : 'hr_expense.hr_expense_view_form_without_header'}"
+                            />
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

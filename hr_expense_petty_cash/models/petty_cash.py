@@ -10,16 +10,23 @@ class PettyCash(models.Model):
     _rec_name = "partner_id"
 
     partner_id = fields.Many2one(
-        comodel_name="res.partner", string="Petty Cash Holder", required=True,
+        comodel_name="res.partner", string="Petty Cash Holder", required=True
     )
     account_id = fields.Many2one(
-        comodel_name="account.account", string="Petty Cash Account", required=True,
+        comodel_name="account.account", string="Petty Cash Account", required=True
     )
-    petty_cash_limit = fields.Float(string="Max Limit", required=True,)
+    petty_cash_limit = fields.Float(string="Max Limit", required=True)
     petty_cash_balance = fields.Float(
         string="Balance", compute="_compute_petty_cash_balance",
     )
-    journal_id = fields.Many2one(comodel_name="account.journal",)
+    journal_id = fields.Many2one(comodel_name="account.journal")
+    bill_ids = fields.One2many(
+        comodel_name="account.move", inverse_name="petty_cash_id", readonly=True
+    )
+    expense_ids = fields.One2many(
+        comodel_name="hr.expense", inverse_name="petty_cash_id", readonly=True
+    )
+
     _sql_constraints = [
         ("partner_uniq", "unique(partner_id)", "Petty Cash Holder must be unique!"),
     ]

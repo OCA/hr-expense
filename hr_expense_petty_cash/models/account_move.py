@@ -12,6 +12,24 @@ class AccountMove(models.Model):
     is_petty_cash = fields.Boolean(
         string="Petty Cash", readonly=True, states={"draft": [("readonly", False)]},
     )
+    petty_cash_id = fields.Many2one(
+        comodel_name="petty.cash",
+        string="Petty Cash Reference",
+        compute="_compute_petty_cash_id",
+        store=True,
+        ondelete="restrict",
+    )
+
+    @api.depends("is_petty_cash")
+    def _compute_petty_cash_id(self):
+        PettyCash = self.env["petty.cash"]
+        for rec in self:
+            rec.petty_cash_id = False
+            if rec.is_petty_cash:
+                petty_cash = PettyCash.search(
+                    [("partner_id", "=", rec.partner_id.id)], limit=1
+                )
+                rec.petty_cash_id = petty_cash.id
 
     def action_post(self):
         self._check_petty_cash_amount()
@@ -19,9 +37,9 @@ class AccountMove(models.Model):
 
     @api.constrains("invoice_line_ids", "line_ids")
     def _check_petty_cash_amount(self):
-        petty_cash_env = self.env["petty.cash"]
+        PettyCash = self.env["petty.cash"]
         for rec in self:
-            petty_cash = petty_cash_env.search(
+            petty_cash = PettyCash.search(
                 [("partner_id", "=", rec.partner_id.id)], limit=1
             )
             if petty_cash and rec.invoice_line_ids:

@@ -10,6 +10,7 @@
                     name="is_petty_cash"
                     attrs="{'invisible': [('type', '!=', 'in_invoice')]}"
                 />
+                <field name="petty_cash_id" attrs="{'invisible': [True]}" />
             </xpath>
         </field>
     </record>
