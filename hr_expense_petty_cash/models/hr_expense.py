@@ -46,7 +46,6 @@ class HrExpense(models.Model):
             .with_context(ctx)
             .create(self._prepare_expense_vals())
         )
-        print(sheet)
         sheet._onchange_employee_id()
         return sheet
 
