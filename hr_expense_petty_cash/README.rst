@@ -14,7 +14,7 @@ Petty Cash
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fhr--expense-lightgray.png?logo=github
-    :target: https://github.com/OCA/hr-expense/tree/13.0/hr_expense_petty_cash
+    :target: https://github.com/OCA/hr-expense/tree/14.0/hr_expense_petty_cash
     :alt: OCA/hr-expense
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
     :target: https://translation.odoo-community.org/projects/hr-expense-13-0/hr-expense-13-0-hr_expense_petty_cash
