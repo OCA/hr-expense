@@ -1,0 +1,4 @@
+# Copyright 2020 Trinityroots Co., Ltd. (http://trinityroots.co.th)
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+
+from . import models
