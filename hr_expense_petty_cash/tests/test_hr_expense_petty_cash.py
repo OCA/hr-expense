@@ -56,11 +56,12 @@ class TestHrExpensePettyCash(TransactionCase):
                 "petty_cash_limit": 1000.0,
             }
         )
+        print("petty_cash_holder"+str(petty_cash_holder))
         return petty_cash_holder
 
     def _create_invoice(self, partner=False):
         invoice = self.env["account.move"].create(
-            {"partner_id": partner, "type": "in_invoice"}
+            {"partner_id": partner, "move_type": "in_invoice"}
         )
         return invoice
 
@@ -95,7 +96,7 @@ class TestHrExpensePettyCash(TransactionCase):
         invoice = self.env["account.move"].create(
             {
                 "partner_id": self.partner_1.id,
-                "type": "in_invoice",
+                "move_type": "in_invoice",
                 "is_petty_cash": petty_cash,
                 "invoice_line_ids": [
                     (
@@ -158,7 +159,7 @@ class TestHrExpensePettyCash(TransactionCase):
         invoice = self.env["account.move"].create(
             {
                 "partner_id": self.partner_1.id,
-                "type": "in_invoice",
+                "move_type": "in_invoice",
                 "invoice_line_ids": [
                     (
                         0,
