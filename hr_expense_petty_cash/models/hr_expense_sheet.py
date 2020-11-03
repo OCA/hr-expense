@@ -27,8 +27,7 @@ class HrExpenseSheet(models.Model):
         compute="_compute_petty_cash",
     )
     journal_id = fields.Many2one(
-        comodel_name="account.journal",
-        default=_default_journal_id
+        comodel_name="account.journal", default=_default_journal_id
     )
 
     @api.depends("expense_line_ids", "payment_mode")
