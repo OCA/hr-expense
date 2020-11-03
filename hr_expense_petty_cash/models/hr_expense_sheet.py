@@ -84,4 +84,3 @@ class HrExpenseSheet(models.Model):
         self.user_id = (
             self.employee_id.expense_manager_id or self.employee_id.parent_id.user_id
         )
-
