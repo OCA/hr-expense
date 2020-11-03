@@ -56,7 +56,6 @@ class TestHrExpensePettyCash(TransactionCase):
                 "petty_cash_limit": 1000.0,
             }
         )
-        print("petty_cash_holder"+str(petty_cash_holder))
         return petty_cash_holder
 
     def _create_invoice(self, partner=False):
