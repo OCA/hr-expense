@@ -70,8 +70,8 @@
                     string="Petty Cash Name"
                     filter_domain="[('partner_id', 'ilike', self)]"
                 />
-                <separator/>
-                <group expand="0" string="Group By" >
+                <separator />
+                <group expand="0" string="Group By">
                     <filter
                         string="Petty Cash Holder"
                         name="petty_cash_holder"
@@ -87,7 +87,7 @@
                         name="journal"
                         context="{'group_by':'journal_id'}"
                     />
-                    <separator/>
+                    <separator />
                 </group>
             </search>
         </field>
