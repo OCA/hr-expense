@@ -53,6 +53,7 @@ class TestHrExpensePettyCash(TransactionCase):
             {
                 "partner_id": partner.id,
                 "account_id": self.petty_cash_account_id.id,
+                "journal_id": self.petty_cash_journal_id.id,
                 "petty_cash_limit": 1000.0,
             }
         )
@@ -60,7 +61,11 @@ class TestHrExpensePettyCash(TransactionCase):
 
     def _create_invoice(self, partner=False):
         invoice = self.env["account.move"].create(
-            {"partner_id": partner, "move_type": "in_invoice"}
+            {
+                "partner_id": partner,
+                "move_type": "in_invoice",
+                "journal_id": self.petty_cash_holder.journal_id.id,
+            }
         )
         return invoice
 
@@ -196,6 +201,7 @@ class TestHrExpensePettyCash(TransactionCase):
         with Form(invoice) as inv:
             inv.is_petty_cash = True
             inv.invoice_line_ids.price_unit = 1000.0
+
         invoice.action_post()
         self.petty_cash_holder._compute_petty_cash_balance()
         self.assertEqual(self.petty_cash_holder.petty_cash_balance, 1000.0)
