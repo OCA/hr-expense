@@ -1,4 +1,3 @@
-* `Ecosoft <http://ecosoft.co.th>`__:
+* `Trinityroots <http://trinityroots.co.th>`__:
 
-  * Pimolnat Suntian <pimolnats@ecosoft.co.th>
-  * Saran Lim. <saranl@ecosoft.co.th>
+  * Santi Techatoo <santi.tec@trinityroots.co.th>

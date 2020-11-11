@@ -1,4 +1,4 @@
-# Copyright 2019 Ecosoft Co., Ltd. (http://ecosoft.co.th)
+# Copyright 2020 Trinityroots Co., Ltd. (http://trinityroots.co.th)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo.exceptions import UserError, ValidationError
@@ -60,7 +60,7 @@ class TestHrExpensePettyCash(TransactionCase):
 
     def _create_invoice(self, partner=False):
         invoice = self.env["account.move"].create(
-            {"partner_id": partner, "type": "in_invoice"}
+            {"partner_id": partner, "move_type": "in_invoice"}
         )
         return invoice
 
@@ -95,7 +95,7 @@ class TestHrExpensePettyCash(TransactionCase):
         invoice = self.env["account.move"].create(
             {
                 "partner_id": self.partner_1.id,
-                "type": "in_invoice",
+                "move_type": "in_invoice",
                 "is_petty_cash": petty_cash,
                 "invoice_line_ids": [
                     (
@@ -158,7 +158,7 @@ class TestHrExpensePettyCash(TransactionCase):
         invoice = self.env["account.move"].create(
             {
                 "partner_id": self.partner_1.id,
-                "type": "in_invoice",
+                "move_type": "in_invoice",
                 "invoice_line_ids": [
                     (
                         0,

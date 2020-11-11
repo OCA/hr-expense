@@ -1,4 +1,4 @@
-# Copyright 2019 Ecosoft Co., Ltd. (http://ecosoft.co.th)
+# Copyright 2020 Trinityroots Co., Ltd. (http://trinityroots.co.th)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import _, api, fields, models
@@ -26,7 +26,9 @@ class HrExpenseSheet(models.Model):
         ondelete="restrict",
         compute="_compute_petty_cash",
     )
-    journal_id = fields.Many2one(default=_default_journal_id)
+    journal_id = fields.Many2one(
+        comodel_name="account.journal", default=_default_journal_id
+    )
 
     @api.depends("expense_line_ids", "payment_mode")
     def _compute_petty_cash(self):
@@ -74,3 +76,11 @@ class HrExpenseSheet(models.Model):
                             company_currency.symbol,
                         )
                     )
+
+    @api.onchange("employee_id")
+    def _onchange_employee_id(self):
+        self.address_id = self.employee_id.sudo().address_home_id
+        self.department_id = self.employee_id.department_id
+        self.user_id = (
+            self.employee_id.expense_manager_id or self.employee_id.parent_id.user_id
+        )
