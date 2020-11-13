@@ -77,11 +77,3 @@ class HrExpenseSheet(models.Model):
                             company_currency.symbol,
                         )
                     )
-
-    @api.onchange("employee_id")
-    def _onchange_employee_id(self):
-        self.address_id = self.employee_id.sudo().address_home_id
-        self.department_id = self.employee_id.department_id
-        self.user_id = (
-            self.employee_id.expense_manager_id or self.employee_id.parent_id.user_id
-        )
