@@ -10,7 +10,9 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     is_petty_cash = fields.Boolean(
-        string="Petty Cash", readonly=True, states={"draft": [("readonly", False)]},
+        string="Petty Cash",
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )
 
     def action_post(self):
@@ -91,7 +93,10 @@ class AccountMove(models.Model):
         amount = petty_cash.petty_cash_limit - petty_cash.petty_cash_balance
         company_currency = self.env.user.company_id.currency_id
         amount_doc_currency = company_currency._convert(
-            amount, self.currency_id, self.company_id, self.date or fields.Date.today(),
+            amount,
+            self.currency_id,
+            self.company_id,
+            self.date or fields.Date.today(),
         )
 
         inv_line = self.env["account.move.line"].new(
