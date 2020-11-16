@@ -1,7 +1,7 @@
 # Copyright 2019 Ecosoft Co., Ltd. (http://ecosoft.co.th)
-# Copyright 2020 Trinityroots Co., Ltd. (http://trinityroots.co.th)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+from odoo import fields
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests.common import Form, TransactionCase
 
@@ -54,7 +54,6 @@ class TestHrExpensePettyCash(TransactionCase):
             {
                 "partner_id": partner.id,
                 "account_id": self.petty_cash_account_id.id,
-                "journal_id": self.petty_cash_journal_id.id,
                 "petty_cash_limit": 1000.0,
             }
         )
@@ -65,7 +64,7 @@ class TestHrExpensePettyCash(TransactionCase):
             {
                 "partner_id": partner,
                 "move_type": "in_invoice",
-                "journal_id": self.petty_cash_holder.journal_id.id,
+                "invoice_date": fields.Date.today(),
             }
         )
         return invoice
@@ -102,6 +101,7 @@ class TestHrExpensePettyCash(TransactionCase):
             {
                 "partner_id": self.partner_1.id,
                 "move_type": "in_invoice",
+                "invoice_date": fields.Date.today(),
                 "is_petty_cash": petty_cash,
                 "invoice_line_ids": [
                     (
@@ -165,6 +165,7 @@ class TestHrExpensePettyCash(TransactionCase):
             {
                 "partner_id": self.partner_1.id,
                 "move_type": "in_invoice",
+                "invoice_date": fields.Date.today(),
                 "invoice_line_ids": [
                     (
                         0,
@@ -202,7 +203,6 @@ class TestHrExpensePettyCash(TransactionCase):
         with Form(invoice) as inv:
             inv.is_petty_cash = True
             inv.invoice_line_ids.price_unit = 1000.0
-
         invoice.action_post()
         self.petty_cash_holder._compute_petty_cash_balance()
         self.assertEqual(self.petty_cash_holder.petty_cash_balance, 1000.0)
