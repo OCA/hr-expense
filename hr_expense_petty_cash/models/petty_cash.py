@@ -1,4 +1,5 @@
 # Copyright 2019 Ecosoft Co., Ltd. (http://ecosoft.co.th)
+# Copyright 2020 Trinityroots Co., Ltd. (http://trinityroots.co.th)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import api, fields, models
@@ -11,16 +12,26 @@ class PettyCash(models.Model):
 
     active = fields.Boolean(default=True)
     partner_id = fields.Many2one(
-        comodel_name="res.partner", string="Petty Cash Holder", required=True,
+        comodel_name="res.partner",
+        string="Petty Cash Holder",
+        required=True,
     )
     account_id = fields.Many2one(
-        comodel_name="account.account", string="Petty Cash Account", required=True,
+        comodel_name="account.account",
+        string="Petty Cash Account",
+        required=True,
     )
-    petty_cash_limit = fields.Float(string="Max Limit", required=True,)
+    petty_cash_limit = fields.Float(
+        string="Max Limit",
+        required=True,
+    )
     petty_cash_balance = fields.Float(
-        string="Balance", compute="_compute_petty_cash_balance",
+        string="Balance",
+        compute="_compute_petty_cash_balance",
     )
-    journal_id = fields.Many2one(comodel_name="account.journal",)
+    journal_id = fields.Many2one(
+        comodel_name="account.journal",
+    )
     _sql_constraints = [
         ("partner_uniq", "unique(partner_id)", "Petty Cash Holder must be unique!"),
     ]

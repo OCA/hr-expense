@@ -1,4 +1,5 @@
 # Copyright 2019 Ecosoft Co., Ltd. (http://ecosoft.co.th)
+# Copyright 2020 Trinityroots Co., Ltd. (http://trinityroots.co.th)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import _, fields, models
@@ -46,7 +47,6 @@ class HrExpense(models.Model):
             .with_context(ctx)
             .create(self._prepare_expense_vals())
         )
-        sheet._onchange_employee_id()
         return sheet
 
     def _create_sheet_from_expenses(self):
