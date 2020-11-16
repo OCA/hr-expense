@@ -65,7 +65,30 @@
         <field name="model">petty.cash</field>
         <field name="arch" type="xml">
             <search string="Petty Cash">
-                <group expand="0" string="Group By" />
+                <field
+                    name="partner_id"
+                    string="Petty Cash Name"
+                    filter_domain="[('partner_id', 'ilike', self)]"
+                />
+                <separator />
+                <group expand="0" string="Group By">
+                    <filter
+                        string="Petty Cash Holder"
+                        name="petty_cash_holder"
+                        context="{'group_by':'partner_id'}"
+                    />
+                    <filter
+                        string="Petty Cash Account"
+                        name="petty_cash_account"
+                        context="{'group_by':'account_id'}"
+                    />
+                    <filter
+                        string="Journal"
+                        name="journal"
+                        context="{'group_by':'journal_id'}"
+                    />
+                    <separator />
+                </group>
             </search>
         </field>
     </record>
