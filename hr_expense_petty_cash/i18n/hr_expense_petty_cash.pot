@@ -1,10 +1,10 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* hr_expense_petty_cash
+# 	* hr_expense_petty_cash
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 14.0\n"
+"Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -60,11 +60,6 @@ msgstr ""
 #. module: hr_expense_petty_cash
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash__display_name
 msgid "Display Name"
-msgstr ""
-
-#. module: hr_expense_petty_cash
-#: selection:hr.expense,payment_mode:0
-msgid "Employee (to reimburse)"
 msgstr ""
 
 #. module: hr_expense_petty_cash
@@ -138,7 +133,6 @@ msgstr ""
 
 #. module: hr_expense_petty_cash
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_hr_expense__payment_mode
-#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_hr_expense_sheet__payment_mode
 msgid "Paid By"
 msgstr ""
 
