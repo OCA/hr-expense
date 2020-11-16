@@ -17,13 +17,13 @@ Petty Cash
     :target: https://github.com/OCA/hr-expense/tree/14.0/hr_expense_petty_cash
     :alt: OCA/hr-expense
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/hr-expense-14-0/hr-expense-13-0-hr_expense_petty_cash
+    :target: https://translation.odoo-community.org/projects/hr-expense-14-0/hr-expense-14-0-hr_expense_petty_cash
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runbot-Try%20me-875A7B.png
     :target: https://runbot.odoo-community.org/runbot/289/14.0
     :alt: Try me on Runbot
 
-|badge1| |badge2| |badge3| |badge4| |badge5|
+|badge1| |badge2| |badge3| |badge4| |badge5| 
 
 This module work about expense that paid by petty cash.
 
@@ -98,11 +98,12 @@ Credits
 
 Authors
 ~~~~~~~
+
 * Ecosoft
-* Trinityroots
 
 Contributors
 ~~~~~~~~~~~~
+
 * `Ecosoft <http://ecosoft.co.th>`__:
 
   * Pimolnat Suntian <pimolnats@ecosoft.co.th>

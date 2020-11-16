@@ -1,5 +1,4 @@
 # Copyright 2019 Ecosoft Co., Ltd. (http://ecosoft.co.th)
-# Copyright 2020 Trinityroots Co., Ltd. (http://trinityroots.co.th)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import _, api, fields, models
@@ -131,15 +130,16 @@ class AccountMove(models.Model):
                 # Prevent inconsistent journal_id
                 if (
                     (
-                        self.type in self.get_sale_types(include_receipts=True)
+                        self.move_type in self.get_sale_types(include_receipts=True)
                         and petty_cash.journal_id.type == "sale"
                     )
                     or (
-                        self.type in self.get_purchase_types(include_receipts=True)
+                        self.move_type in self.get_purchase_types(include_receipts=True)
                         and petty_cash.journal_id.type == "purchase"
                     )
                     or (
-                        self.type == "entry" and petty_cash.journal_id.type == "general"
+                        self.move_type == "entry"
+                        and petty_cash.journal_id.type == "general"
                     )
                 ):
                     self.journal_id = petty_cash.journal_id.id
