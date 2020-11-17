@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Form view -->
+    <record id="hr_advance_overdue_reminder_form" model="ir.ui.view">
+        <field name="name">hr.advance.overdue.reminder.form</field>
+        <field name="model">hr.advance.overdue.reminder</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button
+                        name="action_validate"
+                        type="object"
+                        string="Send"
+                        class="btn-primary"
+                        states="draft"
+                    />
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,done"
+                    />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            name="action_get_mail_view"
+                            class="oe_stat_button"
+                            icon="fa-envelope-o"
+                            type="object"
+                            attrs="{'invisible': [('mail_count', '=', 0)]}"
+                        >
+                            <field
+                                name="mail_count"
+                                widget="statinfo"
+                                string="Email(s)"
+                                options="{'reload_on_button': true}"
+                            />
+                        </button>
+                    </div>
+                    <h1>
+                        <label
+                            for="name"
+                            string="Draft"
+                            attrs="{'invisible': [('state','!=', 'draft')]}"
+                        />
+                        <field
+                            name="name"
+                            readonly="1"
+                            class="oe_inline"
+                            attrs="{'invisible': [('state', '=', 'draft')]}"
+                        />
+                    </h1>
+                    <group name="main">
+                        <group name="information">
+                            <field name="commercial_partner_id" />
+                            <field
+                                name="partner_id"
+                                domain="[('id', 'child_of', commercial_partner_id)]"
+                            />
+                            <field name="date" />
+                            <field name="reminder_next_time" />
+                        </group>
+                        <group name="contact">
+                            <field name="partner_phone" widget="phone" />
+                            <field name="partner_email" widget="email" />
+                            <field name="partner_mobile" widget="phone" />
+                        </group>
+                    </group>
+                    <group name="expense_advance">
+                        <field
+                            name="expense_sheet_ids"
+                            nolabel="1"
+                            context="{'search_default_my_reports': 1}"
+                        >
+                            <tree create="0" edit="0">
+                                <field name="number" />
+                                <field name="employee_id" />
+                                <field name="accounting_date" />
+                                <field name="clearing_date_due" />
+                                <field name="name" string="Order Ref" />
+                                <field name="payment_mode" />
+                                <field name="total_amount" sum="Total" />
+                                <field name="clearing_residual" sum="Total" />
+                                <field
+                                    name="overdue_reminder_counter"
+                                    string="Current Remind Counter"
+                                />
+                                <field
+                                    name="overdue_reminder_last_date"
+                                    string="Last Reminder"
+                                />
+                                <field name="state" invisible="1" />
+                            </tree>
+                        </field>
+                    </group>
+                    <group name="activity">
+                        <field name="create_activity" />
+                    </group>
+                    <group
+                        name="activity_notify"
+                        attrs="{'invisible': [('create_activity', '=', False)]}"
+                        col="4"
+                    >
+                        <field
+                            name="activity_type_id"
+                            attrs="{'required': [('create_activity', '=', True)], 'invisible': [('create_activity', '=', False)]}"
+                        />
+                        <field
+                            name="activity_scheduled_date"
+                            attrs="{'required': [('create_activity', '=', True)], 'invisible': [('create_activity', '=', False)]}"
+                        />
+                        <field
+                            name="activity_summary"
+                            attrs="{'invisible': [('create_activity', '=', False)]}"
+                        />
+                        <field
+                            name="activity_user_id"
+                            attrs="{'required': [('create_activity', '=', True)], 'invisible': [('create_activity', '=', False)]}"
+                        />
+                        <field
+                            name="activity_note"
+                            colspan="4"
+                            nolabel="1"
+                            attrs="{'invisible': [('create_activity', '=', False)]}"
+                        />
+                    </group>
+                    <group name="reminder_type">
+                        <field name="reminder_type" />
+                        <field
+                            name="mail_template_id"
+                            attrs="{'invisible': [('reminder_type', '!=', 'mail')]}"
+                        />
+                        <field
+                            name="mail_cc"
+                            attrs="{'invisible': [('reminder_type', '!=', 'mail')]}"
+                        />
+                        <field
+                            name="attachment_letter"
+                            attrs="{'invisible': [('reminder_type', '!=', 'mail')]}"
+                        />
+                        <field
+                            name="letter_report"
+                            attrs="{'invisible': [('reminder_type', '!=', 'letter'), ('attachment_letter', '=', False)]}"
+                        />
+                    </group>
+                    <group
+                        name="mail"
+                        attrs="{'invisible': [('reminder_type', '!=', 'mail')]}"
+                    >
+                        <field name="mail_subject" />
+                        <field name="mail_body" colspan="2" nolabel="1" />
+                    </group>
+                    <group attrs="{'invisible': [('reminder_type', '!=', 'letter')]}">
+                        <button
+                            name="action_validate"
+                            type="object"
+                            string="Print Letter"
+                            class="btn-primary"
+                        />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Tree view -->
+    <record id="hr_advance_overdue_reminder_tree" model="ir.ui.view">
+        <field name="name">hr.advance.overdue.reminder.tree</field>
+        <field name="model">hr.advance.overdue.reminder</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'draft'">
+                <field name="name" />
+                <field name="commercial_partner_id" />
+                <field name="partner_id" />
+                <field name="date" />
+                <field name="reminder_type" />
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-success="state == 'done'"
+                    decoration-info="state == 'draft'"
+                />
+            </tree>
+        </field>
+    </record>
+    <!-- Search view -->
+    <record id="hr_advance_overdue_reminder_search" model="ir.ui.view">
+        <field name="name">hr.advance.overdue.reminder.search</field>
+        <field name="model">hr.advance.overdue.reminder</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="commercial_partner_id" />
+                <filter
+                    name="mail"
+                    string="E-mail"
+                    domain="[('reminder_type', '=', 'mail')]"
+                />
+                <filter
+                    name="post"
+                    string="Letter"
+                    domain="[('reminder_type', '=', 'letter')]"
+                />
+                <filter name="date_filter" string="Date" date="date" />
+                <separator />
+                <filter
+                    name="draft"
+                    string="Draft"
+                    domain="[('state', '=', 'draft')]"
+                />
+                <filter name="done" string="Done" domain="[('state', '=', 'done')]" />
+                <group name="groupby">
+                    <filter
+                        name="commercial_partner_groupby"
+                        string="Partner"
+                        context="{'group_by': 'commercial_partner_id'}"
+                    />
+                    <filter
+                        name="reminder_type_groupby"
+                        string="Reminder Type"
+                        context="{'group_by': 'reminder_type'}"
+                    />
+                    <filter
+                        name="state_groupby"
+                        string="State"
+                        context="{'group_by': 'state'}"
+                    />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_hr_advance_overdue_reminder" model="ir.actions.act_window">
+        <field name="name">Overdue Reminder Action</field>
+        <field name="res_model">hr.advance.overdue.reminder</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="hr_advance_overdue_reminder_search" />
+    </record>
+</odoo>
