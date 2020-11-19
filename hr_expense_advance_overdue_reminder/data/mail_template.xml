@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo noupdate="1">
-    <record id="overdue_advance_reminder_mail_template" model="mail.template">
+    <record id="hr_advance_overdue_reminder_mail_template" model="mail.template">
         <field name="name">Overdue Advance Reminder</field>
         <field
             name="model_id"
-            ref="hr_expense_advance_overdue_reminder.model_advance_overdue_reminder_step"
+            ref="hr_expense_advance_overdue_reminder.model_hr_advance_overdue_reminder"
         />
         <field name="auto_delete" eval="False" />
         <field name="lang">${object.partner_id.lang}</field>
@@ -15,7 +15,7 @@
         <field name="email_to">${object.partner_id.email}</field>
         <field
             name="subject"
-        >${object.company_id.name} - Overdue advance reminder n°${object.counter}</field>
+        >${object.company_id.name} - Overdue advance reminder n°${max(object.expense_sheet_ids.mapped('overdue_reminder_counter'))}</field>
         <field
             name="body_html"
         ><![CDATA[
@@ -63,7 +63,7 @@
 <p>You will find enclosed the overdue advance.</p>
 % endif
 
-% if object.counter > 2:
+% if max(object.expense_sheet_ids.mapped('overdue_reminder_counter')) > 2:
 <p>Despite several reminders, we are disappointed to see that these overdue advance are still not clearing. In order to avoid legal proceedings, we urge you to clearing these overdue advance in the next days.</p>
 % endif
 

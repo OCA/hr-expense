@@ -3,27 +3,50 @@
     <record id="wizard_advance_overdue_reminder_form" model="ir.ui.view">
         <field name="name">hr.advance.overdue.reminder.wizard.form</field>
         <field name="model">hr.advance.overdue.reminder.wizard</field>
-        <field name="mode">primary</field>
-        <field
-            name="inherit_id"
-            ref="account_invoice_overdue_reminder.overdue_reminder_start_form"
-        />
         <field name="arch" type="xml">
-            <field name="partner_ids" position="attributes">
-                <attribute name="string">Employee</attribute>
-            </field>
-            <field name="user_ids" position="attributes">
-                <attribute name="invisible">True</attribute>
-            </field>
-            <xpath expr="//group[@name='payment_ids']" position="attributes">
-                <attribute name="string">Advance up-to-date ?</attribute>
-            </xpath>
+            <form>
+                <group name="filters" string="Filters">
+                    <field name="partner_ids" widget="many2many_tags" />
+                </group>
+                <group name="options" string="Options">
+                    <group>
+                        <label for="min_interval_days" />
+                        <div name="min_interval_days">
+                            <field name="min_interval_days" class="oe_inline" /> days
+                        </div>
+                        <field name="create_activity" />
+                    </group>
+                    <group>
+                        <field name="reminder_type" readonly="1" />
+                        <field
+                            name="mail_template_id"
+                            readonly="1"
+                            attrs="{'invisible': [('reminder_type', '!=', 'mail')]}"
+                        />
+                        <field
+                            name="letter_report"
+                            readonly="1"
+                            attrs="{'invisible': [('reminder_type', '!=', 'letter')]}"
+                        />
+                    </group>
+                </group>
+                <footer>
+                    <button
+                        name="run"
+                        type="object"
+                        string="Start"
+                        class="btn-primary"
+                    />
+                    <button special="cancel" string="Cancel" class="btn-default" />
+                </footer>
+            </form>
         </field>
     </record>
     <record id="action_advance_overdue_reminder" model="ir.actions.act_window">
         <field name="name">Advance Overdue Reminder</field>
         <field name="res_model">hr.advance.overdue.reminder.wizard</field>
         <field name="view_mode">form</field>
+        <field name="context">{'active_model': 'hr.expense.sheet'}</field>
         <field name="target">new</field>
     </record>
 </odoo>

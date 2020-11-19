@@ -15,17 +15,8 @@ MOD = "hr_expense_advance_overdue_reminder"
 
 class HrAdvanceOverdueReminderWizard(models.TransientModel):
     _name = "hr.advance.overdue.reminder.wizard"
-    _inherit = "overdue.reminder.start"
+    _inherit = "overdue.reminder.wizard"
     _description = "Reminder Overdue Advance"
-
-    partner_ids = fields.Many2many(domain=[])
-
-    payment_ids = fields.Many2many(
-        comodel_name="hr.advance.overdue.start.payment",
-        relation="advance_wizard_id",
-        readonly=True,
-    )
-    interface = fields.Selection(default="mass", readonly=True)
 
     def _prepare_base_domain(self):
         base_domain = [
@@ -37,39 +28,35 @@ class HrAdvanceOverdueReminderWizard(models.TransientModel):
         ]
         return base_domain
 
-    def _prepare_remind_trigger_domain(self, base_domain):
-        today = fields.Date.context_today(self)
-        limit_date = today
-        if self.start_days:
-            limit_date -= relativedelta(days=self.start_days)
-        domain = base_domain + [("date_due", "<", limit_date)]
+    def _prepare_remind_trigger_domain(self, base_domain, date):
+        domain = base_domain + [("date_due", "<", date)]
         if self.partner_ids:
             domain.append(("address_id", "in", self.partner_ids.ids))
         return domain
 
-    def _prepare_reminder_step(
-        self, partner, base_domain, min_interval_date, sale_journals
+    def _prepare_reminder(
+        self, partner, base_domain, min_interval_date, sale_journals, date
     ):
-        moveline_object = self.env["account.move.line"]
-        expense_sheet_object = self.env["hr.expense.sheet"]
-        if partner.no_overdue_reminder:
-            logger.info(
-                "Skipping customer %s that has no_overdue_reminder=True",
-                partner.display_name,
-            )
-            return False
+        ExpenseSheet = self.env["hr.expense.sheet"]
         overdue_sheet_ids = self._context.get("overdue_sheet_ids", False)
+        # Tree and Form
         if overdue_sheet_ids:
-            expense_sheet_ids = expense_sheet_object.browse(overdue_sheet_ids)
+            expense_sheet_ids = ExpenseSheet.browse(overdue_sheet_ids)
             expense_sheet_ids = expense_sheet_ids.filtered(
                 lambda l: l.address_id.id == partner.id
+                and not l.no_overdue_reminder
+                and (
+                    not l.overdue_reminder_last_date
+                    or l.overdue_reminder_last_date <= min_interval_date
+                )
             )
+        # Filter Direct
         else:
-            expense_sheet_ids = expense_sheet_object.search(
+            expense_sheet_ids = ExpenseSheet.search(
                 base_domain
                 + [
                     ("address_id", "=", partner.id),
-                    ("date_due", "<", fields.Date.context_today(self)),
+                    ("date_due", "<", date),
                     # Check min interval
                     "|",
                     ("overdue_reminder_last_date", "=", False),
@@ -78,90 +65,61 @@ class HrAdvanceOverdueReminderWizard(models.TransientModel):
             )
         if not expense_sheet_ids:
             return False
-        max_counter = max([exp.overdue_reminder_counter for exp in expense_sheet_ids])
-        warn_unrec = moveline_object.search(
-            [
-                (
-                    "account_id",
-                    "=",
-                    partner.commercial_partner_id.property_account_receivable_id.id,
-                ),
-                ("expense_id", "!=", False),
-                ("partner_id", "=", partner.commercial_partner_id.id),
-                ("full_reconcile_id", "=", False),
-                ("matched_debit_ids", "=", False),
-                ("matched_credit_ids", "=", False),
-                ("journal_id", "in", sale_journals.ids),
-            ]
-        )
+        next_scheduled = date + relativedelta(days=self.min_interval_days)
         vals = {
             "partner_id": expense_sheet_ids[0].address_id.id,
             "commercial_partner_id": partner.id,
             "user_id": self.env.user.id,
             "expense_sheet_ids": [(6, 0, expense_sheet_ids.ids)],
             "company_id": self.company_id.id,
-            "warn_unreconciled_move_line_ids": [(6, 0, warn_unrec.ids)],
-            "counter": max_counter + 1,
-            "interface": self.interface,
+            "reminder_type": self.reminder_type,
+            "mail_template_id": self.mail_template_id.id,
+            "attachment_letter": self.attachment_letter,
+            "letter_report": self.letter_report.id,
+            "create_activity": self.create_activity,
+            "activity_scheduled_date": self.create_activity and next_scheduled or False,
+            "activity_summary": self.create_activity and self.activity_summary,
+            "activity_note": self.create_activity and self.activity_note,
         }
         return vals
 
     def run(self):
         self.ensure_one()
-        if not self.up_to_date:
-            raise UserError(
-                _(
-                    "In order to start overdue reminders, you must make sure that "
-                    "customer payments are up-to-date."
-                )
-            )
-        if self.start_days < 0:
-            raise UserError(_("The trigger delay cannot be negative."))
         if self.min_interval_days < 1:
             raise UserError(
-                _("The minimum delay since last reminder " "must be strictly positive.")
+                _("The minimum delay since last reminder must be strictly positive.")
             )
-        journal_object = self.env["account.journal"]
-        partner_object = self.env["res.partner"]
-        expense_sheet_object = self.env["hr.expense.sheet"]
-        aors_object = self.env["advance.overdue.reminder.step"]
+        Journal = self.env["account.journal"]
+        Partner = self.env["res.partner"]
+        ExpenseSheet = self.env["hr.expense.sheet"]
+        AdvanceOverdue = self.env["hr.advance.overdue.reminder"]
         user_id = self.env.user.id
-        existing_actions = aors_object.search(
+        existing_actions = AdvanceOverdue.search(
             [("user_id", "=", user_id), ("state", "=", "draft")]
         )
         existing_actions.unlink()
-        purchase_journals = journal_object.search(
+        purchase_journals = Journal.search(
             [("company_id", "=", self.company_id.id), ("type", "=", "purchase")]
         )
-        today = fields.Date.context_today(self)
+        today = self._context.get("date", False) or fields.Date.context_today(self)
         min_interval_date = today - relativedelta(days=self.min_interval_days)
         base_domain = self._prepare_base_domain()
-        domain = self._prepare_remind_trigger_domain(base_domain)
-        rg_res = expense_sheet_object.read_group(domain, ["address_id"], ["address_id"])
+        domain = self._prepare_remind_trigger_domain(base_domain, today)
+        rg_res = ExpenseSheet.read_group(domain, ["address_id"], ["address_id"])
         action_ids = []
         for rg_re in rg_res:
             if rg_re["address_id"]:
                 partner_id = rg_re["address_id"][0]
-            partner = partner_object.browse(partner_id)
-            vals = self._prepare_reminder_step(
-                partner, base_domain, min_interval_date, purchase_journals
+            partner = Partner.browse(partner_id)
+            vals = self._prepare_reminder(
+                partner, base_domain, min_interval_date, purchase_journals, today
             )
             if vals:
-                action = aors_object.create(vals)
+                action = AdvanceOverdue.create(vals)
                 action_ids.append(action.id)
         if not action_ids:
             raise UserError(_("There are no overdue reminders."))
-        xid = MOD + ".action_overdue_step_mass"
+        xid = MOD + ".action_hr_advance_overdue_reminder"
         action = self.env.ref(xid).read()[0]
         action["domain"] = [("id", "in", action_ids)]
         return action
-
-
-class HrAdvanceOverdueStartPayment(models.TransientModel):
-    _name = "hr.advance.overdue.start.payment"
-    _inherit = "overdue.reminder.start.payment"
-    _description = "Status of payments"
-
-    advance_wizard_id = fields.Many2one(
-        comodel_name="hr.advance.overdue.reminder.wizard", ondelete="cascade"
-    )

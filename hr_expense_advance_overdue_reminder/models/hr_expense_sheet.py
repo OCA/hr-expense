@@ -16,23 +16,23 @@ class HrExpenseSheet(models.Model):
     _inherit = "hr.expense.sheet"
 
     no_overdue_reminder = fields.Boolean(
-        string="Disable Overdue Reminder", track_visibility="onchange"
+        string="Disable Reminder", default=False, track_visibility="onchange"
     )
-    overdue_reminder_ids = fields.One2many(
-        comodel_name="hr.expense.sheet.overdue.reminder",
-        inverse_name="expense_sheet_id",
+    overdue_reminder_ids = fields.Many2many(
+        comodel_name="hr.advance.overdue.reminder",
+        relation="expense_sheet_overdue_reminder_rel",
+        column1="expense_sheet_id",
+        column2="overdue_reminder_id",
         string="Overdue Reminder Action History",
     )
     overdue_reminder_last_date = fields.Date(
-        compute="_compute_overdue_reminder",
-        string="Last Overdue Reminder Date",
-        store=True,
+        compute="_compute_overdue_reminder", string="Last Reminder Date", store=True,
     )
     overdue_reminder_counter = fields.Integer(
-        string="Overdue Reminder Count",
+        string="Reminder Count",
         store=True,
         compute="_compute_overdue_reminder",
-        help="This counter is not increased in case of phone reminder.",
+        help="This counter is increased when reminder.",
     )
     overdue = fields.Boolean(compute="_compute_overdue")
     date_due = fields.Date(string="Due Date", readonly=True)
@@ -47,8 +47,9 @@ class HrExpenseSheet(models.Model):
 
     @api.depends("state", "date_due")
     def _compute_overdue(self):
-        today = fields.Date.context_today(self)
+        today = self._context.get("date", False) or fields.Date.context_today(self)
         for exp in self:
+            exp.overdue = False
             if (
                 exp.advance
                 and exp.state == "done"
@@ -58,44 +59,42 @@ class HrExpenseSheet(models.Model):
                 exp.overdue = True
 
     @api.depends(
-        "overdue_reminder_ids.action_id.date",
-        "overdue_reminder_ids.counter",
-        "overdue_reminder_ids.action_id.reminder_type",
+        "overdue_reminder_ids.date", "overdue_reminder_ids.reminder_type",
     )
     def _compute_overdue_reminder(self):
-        advance_overdue_object = self.env["hr.expense.sheet.overdue.reminder"]
         for exp in self:
-            reminder = advance_overdue_object.search(
-                [("expense_sheet_id", "=", exp.id)], order="action_date desc", limit=1
-            )
-            date = reminder and reminder.action_date or False
-            counter_reminder = advance_overdue_object.search(
-                [
-                    ("expense_sheet_id", "=", exp.id),
-                    ("action_reminder_type", "in", ("mail", "post")),
-                ],
-                order="action_date desc, id desc",
-                limit=1,
-            )
-            counter = counter_reminder and counter_reminder.counter or False
+            reminder = exp.overdue_reminder_ids
+            date = reminder and reminder[0].date or False
+            counter = reminder and len(reminder) or False
             exp.overdue_reminder_last_date = date
             exp.overdue_reminder_counter = counter
 
-    @api.multi
     def action_sheet_move_create(self):
-        res = super(HrExpenseSheet, self).action_sheet_move_create()
-        company = self.env.user.company_id
+        res = super().action_sheet_move_create()
+        reminder = self.env["reminder.definition"].search(
+            [("model_id", "=", "hr.expense.sheet")]
+        )
         for sheet in self:
             if res and sheet.advance:
+                if not reminder:
+                    raise UserError(
+                        _(
+                            "Please configured reminder definition before "
+                            "Post Journal Entries"
+                        )
+                    )
                 move_date = res[sheet.id].date
                 sheet.date_due = move_date + relativedelta(
-                    days=company.terms_date_due_days
+                    days=reminder.terms_date_due_days or 0.0
                 )
         return res
 
-    @api.multi
+    def get_payment_mode(self, payment_mode):
+        self.ensure_one()
+        return payment_mode_list[payment_mode]
+
     def action_overdue_reminder(self):
-        today = fields.Date.today()
+        today = self._context.get("date", False) or fields.Date.context_today(self)
         expense_not_overdue = self.filtered(
             lambda exp: not (
                 exp.residual
@@ -114,12 +113,8 @@ class HrExpenseSheet(models.Model):
             "res_model": "hr.advance.overdue.reminder.wizard",
             "target": "new",
             "context": {
+                "active_model": self._context.get("active_model", False),
                 "default_partner_ids": partner_ids,
                 "overdue_sheet_ids": self._context.get("active_ids", False),
             },
         }
-
-    @api.multi
-    def get_payment_mode(self, payment_mode):
-        self.ensure_one()
-        return payment_mode_list[payment_mode]
