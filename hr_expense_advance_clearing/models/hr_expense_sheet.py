@@ -16,7 +16,7 @@ class HrExpenseSheet(models.Model):
         comodel_name="hr.expense.sheet",
         string="Clear Advance",
         domain="[('advance', '=', True), ('employee_id', '=', employee_id),"
-        " ('residual', '>', 0.0)]",
+        " ('clearing_residual', '>', 0.0)]",
         readonly=True,
         states={
             "draft": [("readonly", False)],
@@ -25,15 +25,15 @@ class HrExpenseSheet(models.Model):
         },
         help="Show remaining advance of this employee",
     )
-    residual = fields.Monetary(
+    clearing_residual = fields.Monetary(
         string="Amount to clear",
-        compute="_compute_residual",
+        compute="_compute_clearing_residual",
         store=True,
         help="Amount to clear of this expense sheet in company currency",
     )
     advance_sheet_residual = fields.Monetary(
         string="Advance Remaining",
-        related="advance_sheet_id.residual",
+        related="advance_sheet_id.clearing_residual",
         store=True,
         help="Remaining amount to clear the selected advance sheet",
     )
@@ -63,7 +63,7 @@ class HrExpenseSheet(models.Model):
             raise ValidationError(_("Advance must contain only 1 advance expense line"))
 
     @api.depends("account_move_id.line_ids.amount_residual")
-    def _compute_residual(self):
+    def _compute_clearing_residual(self):
         emp_advance = self.env.ref(
             "hr_expense_advance_clearing.product_emp_advance", False
         )
@@ -73,7 +73,7 @@ class HrExpenseSheet(models.Model):
                 for line in sheet.sudo().account_move_id.line_ids:
                     if line.account_id == emp_advance.property_account_expense_id:
                         residual_company += line.amount_residual
-            sheet.residual = residual_company
+            sheet.clearing_residual = residual_company
 
     def _compute_amount_payable(self):
         for sheet in self:
