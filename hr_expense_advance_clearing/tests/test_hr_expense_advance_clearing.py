@@ -160,7 +160,7 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         self.advance.action_submit_sheet()
         self.advance.approve_expense_sheets()
         self.advance.action_sheet_move_create()
-        self.assertEqual(self.advance.residual, 1000.0)
+        self.assertEqual(self.advance.clearing_residual, 1000.0)
         self._register_payment(self.advance)
         self.assertEqual(self.advance.state, "done")
         # ------------------ Clearing --------------------------
@@ -183,7 +183,7 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         self.advance.action_submit_sheet()
         self.advance.approve_expense_sheets()
         self.advance.action_sheet_move_create()
-        self.assertEqual(self.advance.residual, 1000.0)
+        self.assertEqual(self.advance.clearing_residual, 1000.0)
         self._register_payment(self.advance)
         self.assertEqual(self.advance.state, "done")
         # ------------------ Clearing --------------------------
@@ -205,7 +205,7 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         self.advance.action_submit_sheet()
         self.advance.approve_expense_sheets()
         self.advance.action_sheet_move_create()
-        self.assertEqual(self.advance.residual, 1000.0)
+        self.assertEqual(self.advance.clearing_residual, 1000.0)
         self._register_payment(self.advance)
         self.assertEqual(self.advance.state, "done")
         # ------------------ Clearing --------------------------
@@ -218,6 +218,6 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         # Less amount, state set to done. Still remain 200 to be returned
         self.assertEqual(self.clearing_less.state, "done")
         self.assertEqual(self.clearing_less.advance_sheet_residual, 200.0)
-        # Back to advance and do return advance, residual become 0.0
+        # Back to advance and do return advance, clearing residual become 0.0
         self._register_payment(self.advance, hr_return_advance=True)
-        self.assertEqual(self.advance.residual, 0.0)
+        self.assertEqual(self.advance.clearing_residual, 0.0)
