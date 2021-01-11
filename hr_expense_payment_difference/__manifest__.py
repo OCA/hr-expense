@@ -3,7 +3,7 @@
 
 {
     "name": "Payment Difference on HR expenses",
-    "version": "13.0.1.0.0",
+    "version": "13.0.1.1.0",
     "category": "Human Resources",
     "author": "Ecosoft, Odoo Community Association (OCA)",
     "license": "AGPL-3",
