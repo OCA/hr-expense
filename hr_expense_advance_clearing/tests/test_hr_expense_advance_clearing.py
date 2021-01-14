@@ -64,6 +64,10 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         cls.clearing_less = cls._create_expense_sheet(
             cls, "Buy service 800", cls.employee, cls.product, 800.0
         )
+        # Create clearing expense sheet
+        cls.clearing_sheet = cls._create_expense_sheet(
+            cls, "Buy service 1,000", cls.employee, cls.product, 1000.0, clearing=True
+        )
 
     def _create_expense(
         self,
@@ -72,10 +76,12 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         product,
         amount,
         advance=False,
+        clearing=False,
         payment_mode="own_account",
     ):
         with Form(self.env["hr.expense"]) as expense:
             expense.advance = advance
+            expense.clearing = clearing
             expense.name = description
             expense.employee_id = employee
             expense.product_id = product
@@ -86,10 +92,10 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         return expense
 
     def _create_expense_sheet(
-        self, description, employee, product, amount, advance=False
+        self, description, employee, product, amount, advance=False, clearing=False
     ):
         expense = self._create_expense(
-            self, description, employee, product, amount, advance
+            self, description, employee, product, amount, advance, clearing
         )
         # Add expense to expense sheet
         expense_sheet = self.env["hr.expense.sheet"].create(
@@ -170,6 +176,7 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         self.assertEqual(ctx["default_advance_sheet_id"], self.advance.id)
         self.clearing_equal.advance_sheet_id = self.advance
         self.assertEqual(self.clearing_equal.advance_sheet_residual, 1000.0)
+        self.assertTrue(self.clearing_equal.clearing)
         self.clearing_equal.action_submit_sheet()
         self.clearing_equal.approve_expense_sheets()
         self.clearing_equal.action_sheet_move_create()
@@ -190,6 +197,7 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         # Clear this with previous advance
         self.clearing_more.advance_sheet_id = self.advance
         self.assertEqual(self.clearing_more.advance_sheet_residual, 1000.0)
+        self.assertTrue(self.clearing_more.clearing)
         self.clearing_more.action_submit_sheet()
         self.clearing_more.approve_expense_sheets()
         self.clearing_more.action_sheet_move_create()
@@ -212,6 +220,7 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         # Clear this with previous advance
         self.clearing_less.advance_sheet_id = self.advance
         self.assertEqual(self.clearing_less.advance_sheet_residual, 1000.0)
+        self.assertTrue(self.clearing_less.clearing)
         self.clearing_less.action_submit_sheet()
         self.clearing_less.approve_expense_sheets()
         self.clearing_less.action_sheet_move_create()
@@ -221,3 +230,53 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         # Back to advance and do return advance, clearing residual become 0.0
         self._register_payment(self.advance, hr_return_advance=True)
         self.assertEqual(self.advance.clearing_residual, 0.0)
+
+    def test_4_check_clearing_expense(self):
+        """ Normal Case, check clearing on expense for clearing advance """
+        # ------------------ Advance --------------------------
+        self.advance.action_submit_sheet()
+        self.advance.approve_expense_sheets()
+        self.advance.action_sheet_move_create()
+        self.assertEqual(self.advance.clearing_residual, 1000.0)
+        self._register_payment(self.advance)
+        self.assertEqual(self.advance.state, "done")
+        # ------------------ Clearing --------------------------
+        # Clear this with previous advance
+        vals = self.advance.open_clear_advance()  # Test Clear Advance button
+        ctx = vals.get("context")
+        self.assertEqual(ctx["default_advance_sheet_id"], self.advance.id)
+        self.clearing_sheet.advance_sheet_id = self.advance
+        self.assertEqual(self.clearing_sheet.advance_sheet_residual, 1000.0)
+        self.assertTrue(self.clearing_sheet.clearing)
+        self.clearing_sheet.action_submit_sheet()
+        self.clearing_sheet.approve_expense_sheets()
+        self.clearing_sheet.action_sheet_move_create()
+        # Equal amount, state change to Paid and advance is cleared
+        self.assertEqual(self.clearing_sheet.state, "done")
+        self.assertEqual(self.clearing_sheet.advance_sheet_residual, 0.0)
+
+    def test_5_notcheck_clearing_expense(self):
+        """ User not check clearing on expense but it's clearing advance """
+        # ------------------ Advance --------------------------
+        self.advance.action_submit_sheet()
+        self.advance.approve_expense_sheets()
+        self.advance.action_sheet_move_create()
+        self.assertEqual(self.advance.clearing_residual, 1000.0)
+        self._register_payment(self.advance)
+        self.assertEqual(self.advance.state, "done")
+        # ------------------ Clearing --------------------------
+        expense = self._create_expense(
+            "Buy service 1,000", self.employee, self.product, 1000.0
+        )
+        self.assertFalse(expense.clearing)
+        res = expense.action_submit_expenses()
+        sheet_id = self.env[res.get("res_model")].browse(res.get("res_id"))
+        self.assertFalse(sheet_id.advance_sheet_id)
+        sheet_id.advance_sheet_id = self.advance
+        sheet_id.action_submit_sheet()
+        self.assertTrue(expense.clearing)
+        sheet_id.approve_expense_sheets()
+        sheet_id.action_sheet_move_create()
+        # Equal amount, state change to Paid and advance is cleared
+        self.assertEqual(sheet_id.state, "done")
+        self.assertEqual(sheet_id.advance_sheet_residual, 0.0)

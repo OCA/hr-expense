@@ -47,8 +47,14 @@
         <field name="inherit_id" ref="hr_expense.hr_expense_view_form" />
         <field name="arch" type="xml">
             <h1 position="after">
-                <field name="advance" />
-                <label for="advance" />
+                <div attrs="{'invisible': [('clearing', '=', True)]}">
+                    <field name="advance" />
+                    <label for="advance" />
+                </div>
+                <div attrs="{'invisible': [('advance', '=', True)]}">
+                    <field name="clearing" />
+                    <label for="clearing" />
+                </div>
             </h1>
             <field name="analytic_account_id" position="attributes">
                 <attribute
@@ -91,12 +97,20 @@
                     attrs="{'invisible': [('advance', '=', False)]}"
                 />
                 <label for="advance" attrs="{'invisible': [('advance', '=', False)]}" />
+                <field
+                    name="clearing"
+                    attrs="{'invisible': [('clearing', '=', False)]}"
+                />
+                <label
+                    for="clearing"
+                    attrs="{'invisible': [('clearing', '=', False)]}"
+                />
             </h1>
             <xpath expr="/form/sheet/group/group" position="after">
                 <group>
                     <field
                         name="advance_sheet_id"
-                        attrs="{'invisible': [('advance', '=', True)]}"
+                        attrs="{'invisible': [('advance', '=', True)], 'required': [('clearing', '=', True)]}"
                     />
                     <field
                         name="clearing_residual"

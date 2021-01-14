@@ -12,6 +12,9 @@ class HrExpenseSheet(models.Model):
     advance = fields.Boolean(
         string="Employee Advance", compute="_compute_advance", store=True
     )
+    clearing = fields.Boolean(
+        string="Clearing", compute="_compute_clearing", store=True
+    )
     advance_sheet_id = fields.Many2one(
         comodel_name="hr.expense.sheet",
         string="Clear Advance",
@@ -51,6 +54,19 @@ class HrExpenseSheet(models.Model):
                 and len(sheet.expense_line_ids) == 1
             )
         return
+
+    @api.depends("expense_line_ids", "expense_line_ids.clearing", "advance_sheet_id")
+    def _compute_clearing(self):
+        for sheet in self:
+            advance_expense = sheet.expense_line_ids.filtered("advance")
+            clearing_expense = sheet.expense_line_ids.filtered(lambda l: l.clearing)
+            if not advance_expense and (clearing_expense or sheet.advance_sheet_id):
+                val_dict = {"clearing": True}
+                expense_ids = sheet.expense_line_ids.filtered(
+                    lambda l: not l.advance and not l.clearing
+                )
+                expense_ids.write(val_dict)
+                sheet.write(val_dict)
 
     @api.constrains("advance_sheet_id", "expense_line_ids")
     def _check_advance_expense(self):
@@ -112,3 +128,9 @@ class HrExpenseSheet(models.Model):
         context1["default_advance_sheet_id"] = self.id
         vals["context"] = context1
         return vals
+
+    def action_submit_sheet(self):
+        """ Update clearing state submit, if user not check clearing on expense """
+        res = super().action_submit_sheet()
+        self._compute_clearing()
+        return res

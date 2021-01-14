@@ -9,6 +9,7 @@ class HrExpense(models.Model):
     _inherit = "hr.expense"
 
     advance = fields.Boolean(string="Employee Advance", default=False)
+    clearing = fields.Boolean(default=False)
 
     @api.constrains("advance")
     def _check_advance(self):
