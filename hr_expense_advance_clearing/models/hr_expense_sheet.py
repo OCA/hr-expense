@@ -3,6 +3,7 @@
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools import float_compare
 from odoo.tools.safe_eval import safe_eval
 
 
@@ -83,10 +84,15 @@ class HrExpenseSheet(models.Model):
             sheet.amount_payable = -sum(rec_lines.mapped("amount_residual"))
 
     def action_sheet_move_create(self):
-        res = super(HrExpenseSheet, self).action_sheet_move_create()
+        res = super().action_sheet_move_create()
         # Reconcile advance of this sheet with the advance_sheet
         emp_advance = self.env.ref("hr_expense_advance_clearing.product_emp_advance")
         for sheet in self:
+            advance_residual = float_compare(
+                sheet.advance_sheet_residual,
+                sheet.total_amount,
+                precision_rounding=sheet.currency_id.rounding,
+            )
             move_lines = (
                 sheet.account_move_id.line_ids
                 | sheet.advance_sheet_id.account_move_id.line_ids
@@ -98,12 +104,15 @@ class HrExpenseSheet(models.Model):
                 .search([("id", "in", move_lines.ids), ("account_id", "=", account_id)])
             )
             adv_move_lines.reconcile()
+            # Update state on clearing advance when advance residual > total amount
+            if sheet.advance_sheet_id and advance_residual != -1:
+                sheet.write({"state": "done"})
         return res
 
     def open_clear_advance(self):
         self.ensure_one()
         action = self.env.ref(
-            "hr_expense_advance_clearing." "action_hr_expense_sheet_advance_clearing"
+            "hr_expense_advance_clearing.action_hr_expense_sheet_advance_clearing"
         )
         vals = action.read()[0]
         context1 = vals.get("context", {})
