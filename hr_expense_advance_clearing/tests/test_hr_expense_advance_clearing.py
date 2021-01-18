@@ -9,7 +9,7 @@ from odoo.tests.common import Form
 class TestHrExpenseAdvanceClearing(common.SavepointCase):
     @classmethod
     def setUpClass(cls):
-        super(TestHrExpenseAdvanceClearing, cls).setUpClass()
+        super().setUpClass()
         company = cls.env.ref("base.main_company")
         cls.journal_bank = cls.env["account.journal"].search(
             [("type", "=", "bank")], limit=1
@@ -101,18 +101,18 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         )
         return expense_sheet
 
-    def _register_payment(self, expense_sheet, hr_return_advance=False):
+    def _register_payment(self, move_id, hr_return_advance=False):
         ctx = {
-            "active_ids": [expense_sheet.id],
-            "active_id": expense_sheet.id,
+            "active_ids": [move_id.id],
+            "active_id": move_id.id,
             "hr_return_advance": hr_return_advance,
-            "active_model": "hr.expense.sheet",
+            "active_model": "account.move",
         }
-        PaymentWizard = self.env["hr.expense.sheet.register.payment.wizard"]
+        PaymentWizard = self.env["account.payment.register"]
         with Form(PaymentWizard.with_context(ctx)) as f:
             f.journal_id = self.journal_bank
         payment_wizard = f.save()
-        payment_wizard.expense_post_payment()
+        payment_wizard.action_create_payments()
 
     def test_0_test_constraints(self):
         """ Test some constraints """
@@ -161,7 +161,7 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         self.advance.approve_expense_sheets()
         self.advance.action_sheet_move_create()
         self.assertEqual(self.advance.clearing_residual, 1000.0)
-        self._register_payment(self.advance)
+        self._register_payment(self.advance.account_move_id)
         self.assertEqual(self.advance.state, "done")
         # ------------------ Clearing --------------------------
         # Clear this with previous advance
@@ -176,6 +176,12 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         # Equal amount, state change to Paid and advance is cleared
         self.assertEqual(self.clearing_equal.state, "done")
         self.assertEqual(self.clearing_equal.advance_sheet_residual, 0.0)
+        # Clear this with previous advance is done
+        self.clearing_more.advance_sheet_id = self.advance
+        self.clearing_more.action_submit_sheet()
+        self.clearing_more.approve_expense_sheets()
+        with self.assertRaises(ValidationError):
+            self.clearing_more.action_sheet_move_create()
 
     def test_2_clear_more_than_advance(self):
         """ When clear more than advance, do pay more """
@@ -184,7 +190,7 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         self.advance.approve_expense_sheets()
         self.advance.action_sheet_move_create()
         self.assertEqual(self.advance.clearing_residual, 1000.0)
-        self._register_payment(self.advance)
+        self._register_payment(self.advance.account_move_id)
         self.assertEqual(self.advance.state, "done")
         # ------------------ Clearing --------------------------
         # Clear this with previous advance
@@ -196,7 +202,7 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         # More amount, state not changed to paid, and has to pay 200 more
         self.assertEqual(self.clearing_more.state, "post")
         self.assertEqual(self.clearing_more.amount_payable, 200.0)
-        self._register_payment(self.clearing_more)
+        self._register_payment(self.clearing_more.account_move_id)
         self.assertEqual(self.clearing_more.state, "done")
 
     def test_3_clear_less_than_advance(self):
@@ -206,7 +212,7 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         self.advance.approve_expense_sheets()
         self.advance.action_sheet_move_create()
         self.assertEqual(self.advance.clearing_residual, 1000.0)
-        self._register_payment(self.advance)
+        self._register_payment(self.advance.account_move_id)
         self.assertEqual(self.advance.state, "done")
         # ------------------ Clearing --------------------------
         # Clear this with previous advance
@@ -219,5 +225,5 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         self.assertEqual(self.clearing_less.state, "done")
         self.assertEqual(self.clearing_less.advance_sheet_residual, 200.0)
         # Back to advance and do return advance, clearing residual become 0.0
-        self._register_payment(self.advance, hr_return_advance=True)
+        self._register_payment(self.advance.account_move_id, hr_return_advance=True)
         self.assertEqual(self.advance.clearing_residual, 0.0)
