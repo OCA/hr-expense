@@ -1,21 +1,21 @@
 **Create an Employee Advance**
 
-#. Go to Expenses > My Expenses
+#. Go to Expenses > My Expenses > My Expenses to Report
 #. Create a new Expense as normal, but also check "Employee Advance" checkbox
 #. Product = Employee Advance will be set automatically, do not change.
 #. Set the unit price to advance amount
 #. Click Create Report as normal. Please note that, this expense report will also has flag "Employee Advance" checked.
-#. As normal, do Submit to Manager > Approve > Post Journal Entries > Register Payment.
+#. As normal, do Approve > Post Journal Entries > Register Payment.
 #. As this is Advance, you will see new field "Amount to clear".
 
 **Clear Advance**
 
-#. Go to Expenses > My Expense Report.
+#. Go to Expenses > My Reports.
 #. Search for the Advance you want to clear, or use filter "Advance (not cleared)" to see all uncleared advance.
 #. Open an Advance which is now in paid status with some Amount to be cleared.
 #. Click button "Clear Advance", system will create new Expense Report with reference to the previous step Advance.
 #. Add or create Expense line(s) as normal.
-#. As normal, do Submit to Manager > Approve > Post Journal Entries
+#. As normal, do Approve > Post Journal Entries
 
 Note:
 
@@ -24,9 +24,9 @@ Note:
 
 **Return Advance**
 
-#. Go to Expenses > My Expense Report.
+#. Go to Expenses > My Reports.
 #. Search for the Advance you want to clear, or use filter "Advance (not cleared)" to see all uncleared advance.
 #. Open an Advance which is now in paid status with some Amount to be cleared.
 #. Click button "Return Advance" will open Register Payment wizard with Amount to clear.
-#. Click button "Validate" to return that amount back
+#. Click button "Create Payment" to return that amount back
 #. All returned, Amount to clear is now equal to 0.0
