@@ -14,13 +14,13 @@ Employee Advance and Clearing
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fhr--expense-lightgray.png?logo=github
-    :target: https://github.com/OCA/hr-expense/tree/13.0/hr_expense_advance_clearing
+    :target: https://github.com/OCA/hr-expense/tree/14.0/hr_expense_advance_clearing
     :alt: OCA/hr-expense
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/hr-expense-13-0/hr-expense-13-0-hr_expense_advance_clearing
+    :target: https://translation.odoo-community.org/projects/hr-expense-14-0/hr-expense-14-0-hr_expense_advance_clearing
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runbot-Try%20me-875A7B.png
-    :target: https://runbot.odoo-community.org/runbot/289/13.0
+    :target: https://runbot.odoo-community.org/runbot/289/14.0
     :alt: Try me on Runbot
 
 |badge1| |badge2| |badge3| |badge4| |badge5| 
@@ -42,11 +42,6 @@ There can be 3 scenarios for advance and clearing
 .. contents::
    :local:
 
-Installation
-============
-
-* No specific installation required
-
 Configuration
 =============
 
@@ -66,22 +61,22 @@ Usage
 
 **Create an Employee Advance**
 
-#. Go to Expenses > My Expenses
+#. Go to Expenses > My Expenses > My Expenses to Report
 #. Create a new Expense as normal, but also check "Employee Advance" checkbox
 #. Product = Employee Advance will be set automatically, do not change.
 #. Set the unit price to advance amount
 #. Click Create Report as normal. Please note that, this expense report will also has flag "Employee Advance" checked.
-#. As normal, do Submit to Manager > Approve > Post Journal Entries > Register Payment.
+#. As normal, do Approve > Post Journal Entries > Register Payment.
 #. As this is Advance, you will see new field "Amount to clear".
 
 **Clear Advance**
 
-#. Go to Expenses > My Expense Report.
+#. Go to Expenses > My Reports.
 #. Search for the Advance you want to clear, or use filter "Advance (not cleared)" to see all uncleared advance.
 #. Open an Advance which is now in paid status with some Amount to be cleared.
 #. Click button "Clear Advance", system will create new Expense Report with reference to the previous step Advance.
 #. Add or create Expense line(s) as normal.
-#. As normal, do Submit to Manager > Approve > Post Journal Entries
+#. As normal, do Approve > Post Journal Entries
 
 Note:
 
@@ -90,11 +85,11 @@ Note:
 
 **Return Advance**
 
-#. Go to Expenses > My Expense Report.
+#. Go to Expenses > My Reports.
 #. Search for the Advance you want to clear, or use filter "Advance (not cleared)" to see all uncleared advance.
 #. Open an Advance which is now in paid status with some Amount to be cleared.
 #. Click button "Return Advance" will open Register Payment wizard with Amount to clear.
-#. Click button "Validate" to return that amount back
+#. Click button "Create Payment" to return that amount back
 #. All returned, Amount to clear is now equal to 0.0
 
 Bug Tracker
@@ -103,7 +98,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/hr-expense/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us smashing it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/hr-expense/issues/new?body=module:%20hr_expense_advance_clearing%0Aversion:%2013.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/hr-expense/issues/new?body=module:%20hr_expense_advance_clearing%0Aversion:%2014.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -120,6 +115,7 @@ Contributors
 
 * Kitti Upariphutthiphong <kittiu@ecosoft.co.th>
 * Tharathip Chaweewongphan <tharathipc@ecosoft.co.th>
+* Saran Lim. <saranl@ecosoft.co.th>
 
 Maintainers
 ~~~~~~~~~~~
@@ -142,6 +138,6 @@ Current `maintainer <https://odoo-community.org/page/maintainer-role>`__:
 
 |maintainer-kittiu| 
 
-This module is part of the `OCA/hr-expense <https://github.com/OCA/hr-expense/tree/13.0/hr_expense_advance_clearing>`_ project on GitHub.
+This module is part of the `OCA/hr-expense <https://github.com/OCA/hr-expense/tree/14.0/hr_expense_advance_clearing>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.
