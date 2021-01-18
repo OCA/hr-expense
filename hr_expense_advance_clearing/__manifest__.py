@@ -3,9 +3,9 @@
 
 {
     "name": "Employee Advance and Clearing",
-    "version": "13.0.1.2.0",
+    "version": "14.0.1.0.0",
     "category": "Human Resources",
-    "author": "Ecosoft,Odoo Community Association (OCA)",
+    "author": "Ecosoft, Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "website": "https://github.com/OCA/hr-expense",
     "depends": ["hr_expense"],
