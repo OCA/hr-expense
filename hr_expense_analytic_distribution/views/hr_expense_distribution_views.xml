@@ -1,0 +1,14 @@
+<odoo>
+    <record id="hr_expense_analytic_distribution_view_form" model="ir.ui.view">
+        <field name="name">hr.expense.analytic.distribution.view.form</field>
+        <field name="model">hr.expense.analytic.distribution</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="analytic_account_id" />
+                    <field name="percentage" />
+                </group>
+            </form>
+        </field>
+    </record>
+</odoo>
