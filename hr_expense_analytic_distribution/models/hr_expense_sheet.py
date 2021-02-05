@@ -11,14 +11,10 @@ class HrExpenseSheetInherit(models.Model):
     expense_distribution_ids = fields.One2many(
         "hr.expense.analytic.distribution", "expense_id", string="Distribution Lines"
     )
-    count_percent = fields.Float(compute="_compute_count_percent")
 
-    @api.depends("expense_distribution_ids.percentage")
-    def _compute_count_percent(self):
-        percent = 0.0
-        for rec in self:
-            for line in rec.expense_distribution_ids:
-                percent += line.percentage
-                if percent > 100:
-                    raise UserError(_("Sorry, Percentage should be equal to 100."))
-            rec.count_percent = 100 - percent
+    @api.constrains("expense_distribution_ids")
+    def _constrains_distribution_ids_percentage(self):
+        for report in self:
+            total_percent = sum(report.expense_distribution_ids.mapped("percentage"))
+            if total_percent != 100:
+                raise UserError(_("Sorry, Percentage should be equal to 100."))
