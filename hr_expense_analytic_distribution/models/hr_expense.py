@@ -12,6 +12,8 @@ class HrExpense(models.Model):
         move_line_values_by_expense = {}
         for expense in self:
             move_line_values = []
+            if not expense.sheet_id.expense_distribution_ids:
+                return super(HrExpense, self)._get_account_move_line_values()
             for dis in expense.sheet_id.expense_distribution_ids:
                 move_line_name = (
                     expense.employee_id.name + ": " + expense.name.split("\n")[0][:64]
