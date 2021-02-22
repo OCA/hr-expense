@@ -11,5 +11,5 @@ def migrate(env, version):
         sql.SQL(
             "UPDATE hr_expense he SET invoice_id = am.id "
             "FROM account_move am WHERE am.old_invoice_id = he.{}"
-        ).format(openupgrade.get_legacy_name("invoice_id")),
+        ).format(sql.Identifier(openupgrade.get_legacy_name("invoice_id"))),
     )
