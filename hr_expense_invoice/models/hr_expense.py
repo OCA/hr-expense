@@ -28,6 +28,7 @@ class HrExpense(models.Model):
                 raise UserError(_("Vendor bill state must be Posted"))
 
     def _get_account_move_line_values(self):
+        """It overrides the journal item values to match the invoice payable one."""
         move_line_values_by_expense = super()._get_account_move_line_values()
         for expense_id, move_lines in move_line_values_by_expense.items():
             expense = self.browse(expense_id)
