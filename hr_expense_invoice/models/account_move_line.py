@@ -8,8 +8,8 @@ class AccountMoveLine(models.Model):
 
     def reconcile(self, writeoff_acc_id=False, writeoff_journal_id=False):
         if self._context.get("use_hr_expense_invoice"):
-            self = self.filtered(lambda l: not l.reconciled)
-        res = super().reconcile(
+            obj = self.filtered(lambda l: not l.reconciled)
+        obj = self
+        return super(AccountMoveLine, obj).reconcile(
             writeoff_acc_id=writeoff_acc_id, writeoff_journal_id=writeoff_journal_id
         )
-        return res
