@@ -34,7 +34,7 @@ class TestHrExpensePettyCash(TransactionCase):
             }
         )
         self.petty_cash_journal_id = self.env["account.journal"].create(
-            {"code": "PC", "name": "Petty Cash", "type": "general"}
+            {"code": "PC", "name": "Petty Cash", "type": "purchase"}
         )
 
         # Create a Petty Cash Account
