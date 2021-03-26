@@ -1,4 +1,6 @@
-# Copyright 2017 Vicent Cubells - <vicent.cubells@tecnativa.com>
+# Copyright 2017 Tecnativa - Vicent Cubells
+# Copyright 2021 Tecnativa - Pedro M. Baeza
+# Copyright 2021 Tecnativa - Víctor Martínez
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
 from odoo.exceptions import UserError, ValidationError
@@ -159,6 +161,45 @@ class TestHrExpenseInvoice(common.SavepointCase):
         self.assertEqual(self.invoice.invoice_payment_state, "paid")
         # We make payment on expense sheet
         self._register_payment(self.sheet)
+
+    def test_1_hr_test_invoice_paid_by_company(self):
+        # There is no expense lines in sheet
+        self.assertEqual(len(self.sheet.expense_line_ids), 0)
+        # We add an expense
+        self.expense.unit_amount = 100.0
+        self.expense.payment_mode = "company_account"
+        self.sheet.expense_line_ids = [(6, 0, [self.expense.id])]
+        self.assertEqual(len(self.sheet.expense_line_ids), 1)
+        # We add invoice to expense
+        self.invoice.action_post()  # residual = 100.0
+        self.expense.invoice_id = self.invoice
+        # Test that invoice can't register payment by itself
+        ctx = {
+            "active_ids": [self.invoice.id],
+            "active_id": self.invoice.id,
+            "active_model": "account.move",
+        }
+        PaymentWizard = self.env["account.payment"]
+        view_id = "account.view_account_payment_invoice_form"
+        with Form(PaymentWizard.with_context(ctx), view=view_id) as f:
+            f.amount = 100.0
+            f.journal_id = self.cash_journal
+        payment = f.save()
+        with self.assertRaises(ValidationError):
+            payment.action_validate_invoice_payment()
+        # We approve sheet
+        self.sheet.approve_expense_sheets()
+        self.assertEqual(self.sheet.state, "approve")
+        self.assertFalse(self.sheet.account_move_id)
+        self.assertEqual(self.invoice.state, "posted")
+        # We post journal entries
+        self.sheet.with_context(
+            {"default_expense_line_ids": self.expense.id}
+        ).action_sheet_move_create()
+        self.assertEqual(self.sheet.state, "done")
+        self.assertTrue(self.sheet.account_move_id)
+        # Invoice is not paid
+        self.assertEqual(self.invoice.invoice_payment_state, "not_paid")
 
     def test_2_hr_test_multi_invoices(self):
         # There is no expense lines in sheet
