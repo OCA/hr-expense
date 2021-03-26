@@ -16,26 +16,28 @@ class HrExpenseSheet(models.Model):
     def action_sheet_move_create(self):
         expense_line_ids = self.mapped("expense_line_ids").filtered("invoice_id")
         self._validate_expense_invoice(expense_line_ids)
-        res = super(HrExpenseSheet, self).action_sheet_move_create()
+        res = super().action_sheet_move_create()
         for sheet in self:
             move_lines = res[sheet.id].line_ids
-            expense_line_ids = self.expense_line_ids.filtered("invoice_id")
-            c_move_lines = self.env["account.move.line"]
-            for line in expense_line_ids:
-                partner = line.invoice_id.partner_id.commercial_partner_id
-                c_move_lines |= move_lines.filtered(
-                    lambda x: x.partner_id == partner and x.debit and not x.reconciled
+            if sheet.payment_mode != "own_account":
+                continue
+            for line in self.expense_line_ids.filtered("invoice_id"):
+                c_move_lines = move_lines.filtered(
+                    lambda x: x.expense_id == line
+                    and x.partner_id == line.invoice_id.commercial_partner_id
                 )
                 c_move_lines |= line.invoice_id.line_ids.filtered(
-                    lambda x: x.account_id
-                    == line.invoice_id.line_ids.filtered(
-                        lambda l: l.account_internal_type == "payable"
-                    ).account_id
-                    and x.credit
+                    lambda x: x.account_id.internal_type == "payable"
                     and not x.reconciled
                 )
-            c_move_lines.with_context(use_hr_expense_invoice=True).reconcile()
+                c_move_lines.with_context(use_hr_expense_invoice=True).reconcile()
         return res
+
+    def set_to_paid(self):
+        """Don't mark sheet as paid when reconciling invoices."""
+        if self.env.context.get("use_hr_expense_invoice"):
+            return True
+        return super().set_to_paid()
 
     def _compute_invoice_count(self):
         Invoice = self.env["account.move"]
@@ -50,6 +52,7 @@ class HrExpenseSheet(models.Model):
 
     @api.model
     def _validate_expense_invoice(self, expense_lines):
+        """Check several criteria that needs to be met for creating the move."""
         DecimalPrecision = self.env["decimal.precision"]
         precision = DecimalPrecision.precision_get("Product Price")
         invoices = expense_lines.mapped("invoice_id")

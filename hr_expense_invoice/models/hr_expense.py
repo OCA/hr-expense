@@ -13,7 +13,11 @@ class HrExpense(models.Model):
     invoice_id = fields.Many2one(
         comodel_name="account.move",
         string="Vendor Bill",
-        domain="[('type', '=', 'in_invoice'), ('state', '=', 'posted')]",
+        domain=[
+            ("type", "=", "in_invoice"),
+            ("state", "=", "posted"),
+            ("invoice_payment_state", "=", "not_paid"),
+        ],
         copy=False,
     )
 
