@@ -62,5 +62,5 @@ class HRExpenseCreateInvoice(models.TransientModel):
         invoice = (
             self.env["account.move"].with_context(type="purchase").create(invoice_vals)
         )
-        self.expense_ids.write({"invoice_id": invoice.id})
+        self.expense_ids.write({"invoice_id": invoice.id, "tax_ids": False})
         return invoice
