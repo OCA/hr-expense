@@ -22,6 +22,11 @@
                                                           'tax_ids': tax_ids, }], }"
                 />
             </field>
+            <field name="tax_ids" position="attributes">
+                <attribute
+                    name="attrs"
+                >{'invisible': [('invoice_id', '!=', False)]}</attribute>
+            </field>
         </field>
     </record>
     <record id="action_expense_create_invoice" model="ir.actions.act_window">
