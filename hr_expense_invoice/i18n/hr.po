@@ -67,11 +67,6 @@ msgid "Expense"
 msgstr "Trošak"
 
 #. module: hr_expense_invoice
-#: model:ir.model,name:hr_expense_invoice.model_hr_expense_sheet_register_payment_wizard
-msgid "Expense Register Payment Wizard"
-msgstr ""
-
-#. module: hr_expense_invoice
 #: model:ir.model,name:hr_expense_invoice.model_hr_expense_sheet
 msgid "Expense Report"
 msgstr "Izvještaj troškova"
@@ -108,11 +103,6 @@ msgstr "Račun"
 #. module: hr_expense_invoice
 #: model:ir.model,name:hr_expense_invoice.model_account_move
 msgid "Journal Entries"
-msgstr ""
-
-#. module: hr_expense_invoice
-#: model:ir.model,name:hr_expense_invoice.model_account_move_line
-msgid "Journal Item"
 msgstr ""
 
 #. module: hr_expense_invoice
