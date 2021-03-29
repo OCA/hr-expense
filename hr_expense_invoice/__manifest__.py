@@ -4,12 +4,12 @@
 
 {
     "name": "Supplier invoices on HR expenses",
-    "version": "13.0.1.1.2",
+    "version": "13.0.1.2.0",
     "category": "Human Resources",
     "author": "Tecnativa, Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "website": "https://github.com/OCA/hr-expense",
     "depends": ["hr_expense"],
-    "data": ["views/hr_expense_views.xml", "wizard/expense_create_invoice.xml"],
+    "data": ["views/hr_expense_views.xml"],
     "installable": True,
 }
