@@ -19,6 +19,7 @@ Available addons
 ----------------
 addon | version | summary
 --- | --- | ---
+[hr_expense_analytic_distribution](hr_expense_analytic_distribution/) | 14.0.1.0.0 | HR Expense Analytic Distribution
 [hr_expense_sequence](hr_expense_sequence/) | 14.0.1.0.0 | HR expense sequence
 
 [//]: # (end addons)
