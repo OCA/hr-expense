@@ -1,5 +1,5 @@
 ================================
-Hr Expense Analytic Distribution
+HR Expense Analytic Distribution
 ================================
 
 .. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -54,6 +54,11 @@ Do not contact contributors directly about support or help with technical issues
 
 Credits
 =======
+
+Authors
+~~~~~~~
+
+* Open Source Integrators
 
 Contributors
 ~~~~~~~~~~~~
