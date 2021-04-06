@@ -1,0 +1,19 @@
+<odoo>
+    <record id="hr_expense_sheet_form_view_inherit" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.form.inherit</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='other_info']" position="after">
+                <page name="distrbution" string="Distribution">
+                    <field name="expense_distribution_ids">
+                        <tree editable="bottom">
+                            <field name="analytic_account_id" />
+                            <field name="percentage" />
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
