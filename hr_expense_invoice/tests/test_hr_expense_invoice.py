@@ -251,9 +251,7 @@ class TestHrExpenseInvoice(common.SavepointCase):
         self.expense.invoice_id.action_post()
         self.expense2.invoice_id.partner_id = self.partner
         self.expense2.invoice_id.action_post()
-        self.sheet.with_context(
-            {"default_expense_line_ids": self.expense.id}
-        ).action_sheet_move_create()
+        self.sheet.action_sheet_move_create()
         self.assertEqual(self.sheet.state, "post")
         self.assertTrue(self.sheet.account_move_id)
         # Invoice are now paid
