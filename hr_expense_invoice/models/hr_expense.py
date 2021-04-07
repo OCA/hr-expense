@@ -1,6 +1,7 @@
 # Copyright 2015-2020 Tecnativa - Pedro M. Baeza
 # Copyright 2017 Tecnativa - Vicent Cubells
 # Copyright 2020 Tecnativa - David Vidal
+# Copyright 2021 Tecnativa - Víctor Martínez
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import _, api, fields, models
@@ -10,6 +11,7 @@ from odoo.exceptions import UserError
 class HrExpense(models.Model):
     _inherit = "hr.expense"
 
+    sheet_id_state = fields.Selection(related="sheet_id.state")
     invoice_id = fields.Many2one(
         comodel_name="account.move",
         string="Vendor Bill",
@@ -20,6 +22,44 @@ class HrExpense(models.Model):
         ],
         copy=False,
     )
+
+    def action_expense_create_invoice(self):
+        invoice_lines = [
+            (
+                0,
+                0,
+                {
+                    "product_id": self.product_id.id,
+                    "name": self.name,
+                    "price_unit": self.unit_amount,
+                    "quantity": self.quantity,
+                    "account_id": self.account_id.id,
+                    "analytic_account_id": self.analytic_account_id.id,
+                    "tax_ids": [(6, 0, self.tax_ids.ids)],
+                },
+            )
+        ]
+        invoice = (
+            self.env["account.move"]
+            .with_context(default_type="in_invoice")
+            .create(
+                {
+                    "type": "in_invoice",
+                    "ref": self.reference,
+                    "invoice_date": self.date,
+                    "invoice_line_ids": invoice_lines,
+                }
+            )
+        )
+        self.write(
+            {
+                "invoice_id": invoice.id,
+                "quantity": 1,
+                "tax_ids": False,
+                "unit_amount": invoice.amount_total,
+            }
+        )
+        return True
 
     @api.constrains("invoice_id")
     def _check_invoice_id(self):
