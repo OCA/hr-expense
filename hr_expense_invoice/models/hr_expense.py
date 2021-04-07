@@ -11,7 +11,7 @@ from odoo.exceptions import UserError
 class HrExpense(models.Model):
     _inherit = "hr.expense"
 
-    sheet_id_state = fields.Selection(related="sheet_id.state")
+    sheet_id_state = fields.Selection(related="sheet_id.state", string="Sheet state")
     invoice_id = fields.Many2one(
         comodel_name="account.move",
         string="Vendor Bill",
@@ -44,7 +44,6 @@ class HrExpense(models.Model):
             .with_context(default_type="in_invoice")
             .create(
                 {
-                    "type": "in_invoice",
                     "ref": self.reference,
                     "invoice_date": self.date,
                     "invoice_line_ids": invoice_lines,
