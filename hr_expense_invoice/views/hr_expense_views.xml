@@ -41,6 +41,18 @@
             >
                 <field name="invoice_id" />
             </xpath>
+            <xpath
+                expr="//field[@name='expense_line_ids']/tree/field[@name='total_amount']"
+                position="after"
+            >
+                <field name="sheet_id_state" invisible="1" />
+                <button
+                    name="action_expense_create_invoice"
+                    string="Create Vendor Bill"
+                    type="object"
+                    attrs="{'invisible': ['|', ('invoice_id', '!=', False),('sheet_id_state', '!=', 'approve')]}"
+                />
+            </xpath>
             <div class="oe_button_box" position="inside">
                 <button
                     class="oe_stat_button"
