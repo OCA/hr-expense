@@ -59,7 +59,7 @@
                     name="action_expense_create_invoice"
                     string="Create Vendor Bill"
                     type="object"
-                    attrs="{'invisible': ['|', ('invoice_id', '!=', False),('sheet_id_state', '!=', 'approve')]}"
+                    attrs="{'invisible': ['|', ('invoice_id', '!=', False),('sheet_id_state', 'not in', ('draft','approve'))]}"
                 />
             </xpath>
             <div class="oe_button_box" position="inside">

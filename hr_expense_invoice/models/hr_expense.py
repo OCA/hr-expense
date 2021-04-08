@@ -19,6 +19,7 @@ class HrExpense(models.Model):
             ("type", "=", "in_invoice"),
             ("state", "=", "posted"),
             ("invoice_payment_state", "=", "not_paid"),
+            ("expense_ids", "=", False),
         ],
         copy=False,
     )
@@ -95,5 +96,7 @@ class HrExpense(models.Model):
         """
         if self.invoice_id:
             self.quantity = 1
-            self.unit_amount = self.invoice_id.amount_total
             self.tax_ids = [(5,)]
+            # Assign this amount after removing taxes for avoiding to raise
+            # the constraint _check_expense_ids
+            self.unit_amount = self.invoice_id.amount_total
