@@ -49,6 +49,7 @@
                 position="after"
             >
                 <field name="invoice_id" />
+                <field name="quantity" invisible="1" />
             </xpath>
             <xpath
                 expr="//field[@name='expense_line_ids']/tree/field[@name='total_amount']"
