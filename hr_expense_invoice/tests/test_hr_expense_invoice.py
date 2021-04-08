@@ -246,6 +246,16 @@ class TestHrExpenseInvoice(common.SavepointCase):
         self.expense2.action_expense_create_invoice()
         self.assertTrue(self.expense2.invoice_id)
         self.assertEqual(self.sheet.invoice_count, 2)
+        # Only change invoice not assigned to expense yet
+        with self.assertRaises(ValidationError):
+            self.expense.invoice_id.amount_total = 60
+        # Force to change
+        invoice = self.expense2.invoice_id
+        self.expense2.invoice_id = False
+        invoice.amount_total = 50
+        self.assertEqual(self.expense2.total_amount, 50)
+        # Set invoice_id again to expense2
+        self.expense2.invoice_id = invoice
         # Validate invoices
         self.expense.invoice_id.partner_id = self.partner
         self.expense.invoice_id.action_post()
@@ -270,6 +280,7 @@ class TestHrExpenseInvoice(common.SavepointCase):
         # We add an expense, total_amount now = 50.0
         self.sheet.expense_line_ids = [(6, 0, [self.expense.id])]
         # We add invoice to expense
+        self.invoice.amount_total = 100
         self.invoice.action_post()  # residual = 100.0
         self.expense.invoice_id = self.invoice
         # Amount must equal, expense vs invoice
