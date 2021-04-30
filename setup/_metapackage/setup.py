@@ -11,6 +11,7 @@ setuptools.setup(
         'odoo14-addon-hr_expense_analytic_distribution',
         'odoo14-addon-hr_expense_cancel',
         'odoo14-addon-hr_expense_sequence',
+        'odoo14-addon-hr_expense_tier_validation',
     ],
     classifiers=[
         'Programming Language :: Python',
