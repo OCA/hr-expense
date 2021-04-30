@@ -22,6 +22,7 @@ addon | version | summary
 [hr_expense_analytic_distribution](hr_expense_analytic_distribution/) | 14.0.1.0.0 | HR Expense Analytic Distribution
 [hr_expense_cancel](hr_expense_cancel/) | 14.0.1.0.0 | Hr expense cancel
 [hr_expense_sequence](hr_expense_sequence/) | 14.0.1.0.0 | HR expense sequence
+[hr_expense_tier_validation](hr_expense_tier_validation/) | 14.0.1.0.0 | Expense Tier Validation
 
 [//]: # (end addons)
 
