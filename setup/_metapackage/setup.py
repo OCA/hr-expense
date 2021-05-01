@@ -13,6 +13,7 @@ setuptools.setup(
         'odoo13-addon-hr_expense_invoice',
         'odoo13-addon-hr_expense_payment_difference',
         'odoo13-addon-hr_expense_petty_cash',
+        'odoo13-addon-hr_expense_petty_cash_sequence',
         'odoo13-addon-hr_expense_sequence',
         'odoo13-addon-hr_expense_tier_validation',
     ],
