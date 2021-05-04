@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="reminder_definition_view_form" model="ir.ui.view">
+        <field name="name">reminder.definition.form</field>
+        <field name="model">reminder.definition</field>
+        <field
+            name="inherit_id"
+            ref="base_overdue_reminder.reminder_definition_view_form"
+        />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='left']" position="inside">
+                <field
+                    name="terms_date_due_days"
+                    attrs="{'invisible': [('model', '!=', 'hr.expense.sheet')]}"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
