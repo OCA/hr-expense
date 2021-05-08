@@ -1,0 +1,3 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+access_hr_expense_advance_line_employee,access_hr_expense_advance_line_employee,model_hr_expense_advance_line,base.group_user,1,1,1,1
+access_hr_expense_advance_line_user,access_hr_expense_advance_line_user,model_hr_expense_advance_line,hr_expense.group_hr_expense_team_approver,1,1,1,1
