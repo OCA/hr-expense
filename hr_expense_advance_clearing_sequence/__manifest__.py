@@ -3,7 +3,7 @@
 
 {
     "name": "HR Expense Advance Clearing Sequence",
-    "version": "13.0.1.0.0",
+    "version": "14.0.1.0.0",
     "license": "AGPL-3",
     "category": "Human Resources",
     "author": "Ecosoft, Odoo Community Association (OCA)",
