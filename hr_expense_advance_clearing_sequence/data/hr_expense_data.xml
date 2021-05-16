@@ -4,6 +4,6 @@
         <field name="name">Expense report sequence (Advance)</field>
         <field name="code">hr.expense.sheet.advance</field>
         <field name="padding" eval="4" />
-        <field name="prefix">EXAV</field>
+        <field name="prefix">AV</field>
     </record>
 </odoo>
