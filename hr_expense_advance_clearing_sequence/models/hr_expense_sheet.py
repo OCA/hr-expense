@@ -9,12 +9,7 @@ class HrExpenseSheet(models.Model):
 
     @api.model
     def create(self, vals):
-        if "expense_line_ids" in vals.keys():
-            from_expense = vals["expense_line_ids"][0][2]
-            expense = self.env["hr.expense"].browse(from_expense)
-            if vals.get("number", "/") == "/" and expense.advance:
-                number = self.env["ir.sequence"].next_by_code(
-                    "hr.expense.sheet.advance"
-                )
-                vals["number"] = number
+        if vals.get("advance") or self.env.context.get("default_advance"):
+            number = self.env["ir.sequence"].next_by_code("hr.expense.sheet.advance")
+            vals["number"] = number
         return super().create(vals)
