@@ -42,7 +42,7 @@ class HrExpenseSheet(models.Model):
             {
                 "name": pr.description or _("Employee Advance"),
                 "employee_id": pr.requested_by.employee_id.id,
-                "unit_amount": sum(pr.line_ids.mapped("estimated_cost")),
+                "unit_amount": sum(self.pr_line_ids.mapped("total_amount")),
                 "sheet_id": self.id,
             }
         )
@@ -55,7 +55,7 @@ class HrExpenseSheet(models.Model):
         # Prepare advance_line dict
         advance_line = pr_line._convert_to_write(pr_line._cache)
         advance_line["expense_id"] = advance.id
-        advance_line["unit_amount"] = advance_line["total_amount"]
+        advance_line["unit_amount"] = pr_line.total_amount
         # Make sure only advl_fields is used, to create the advance line.
         advance_line = {k: v for k, v in advance_line.items() if k in advl_fields}
         return advance_line
