@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="view_hr_expense_sheet_form">
+        <field name="name">view.hr.expense.sheet.form</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_submit_sheet']" position="after">
+                <button
+                    id="action_create_wa"
+                    name="action_view_wa"
+                    string="Create WA"
+                    type="object"
+                    class="oe_highlight"
+                    context="{'create_wa':True}"
+                    groups="hr_expense_work_acceptance.group_enable_wa_on_exp"
+                    attrs="{'invisible': ['|', ('state', 'not in', ('draft', 'submit', 'approve')), ('wa_accepted', '=', True)]}"
+                />
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    type="object"
+                    name="action_view_wa"
+                    class="oe_stat_button"
+                    icon="fa-clipboard"
+                    attrs="{'invisible':[('wa_ids','=',[])]}"
+                >
+                    <field name="wa_count" widget="statinfo" string="WA" />
+                    <field name="wa_ids" invisible="1" />
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='expense_line_ids']/tree" position="inside">
+                <field name="wa_line_ids" invisible="1" />
+            </xpath>
+            <xpath
+                expr="//field[@name='expense_line_ids']/tree//field[@name='quantity']"
+                position="after"
+            >
+                <field name="qty_to_accept" string="To Accept" invisible="1" />
+                <field
+                    name="qty_accepted"
+                    string="Accepted"
+                    optional="show"
+                    attrs="{'column_invisible': [('parent.state', 'not in', ('draft', 'submit', 'approve'))]}"
+                />
+            </xpath>
+            <field name="company_id" position="after">
+                <field
+                    name="wa_accepted"
+                    groups="hr_expense_work_acceptance.group_enable_wa_on_exp"
+                    attrs="{'invisible': [('wa_count', '=', 0)]}"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>

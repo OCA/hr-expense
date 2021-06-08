@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="group_enable_wa_on_exp" model="res.groups">
+        <field name="name">Enable WA on Expense Sheet</field>
+        <field name="category_id" ref="base.module_category_hidden" />
+    </record>
+    <record id="group_wa_accepted_before_inv" model="res.groups">
+        <field name="name">WA Accepted before Accounting</field>
+        <field name="category_id" ref="base.module_category_hidden" />
+    </record>
+</odoo>
