@@ -8,7 +8,16 @@ class HrExpenseAdvanceLine(models.Model):
     _name = "hr.expense.advance.line"
     _description = "Details of employee advance"
 
-    expense_id = fields.Many2one(comodel_name="hr.expense")
+    sheet_id = fields.Many2one(
+        comodel_name="hr.expense.sheet",
+        required=True,
+        index=True,
+        ondelete="cascade",
+    )
+    av_line_id = fields.Many2one(
+        comodel_name="hr.expense",
+        help="Refer to original advance. Line with this value is considered a temp line",
+    )
     name = fields.Char(string="Description", required=True)
-    currency_id = fields.Many2one(related="expense_id.currency_id")
+    currency_id = fields.Many2one(related="sheet_id.currency_id")
     unit_amount = fields.Monetary(string="Unit Price", currency_field="currency_id")
