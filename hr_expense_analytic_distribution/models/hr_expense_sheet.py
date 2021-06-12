@@ -14,7 +14,7 @@ class HrExpenseSheetInherit(models.Model):
 
     @api.constrains("expense_distribution_ids")
     def _constrains_distribution_ids_percentage(self):
-        for report in self:
+        for report in self.filtered("expense_distribution_ids"):
             total_percent = sum(report.expense_distribution_ids.mapped("percentage"))
             if total_percent != 100:
                 raise UserError(_("Sorry, Percentage should be equal to 100."))
