@@ -9,7 +9,7 @@
     "license": "AGPL-3",
     "category": "Human Resources",
     "depends": [
-        "hr_expense_advance_clearing_detail",
+        "hr_expense_advance_clearing",
         "hr_expense_from_purchase_request",
     ],
     "data": [
