@@ -4,40 +4,72 @@
 from werkzeug.urls import url_encode
 
 from odoo import _, api, models
+from odoo.exceptions import UserError
 
 
 class AccountPaymentRegister(models.TransientModel):
     _inherit = "account.payment.register"
 
-    @api.model
-    def default_get(self, fields_list):
-        """Step to avoid UserError from core odoo:
-        - Change account type to receivable
-        - Call super() and rollback account to origin
-        """
-        advance_return = self._context.get("hr_return_advance", False)
-        origin_account = False
-        if advance_return and self._context.get("active_model") == "account.move":
+    def _get_default_advance(self):
+        """ This function is default_get from return advance only """
+        return {}
+
+    def _default_return_advance(self, fields_list):
+        """ OVERRIDE: lines without check account_internal_type for return advance only """
+        res = self._get_default_advance()
+        if "line_ids" in fields_list:
             lines = (
                 self.env["account.move"]
                 .browse(self._context.get("active_ids", []))
                 .line_ids
             )
-            line = lines.filtered(
-                lambda l: l.expense_id.advance and not l.full_reconcile_id
-            )
-            if line and line.account_internal_type not in ("receivable", "payable"):
-                origin_account = [
-                    line.account_internal_type,
-                    line.account_id.internal_type,
-                ]
-                line.account_internal_type = "receivable"
-                line.account_id.internal_type = "receivable"
-        res = super().default_get(fields_list)
-        if origin_account:
-            line.account_internal_type = origin_account[0]
-            line.account_id.internal_type = origin_account[1]
+
+            # Keep lines having a residual amount to pay.
+            available_lines = self.env["account.move.line"]
+            for line in lines:
+                if line.move_id.state != "posted":
+                    raise UserError(
+                        _("You can only register payment for posted journal entries.")
+                    )
+                if not line.product_id:
+                    continue
+                if line.currency_id:
+                    if line.currency_id.is_zero(line.amount_residual_currency):
+                        continue
+                else:
+                    if line.company_currency_id.is_zero(line.amount_residual):
+                        continue
+                available_lines |= line
+            # Check.
+            if not available_lines:
+                raise UserError(
+                    _(
+                        "You can't register a payment because "
+                        "there is nothing left to pay on the selected journal items."
+                    )
+                )
+            if len(lines.company_id) > 1:
+                raise UserError(
+                    _(
+                        "You can't create payments for entries belonging "
+                        "to different companies."
+                    )
+                )
+            if len(set(available_lines.mapped("account_internal_type"))) > 1:
+                raise UserError(
+                    _(
+                        "You can't register payments for journal items "
+                        "being either all inbound, either all outbound."
+                    )
+                )
+            res["line_ids"] = [(6, 0, available_lines.ids)]
         return res
+
+    @api.model
+    def default_get(self, fields_list):
+        if self._context.get("hr_return_advance", False):
+            return self._default_return_advance(fields_list)
+        return super().default_get(fields_list)
 
     def action_create_payments(self):
         if self._context.get("hr_return_advance", False):
