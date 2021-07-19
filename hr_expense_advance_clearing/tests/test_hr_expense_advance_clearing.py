@@ -1,6 +1,7 @@
 # Copyright 2019 Kitti Upariphutthiphong <kittiu@ecosoft.co.th>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+from odoo import fields
 from odoo.exceptions import ValidationError
 from odoo.tests import common
 from odoo.tests.common import Form
@@ -111,6 +112,7 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         PaymentWizard = self.env["account.payment.register"]
         with Form(PaymentWizard.with_context(ctx)) as f:
             f.journal_id = self.journal_bank
+            f.payment_date = fields.Date.today()
         payment_wizard = f.save()
         payment_wizard.action_create_payments()
 
