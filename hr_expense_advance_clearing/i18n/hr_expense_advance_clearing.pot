@@ -50,7 +50,7 @@ msgstr ""
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/models/hr_expense_sheet.py:0
 #, python-format
-msgid "Advance must contain only 1 advance expense line"
+msgid "Advance must contain only advance expense line"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
@@ -78,6 +78,11 @@ msgstr ""
 #. module: hr_expense_advance_clearing
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_sheet_view_search
 msgid "Clearing"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__clearing_product_id
+msgid "Clearing Product"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
@@ -135,6 +140,11 @@ msgid "Expense Report"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense__av_line_id
+msgid "Expense created from this advance expense line"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
 #: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense_sheet__amount_payable
 msgid "Final regiter payment amount even after advance clearing"
 msgstr ""
@@ -161,8 +171,25 @@ msgid ""
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_view_form
+msgid "Optional clearing product is used during clear advance"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense__clearing_product_id
+msgid ""
+"Optional: On the clear advance, the clearing product will create default "
+"product line."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet__amount_payable
 msgid "Payable Amount"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__av_line_id
+msgid "Ref: Advance"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
