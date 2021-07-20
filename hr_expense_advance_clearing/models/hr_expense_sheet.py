@@ -47,9 +47,8 @@ class HrExpenseSheet(models.Model):
     @api.depends("expense_line_ids")
     def _compute_advance(self):
         for sheet in self:
-            sheet.advance = bool(
-                sheet.expense_line_ids.filtered("advance")
-                and len(sheet.expense_line_ids) == 1
+            sheet.advance = sheet.expense_line_ids and all(
+                sheet.expense_line_ids.mapped("advance")
             )
         return
 
@@ -60,8 +59,8 @@ class HrExpenseSheet(models.Model):
             raise ValidationError(
                 _("Advance clearing must not contain any advance expense line")
             )
-        if advance_lines and len(self.expense_line_ids) != 1:
-            raise ValidationError(_("Advance must contain only 1 advance expense line"))
+        if advance_lines and len(advance_lines) != len(self.expense_line_ids):
+            raise ValidationError(_("Advance must contain only advance expense line"))
 
     @api.depends("account_move_id.line_ids.amount_residual")
     def _compute_clearing_residual(self):
@@ -101,7 +100,13 @@ class HrExpenseSheet(models.Model):
             adv_move_lines = (
                 self.env["account.move.line"]
                 .sudo()
-                .search([("id", "in", move_lines.ids), ("account_id", "=", account_id)])
+                .search(
+                    [
+                        ("id", "in", move_lines.ids),
+                        ("account_id", "=", account_id),
+                        ("reconciled", "=", False),
+                    ]
+                )
             )
             adv_move_lines.reconcile()
             # Update state on clearing advance when advance residual > total amount
@@ -121,3 +126,51 @@ class HrExpenseSheet(models.Model):
         context1["default_advance_sheet_id"] = self.id
         vals["context"] = context1
         return vals
+
+    @api.onchange("advance_sheet_id")
+    def _onchange_advance_sheet_id(self):
+        self.expense_line_ids -= self.expense_line_ids.filtered("av_line_id")
+        self.advance_sheet_id.expense_line_ids.read()
+        for line in self.advance_sheet_id.expense_line_ids.filtered(
+            "clearing_product_id"
+        ):
+            clear_advance = self._prepare_clear_advance(line)
+            self.expense_line_ids += self.env["hr.expense"].new(clear_advance)
+
+    def _prepare_clear_advance(self, line):
+        # Prepare the clearing expense
+        clear_line_dict = {
+            "advance": False,
+            "name": False,
+            "product_id": line.clearing_product_id.id,
+            "clearing_product_id": False,
+            "date": fields.Date.context_today(self),
+            "account_id": False,
+            "state": "draft",
+            "product_uom_id": False,
+            "av_line_id": line.id,
+        }
+        clear_line = self.env["hr.expense"].new(clear_line_dict)
+        clear_line._compute_from_product_id_company_id()  # Set some vals
+        # Prepare the original advance line
+        adv_dict = line._convert_to_write(line._cache)
+        # remove no update columns
+        _fields = line._fields
+        del_cols = [k for k in _fields.keys() if _fields[k].type == "one2many"]
+        del_cols += list(self.env["mail.thread"]._fields.keys())
+        del_cols += list(self.env["mail.activity.mixin"]._fields.keys())
+        del_cols += list(clear_line_dict.keys())
+        del_cols = list(set(del_cols))
+        adv_dict = {k: v for k, v in adv_dict.items() if k not in del_cols}
+        # Assign the known value from original advance line
+        clear_line.update(adv_dict)
+        clearing_dict = clear_line._convert_to_write(clear_line._cache)
+        # Convert list of int to [(6, 0, list)]
+        clearing_dict = {
+            k: isinstance(v, list)
+            and all(isinstance(x, int) for x in v)
+            and [(6, 0, v)]
+            or v
+            for k, v in clearing_dict.items()
+        }
+        return clearing_dict
