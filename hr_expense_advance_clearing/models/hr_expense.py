@@ -9,6 +9,22 @@ class HrExpense(models.Model):
     _inherit = "hr.expense"
 
     advance = fields.Boolean(string="Employee Advance", default=False)
+    clearing_product_id = fields.Many2one(
+        comodel_name="product.product",
+        string="Clearing Product",
+        tracking=True,
+        domain="[('can_be_expensed', '=', True),"
+        "'|', ('company_id', '=', False), ('company_id', '=', company_id)]",
+        ondelete="restrict",
+        help="Optional: On the clear advance, the clearing "
+        "product will create default product line.",
+    )
+    av_line_id = fields.Many2one(
+        comodel_name="hr.expense",
+        string="Ref: Advance",
+        ondelete="set null",
+        help="Expense created from this advance expense line",
+    )
 
     @api.constrains("advance")
     def _check_advance(self):
@@ -40,6 +56,7 @@ class HrExpense(models.Model):
             )
         else:
             self.product_id = False
+            self.clearing_product_id = False
 
     def _get_account_move_line_values(self):
         move_line_values_by_expense = super()._get_account_move_line_values()
