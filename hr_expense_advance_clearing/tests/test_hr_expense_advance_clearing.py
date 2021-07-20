@@ -79,7 +79,8 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
             expense.advance = advance
             expense.name = description
             expense.employee_id = employee
-            expense.product_id = product
+            if not advance:
+                expense.product_id = product
             expense.unit_amount = amount
             expense.payment_mode = payment_mode
         expense = expense.save()
@@ -127,11 +128,6 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
                 "Buy service 1,000", self.employee, self.product, 1.0
             )
             self.advance.write({"expense_line_ids": [(4, expense.id)]})
-        # Advance Expense's product must be employee advance
-        with self.assertRaises(ValidationError):
-            expense = self._create_expense(
-                "Advance 1,000", self.employee, self.product, 1.0, advance=True
-            )
         # Advance Expense's product, must not has tax involved
         with self.assertRaises(ValidationError):
             self.emp_advance.supplier_taxes_id |= self.tax
