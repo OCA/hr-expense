@@ -16,9 +16,9 @@ class HrExpense(models.Model):
         comodel_name="account.move",
         string="Vendor Bill",
         domain=[
-            ("type", "=", "in_invoice"),
+            ("move_type", "=", "in_invoice"),
             ("state", "=", "posted"),
-            ("invoice_payment_state", "=", "not_paid"),
+            ("payment_state", "=", "not_paid"),
             ("expense_ids", "=", False),
         ],
         copy=False,
@@ -40,16 +40,15 @@ class HrExpense(models.Model):
                 },
             )
         ]
-        invoice = (
-            self.env["account.move"]
-            .with_context(default_type="in_invoice")
-            .create(
+        invoice = self.env["account.move"].create(
+            [
                 {
                     "ref": self.reference,
+                    "move_type": "in_invoice",
                     "invoice_date": self.date,
                     "invoice_line_ids": invoice_lines,
                 }
-            )
+            ]
         )
         self.write(
             {
