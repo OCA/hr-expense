@@ -64,6 +64,7 @@ Usage
 #. Go to Expenses > My Expenses > My Expenses to Report
 #. Create a new Expense as normal, but also check "Employee Advance" checkbox
 #. Product = Employee Advance will be set automatically, do not change.
+#. As an option, user can also set the "Clearing Product". If this is set, on the clear advance step, the clearing product will create a default product line.
 #. Set the unit price to advance amount
 #. Click Create Report as normal. Please note that, this expense report will also has flag "Employee Advance" checked.
 #. As normal, do Approve > Post Journal Entries > Register Payment.
