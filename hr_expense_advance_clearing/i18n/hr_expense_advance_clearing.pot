@@ -77,12 +77,18 @@ msgstr ""
 
 #. module: hr_expense_advance_clearing
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_sheet_view_search
+#: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.view_hr_expense_sheet_form
 msgid "Clearing"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__clearing_product_id
 msgid "Clearing Product"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet__clearing_sheet_ids
+msgid "Clearing Sheet"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
@@ -205,6 +211,11 @@ msgstr ""
 #. module: hr_expense_advance_clearing
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.view_hr_expense_sheet_form
 msgid "Return Advance"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense_sheet__clearing_sheet_ids
+msgid "Show reference clearing on advance"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
