@@ -26,13 +26,3 @@ class AccountMove(models.Model):
                         "linked to this invoice."
                     )
                 )
-
-    def _get_cash_basis_matched_percentage(self):
-        res = super()._get_cash_basis_matched_percentage()
-        if (
-            res == 1
-            and self._context.get("use_hr_expense_invoice")
-            and self._context.get("default_expense_line_ids")
-        ):
-            return False
-        return res
