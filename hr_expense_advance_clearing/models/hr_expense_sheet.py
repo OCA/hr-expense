@@ -26,6 +26,13 @@ class HrExpenseSheet(models.Model):
         },
         help="Show remaining advance of this employee",
     )
+    clearing_sheet_ids = fields.One2many(
+        comodel_name="hr.expense.sheet",
+        inverse_name="advance_sheet_id",
+        string="Clearing Sheet",
+        readonly=True,
+        help="Show reference clearing on advance",
+    )
     clearing_residual = fields.Monetary(
         string="Amount to clear",
         compute="_compute_clearing_residual",
