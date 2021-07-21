@@ -131,7 +131,7 @@
                 <field name="product_uom_category_id" invisible="1" />
                 <field
                     name="clearing_product_id"
-                    attrs="{'column_invisible': [('advance', '=', False)]}"
+                    attrs="{'column_invisible': [('parent.advance', '=', False)]}"
                 />
                 <field name="av_line_id" invisible="1" />
             </xpath>
@@ -139,6 +139,15 @@
                 <attribute
                     name="context"
                 >{'default_advance': advance, 'form_view_ref' : 'hr_expense.hr_expense_view_form_without_header', 'default_company_id': company_id, 'default_employee_id': employee_id}</attribute>
+            </xpath>
+            <xpath expr="//notebook/page[@name='expenses']" position="after">
+                <page
+                    name="clearing"
+                    string="Clearing"
+                    attrs="{'invisible': [('advance', '=', False)]}"
+                >
+                    <field name="clearing_sheet_ids" />
+                </page>
             </xpath>
         </field>
     </record>
