@@ -19,7 +19,7 @@ Available addons
 ----------------
 addon | version | summary
 --- | --- | ---
-[hr_expense_advance_clearing](hr_expense_advance_clearing/) | 14.0.1.1.0 | Employee Advance and Clearing
+[hr_expense_advance_clearing](hr_expense_advance_clearing/) | 14.0.1.2.0 | Employee Advance and Clearing
 [hr_expense_analytic_distribution](hr_expense_analytic_distribution/) | 14.0.1.0.0 | HR Expense Analytic Distribution
 [hr_expense_cancel](hr_expense_cancel/) | 14.0.1.0.0 | Hr expense cancel
 [hr_expense_sequence](hr_expense_sequence/) | 14.0.1.0.0 | HR expense sequence
