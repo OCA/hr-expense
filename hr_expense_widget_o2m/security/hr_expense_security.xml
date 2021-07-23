@@ -1,0 +1,6 @@
+<odoo>
+    <record id="group_hr_expense_widget_o2m" model="res.groups">
+        <field name="name">Use form view when add line for expense report</field>
+        <field name="category_id" ref="base.module_category_hidden" />
+    </record>
+</odoo>
