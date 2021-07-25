@@ -125,6 +125,8 @@
                 expr="//field[@name='expense_line_ids']/tree/field[@name='name']"
                 position="after"
             >
+                <field name="employee_id" invisible="1" />
+                <field name="payment_mode" invisible="1" />
                 <field name="advance" invisible="1" />
                 <field name="product_id" invisible="1" />
                 <field name="product_uom_id" invisible="1" />
