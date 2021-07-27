@@ -49,6 +49,7 @@ Credits
 Authors
 ~~~~~~~
 
+* Tecnativa
 * Ecosoft
 
 Contributors
@@ -68,14 +69,6 @@ This module is maintained by the OCA.
 OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.
-
-.. |maintainer-Saran440| image:: https://github.com/Saran440.png?size=40px
-    :target: https://github.com/Saran440
-    :alt: Saran440
-
-Current `maintainer <https://odoo-community.org/page/maintainer-role>`__:
-
-|maintainer-Saran440| 
 
 This module is part of the `OCA/hr-expense <https://github.com/OCA/hr-expense/tree/14.0/hr_expense_payment>`_ project on GitHub.
 
