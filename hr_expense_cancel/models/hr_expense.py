@@ -12,36 +12,15 @@ class HrExpenseSheet(models.Model):
             account_move = sheet.account_move_id
             sheet.account_move_id = False
             payments = sheet.payment_ids
-            # case : cancel invoice from hr_expense
-            self._remove_reconcile_hr_invoice(account_move)
-            # If the sheet is paid then remove payments
+            # Unreconciled move and cancel payments
             if sheet.state == "done":
                 if sheet.expense_line_ids[:1].payment_mode == "own_account":
                     self._remove_move_reconcile(payments, account_move)
-                    self._cancel_payments(payments)
-                else:
-                    # In this case, during the cancellation the journal entry
-                    # will be deleted
-                    self._cancel_payments(payments)
-            # Deleting the Journal entry if in the previous steps
-            # (if the expense sheet is paid and payment_mode == 'own_account')
-            # it has not been deleted
-            if account_move.exists():
-                if account_move.state != "draft":
-                    account_move.button_cancel()
-                account_move.with_context({"force_delete": True}).unlink()
+                self._cancel_payments(payments)
+            # Cancel the Journal entry because accounting shouldn't skip number.
+            if account_move.exists() and account_move.state != "draft":
+                account_move.button_cancel()
             sheet.state = "submit"
-
-    def _remove_reconcile_hr_invoice(self, account_move):
-        """Cancel invoice made by hr_expense_invoice module automatically"""
-        reconcile = account_move.mapped("line_ids.full_reconcile_id")
-        aml = self.env["account.move.line"].search(
-            [("full_reconcile_id", "in", reconcile.ids)]
-        )
-        exp_move_line = aml.filtered(lambda l: l.move_id.id != account_move.id)
-        # set state to cancel
-        exp_move_line.move_id.button_draft()
-        exp_move_line.move_id.button_cancel()
 
     def _remove_move_reconcile(self, payments, account_move):
         """Delete only reconciliations made with the payments generated
@@ -56,10 +35,4 @@ class HrExpenseSheet(models.Model):
 
     def _cancel_payments(self, payments):
         for rec in payments:
-            rec.move_id.with_context({"force_delete": True}).unlink()
-
-    def action_register_payment(self):
-        action = super().action_register_payment()
-        if self._name == "hr.expense.sheet":
-            action["context"].update({"expense_sheet_ids": self.ids})
-        return action
+            rec.action_cancel()

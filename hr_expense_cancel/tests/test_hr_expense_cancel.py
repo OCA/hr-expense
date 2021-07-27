@@ -7,15 +7,14 @@ from odoo.tests.common import Form, TransactionCase
 
 class TestHrExpenseCancel(TransactionCase):
     def setUp(self):
-        super(TestHrExpenseCancel, self).setUp()
-        self.partner = self.env["res.partner"].create({"name": "Test partner"})
+        super().setUp()
         self.payment_obj = self.env["account.payment"]
         self.account_payment_register = self.env["account.payment.register"]
         self.payment_journal = self.env["account.journal"].search(
             [("type", "in", ["cash", "bank"])], limit=1
         )
 
-        self.main_company = company = self.env.ref("base.main_company")
+        company = self.env.ref("base.main_company")
         self.expense_journal = self.env["account.journal"].create(
             {
                 "name": "Purchase Journal - Test",
@@ -103,8 +102,7 @@ class TestHrExpenseCancel(TransactionCase):
         self.assertTrue(self.expense_sheet.account_move_id)
 
         self.expense_sheet.action_cancel()
-        payment = self.expense_sheet.payment_ids
-        self.assertFalse(payment)
+        self.assertEqual(self.expense_sheet.payment_ids.mapped("state"), ["cancel"])
         self.assertFalse(self.expense_sheet.account_move_id)
 
     def test_action_cancel_own_account(self):
@@ -117,8 +115,7 @@ class TestHrExpenseCancel(TransactionCase):
         self.assertTrue(self.expense_sheet.account_move_id)
 
         self.expense_sheet.action_cancel()
-        payment = self.expense_sheet.payment_ids
-        self.assertEqual(len(payment), 0)
+        self.assertEqual(self.expense_sheet.payment_ids.mapped("state"), ["cancel"])
         self.assertFalse(self.expense_sheet.account_move_id)
 
     def test_action_cancel_multi_own_account(self):
@@ -132,6 +129,5 @@ class TestHrExpenseCancel(TransactionCase):
         self.assertTrue(self.expense_sheet.account_move_id)
 
         self.expense_sheet.action_cancel()
-        payment = self.expense_sheet.payment_ids
-        self.assertEqual(len(payment), 0)
+        self.assertEqual(self.expense_sheet.payment_ids.mapped("state"), ["cancel"])
         self.assertFalse(self.expense_sheet.account_move_id)
