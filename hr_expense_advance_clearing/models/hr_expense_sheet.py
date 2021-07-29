@@ -126,7 +126,7 @@ class HrExpenseSheet(models.Model):
         action = self.env.ref(
             "hr_expense_advance_clearing.action_hr_expense_sheet_advance_clearing"
         )
-        vals = action.read()[0]
+        vals = action.sudo().read()[0]
         context1 = vals.get("context", {})
         if context1:
             context1 = safe_eval(context1)
@@ -137,7 +137,7 @@ class HrExpenseSheet(models.Model):
     @api.onchange("advance_sheet_id")
     def _onchange_advance_sheet_id(self):
         self.expense_line_ids -= self.expense_line_ids.filtered("av_line_id")
-        self.advance_sheet_id.expense_line_ids.read()
+        self.advance_sheet_id.expense_line_ids.sudo().read()  # prefetch
         for line in self.advance_sheet_id.expense_line_ids.filtered(
             "clearing_product_id"
         ):
