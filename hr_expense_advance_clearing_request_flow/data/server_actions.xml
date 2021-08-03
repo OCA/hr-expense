@@ -1,0 +1,24 @@
+<odoo>
+    <!-- Server actions for AV -->
+    <record id="action_request_flow_approve_child_doc_av" model="ir.actions.server">
+        <field name="name">Request Flow: Approve AV</field>
+        <field name="model_id" ref="request_flow.model_request_request" />
+        <field name="state">code</field>
+        <field name="code">
+advance_sheets = record.advance_sheet_ids.filtered(lambda l: l.state=="submit")
+advance_sheets.with_context(bypass_check_user_has_groups=True).approve_expense_sheets()
+        </field>
+    </record>
+
+    <record id="action_request_flow_reject_child_doc_av" model="ir.actions.server">
+        <field name="name">Request Flow: Reject AV</field>
+        <field name="model_id" ref="request_flow.model_request_request" />
+        <field name="state">code</field>
+        <field name="code">
+advance_sheets = record.advance_sheet_ids.filtered(lambda l: l.state=="submit")
+advance_sheets.mapped("expense_line_ids").refuse_expense("Refused by ref request")
+advance_sheets.refuse_sheet("Refused by ref request")
+        </field>
+    </record>
+
+</odoo>
