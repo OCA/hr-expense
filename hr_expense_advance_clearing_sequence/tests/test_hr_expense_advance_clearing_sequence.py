@@ -92,3 +92,33 @@ class TestHrExpenseAdvanceClearingSequence(SavepointCase):
         sheet2 = self.sheet.copy()
         sheet_number_2 = sheet2.number
         self.assertNotEqual(sheet_number_1, sheet_number_2, "Numbers are different")
+
+    def test_03_create_sequence_from_report_one2many(self):
+        """ Special case create report and expense with one2many """
+        # Test number != '/'
+        expense_sheet = self.expense_sheet_model.create(
+            {
+                "name": "Advance 1,000",
+                "employee_id": self.expense.employee_id.id,
+                "expense_line_ids": [
+                    [
+                        0,
+                        0,
+                        {
+                            "advance": 1,
+                            "name": "Advance 1,000",
+                            "employee_id": self.employee_1.id,
+                            "product_id": self.emp_advance.id,
+                            "unit_amount": 1000.0,
+                            "payment_mode": "own_account",
+                        },
+                    ]
+                ],
+            }
+        )
+        self.assertNotEqual(expense_sheet.number, "/", "Number create")
+        # Test number 1 != number 2
+        sheet_number_1 = self.sheet.number
+        sheet2 = self.sheet.copy()
+        sheet_number_2 = sheet2.number
+        self.assertNotEqual(sheet_number_1, sheet_number_2, "Numbers are different")
