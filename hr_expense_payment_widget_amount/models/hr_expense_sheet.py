@@ -20,7 +20,7 @@ class HrExpenseSheet(models.Model):
         company_currency = self.env.company.currency_id
         content = self.account_move_id._get_reconciled_info_JSON_values()
         # Paid by company can't reconciled because there is not account move.
-        if self.payment_mode == "company_account":
+        if self.account_move_id.journal_id == self.bank_journal_id:
             for payment in self.payment_ids:
                 amount_currency = payment.currency_id._convert(
                     payment.amount, company_currency, self.company_id, payment.date
@@ -43,7 +43,7 @@ class HrExpenseSheet(models.Model):
                         "ref": payment.ref,
                     }
                 )
-        elif self.payment_mode == "own_account":
+        elif self.account_move_id.journal_id == self.journal_id:
             for partial in self.account_move_id._get_reconciled_invoices_partials():
                 list_content = list(
                     filter(
