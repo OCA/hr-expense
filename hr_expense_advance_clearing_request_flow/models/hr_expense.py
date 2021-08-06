@@ -1,7 +1,7 @@
 # Copyright 2021 Ecosoft
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import api, models
+from odoo import api, fields, models
 
 
 class HRExpenseSheet(models.Model):
@@ -43,6 +43,21 @@ class HRExpenseSheet(models.Model):
 
 class HRExpense(models.Model):
     _inherit = "hr.expense"
+
+    @api.model
+    def _default_account_id(self):
+        # Request av must have default account depend on product advance
+        if self._context.get("use_av", False):
+            emp_advance = self.env.ref(
+                "hr_expense_advance_clearing.product_emp_advance"
+            )
+            return emp_advance.property_account_expense_id
+        return super()._default_account_id()
+
+    account_id = fields.Many2one(
+        comodel_name="account.account",
+        default=_default_account_id,
+    )
 
     @api.depends("product_id", "company_id")
     def _compute_from_product_id_company_id(self):
