@@ -12,12 +12,14 @@ class HrExpenseSheet(models.Model):
 
     expense_payments_widget = fields.Text(
         compute="_compute_payments_widget_reconciled_info",
-        groups="account.group_account_invoice,account.group_account_readonly",
+        compute_sudo=True,
     )
 
     def _get_expense_reconciled_info_JSON_values(self):
         self.ensure_one()
         company_currency = self.env.company.currency_id
+        if not self.account_move_id:
+            return []
         content = self.account_move_id._get_reconciled_info_JSON_values()
         # Paid by company can't reconciled because there is not account move.
         if self.account_move_id.journal_id == self.bank_journal_id:
