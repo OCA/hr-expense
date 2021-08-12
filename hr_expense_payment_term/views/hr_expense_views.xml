@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2019 Tecnativa - Ernesto Tejeda
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+
+    <record id="view_hr_expense_sheet_tree" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.tree</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_tree" />
+        <field name="arch" type="xml">
+            <field name="accounting_date" position="after">
+                <field
+                    name="expense_date_due"
+                    widget="remaining_days"
+                    optional="show"
+                    groups="account.group_account_manager"
+                />
+            </field>
+        </field>
+    </record>
+
+    <record id="view_hr_expense_sheet_form" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.form.inherit</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='accounting_date']" position="after">
+                <label
+                    for="expense_payment_term_id"
+                    string="Due Date"
+                    groups="account.group_account_invoice,account.group_account_readonly"
+                    attrs="{'invisible': [('state', 'not in', ['approve', 'post', 'done'])]}"
+                />
+                <div
+                    class="d-flex"
+                    groups="account.group_account_invoice,account.group_account_readonly"
+                    attrs="{'invisible': [('state', 'not in', ['approve', 'post', 'done'])]}"
+                >
+                    <field
+                        name="expense_date_due"
+                        force_save="1"
+                        placeholder="Date"
+                        attrs="{'invisible': [('expense_payment_term_id', '!=', False)]}"
+                    />
+                    <span
+                        class="o_form_label mx-3 oe_edit_only"
+                        attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'submit', 'approve']), ('expense_payment_term_id', '!=', False)]}"
+                    > or </span>
+                    <field name="expense_payment_term_id" placeholder="Terms" />
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
