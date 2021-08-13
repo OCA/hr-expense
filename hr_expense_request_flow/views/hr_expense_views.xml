@@ -4,6 +4,18 @@
         <field name="model">hr.expense.sheet</field>
         <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
         <field name="arch" type="xml">
+            <header position="after">
+                <div
+                    class="alert alert-warning"
+                    role="alert"
+                    attrs="{'invisible': ['|', ('state', '!=', 'submit'), ('ref_request_id', '=', False)]}"
+                    style="margin-bottom:0px;"
+                >
+                    <p><i
+                            class="fa fa-clipboard"
+                        /> This document will be set to "Approved" when the Request is approved.</p>
+                </div>
+            </header>
             <xpath expr="/form/sheet/group/group" position="inside">
                 <field name="ref_request_id" invisible="1" />
             </xpath>
