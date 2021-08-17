@@ -61,6 +61,9 @@ class HRExpense(models.Model):
 
     @api.depends("product_id", "company_id")
     def _compute_from_product_id_company_id(self):
+        # Onchange product for av created by request
+        if self._context.get("default_advance", False):
+            self.onchange_advance()
         super()._compute_from_product_id_company_id()
         # Need advance_amount from context, because default amount was a computed field
         if self.env.context.get("request_advance_amount"):
