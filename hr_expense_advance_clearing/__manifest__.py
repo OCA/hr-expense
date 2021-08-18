@@ -9,7 +9,12 @@
     "license": "AGPL-3",
     "website": "https://github.com/OCA/hr-expense",
     "depends": ["hr_expense"],
-    "data": ["data/advance_product.xml", "views/hr_expense_views.xml"],
+    "data": [
+        "data/advance_product.xml",
+        "views/hr_expense_views.xml",
+        "views/hr_employee_views.xml",
+        "views/hr_employee_public_views.xml",
+    ],
     "installable": True,
     "maintainers": ["kittiu"],
 }
