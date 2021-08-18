@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="hr_employee_public_view_form" model="ir.ui.view">
+        <field name="name">hr.employee.public.form</field>
+        <field name="model">hr.employee.public</field>
+        <field name="inherit_id" ref="hr.hr_employee_public_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_open_advance_clearing"
+                    type="object"
+                    icon="fa-bars"
+                >
+                    <field name="advance_count" string="Advance" widget="statinfo" />
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>
