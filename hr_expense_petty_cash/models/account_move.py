@@ -21,7 +21,7 @@ class AccountMove(models.Model):
 
     @api.constrains("invoice_line_ids", "line_ids")
     def _check_petty_cash_amount(self):
-        petty_cash_env = self.env["petty.cash"]
+        petty_cash_env = self.env["petty.cash"].sudo()
         for rec in self:
             petty_cash = petty_cash_env.search(
                 [("partner_id", "=", rec.partner_id.id)], limit=1
@@ -126,6 +126,9 @@ class AccountMove(models.Model):
                     _("%s is not a petty cash holder") % self.partner_id.name
                 )
             self.invoice_line_ids = self._add_petty_cash_invoice_line(petty_cash)
+            self._onchange_invoice_line_ids()
+            self.line_ids._onchange_price_subtotal()
+            self._onchange_recompute_dynamic_lines()
             if petty_cash.journal_id:
                 # Prevent inconsistent journal_id
                 if (
