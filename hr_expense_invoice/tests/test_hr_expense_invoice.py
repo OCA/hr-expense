@@ -325,9 +325,7 @@ class TestHrExpenseInvoice(common.SavepointCase):
             lambda x: x.debit == 100
         )
         self.assertEqual(line_expense_2.partner_id, self.invoice.partner_id)
-        self.assertEqual(
-            line_expense_2.account_id,
-            self.invoice.line_ids.filtered(
-                lambda l: l.account_internal_type == "payable"
-            ).account_id,
+        line_expense_1 = self.sheet.account_move_id.line_ids.filtered(
+            lambda x: x.debit == 200
         )
+        self.assertNotEqual(line_expense_2.account_id, line_expense_1.account_id)
