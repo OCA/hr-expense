@@ -11,10 +11,8 @@ class AccountPaymentRegister(models.TransientModel):
     def _create_payment_vals_from_wizard(self):
         payment_vals = super()._create_payment_vals_from_wizard()
         expense_sheet_ids = self._context.get("expense_sheet_ids", False)
-        # for case expense not group payments only
-        if expense_sheet_ids and len(expense_sheet_ids) == 1:
-            sheet_id = int("".join([str(sheet_id) for sheet_id in expense_sheet_ids]))
-            payment_vals.update(expense_sheet_id=sheet_id)
+        if expense_sheet_ids:
+            payment_vals.update(expense_sheet_ids=expense_sheet_ids)
         return payment_vals
 
     def _create_payment_vals_from_batch(self, batch_result):
@@ -28,5 +26,5 @@ class AccountPaymentRegister(models.TransientModel):
             sheet_id = sheet_ids.filtered(
                 lambda l: l.account_move_id.id == move_line_ids.move_id.id
             )
-            payment_vals.update(expense_sheet_id=sheet_id.id)
+            payment_vals.update(expense_sheet_ids=sheet_id.ids)
         return payment_vals

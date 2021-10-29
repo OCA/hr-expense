@@ -8,8 +8,7 @@
     "website": "https://github.com/OCA/hr-expense",
     "license": "AGPL-3",
     "category": "Human Resources",
-    "depends": ["hr_expense"],
+    "depends": ["hr_expense_payment"],
     "data": ["views/hr_expense_views.xml"],
-    "post_init_hook": "post_init_hook",
     "installable": True,
 }

@@ -4,20 +4,17 @@
 from odoo.exceptions import UserError
 from odoo.tests.common import Form, TransactionCase
 
-from ..hooks import post_init_hook
-
 
 class TestHrExpenseCancel(TransactionCase):
     def setUp(self):
-        super(TestHrExpenseCancel, self).setUp()
-        self.partner = self.env["res.partner"].create({"name": "Test partner"})
+        super().setUp()
         self.payment_obj = self.env["account.payment"]
         self.account_payment_register = self.env["account.payment.register"]
         self.payment_journal = self.env["account.journal"].search(
             [("type", "in", ["cash", "bank"])], limit=1
         )
 
-        self.main_company = company = self.env.ref("base.main_company")
+        company = self.env.ref("base.main_company")
         self.expense_journal = self.env["account.journal"].create(
             {
                 "name": "Purchase Journal - Test",
@@ -79,74 +76,15 @@ class TestHrExpenseCancel(TransactionCase):
         register_payment = f.save()
         return register_payment
 
-    def test_post_init_hook(self):
-        self.expense_sheet.action_sheet_move_create()
-        payment_wizard = self._get_payment_wizard(self.expense_sheet)
-        payment_wizard.action_create_payments()
-
-        payment = self.payment_obj.search(
-            [("expense_sheet_id", "=", self.expense_sheet.id)]
-        )
-        self.assertEqual(len(payment), 1)
-
-        payment.expense_sheet_id = False
-
-        payment = self.payment_obj.search(
-            [("expense_sheet_id", "=", self.expense_sheet.id)]
-        )
-        self.assertFalse(payment)
-
-        post_init_hook(self.env.cr, self.registry)
-
-        payment = self.payment_obj.search(
-            [("expense_sheet_id", "=", self.expense_sheet.id)]
-        )
-        self.assertEqual(len(payment), 1)
-
-    def test_get_payment_vals(self):
-        self.expense_sheet.action_sheet_move_create()
-
-        payment_wizard = self._get_payment_wizard(self.expense_sheet)
-
-        payment = self.payment_obj.search(
-            [("expense_sheet_id", "=", self.expense_sheet.id)]
-        )
-        self.assertFalse(payment)
-
-        payment_wizard.action_create_payments()
-        payment = self.payment_obj.search(
-            [("expense_sheet_id", "=", self.expense_sheet.id)]
-        )
-        self.assertEqual(len(payment), 1)
-
-    def test_action_sheet_move_create(self):
-        self.expense.payment_mode = "company_account"
-
-        payment = self.payment_obj.search(
-            [("expense_sheet_id", "=", self.expense_sheet.id)]
-        )
-        self.assertFalse(payment)
-
-        self.expense_sheet.action_sheet_move_create()
-        payment = self.payment_obj.search(
-            [("expense_sheet_id", "=", self.expense_sheet.id)]
-        )
-        self.assertEqual(len(payment), 1)
-
     def test_action_cancel_posted(self):
         self.expense_sheet.action_sheet_move_create()
 
-        payment = self.payment_obj.search(
-            [("expense_sheet_id", "=", self.expense_sheet.id)]
-        )
-        self.assertFalse(len(payment), 1)
+        self.assertFalse(len(self.expense_sheet.payment_ids), 1)
         self.assertTrue(self.expense_sheet.account_move_id)
 
         self.expense_sheet.action_cancel()
-        payment = self.payment_obj.search(
-            [("expense_sheet_id", "=", self.expense_sheet.id)]
-        )
-        self.assertFalse(payment)
+
+        self.assertFalse(self.expense_sheet.payment_ids)
         self.assertFalse(self.expense_sheet.account_move_id)
 
     def test_action_cancel_no_update_posted(self):
@@ -160,17 +98,11 @@ class TestHrExpenseCancel(TransactionCase):
         self.expense.payment_mode = "company_account"
         self.expense_sheet.action_sheet_move_create()
 
-        payment = self.payment_obj.search(
-            [("expense_sheet_id", "=", self.expense_sheet.id)]
-        )
-        self.assertEqual(len(payment), 1)
+        self.assertEqual(len(self.expense_sheet.payment_ids), 1)
         self.assertTrue(self.expense_sheet.account_move_id)
 
         self.expense_sheet.action_cancel()
-        payment = self.payment_obj.search(
-            [("expense_sheet_id", "=", self.expense_sheet.id)]
-        )
-        self.assertFalse(payment)
+        self.assertEqual(self.expense_sheet.payment_ids.mapped("state"), ["cancel"])
         self.assertFalse(self.expense_sheet.account_move_id)
 
     def test_action_cancel_own_account(self):
@@ -179,17 +111,11 @@ class TestHrExpenseCancel(TransactionCase):
         payment_wizard = self._get_payment_wizard(self.expense_sheet)
         payment_wizard.action_create_payments()
 
-        payment = self.payment_obj.search(
-            [("expense_sheet_id", "=", self.expense_sheet.id)]
-        )
-        self.assertEqual(len(payment), 1)
+        self.assertEqual(len(self.expense_sheet.payment_ids), 1)
         self.assertTrue(self.expense_sheet.account_move_id)
 
         self.expense_sheet.action_cancel()
-        payment = self.payment_obj.search(
-            [("expense_sheet_id", "=", self.expense_sheet.id)]
-        )
-        self.assertEqual(len(payment), 0)
+        self.assertEqual(self.expense_sheet.payment_ids.mapped("state"), ["cancel"])
         self.assertFalse(self.expense_sheet.account_move_id)
 
     def test_action_cancel_multi_own_account(self):
@@ -199,15 +125,9 @@ class TestHrExpenseCancel(TransactionCase):
         payment_wizard = self._get_payment_wizard(expense_sheet_ids)
         payment_wizard.action_create_payments()
 
-        payment = self.payment_obj.search(
-            [("expense_sheet_id", "=", self.expense_sheet.id)]
-        )
-        self.assertEqual(len(payment), 1)
+        self.assertEqual(len(self.expense_sheet.payment_ids), 1)
         self.assertTrue(self.expense_sheet.account_move_id)
 
         self.expense_sheet.action_cancel()
-        payment = self.payment_obj.search(
-            [("expense_sheet_id", "=", self.expense_sheet.id)]
-        )
-        self.assertEqual(len(payment), 0)
+        self.assertEqual(self.expense_sheet.payment_ids.mapped("state"), ["cancel"])
         self.assertFalse(self.expense_sheet.account_move_id)
