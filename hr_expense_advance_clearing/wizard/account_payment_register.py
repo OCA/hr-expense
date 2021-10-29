@@ -84,7 +84,8 @@ class AccountPaymentRegister(models.TransientModel):
         context = dict(self._context or {})
         active_ids = context.get("active_ids", [])
         move_ids = self.env["account.move"].browse(active_ids)
-        ctx = {"skip_account_move_synchronization": True}
+        ctx = self._context.copy()
+        ctx.update({"skip_account_move_synchronization": True})
         expense_sheet = move_ids.line_ids.expense_id.sheet_id
         emp_advance = self.env.ref("hr_expense_advance_clearing.product_emp_advance")
         advance_account = emp_advance.property_account_expense_id
