@@ -14,6 +14,13 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee__advance_count
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee_base__advance_count
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee_public__advance_count
+msgid "# of Advance"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
 #, python-format
 msgid ""
@@ -22,7 +29,9 @@ msgid ""
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_employee_public_view_form
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_sheet_view_search
+#: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.view_employee_form
 msgid "Advance"
 msgstr ""
 
@@ -39,6 +48,15 @@ msgstr ""
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet__advance_sheet_residual
 msgid "Advance Remaining"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: code:addons/hr_expense_advance_clearing/models/hr_employee_base.py:0
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee__advance_sheet_ids
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee_base__advance_sheet_ids
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee_public__advance_sheet_ids
+#, python-format
+msgid "Advance Sheet"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
@@ -70,6 +88,11 @@ msgid "Amount to clear of this expense sheet in company currency"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#: model:ir.model,name:hr_expense_advance_clearing.model_hr_employee_base
+msgid "Basic Employee"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet__advance_sheet_id
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.view_hr_expense_sheet_form
 msgid "Clear Advance"
@@ -92,12 +115,20 @@ msgid "Clearing Sheet"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_employee__advance_count
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_employee_base__advance_count
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_employee_public__advance_count
+msgid "Count advance sheet in expense report"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
 #: model_terms:ir.actions.act_window,help:hr_expense_advance_clearing.action_hr_expense_sheet_advance_clearing
 msgid "Create a new expense report"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_account_payment_register__display_name
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee_base__display_name
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__display_name
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet__display_name
 msgid "Display Name"
@@ -157,6 +188,7 @@ msgstr ""
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_account_payment_register__id
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee_base__id
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__id
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet__id
 msgid "ID"
@@ -164,6 +196,7 @@ msgstr ""
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_account_payment_register____last_update
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee_base____last_update
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense____last_update
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet____last_update
 msgid "Last Modified on"
