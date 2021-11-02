@@ -1,5 +1,78 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
+
+    <!-- New menus Advance and Expense under My Reports -->
+
+    <record id="action_my_hr_advance_sheet" model="ir.actions.act_window">
+        <field name="name">Advances</field>
+        <field name="res_model">hr.expense.sheet</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph,activity</field>
+        <field name="search_view_id" ref="hr_expense.hr_expense_sheet_view_search" />
+        <field name="domain">[('state', '!=', 'cancel'), ('advance', '=', True)]</field>
+        <field
+            name="context"
+        >{'search_default_my_reports': 1, 'default_advance': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            No advance report found. Let's create one!
+            </p><p>
+            Once you have created your advance, submit it to your manager who will validate it.
+            </p>
+        </field>
+    </record>
+    <record id="action_my_hr_expense_sheet" model="ir.actions.act_window">
+        <field name="name">Expenses</field>
+        <field name="res_model">hr.expense.sheet</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph,activity</field>
+        <field name="search_view_id" ref="hr_expense.hr_expense_sheet_view_search" />
+        <field
+            name="domain"
+        >[('state', '!=', 'cancel'), ('advance', '=', False)]</field>
+        <field name="context">{'search_default_my_reports': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            No expense report found. Let's create one!
+            </p><p>
+            Once you have created your expense, submit it to your manager who will validate it.
+            </p>
+        </field>
+    </record>
+    <menuitem
+        id="menu_my_hr_advance_sheet"
+        sequence="1"
+        parent="hr_expense.menu_hr_expense_sheet_my_reports"
+        action="action_my_hr_advance_sheet"
+        name="Advances"
+    />
+    <menuitem
+        id="menu_my_hr_expense_sheet"
+        sequence="2"
+        parent="hr_expense.menu_hr_expense_sheet_my_reports"
+        action="action_my_hr_expense_sheet"
+        name="Expenses"
+    />
+
+    <!-- End new menus -->
+
+    <record id="hr_expense_view_search" model="ir.ui.view">
+        <field name="name">hr.expense.view.search</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_search" />
+        <field name="arch" type="xml">
+            <separator position="after">
+                <filter
+                    string="Advance"
+                    name="is_advance"
+                    domain="[('advance', '=', True)]"
+                />
+                <filter
+                    string="Expense"
+                    name="is_expense"
+                    domain="[('advance', '=', False)]"
+                />
+            </separator>
+        </field>
+    </record>
     <record id="hr_expense_sheet_view_search" model="ir.ui.view">
         <field name="name">hr.expense.sheet.view.search</field>
         <field name="model">hr.expense.sheet</field>
@@ -47,8 +120,13 @@
         <field name="inherit_id" ref="hr_expense.hr_expense_view_form" />
         <field name="arch" type="xml">
             <h1 position="after">
-                <field name="advance" />
-                <label for="advance" />
+                <field
+                    name="advance"
+                    invisible="not context.get('default_advance')"
+                    readonly="1"
+                    force_save="1"
+                />
+                <label for="advance" invisible="not context.get('default_advance')" />
             </h1>
             <field name="product_id" position="attributes">
                 <attribute
@@ -150,7 +228,7 @@
             <xpath expr="//field[@name='expense_line_ids']" position="attributes">
                 <attribute
                     name="context"
-                >{'default_advance': advance, 'form_view_ref' : 'hr_expense.hr_expense_view_form_without_header', 'default_company_id': company_id, 'default_employee_id': employee_id}</attribute>
+                >{'default_advance': advance, 'search_default_is_advance': advance, 'search_default_is_expense': not advance, 'form_view_ref' : 'hr_expense.hr_expense_view_form_without_header', 'default_company_id': company_id, 'default_employee_id': employee_id}</attribute>
             </xpath>
             <xpath expr="//notebook/page[@name='expenses']" position="after">
                 <page
