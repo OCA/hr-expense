@@ -54,8 +54,10 @@ class HrExpenseSheet(models.Model):
     @api.depends("expense_line_ids")
     def _compute_advance(self):
         for sheet in self:
-            sheet.advance = sheet.expense_line_ids and all(
-                sheet.expense_line_ids.mapped("advance")
+            sheet.advance = (
+                sheet.expense_line_ids
+                and all(sheet.expense_line_ids.mapped("advance"))
+                or self.env.context.get("default_advance")
             )
         return
 

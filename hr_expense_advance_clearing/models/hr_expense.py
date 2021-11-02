@@ -54,9 +54,6 @@ class HrExpense(models.Model):
             self.product_id = self.env.ref(
                 "hr_expense_advance_clearing.product_emp_advance"
             )
-        else:
-            self.product_id = False
-            self.clearing_product_id = False
 
     def _get_account_move_line_values(self):
         move_line_values_by_expense = super()._get_account_move_line_values()

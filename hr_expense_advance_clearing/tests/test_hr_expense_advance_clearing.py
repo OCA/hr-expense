@@ -75,8 +75,9 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         advance=False,
         payment_mode="own_account",
     ):
-        with Form(self.env["hr.expense"]) as expense:
-            expense.advance = advance
+        with Form(
+            self.env["hr.expense"].with_context(default_advance=advance)
+        ) as expense:
             expense.name = description
             expense.employee_id = employee
             if not advance:
