@@ -22,6 +22,7 @@ addon | version | maintainers | summary
 [hr_expense_advance_clearing](hr_expense_advance_clearing/) | 14.0.1.4.0 | [![kittiu](https://github.com/kittiu.png?size=30px)](https://github.com/kittiu) | Employee Advance and Clearing
 [hr_expense_analytic_distribution](hr_expense_analytic_distribution/) | 14.0.1.0.1 |  | HR Expense Analytic Distribution
 [hr_expense_cancel](hr_expense_cancel/) | 14.0.1.0.0 |  | Hr expense cancel
+[hr_expense_invoice](hr_expense_invoice/) | 14.0.1.0.0 |  | Supplier invoices on HR expenses
 [hr_expense_sequence](hr_expense_sequence/) | 14.0.1.0.0 |  | HR expense sequence
 [hr_expense_tier_validation](hr_expense_tier_validation/) | 14.0.1.1.0 | [![ps-tubtim](https://github.com/ps-tubtim.png?size=30px)](https://github.com/ps-tubtim) | Expense Tier Validation
 
