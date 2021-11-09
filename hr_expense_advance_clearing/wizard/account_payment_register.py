@@ -123,7 +123,7 @@ class AccountPaymentRegister(models.TransientModel):
         # i.e. lookup on the advance account on move lines
         account_move_lines_to_reconcile = self.env["account.move.line"]
         for line in payment.move_id.line_ids + expense_sheet.account_move_id.line_ids:
-            if line.account_id == advance_account:
+            if line.account_id == advance_account and not line.reconciled:
                 account_move_lines_to_reconcile |= line
         account_move_lines_to_reconcile.with_context(ctx).reconcile()
         return {"type": "ir.actions.act_window_close"}
