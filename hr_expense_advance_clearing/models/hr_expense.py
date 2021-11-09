@@ -40,6 +40,10 @@ class HrExpense(models.Model):
                 raise ValidationError(
                     _("Employee advance, selected product is not valid")
                 )
+            if expense.account_id != emp_advance.property_account_expense_id:
+                raise ValidationError(
+                    _("Employee advance, account must be the same payable account")
+                )
             if expense.tax_ids:
                 raise ValidationError(_("Employee advance, all taxes must be removed"))
             if expense.payment_mode != "own_account":

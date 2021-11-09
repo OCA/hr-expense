@@ -45,9 +45,14 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
                 "reconcile": True,
             }
         )
-        cls.emp_advance = cls.env.ref(
-            "hr_expense_advance_clearing." "product_emp_advance"
+        cls.account_sales = cls.env["account.account"].create(
+            {
+                "code": "X1020",
+                "name": "Product Sales - (test)",
+                "user_type_id": cls.env.ref("account.data_account_type_revenue").id,
+            }
         )
+        cls.emp_advance = cls.env.ref("hr_expense_advance_clearing.product_emp_advance")
         cls.emp_advance.property_account_expense_id = advance_account
         # Create advance expense 1,000
         cls.advance = cls._create_expense_sheet(
@@ -74,6 +79,7 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         amount,
         advance=False,
         payment_mode="own_account",
+        account=False,
     ):
         with Form(
             self.env["hr.expense"].with_context(default_advance=advance)
@@ -84,6 +90,8 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
                 expense.product_id = product
             expense.unit_amount = amount
             expense.payment_mode = payment_mode
+            if account:
+                expense.account_id = account
         expense = expense.save()
         expense.tax_ids = False  # Test no vat
         return expense
@@ -123,6 +131,17 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         # Advance Sheet can't be clearing at the same time.
         with self.assertRaises(ValidationError):
             self.advance.advance_sheet_id = self.advance
+        # Advance Sheet can't change account is not the equal
+        # Account on Advance Expense's product.
+        with self.assertRaises(ValidationError):
+            expense = self._create_expense(
+                "Advance 1,000",
+                self.employee,
+                self.emp_advance,
+                1.0,
+                advance=True,
+                account=self.account_sales,
+            )
         # Advance Sheet should not have > 1 expense lines
         with self.assertRaises(ValidationError):
             expense = self._create_expense(
