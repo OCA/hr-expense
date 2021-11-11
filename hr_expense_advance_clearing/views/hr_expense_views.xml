@@ -158,6 +158,9 @@
         <field name="model">hr.expense.sheet</field>
         <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_tree" />
         <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="advance_sheet_id" optional="show" />
+            </field>
             <field name="total_amount" position="after">
                 <field name="clearing_residual" optional="show" />
             </field>
