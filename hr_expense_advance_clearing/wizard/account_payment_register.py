@@ -73,7 +73,8 @@ class AccountPaymentRegister(models.TransientModel):
 
     def action_create_payments(self):
         if self._context.get("hr_return_advance", False):
-            return self.expense_post_return_advance()
+            self.expense_post_return_advance()
+            return {"type": "ir.actions.act_window_close"}
         return super().action_create_payments()
 
     def expense_post_return_advance(self):
@@ -125,5 +126,5 @@ class AccountPaymentRegister(models.TransientModel):
         for line in payment.move_id.line_ids + expense_sheet.account_move_id.line_ids:
             if line.account_id == advance_account and not line.reconciled:
                 account_move_lines_to_reconcile |= line
-        account_move_lines_to_reconcile.with_context(ctx).reconcile()
-        return {"type": "ir.actions.act_window_close"}
+        res = account_move_lines_to_reconcile.with_context(ctx).reconcile()
+        return res
