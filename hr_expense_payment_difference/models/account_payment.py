@@ -18,6 +18,6 @@ class AccountPayment(models.Model):
                 active_id = context.get("active_id", False)
                 expense_sheet = self.env["hr.expense.sheet"].browse(active_id)
                 payment.payment_difference = (
-                    context.get("default_amount") - expense_sheet.residual
+                    context.get("default_amount") - expense_sheet.difference_residual
                 )
         return res

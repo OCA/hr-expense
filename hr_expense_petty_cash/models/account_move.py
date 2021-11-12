@@ -37,9 +37,9 @@ class AccountMove(models.Model):
 
     @api.constrains("invoice_line_ids", "line_ids")
     def _check_petty_cash_amount(self):
-        PettyCash = self.env["petty.cash"]
+        petty_cash_env = self.env["petty.cash"]
         for rec in self:
-            petty_cash = PettyCash.search(
+            petty_cash = petty_cash_env.search(
                 [("partner_id", "=", rec.partner_id.id)], limit=1
             )
             if petty_cash and rec.invoice_line_ids:
@@ -127,7 +127,6 @@ class AccountMove(models.Model):
     def _onchange_is_petty_cash(self):
         self.line_ids = False
         self.invoice_line_ids = False
-        ctx = self._context.copy()
         if self.is_petty_cash:
             if not self.partner_id:
                 raise ValidationError(_("Please select petty cash holder"))
@@ -141,10 +140,18 @@ class AccountMove(models.Model):
                 )
             self.invoice_line_ids = self._add_petty_cash_invoice_line(petty_cash)
             if petty_cash.journal_id:
-                ctx.update(
-                    {
-                        "default_journal_id": petty_cash.journal_id.id,
-                        "default_type": "general",
-                    }
-                )
-        self.journal_id = self.with_context(ctx)._get_default_journal()
+                # Prevent inconsistent journal_id
+                if (
+                    (
+                        self.type in self.get_sale_types(include_receipts=True)
+                        and petty_cash.journal_id.type == "sale"
+                    )
+                    or (
+                        self.type in self.get_purchase_types(include_receipts=True)
+                        and petty_cash.journal_id.type == "purchase"
+                    )
+                    or (
+                        self.type == "entry" and petty_cash.journal_id.type == "general"
+                    )
+                ):
+                    self.journal_id = petty_cash.journal_id.id

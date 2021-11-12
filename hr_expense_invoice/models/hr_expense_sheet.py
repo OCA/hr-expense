@@ -1,5 +1,5 @@
-# Copyright 2015 Pedro M. Baeza <pedro.baeza@tecnativa.com>
-# Copyright 2017 Vicent Cubells <vicent.cubells@tecnativa.com>
+# Copyright 2015 Tecnativa - Pedro M. Baeza
+# Copyright 2017 Tecnativa - Vicent Cubells
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import _, api, fields, models
@@ -11,31 +11,32 @@ class HrExpenseSheet(models.Model):
     _inherit = "hr.expense.sheet"
 
     invoice_count = fields.Integer(compute="_compute_invoice_count")
-    invoice_fully_created = fields.Boolean(compute="_compute_invoice_count")
 
     def action_sheet_move_create(self):
         expense_line_ids = self.mapped("expense_line_ids").filtered("invoice_id")
         self._validate_expense_invoice(expense_line_ids)
-        res = super(HrExpenseSheet, self).action_sheet_move_create()
+        res = super().action_sheet_move_create()
         for sheet in self:
             move_lines = res[sheet.id].line_ids
-            expense_line_ids = self.expense_line_ids.filtered("invoice_id")
-            c_move_lines = self.env["account.move.line"]
-            for line in expense_line_ids:
-                partner = line.invoice_id.partner_id.commercial_partner_id
-                c_move_lines |= move_lines.filtered(
-                    lambda x: x.partner_id == partner and x.debit and not x.reconciled
+            if sheet.payment_mode != "own_account":
+                continue
+            for line in self.expense_line_ids.filtered("invoice_id"):
+                c_move_lines = move_lines.filtered(
+                    lambda x: x.expense_id == line
+                    and x.partner_id == line.invoice_id.commercial_partner_id
                 )
                 c_move_lines |= line.invoice_id.line_ids.filtered(
-                    lambda x: x.account_id
-                    == line.invoice_id.line_ids.filtered(
-                        lambda l: l.account_internal_type == "payable"
-                    ).account_id
-                    and x.credit
+                    lambda x: x.account_id.internal_type == "payable"
                     and not x.reconciled
                 )
-            c_move_lines.with_context(use_hr_expense_invoice=True).reconcile()
+                c_move_lines.with_context(use_hr_expense_invoice=True).reconcile()
         return res
+
+    def set_to_paid(self):
+        """Don't mark sheet as paid when reconciling invoices."""
+        if self.env.context.get("use_hr_expense_invoice"):
+            return True
+        return super().set_to_paid()
 
     def _compute_invoice_count(self):
         Invoice = self.env["account.move"]
@@ -44,12 +45,10 @@ class HrExpenseSheet(models.Model):
             sheet.invoice_count = (
                 can_read and len(sheet.expense_line_ids.mapped("invoice_id")) or 0
             )
-            sheet.invoice_fully_created = not any(
-                self.mapped("expense_line_ids").filtered(lambda l: not l.invoice_id)
-            )
 
     @api.model
     def _validate_expense_invoice(self, expense_lines):
+        """Check several criteria that needs to be met for creating the move."""
         DecimalPrecision = self.env["decimal.precision"]
         precision = DecimalPrecision.precision_get("Product Price")
         invoices = expense_lines.mapped("invoice_id")

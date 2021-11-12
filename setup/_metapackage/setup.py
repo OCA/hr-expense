@@ -9,14 +9,18 @@ setuptools.setup(
     version=version,
     install_requires=[
         'odoo13-addon-hr_expense_advance_clearing',
+        'odoo13-addon-hr_expense_advance_clearing_sequence',
         'odoo13-addon-hr_expense_cancel',
         'odoo13-addon-hr_expense_invoice',
         'odoo13-addon-hr_expense_payment_difference',
+        'odoo13-addon-hr_expense_petty_cash',
+        'odoo13-addon-hr_expense_petty_cash_sequence',
         'odoo13-addon-hr_expense_sequence',
         'odoo13-addon-hr_expense_tier_validation',
     ],
     classifiers=[
         'Programming Language :: Python',
         'Framework :: Odoo',
+        'Framework :: Odoo :: 13.0',
     ]
 )

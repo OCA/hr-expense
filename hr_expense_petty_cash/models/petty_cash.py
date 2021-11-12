@@ -9,8 +9,9 @@ class PettyCash(models.Model):
     _description = "Petty Cash"
     _rec_name = "partner_id"
 
+    active = fields.Boolean(default=True)
     partner_id = fields.Many2one(
-        comodel_name="res.partner", string="Petty Cash Holder", required=True
+        comodel_name="res.partner", string="Petty Cash Holder", required=True,
     )
     account_id = fields.Many2one(
         comodel_name="account.account", string="Petty Cash Account", required=True
