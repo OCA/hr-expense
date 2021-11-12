@@ -158,6 +158,12 @@ msgstr ""
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
 #, python-format
+msgid "Employee advance, account must be the same payable account"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+#, python-format
 msgid "Employee advance, all taxes must be removed"
 msgstr ""
 
