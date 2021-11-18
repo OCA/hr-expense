@@ -95,6 +95,8 @@ class HrExpenseSheet(models.Model):
         res = super().action_sheet_move_create()
         # Reconcile advance of this sheet with the advance_sheet
         emp_advance = self.env.ref("hr_expense_advance_clearing.product_emp_advance")
+        ctx = self._context.copy()
+        ctx.update({"skip_account_move_synchronization": True})
         for sheet in self:
             advance_residual = float_compare(
                 sheet.advance_sheet_residual,
@@ -117,7 +119,7 @@ class HrExpenseSheet(models.Model):
                     ]
                 )
             )
-            adv_move_lines.reconcile()
+            adv_move_lines.with_context(ctx).reconcile()
             # Update state on clearing advance when advance residual > total amount
             if sheet.advance_sheet_id and advance_residual != -1:
                 sheet.write({"state": "done"})
