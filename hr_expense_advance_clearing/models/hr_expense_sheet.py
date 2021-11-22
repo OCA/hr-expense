@@ -137,15 +137,21 @@ class HrExpenseSheet(models.Model):
         vals["context"] = context1
         return vals
 
+    def get_domain_advance_sheet_expense_line(self):
+        return self.advance_sheet_id.expense_line_ids.filtered("clearing_product_id")
+
+    def create_clearing_expense_line(self, line):
+        clear_advance = self._prepare_clear_advance(line)
+        clearing_line = self.env["hr.expense"].new(clear_advance)
+        return clearing_line
+
     @api.onchange("advance_sheet_id")
     def _onchange_advance_sheet_id(self):
         self.expense_line_ids -= self.expense_line_ids.filtered("av_line_id")
         self.advance_sheet_id.expense_line_ids.sudo().read()  # prefetch
-        for line in self.advance_sheet_id.expense_line_ids.filtered(
-            "clearing_product_id"
-        ):
-            clear_advance = self._prepare_clear_advance(line)
-            self.expense_line_ids += self.env["hr.expense"].new(clear_advance)
+        lines = self.get_domain_advance_sheet_expense_line()
+        for line in lines:
+            self.expense_line_ids += self.create_clearing_expense_line(line)
 
     def _prepare_clear_advance(self, line):
         # Prepare the clearing expense
