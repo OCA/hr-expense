@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<!-- pylint:disable=dangerous-view-replace-wo-priority -->
 <odoo>
     <record id="view_hr_expense_sheet_tree" model="ir.ui.view">
         <field name="name">hr.expense.sheet.tree.payment.state</field>

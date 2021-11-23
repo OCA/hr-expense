@@ -1,27 +1,21 @@
-# -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
+# Copyright 2021 Camptocamp SA
+# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
-from odoo import fields, models
-
-PAYMENT_STATE_SELECTION = [
-        ('not_paid', 'Not Paid'),
-        ('in_payment', 'In Payment'),
-        ('paid', 'Paid'),
-        ('partial', 'Partially Paid'),
-        ('reversed', 'Reversed'),
-        ('invoicing_legacy', 'Invoicing App Legacy'),
-]
+from odoo import models
 
 
 class AccountMove(models.Model):
     _inherit = "account.move"
 
-    payment_state = fields.Selection(PAYMENT_STATE_SELECTION, string="Payment Status", store=True,
-        readonly=True, copy=False, tracking=True, compute='_compute_amount')
-
-    def _payment_state_matters(self):
-        ''' Determines when new_pmt_state must be upated.
-        Method created to allow overrides.
-        :return: Boolean '''
+    def is_invoice(self, include_receipts=False):
+        # Override move type check in the context of hr.expense.sheet payment_state computation,
+        # because the move linked to an expense sheet is of type entry.
         self.ensure_one()
-        return self.is_invoice(include_receipts=True)
+        if self.env.context.get("payment_state_matters") and self.line_ids.expense_id:
+            return True
+        return super().is_invoice(include_receipts)
+
+    def _compute_amount(self):
+        # add key in the context of hr.expense.sheet payment_state computation
+        self = self.with_context(payment_state_matters=True)
+        return super()._compute_amount()
