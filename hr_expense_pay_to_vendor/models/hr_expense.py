@@ -88,7 +88,10 @@ class HrExpenseSheet(models.Model):
 
     def action_sheet_move_create(self):
         # For expense paid by copany to vendor, only set state to post
-        res = super().action_sheet_move_create()
+        # Skip create payment (if you install module hr_expense_payment)
+        res = super(
+            HrExpenseSheet, self.with_context(skip_create_payment_company_account=True)
+        ).action_sheet_move_create()
         to_post = self.filtered(
             lambda l: l.payment_mode == "company_account" and l.vendor_id
         )
