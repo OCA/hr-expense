@@ -12,7 +12,8 @@ class AccountMoveLine(models.Model):
         payment = self.env["account.payment"].search(
             [("move_id", "=", self.move_id.id)]
         )
-        if payment:
+        payment_type = self._context.get("default_payment_type", False)
+        if payment and payment_type == "outbound":
             expense_sheet = payment.expense_sheet_ids
             expense_sheet.write({"state": "post"})
         return res
