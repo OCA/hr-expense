@@ -1,0 +1,174 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* hr_expense_exception
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: hr_expense_exception
+#: model_terms:ir.ui.view,arch_db:hr_expense_exception.view_hr_expense_sheet_form
+msgid "<strong>There are exceptions blocking this Expense Report:</strong>"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.model.fields,field_description:hr_expense_exception.field_exception_rule__model
+msgid "Apply on"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model_terms:ir.ui.view,arch_db:hr_expense_exception.hr_expense_sheet_view_search
+msgid "Blocked in Draft"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model_terms:ir.ui.view,arch_db:hr_expense_exception.view_hr_expense_sheet_form
+msgid ""
+"Click here to be able to confirm this Agreement regardless of the "
+"exceptions."
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.model.fields,field_description:hr_expense_exception.field_exception_rule__display_name
+#: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__display_name
+#: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense__display_name
+#: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense_sheet__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.model,name:hr_expense_exception.model_exception_rule
+msgid "Exception Rule"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense_sheet__exception_ids
+msgid "Exceptions"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense_sheet__exceptions_summary
+msgid "Exceptions Summary"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__exception_ids
+msgid "Exceptions to resolve"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.model,name:hr_expense_exception.model_hr_expense
+#: model:ir.model.fields.selection,name:hr_expense_exception.selection__exception_rule__model__hr_expense
+msgid "Expense"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.model,name:hr_expense_exception.model_hr_expense_sheet
+#: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__related_model_id
+#: model:ir.model.fields.selection,name:hr_expense_exception.selection__exception_rule__model__hr_expense_sheet
+msgid "Expense Report"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.actions.act_window,name:hr_expense_exception.action_expense_sheet_test_tree
+#: model:ir.ui.menu,name:hr_expense_exception.menu_expense_sheet_test
+msgid "Expense Report Exception Rules"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.model.fields,field_description:hr_expense_exception.field_exception_rule__expense_sheet_ids
+msgid "Expense Reports"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:exception.rule,description:hr_expense_exception.exl_excep_qty_check
+msgid "Expense line quantity must be positive"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.model,name:hr_expense_exception.model_expense_sheet_exception_confirm
+msgid "Expense report exception wizard"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.actions.server,name:hr_expense_exception.ir_cron_test_expense_except_ir_actions_server
+#: model:ir.cron,cron_name:hr_expense_exception.ir_cron_test_expense_except
+#: model:ir.cron,name:hr_expense_exception.ir_cron_test_expense_except
+msgid "Expense: Test Draft Expense Exception"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.model.fields,field_description:hr_expense_exception.field_exception_rule__id
+#: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__id
+#: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense__id
+#: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense_sheet__id
+msgid "ID"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__ignore
+#: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense__ignore_exception
+#: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense_sheet__ignore_exception
+#: model_terms:ir.ui.view,arch_db:hr_expense_exception.view_hr_expense_sheet_form
+msgid "Ignore Exceptions"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.model.fields,field_description:hr_expense_exception.field_exception_rule____last_update
+#: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm____last_update
+#: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense____last_update
+#: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense_sheet____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense_sheet__main_exception_id
+msgid "Main Exception"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:exception.rule,description:hr_expense_exception.ex_excep_no_email
+msgid "No Email for Employee"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:exception.rule,name:hr_expense_exception.ex_excep_no_email
+msgid "No email on employee"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:ir.actions.act_window,name:hr_expense_exception.action_expense_sheet_exception_confirm
+msgid "Outstanding exceptions to manage"
+msgstr ""
+
+#. module: hr_expense_exception
+#: model:exception.rule,name:hr_expense_exception.exl_excep_qty_check
+msgid "Quantity not positive"
+msgstr ""
