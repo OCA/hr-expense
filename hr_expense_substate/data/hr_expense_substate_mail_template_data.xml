@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="mail_template_data_hr_expense_substate_verified" model="mail.template">
+        <field name="name">Verified</field>
+        <field name="model_id" ref="hr_expense.model_hr_expense_sheet" />
+        <field name="subject">Your expense report ${object.name} is verified</field>
+        <field name="use_default_to" eval="True" />
+        <field name="body_html" type="html">
+            <div>
+    Dear ${object.employee_id.name or 'requester'},<br />
+    This email is to inform that your expense report ${object.name} was verified by approver team.
+       <br /><br />
+    Thank you,
+    <br />
+</div>
+        </field>
+        <field name="auto_delete" eval="True" />
+    </record>
+</odoo>
