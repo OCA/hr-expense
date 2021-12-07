@@ -11,6 +11,7 @@ setuptools.setup(
         'odoo14-addon-hr_expense_advance_clearing',
         'odoo14-addon-hr_expense_analytic_distribution',
         'odoo14-addon-hr_expense_cancel',
+        'odoo14-addon-hr_expense_exception',
         'odoo14-addon-hr_expense_invoice',
         'odoo14-addon-hr_expense_journal',
         'odoo14-addon-hr_expense_sequence',
