@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.hr.expense</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="hr_expense.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='expenses_setting_container']" position="inside">
+                <div class="col-12 col-lg-6 o_setting_box" id="expense_policy_settings">
+                    <div class="o_setting_left_pane" />
+                    <div class="o_setting_right_pane">
+                        <span class="o_form_label">Expense Cancellation Policy</span>
+                        <div class="text-muted">
+                            Set the cancellation policy to standard by default.
+                            You can configure 'state' that back state to submit or approved,
+                            when you 'cancel' expense sheet on state 'posted'.
+                        </div>
+                        <div class="content-group">
+                            <div class="row mt16">
+                                <label
+                                    string="Policy"
+                                    for="expense_cancel_policy"
+                                    class="col-lg-3 o_light_label"
+                                />
+                                <field name="expense_cancel_policy" />
+                            </div>
+                            <div class="row">
+                                <label
+                                    string="State"
+                                    for="expense_cancel_state"
+                                    class="col-lg-3 o_light_label"
+                                />
+                                <field name="expense_cancel_state" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
