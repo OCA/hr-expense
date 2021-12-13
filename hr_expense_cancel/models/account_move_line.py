@@ -9,11 +9,11 @@ class AccountMoveLine(models.Model):
 
     def remove_move_reconcile(self):
         res = super().remove_move_reconcile()
-        payment = self.env["account.payment"].search(
-            [("move_id", "=", self.move_id.id)]
+        payments = self.env["account.payment"].search(
+            [("move_id", "in", self.mapped("move_id").ids)]
         )
-        payment_type = self._context.get("default_payment_type", False)
-        if payment and payment_type == "outbound":
-            expense_sheet = payment.expense_sheet_ids
-            expense_sheet.write({"state": "post"})
+        for payment in payments:
+            if payment.payment_type == "outbound":
+                expense_sheets = payments.mapped("expense_sheet_ids")
+                expense_sheets.write({"state": "post"})
         return res
