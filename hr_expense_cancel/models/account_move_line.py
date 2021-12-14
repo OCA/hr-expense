@@ -12,8 +12,8 @@ class AccountMoveLine(models.Model):
         payments = self.env["account.payment"].search(
             [("move_id", "in", self.mapped("move_id").ids)]
         )
-        payment_type = self._context.get("default_payment_type", False)
-        if payments and payment_type == "outbound":
-            expense_sheets = payments.mapped("expense_sheet_ids")
-            expense_sheets.write({"state": "post"})
+        for payment in payments:
+            if payment.payment_type == "outbound":
+                expense_sheets = payments.mapped("expense_sheet_ids")
+                expense_sheets.write({"state": "post"})
         return res
