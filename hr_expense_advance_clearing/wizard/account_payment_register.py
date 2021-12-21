@@ -5,18 +5,20 @@ from werkzeug.urls import url_encode
 
 from odoo import _, api, models
 from odoo.exceptions import UserError
+from odoo.models import BaseModel
 
 
 class AccountPaymentRegister(models.TransientModel):
     _inherit = "account.payment.register"
 
-    def _get_default_advance(self):
-        """ This function is default_get from return advance only """
-        return {}
+    def _get_default_advance(self, fields_list):
+        """ Call default_get from BaseModel """
+        defaults = BaseModel.default_get(self, fields_list)
+        return defaults
 
     def _default_return_advance(self, fields_list):
         """ OVERRIDE: lines without check account_internal_type for return advance only """
-        res = self._get_default_advance()
+        res = self._get_default_advance(fields_list)
         if "line_ids" in fields_list:
             lines = (
                 self.env["account.move"]
