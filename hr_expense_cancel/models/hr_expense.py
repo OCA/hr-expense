@@ -13,6 +13,7 @@ class HrExpenseSheet(models.Model):
         for sheet in self:
             account_move = sheet.account_move_id
             # Unlink Journal Entry on Expense Sheet
+            sheet.account_move_id.line_ids.remove_move_reconcile()
             sheet.account_move_id = False
             if account_move.exists():
                 # Cancel move
