@@ -54,15 +54,10 @@
             </xpath>
         </field>
     </record>
-    <record id="view_hr_expense_sheet_dashboard_tree_header" model="ir.ui.view">
-        <field
-            name="name"
-        >hr_expense_exception.view_hr_expense_sheet_dashboard_tree_header</field>
+    <record id="view_hr_expense_sheet_tree" model="ir.ui.view">
+        <field name="name">hr_expense_exception.view_hr_expense_sheet_tree</field>
         <field name="model">hr.expense.sheet</field>
-        <field
-            name="inherit_id"
-            ref="hr_expense.view_hr_expense_sheet_dashboard_tree_header"
-        />
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_tree" />
         <field name="arch" type="xml">
             <field name="state" position="after">
                 <field name="main_exception_id" />
