@@ -73,7 +73,8 @@ class AccountPaymentRegister(models.TransientModel):
 
     def action_create_payments(self):
         if self._context.get("hr_return_advance", False):
-            return self.expense_post_return_advance()
+            self.expense_post_return_advance()
+            return {"type": "ir.actions.act_window_close"}
         return super().action_create_payments()
 
     def expense_post_return_advance(self):
@@ -84,7 +85,8 @@ class AccountPaymentRegister(models.TransientModel):
         context = dict(self._context or {})
         active_ids = context.get("active_ids", [])
         move_ids = self.env["account.move"].browse(active_ids)
-        ctx = {"skip_account_move_synchronization": True}
+        ctx = self._context.copy()
+        ctx.update({"skip_account_move_synchronization": True})
         expense_sheet = move_ids.line_ids.expense_id.sheet_id
         emp_advance = self.env.ref("hr_expense_advance_clearing.product_emp_advance")
         advance_account = emp_advance.property_account_expense_id
@@ -122,7 +124,7 @@ class AccountPaymentRegister(models.TransientModel):
         # i.e. lookup on the advance account on move lines
         account_move_lines_to_reconcile = self.env["account.move.line"]
         for line in payment.move_id.line_ids + expense_sheet.account_move_id.line_ids:
-            if line.account_id == advance_account:
+            if line.account_id == advance_account and not line.reconciled:
                 account_move_lines_to_reconcile |= line
-        account_move_lines_to_reconcile.with_context(ctx).reconcile()
-        return {"type": "ir.actions.act_window_close"}
+        res = account_move_lines_to_reconcile.with_context(ctx).reconcile()
+        return res

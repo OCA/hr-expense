@@ -67,6 +67,11 @@ msgid "Needs my Review"
 msgstr ""
 
 #. module: hr_expense_tier_validation
+#: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__next_review
+msgid "Next Review"
+msgstr ""
+
+#. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__rejected
 msgid "Rejected"
 msgstr ""
