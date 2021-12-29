@@ -1,8 +1,6 @@
 # Copyright 2020 Ecosoft Co., Ltd (https://ecosoft.co.th/)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html)
 
-from werkzeug.urls import url_encode
-
 from odoo import _, api, models
 from odoo.exceptions import UserError
 
@@ -106,17 +104,20 @@ class AccountPaymentRegister(models.TransientModel):
         )
         payment.action_post()
 
+        redirect_link = (
+            "<a href=# data-oe-model=account.payment data-oe-id={}>{}</a>".format(
+                payment.id, payment.name
+            )
+        )  # Account Payment link
         # Log the return advance in the chatter
         body = _(
-            "A remaining advance return of %s %s with the reference "
-            "<a href='/mail/view?%s'>%s</a> related to your expense %s "
-            "has been made."
-        ) % (
-            payment.amount,
-            payment.currency_id.symbol,
-            url_encode({"model": "account.payment", "res_id": payment.id}),
-            payment.name,
-            expense_sheet.name,
+            "A remaining advance return of {} {} with the reference "
+            "{} related to your expense {} has been made.".format(
+                payment.amount,
+                payment.currency_id.symbol,
+                redirect_link,
+                expense_sheet.name,
+            )
         )
         expense_sheet.message_post(body=body)
 
