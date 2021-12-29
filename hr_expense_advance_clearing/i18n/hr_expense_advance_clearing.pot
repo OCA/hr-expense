@@ -24,8 +24,8 @@ msgstr ""
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
 #, python-format
 msgid ""
-"A remaining advance return of %s %s with the reference <a "
-"href='/mail/view?%s'>%s</a> related to your expense %s has been made."
+"A remaining advance return of {} {} with the reference {} related to your "
+"expense {} has been made."
 msgstr ""
 
 #. module: hr_expense_advance_clearing
