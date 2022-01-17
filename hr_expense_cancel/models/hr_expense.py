@@ -107,7 +107,7 @@ class HrExpenseSheet(models.Model):
             account_move = sheet.account_move_id
             sheet.account_move_id = False
             payments = self.env["account.payment"].search(
-                [("expense_sheet_id", "=", sheet.id), ("state", "!=", "cancelled")]
+                [("expense_sheet_id", "=", sheet.id), ("state", "!=", "cancel")]
             )
             # case : cancel invoice from hr_expense
             self._remove_reconcile_hr_invoice(account_move)
@@ -153,7 +153,7 @@ class HrExpenseSheet(models.Model):
 
     def _cancel_payments(self, payments):
         for rec in payments:
-            rec.move_id.with_context({"force_delete": True}).unlink()
+            rec.move_id.button_cancel()
 
     def action_register_payment(self):
         action = super().action_register_payment()

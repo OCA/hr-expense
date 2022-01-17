@@ -168,7 +168,10 @@ class TestHrExpenseCancel(TransactionCase):
 
         self.expense_sheet.action_cancel()
         payment = self.payment_obj.search(
-            [("expense_sheet_id", "=", self.expense_sheet.id)]
+            [
+                ("expense_sheet_id", "=", self.expense_sheet.id),
+                ("state", "!=", "cancel"),
+            ]
         )
         self.assertFalse(payment)
         self.assertFalse(self.expense_sheet.account_move_id)
@@ -187,9 +190,12 @@ class TestHrExpenseCancel(TransactionCase):
 
         self.expense_sheet.action_cancel()
         payment = self.payment_obj.search(
-            [("expense_sheet_id", "=", self.expense_sheet.id)]
+            [
+                ("expense_sheet_id", "=", self.expense_sheet.id),
+                ("state", "!=", "cancel"),
+            ]
         )
-        self.assertEqual(len(payment), 0)
+        self.assertFalse(payment)
         self.assertFalse(self.expense_sheet.account_move_id)
 
     def test_action_cancel_multi_own_account(self):
@@ -207,7 +213,10 @@ class TestHrExpenseCancel(TransactionCase):
 
         self.expense_sheet.action_cancel()
         payment = self.payment_obj.search(
-            [("expense_sheet_id", "=", self.expense_sheet.id)]
+            [
+                ("expense_sheet_id", "=", self.expense_sheet.id),
+                ("state", "!=", "cancel"),
+            ]
         )
-        self.assertEqual(len(payment), 0)
+        self.assertFalse(payment)
         self.assertFalse(self.expense_sheet.account_move_id)
