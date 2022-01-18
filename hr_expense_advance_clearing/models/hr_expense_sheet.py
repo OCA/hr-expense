@@ -134,6 +134,7 @@ class HrExpenseSheet(models.Model):
         if context1:
             context1 = safe_eval(context1)
         context1["default_advance_sheet_id"] = self.id
+        context1["default_employee_id"] = self.employee_id.id
         vals["context"] = context1
         return vals
 
