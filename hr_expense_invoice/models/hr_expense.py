@@ -32,7 +32,7 @@ class HrExpense(models.Model):
                 {
                     "product_id": self.product_id.id,
                     "name": self.name,
-                    "price_unit": self.unit_amount,
+                    "price_unit": self.unit_amount or self.total_amount,
                     "quantity": self.quantity,
                     "account_id": self.account_id.id,
                     "analytic_account_id": self.analytic_account_id.id,
