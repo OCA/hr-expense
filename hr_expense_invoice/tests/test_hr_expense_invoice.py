@@ -95,7 +95,7 @@ class TestHrExpenseInvoice(common.SavepointCase):
         action = sheet.action_register_payment()
         ctx = action.get("context")
         with Form(
-            self.account_payment_register.with_context(ctx),
+            self.account_payment_register.with_context(**ctx),
             view="account.view_account_payment_register_form",
         ) as f:
             f.journal_id = self.cash_journal
@@ -118,7 +118,7 @@ class TestHrExpenseInvoice(common.SavepointCase):
         self.assertFalse(self.sheet.account_move_id)
         # We post journal entries
         self.sheet.with_context(
-            {"default_expense_line_ids": self.expense.id}
+            default_expense_line_ids=self.expense.id
         ).action_sheet_move_create()
         self.assertEqual(self.sheet.state, "post")
         self.assertTrue(self.sheet.account_move_id)
@@ -143,7 +143,7 @@ class TestHrExpenseInvoice(common.SavepointCase):
             "active_model": "account.move",
         }
         with Form(
-            self.account_payment_register.with_context(ctx),
+            self.account_payment_register.with_context(**ctx),
             view="account.view_account_payment_register_form",
         ) as f:
             f.amount = 100.0
@@ -161,13 +161,13 @@ class TestHrExpenseInvoice(common.SavepointCase):
         self.assertEqual(self.invoice.state, "draft")
         with self.assertRaises(UserError):
             self.sheet.with_context(
-                {"default_expense_line_ids": self.expense.id}
+                default_expense_line_ids=self.expense.id
             ).action_sheet_move_create()
         self.invoice.action_post()
         self.assertEqual(self.invoice.state, "posted")
         # We post journal entries
         self.sheet.with_context(
-            {"default_expense_line_ids": self.expense.id}
+            default_expense_line_ids=self.expense.id
         ).action_sheet_move_create()
         self.assertEqual(self.sheet.state, "post")
         self.assertTrue(self.sheet.account_move_id)
@@ -188,13 +188,12 @@ class TestHrExpenseInvoice(common.SavepointCase):
         self.invoice.action_post()  # residual = 100.0
         self.expense.invoice_id = self.invoice
         # Test that invoice can't register payment by itself
-        ctx = {
-            "active_ids": [self.invoice.id],
-            "active_id": self.invoice.id,
-            "active_model": "account.move",
-        }
         with Form(
-            self.account_payment_register.with_context(ctx),
+            self.account_payment_register.with_context(
+                active_ids=self.invoice.id,
+                active_id=self.invoice.id,
+                active_model="account.move",
+            ),
             view="account.view_account_payment_register_form",
         ) as f:
             f.amount = 100.0
@@ -209,7 +208,7 @@ class TestHrExpenseInvoice(common.SavepointCase):
         self.assertEqual(self.invoice.state, "posted")
         # We post journal entries
         self.sheet.with_context(
-            {"default_expense_line_ids": self.expense.id}
+            default_expense_line_ids=self.expense.id
         ).action_sheet_move_create()
         self.assertEqual(self.sheet.state, "done")
         self.assertTrue(self.sheet.account_move_id)
@@ -241,7 +240,7 @@ class TestHrExpenseInvoice(common.SavepointCase):
         self.assertEqual(self.invoice.state, "posted")
         # We post journal entries
         self.sheet.with_context(
-            {"default_expense_line_ids": self.expense.id}
+            default_expense_line_ids=self.expense.id
         ).action_sheet_move_create()
         self.assertEqual(self.sheet.state, "post")
         self.assertTrue(self.sheet.account_move_id)
