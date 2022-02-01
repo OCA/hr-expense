@@ -20,7 +20,7 @@ class TestHrExpenseSequence(SavepointCase):
         cls.expense = cls.create_expense(cls, "Expense")
 
     def create_expense(self, name):
-        """ Returns an open expense """
+        """Returns an open expense"""
         expense = self.expense_model.create(
             {
                 "name": name,
