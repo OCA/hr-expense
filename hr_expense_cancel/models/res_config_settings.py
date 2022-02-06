@@ -7,18 +7,15 @@ from odoo import fields, models
 class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
-    expense_cancel_policy = fields.Selection(
-        related="company_id.expense_cancel_policy",
+    expense_payment_cancel = fields.Selection(
+        related="company_id.expense_payment_cancel",
         readonly=False,
         required=True,
-        help="""Select the policy journal entries following,
-        'Unlink' -> Remove journal entries
-        'Cancel' -> Cancel journal entries
-        """,
+        help="Select the state expense policy after you cancel payment",
     )
-    expense_cancel_state = fields.Selection(
-        related="company_id.expense_cancel_state",
+    expense_move_cancel = fields.Selection(
+        related="company_id.expense_move_cancel",
         readonly=False,
         required=True,
-        help="Select the state policy after you cancel on expense",
+        help="Select the state expense policy after you cancel expense",
     )

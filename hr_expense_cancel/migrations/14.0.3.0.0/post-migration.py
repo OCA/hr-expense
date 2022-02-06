@@ -9,24 +9,24 @@ _logger = logging.getLogger(__name__)
 
 def _auto_update_field_company(cr, env):
     _logger.info(
-        "Add value 'expense_cancel_policy' and 'expense_cancel_state' to "
+        "Add value 'expense_payment_cancel' and 'expense_move_cancel' to "
         "company on upgrade to 14.0.3.0.0"
     )
     companys = env["res.company"].search([])
     for company in companys:
-        if not company.expense_cancel_policy:
+        if not company.expense_payment_cancel:
             env.cr.execute(
-                "ALTER TABLE res_company ADD COLUMN expense_cancel_policy "
+                "ALTER TABLE res_company ADD COLUMN expense_payment_cancel "
                 "char WHERE id={};".format(company.id)
             )
-        if not company.expense_cancel_state:
+        if not company.expense_move_cancel:
             env.cr.execute(
-                "ALTER TABLE res_company ADD COLUMN expense_cancel_state "
+                "ALTER TABLE res_company ADD COLUMN expense_move_cancel "
                 "char WHERE id={};".format(company.id)
             )
     # add default
-    env.cr.execute("UPDATE res_company SET expense_cancel_policy = 'unlink';")
-    env.cr.execute("UPDATE res_company SET expense_cancel_state = 'submit';")
+    env.cr.execute("UPDATE res_company SET expense_payment_cancel = 'unlink';")
+    env.cr.execute("UPDATE res_company SET expense_move_cancel = 'submit';")
 
 
 def migrate(cr, version):
