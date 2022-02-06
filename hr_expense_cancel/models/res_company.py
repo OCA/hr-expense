@@ -7,25 +7,22 @@ from odoo import fields, models
 class ResCompany(models.Model):
     _inherit = "res.company"
 
-    expense_cancel_policy = fields.Selection(
-        string="Policy",
+    expense_payment_cancel = fields.Selection(
+        string="Payment Cancel",
         selection=[
-            ("unlink", "Unlink"),
-            ("cancel", "Cancel"),
+            ("post", "Posted"),
+            ("cancel", "Refused"),
         ],
-        default="unlink",
-        help="""Select the policy journal entries following,
-        'Unlink' -> Remove journal entries
-        'Reverse' -> Reverse journal entries
-        'Cancel' -> Cancel journal entries
-        """,
+        default="cancel",
+        help="Select the state expense policy after you cancel payment",
     )
-    expense_cancel_state = fields.Selection(
-        string="Cancel to State",
+    expense_move_cancel = fields.Selection(
+        string="Account Move Cancel",
         selection=[
             ("submit", "Submit"),
             ("approve", "Approve"),
+            ("cancel", "Refused"),
         ],
-        default="submit",
-        help="Select the state policy after you cancel on expense",
+        default="cancel",
+        help="Select the state expense policy after you cancel move",
     )

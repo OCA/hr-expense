@@ -1,4 +1,5 @@
 # Copyright 2019 Tecnativa - Ernesto Tejeda
+# Copyright 2021 Ecosoft Co., Ltd. (http://ecosoft.co.th)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
 from odoo import models
@@ -8,17 +9,22 @@ class HrExpenseSheet(models.Model):
     _inherit = "hr.expense.sheet"
 
     def action_cancel(self):
-        policy_cancel = self.env.company.expense_cancel_policy
-        cancel_state_to = self.env.company.expense_cancel_state
+        move_cancel_state = self.env.company.expense_move_cancel
         for sheet in self:
-            account_move = sheet.account_move_id
-            # Unlink Journal Entry on Expense Sheet
-            sheet.account_move_id.line_ids.remove_move_reconcile()
-            sheet.account_move_id = False
-            if account_move.exists():
-                # Cancel move
-                if account_move.state != "draft":
-                    account_move.button_cancel()
-                if policy_cancel == "unlink":
-                    account_move.with_context(force_delete=True).unlink()
-        return self.write({"state": cancel_state_to})
+            sheet.account_move_id.button_cancel()
+        if move_cancel_state != "cancel":
+            self.mapped("expense_line_ids").write({"is_refused": False})
+        return self.write({"state": move_cancel_state})
+
+
+class HrExpense(models.Model):
+    _inherit = "hr.expense"
+
+    def refuse_expense(self, reason):
+        payment_cancel_state = self.env.company.expense_payment_cancel
+        if (
+            self.env.context.get("expense_sheet_ids")
+            and payment_cancel_state != "cancel"
+        ):
+            return self.sheet_id.write({"state": payment_cancel_state})
+        return super().refuse_expense(reason)

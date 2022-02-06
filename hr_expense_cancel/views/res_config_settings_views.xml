@@ -13,25 +13,33 @@
                         <span class="o_form_label">Expense Cancellation Policy</span>
                         <div class="text-muted">
                             Set the cancellation policy to standard by default.
-                            You can configure 'state' that back state to submit or approved,
-                            when you 'cancel' expense sheet on state 'posted'.
+                            Standard odoo will change state expense to 'Refused',
+                            you can configure following for change state your policy.
                         </div>
                         <div class="content-group">
                             <div class="row mt16">
                                 <label
-                                    string="Policy"
-                                    for="expense_cancel_policy"
+                                    string="Payment"
+                                    for="expense_payment_cancel"
                                     class="col-lg-3 o_light_label"
                                 />
-                                <field name="expense_cancel_policy" />
+                                <field name="expense_payment_cancel" />
+                                <span class="col-lg-12 text-muted">
+                                    when you cancel payment that depend on expense.
+                                    you can configure 'Payment' that back state to Posted or Refused (Standard Odoo)
+                                </span>
                             </div>
                             <div class="row">
                                 <label
-                                    string="State"
-                                    for="expense_cancel_state"
+                                    string="Move"
+                                    for="expense_move_cancel"
                                     class="col-lg-3 o_light_label"
                                 />
-                                <field name="expense_cancel_state" />
+                                <field name="expense_move_cancel" />
+                                <span class="col-lg-12 text-muted">
+                                    when you cancel move that depend on expense.
+                                    BUT you can configure 'Move' that back state to Submit, Approve or Refused (Standard Odoo)
+                                </span>
                             </div>
                         </div>
                     </div>
