@@ -15,16 +15,3 @@ class HrExpenseSheet(models.Model):
         if move_cancel_state != "cancel":
             self.mapped("expense_line_ids").write({"is_refused": False})
         return self.write({"state": move_cancel_state})
-
-
-class HrExpense(models.Model):
-    _inherit = "hr.expense"
-
-    def refuse_expense(self, reason):
-        payment_cancel_state = self.env.company.expense_payment_cancel
-        if (
-            self.env.context.get("expense_sheet_ids")
-            and payment_cancel_state != "cancel"
-        ):
-            return self.sheet_id.write({"state": payment_cancel_state})
-        return super().refuse_expense(reason)
