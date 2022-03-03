@@ -118,7 +118,7 @@ class HrExpenseSheet(models.Model):
                     ]
                 )
             )
-            adv_move_lines.with_context(ctx).reconcile()
+            adv_move_lines.with_context(**ctx).reconcile()
             # Update state on clearing advance when advance residual > total amount
             if sheet.advance_sheet_id and advance_residual != -1:
                 sheet.write({"state": "done"})
