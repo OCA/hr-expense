@@ -33,6 +33,9 @@ class HrExpenseSheet(models.Model):
         readonly=True,
         help="Show reference clearing on advance",
     )
+    clearing_count = fields.Integer(
+        compute="_compute_clearing_count",
+    )
     clearing_residual = fields.Monetary(
         string="Amount to clear",
         compute="_compute_clearing_residual",
@@ -89,6 +92,10 @@ class HrExpenseSheet(models.Model):
                 lambda x: x.credit and x.account_id.reconcile and not x.reconciled
             )
             sheet.amount_payable = -sum(rec_lines.mapped("amount_residual"))
+
+    def _compute_clearing_count(self):
+        for sheet in self:
+            sheet.clearing_count = len(sheet.clearing_sheet_ids)
 
     def action_sheet_move_create(self):
         res = super().action_sheet_move_create()
@@ -191,3 +198,13 @@ class HrExpenseSheet(models.Model):
             for k, v in clearing_dict.items()
         }
         return clearing_dict
+
+    def action_open_clearings(self):
+        self.ensure_one()
+        return {
+            "name": _("Clearing Sheets"),
+            "type": "ir.actions.act_window",
+            "res_model": "hr.expense.sheet",
+            "view_mode": "tree,form",
+            "domain": [("id", "in", self.clearing_sheet_ids.ids)],
+        }
