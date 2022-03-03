@@ -10,12 +10,12 @@ class AccountPaymentRegister(models.TransientModel):
     _inherit = "account.payment.register"
 
     def _get_default_advance(self, fields_list):
-        """ Call default_get from BaseModel """
+        """Call default_get from BaseModel"""
         defaults = BaseModel.default_get(self, fields_list)
         return defaults
 
     def _default_return_advance(self, fields_list):
-        """ OVERRIDE: lines without check account_internal_type for return advance only """
+        """OVERRIDE: lines without check account_internal_type for return advance only"""
         res = self._get_default_advance(fields_list)
         if "line_ids" in fields_list:
             lines = (
@@ -94,7 +94,7 @@ class AccountPaymentRegister(models.TransientModel):
         payment_vals = self._create_payment_vals_from_wizard()
         payment_vals_list = [payment_vals]
         payment = (
-            self.env["account.payment"].with_context(ctx).create(payment_vals_list)
+            self.env["account.payment"].with_context(**ctx).create(payment_vals_list)
         )
         # Set new payment_type and payment entry to be Dr Bank, Cr Advance
         payment.write(
@@ -114,12 +114,12 @@ class AccountPaymentRegister(models.TransientModel):
         # Log the return advance in the chatter
         body = _(
             "A remaining advance return of {} {} with the reference "
-            "{} related to your expense {} has been made.".format(
-                payment.amount,
-                payment.currency_id.symbol,
-                redirect_link,
-                expense_sheet.name,
-            )
+            "{} related to your expense {} has been made."
+        ).format(
+            payment.amount,
+            payment.currency_id.symbol,
+            redirect_link,
+            expense_sheet.name,
         )
         expense_sheet.message_post(body=body)
 
@@ -129,5 +129,5 @@ class AccountPaymentRegister(models.TransientModel):
         for line in payment.move_id.line_ids + expense_sheet.account_move_id.line_ids:
             if line.account_id == advance_account and not line.reconciled:
                 account_move_lines_to_reconcile |= line
-        res = account_move_lines_to_reconcile.with_context(ctx).reconcile()
+        res = account_move_lines_to_reconcile.with_context(**ctx).reconcile()
         return res
