@@ -14,6 +14,7 @@ setuptools.setup(
         'odoo14-addon-hr_expense_exception',
         'odoo14-addon-hr_expense_invoice',
         'odoo14-addon-hr_expense_journal',
+        'odoo14-addon-hr_expense_payment',
         'odoo14-addon-hr_expense_sequence',
         'odoo14-addon-hr_expense_sequence_option',
         'odoo14-addon-hr_expense_tier_validation',
