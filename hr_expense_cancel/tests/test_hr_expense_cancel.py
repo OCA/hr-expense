@@ -14,13 +14,13 @@ class TestHrExpenseCancel(TransactionCase):
             [("type", "in", ["cash", "bank"])], limit=1
         )
 
-        company = self.env.ref("base.main_company")
+        self.company = self.env.ref("base.main_company")
         self.expense_journal = self.env["account.journal"].create(
             {
                 "name": "Purchase Journal - Test",
                 "code": "HRTPJ",
                 "type": "purchase",
-                "company_id": company.id,
+                "company_id": self.company.id,
             }
         )
 
@@ -101,9 +101,14 @@ class TestHrExpenseCancel(TransactionCase):
         self.assertEqual(len(self.expense_sheet.payment_ids), 1)
         self.assertTrue(self.expense_sheet.account_move_id)
 
-        self.expense_sheet.action_cancel()
+        # cancel from payment only
+        self.expense_sheet.payment_ids.action_cancel()
         self.assertEqual(self.expense_sheet.payment_ids.mapped("state"), ["cancel"])
         self.assertFalse(self.expense_sheet.account_move_id)
+        self.assertEqual(self.expense_sheet.state, "cancel")
+        self.assertEqual(
+            self.expense_sheet.expense_line_ids.mapped("is_refused"), [True]
+        )
 
     def test_action_cancel_own_account(self):
         self.expense_sheet.action_sheet_move_create()
@@ -114,9 +119,14 @@ class TestHrExpenseCancel(TransactionCase):
         self.assertEqual(len(self.expense_sheet.payment_ids), 1)
         self.assertTrue(self.expense_sheet.account_move_id)
 
-        self.expense_sheet.action_cancel()
+        # cancel from payment only
+        self.expense_sheet.payment_ids.action_cancel()
         self.assertEqual(self.expense_sheet.payment_ids.mapped("state"), ["cancel"])
         self.assertFalse(self.expense_sheet.account_move_id)
+        self.assertEqual(self.expense_sheet.state, "cancel")
+        self.assertEqual(
+            self.expense_sheet.expense_line_ids.mapped("is_refused"), [True]
+        )
 
     def test_action_cancel_multi_own_account(self):
         self.expense_sheet.action_sheet_move_create()
@@ -128,6 +138,45 @@ class TestHrExpenseCancel(TransactionCase):
         self.assertEqual(len(self.expense_sheet.payment_ids), 1)
         self.assertTrue(self.expense_sheet.account_move_id)
 
-        self.expense_sheet.action_cancel()
+        # cancel from payment only
+        self.expense_sheet.payment_ids.action_cancel()
         self.assertEqual(self.expense_sheet.payment_ids.mapped("state"), ["cancel"])
         self.assertFalse(self.expense_sheet.account_move_id)
+        self.assertEqual(self.expense_sheet.state, "cancel")
+        self.assertEqual(
+            self.expense_sheet.expense_line_ids.mapped("is_refused"), [True]
+        )
+
+    def test_action_cancel_own_account_with_move_policy(self):
+        """ Config back state expense on move = 'Submit'  """
+        self.company.expense_move_cancel = "submit"
+        self.assertEqual(self.expense_sheet.state, "approve")
+        self.expense_sheet.action_sheet_move_create()
+        self.assertEqual(self.expense_sheet.state, "post")
+
+        self.expense_sheet.action_cancel()
+
+        self.assertEqual(self.expense_sheet.state, "submit")
+
+    def test_action_cancel_own_account_with_payment_policy(self):
+        """ Config back state expense on payment = 'Posted'  """
+        self.company.expense_payment_cancel = "post"
+        self.assertEqual(self.expense_sheet.state, "approve")
+        self.expense_sheet.action_sheet_move_create()
+        self.assertEqual(self.expense_sheet.state, "post")
+
+        payment_wizard = self._get_payment_wizard(self.expense_sheet)
+        payment_wizard.action_create_payments()
+
+        self.assertEqual(self.expense_sheet.state, "done")
+        self.assertEqual(len(self.expense_sheet.payment_ids), 1)
+        self.assertTrue(self.expense_sheet.account_move_id)
+
+        # cancel from payment only
+        self.expense_sheet.payment_ids.action_cancel()
+        self.assertEqual(self.expense_sheet.payment_ids.mapped("state"), ["cancel"])
+        self.assertEqual(self.expense_sheet.state, "post")
+        self.assertTrue(self.expense_sheet.account_move_id)
+        self.assertEqual(
+            self.expense_sheet.expense_line_ids.mapped("is_refused"), [False]
+        )

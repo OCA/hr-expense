@@ -12,6 +12,7 @@ class HrExpenseSheet(models.Model):
         move_cancel_state = self.env.company.expense_move_cancel
         for sheet in self:
             sheet.account_move_id.button_cancel()
+        # Reset is_refused on expense, if not cancel
         if move_cancel_state != "cancel":
             self.mapped("expense_line_ids").write({"is_refused": False})
-        return self.write({"state": move_cancel_state})
+        return self.write({"state": move_cancel_state, "account_move_id": False})
