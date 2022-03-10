@@ -10,7 +10,9 @@ class HrExpenseSheet(models.Model):
 
     def action_cancel(self):
         move_cancel_state = self.env.company.expense_move_cancel
+        # Cancel following standard odoo (posted -> draft -> cancel)
         for sheet in self:
+            sheet.account_move_id.button_draft()  # unreconciled move line
             sheet.account_move_id.button_cancel()
         # Reset is_refused on expense, if not cancel
         if move_cancel_state != "cancel":
