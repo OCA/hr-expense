@@ -8,12 +8,15 @@ from odoo import models
 class HrExpenseSheet(models.Model):
     _inherit = "hr.expense.sheet"
 
+    def _cancel_account_move_document(self, moves):
+        """ Cancel following standard odoo (posted -> draft -> cancel) """
+        moves.button_draft()  # unreconciled move line
+        moves.button_cancel()
+
     def action_cancel(self):
         move_cancel_state = self.env.company.expense_move_cancel
-        # Cancel following standard odoo (posted -> draft -> cancel)
-        for sheet in self:
-            sheet.account_move_id.button_draft()  # unreconciled move line
-            sheet.account_move_id.button_cancel()
+        moves = self.mapped("account_move_id")
+        self._cancel_account_move_document(moves)
         # Reset is_refused on expense, if not cancel
         if move_cancel_state != "cancel":
             self.mapped("expense_line_ids").write({"is_refused": False})
