@@ -22,16 +22,28 @@ class TestHrExpenseInvoice(common.SavepointCase):
         expenses = cls.env.ref("account.data_account_type_expenses").id
         cls.invoice_account = (
             cls.env["account.account"]
-            .search([("user_type_id", "=", receivable)], limit=1)
+            .search(
+                [
+                    ("user_type_id", "=", receivable),
+                    ("company_id", "=", cls.env.company.id),
+                ],
+                limit=1,
+            )
             .id
         )
         cls.invoice_line_account = (
             cls.env["account.account"]
-            .search([("user_type_id", "=", expenses)], limit=1)
+            .search(
+                [
+                    ("user_type_id", "=", expenses),
+                    ("company_id", "=", cls.env.company.id),
+                ],
+                limit=1,
+            )
             .id
         )
         cls.cash_journal = cls.env["account.journal"].search(
-            [("type", "=", "cash")], limit=1
+            [("type", "=", "cash"), ("company_id", "=", cls.env.company.id)], limit=1
         )
         product = cls.env["product.product"].create(
             {"name": "Product test", "type": "service"}
