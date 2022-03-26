@@ -53,7 +53,6 @@ class HrExpense(models.Model):
     @api.onchange("advance")
     def onchange_advance(self):
         self.tax_ids = False
-        self.payment_mode = "own_account"
         if self.advance:
             self.product_id = self.env.ref(
                 "hr_expense_advance_clearing.product_emp_advance"
