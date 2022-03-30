@@ -34,7 +34,7 @@ class TestHrExpenseSequenceOption(TransactionCase):
         )
 
     def test_hr_expense_sequence_options(self):
-        """ test with and without sequence option activated """
+        """test with and without sequence option activated"""
         # With sequence option
         self.ex_seq_opt1.use_sequence_option = True
         self.ex = self.HrExpenseSheet.create(self.ex_vals.copy())
