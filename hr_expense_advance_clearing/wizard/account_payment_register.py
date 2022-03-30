@@ -10,12 +10,12 @@ class AccountPaymentRegister(models.TransientModel):
     _inherit = "account.payment.register"
 
     def _get_default_advance(self, fields_list):
-        """ Call default_get from BaseModel """
+        """Call default_get from BaseModel"""
         defaults = BaseModel.default_get(self, fields_list)
         return defaults
 
     def _default_return_advance(self, fields_list):
-        """ OVERRIDE: lines without check account_internal_type for return advance only """
+        """OVERRIDE: lines without check account_internal_type for return advance only"""
         res = self._get_default_advance(fields_list)
         if "line_ids" in fields_list:
             lines = (
