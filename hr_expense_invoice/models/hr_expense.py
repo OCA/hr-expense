@@ -43,6 +43,7 @@ class HrExpense(models.Model):
         invoice = self.env["account.move"].create(
             [
                 {
+                    "name": "/",
                     "ref": self.reference,
                     "move_type": "in_invoice",
                     "invoice_date": self.date,
