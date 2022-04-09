@@ -17,6 +17,18 @@ class AccountPaymentRegister(models.TransientModel):
     def _default_return_advance(self, fields_list):
         """OVERRIDE: lines without check account_internal_type for return advance only"""
         res = self._get_default_advance(fields_list)
+        sheet = self.env["hr.expense.sheet"].browse(self._context.get("active_id"))
+        # Not allow return advance, if clearing is not posted.
+        clearing_approve = sheet.clearing_sheet_ids.filtered(
+            lambda l: l.state == "approve"
+        )
+        if clearing_approve:
+            raise UserError(
+                _(
+                    "{} cannot be return advance as there's at least one "
+                    "related clearing not posted.".format(sheet.name)
+                )
+            )
         if "line_ids" in fields_list:
             lines = (
                 self.env["account.move"]
