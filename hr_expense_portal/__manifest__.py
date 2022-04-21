@@ -8,7 +8,7 @@
     "category": "Generic Modules/Human Resources",
     "summary": "Show current expense in a website.",
     "author": "Open Source Integrators, Odoo Community Association (OCA)",
-    "website": "https://github.com/OCA/hr",
+    "website": "https://github.com/OCA/hr-expense",
     "depends": ["sale_expense", "website"],
     "data": [
         "security/ir.model.access.csv",
