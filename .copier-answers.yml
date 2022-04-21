@@ -1,0 +1,17 @@
+# Do NOT update manually; changes here will be overwritten by Copier
+_commit: v1.6.1
+_src_path: https://github.com/OCA/oca-addons-repo-template.git
+ci: GitHub
+dependency_installation_mode: PIP
+generate_requirements_txt: true
+include_wkhtmltopdf: false
+odoo_version: 13.0
+org_name: Odoo Community Association (OCA)
+org_slug: OCA
+rebel_module_groups: []
+repo_description: Odoo modules related to Human Resources expenses management.
+repo_name: Human Resources Expenses
+repo_slug: hr-expense
+repo_website: https://github.com/OCA/hr-expense
+travis_apt_packages: []
+travis_apt_sources: []
