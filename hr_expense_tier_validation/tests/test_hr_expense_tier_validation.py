@@ -66,12 +66,15 @@ class TestHrExpenseTierValidation(TransactionCase):
         )
         sheet_dict = expense.action_submit_expenses()
         sheet = self.expense_sheet_model.search([("id", "=", sheet_dict["res_id"])])
-        # Must request validation before submit to manager
-        with self.assertRaises(ValidationError):
-            sheet.action_submit_sheet()
-        sheet.request_validation()
-        # tier validation but state still draft
         self.assertEqual(sheet.state, "draft")
+        sheet.action_submit_sheet()
+        self.assertEqual(sheet.state, "submit")
+        # Must request validation before approve
+        with self.assertRaises(ValidationError):
+            sheet.approve_expense_sheets()
+        sheet.request_validation()
+        # tier validation but state still submit
+        self.assertEqual(sheet.state, "submit")
         # not allow edit expense when under validation
         with self.assertRaises(ValidationError):
             with Form(expense) as ex:
