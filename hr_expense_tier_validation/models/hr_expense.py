@@ -24,7 +24,7 @@ class HrExpense(models.Model):
     def write(self, vals):
         for rec in self:
             if (
-                rec.sheet_id.state == "draft"
+                rec.sheet_id.state == "submit"
                 and rec.sheet_id.review_ids
                 and not rec.sheet_id.validated
                 and not rec.sheet_id.rejected
