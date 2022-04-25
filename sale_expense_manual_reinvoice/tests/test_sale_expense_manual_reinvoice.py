@@ -6,10 +6,12 @@ from ast import literal_eval
 
 from odoo import fields
 from odoo.exceptions import UserError
+from odoo.tests import tagged
 
 from odoo.addons.hr_expense.tests.common import TestExpenseCommon
 
 
+@tagged("post_install", "-at_install")
 class TestReInvoiceManual(TestExpenseCommon):
     @classmethod
     def setUpClass(cls):
