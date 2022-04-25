@@ -49,7 +49,9 @@ class HrExpense(models.Model):
                 )
                 journal = expense.sheet_id.bank_journal_id
                 journal_currency = journal.currency_id or journal.company_id.currency_id
-                payment_methods = journal.outbound_payment_method_ids
+                payment_methods = journal.outbound_payment_method_line_ids.mapped(
+                    "payment_method_id"
+                )
                 # prepare payment dict value for case paid by company
                 payment_dict = expense._prepare_payment_expense_company(
                     payment_methods,
