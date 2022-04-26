@@ -22,6 +22,7 @@ Available addons
 addon | version | maintainers | summary
 --- | --- | --- | ---
 [hr_expense_invoice](hr_expense_invoice/) | 15.0.1.0.0 |  | Supplier invoices on HR expenses
+[hr_expense_payment](hr_expense_payment/) | 15.0.1.0.0 |  | HR Expense Payment
 [sale_expense_manual_reinvoice](sale_expense_manual_reinvoice/) | 15.0.1.0.1 | [![ivantodorovich](https://github.com/ivantodorovich.png?size=30px)](https://github.com/ivantodorovich) | Allow to manually re-invoice expenses
 
 [//]: # (end addons)
