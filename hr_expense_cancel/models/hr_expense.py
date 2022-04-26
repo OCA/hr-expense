@@ -29,7 +29,7 @@ class HrExpenseSheet(models.Model):
             if account_move.exists():
                 if account_move.state != "draft":
                     account_move.button_cancel()
-                account_move.with_context({"force_delete": True}).unlink()
+                account_move.with_context(force_delete=True).unlink()
             sheet.state = "submit"
 
     def _remove_reconcile_hr_invoice(self, account_move):

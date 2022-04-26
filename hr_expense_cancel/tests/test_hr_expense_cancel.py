@@ -7,7 +7,7 @@ from odoo.tests.common import Form, TransactionCase
 
 class TestHrExpenseCancel(TransactionCase):
     def setUp(self):
-        super(TestHrExpenseCancel, self).setUp()
+        super().setUp()
         self.partner = self.env["res.partner"].create({"name": "Test partner"})
         self.payment_obj = self.env["account.payment"]
         self.account_payment_register = self.env["account.payment.register"]
@@ -38,7 +38,7 @@ class TestHrExpenseCancel(TransactionCase):
             {
                 "name": "Expense test",
                 "employee_id": self.ref("hr.employee_admin"),
-                "product_id": self.ref("hr_expense.air_ticket"),
+                "product_id": self.ref("hr_expense.trans_expense_product"),
                 "unit_amount": 1,
                 "quantity": 10,
                 "sheet_id": self.expense_sheet.id,
@@ -58,7 +58,7 @@ class TestHrExpenseCancel(TransactionCase):
             {
                 "name": "Expense test",
                 "employee_id": self.ref("hr.employee_admin"),
-                "product_id": self.ref("hr_expense.air_ticket"),
+                "product_id": self.ref("hr_expense.trans_expense_product"),
                 "unit_amount": 2,
                 "quantity": 10,
                 "sheet_id": self.expense_sheet2.id,
@@ -69,7 +69,7 @@ class TestHrExpenseCancel(TransactionCase):
         action = expense_sheet.action_register_payment()
         ctx = action.get("context")
         with Form(
-            self.account_payment_register.with_context(ctx),
+            self.account_payment_register.with_context(**ctx),
             view="account.view_account_payment_register_form",
         ) as f:
             f.journal_id = self.payment_journal
