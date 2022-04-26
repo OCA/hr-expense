@@ -11,9 +11,10 @@
                 <button
                     name="action_cancel"
                     states="post,done"
-                    string="Cancel"
+                    string="Cancel all related operations"
                     type="object"
                     groups="account.group_account_manager"
+                    help="Cancel journal entries, payments and reconciliations"
                 />
             </xpath>
         </field>
