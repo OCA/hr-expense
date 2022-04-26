@@ -25,9 +25,12 @@ Hr expense cancel
 
 |badge1| |badge2| |badge3| |badge4| |badge5| 
 
-This module allows you to cancel and correct expenses. It adds a cancel button
-on the expense sheet that undo reconciliations and delete payments and journal
-entries.
+This module allows you to cancel and correct expenses. It adds a Cancel
+all realted operations button on the expense sheet that undo reconciliations 
+and delete payments and journal entries.
+The difference with the 'Cancel' button added by hr_expense module is that
+the second one just deletes the related moves in 'draft' state and cancel
+the rest of them.
 
 **Table of contents**
 
@@ -57,7 +60,7 @@ To use this module, you need to:
    click on *Validate* button
 #. After that, the *Expense report* will have an associated journal entry
    reconciled with a payment
-#. Click on *Cancel* button
+#. Click on *Cancel all related operations* button
 #. The *Expense report* will be set to *Submitted* state; the journal entry and
    the payment will be deleted
 
