@@ -9,6 +9,7 @@ setuptools.setup(
     version=version,
     install_requires=[
         'odoo-addon-hr_expense_invoice>=15.0dev,<15.1dev',
+        'odoo-addon-hr_expense_payment>=15.0dev,<15.1dev',
         'odoo-addon-sale_expense_manual_reinvoice>=15.0dev,<15.1dev',
     ],
     classifiers=[
