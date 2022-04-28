@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 13.0\n"
+"Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -58,6 +58,9 @@ msgid "Created on"
 msgstr ""
 
 #. module: hr_expense_petty_cash
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_account_move__display_name
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_hr_expense__display_name
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_hr_expense_sheet__display_name
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash__display_name
 msgid "Display Name"
 msgstr ""
@@ -83,6 +86,9 @@ msgid "Group By"
 msgstr ""
 
 #. module: hr_expense_petty_cash
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_account_move__id
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_hr_expense__id
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_hr_expense_sheet__id
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash__id
 msgid "ID"
 msgstr ""
@@ -95,10 +101,13 @@ msgstr ""
 
 #. module: hr_expense_petty_cash
 #: model:ir.model,name:hr_expense_petty_cash.model_account_move
-msgid "Journal Entries"
+msgid "Journal Entry"
 msgstr ""
 
 #. module: hr_expense_petty_cash
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_account_move____last_update
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_hr_expense____last_update
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_hr_expense_sheet____last_update
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash____last_update
 msgid "Last Modified on"
 msgstr ""
@@ -139,7 +148,9 @@ msgstr ""
 #. module: hr_expense_petty_cash
 #: model:ir.actions.act_window,name:hr_expense_petty_cash.action_petty_cash
 #: model:ir.model,name:hr_expense_petty_cash.model_petty_cash
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_account_bank_statement_line__is_petty_cash
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_account_move__is_petty_cash
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_account_payment__is_petty_cash
 #: model:ir.model.fields.selection,name:hr_expense_petty_cash.selection__hr_expense__payment_mode__petty_cash
 #: model:ir.ui.menu,name:hr_expense_petty_cash.menu_petty_cash
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.hr_expense_sheet_view_search_inherit
