@@ -77,6 +77,11 @@ msgid "Rejected"
 msgstr ""
 
 #. module: hr_expense_tier_validation
+#: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__rejected_message
+msgid "Rejected Message"
+msgstr ""
+
+#. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__reviewer_ids
 msgid "Reviewers"
 msgstr ""
@@ -87,9 +92,19 @@ msgid "Tier Definition"
 msgstr ""
 
 #. module: hr_expense_tier_validation
+#: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__to_validate_message
+msgid "To Validate Message"
+msgstr ""
+
+#. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__validated
 #: model_terms:ir.ui.view,arch_db:hr_expense_tier_validation.hr_expense_sheet_view_search
 msgid "Validated"
+msgstr ""
+
+#. module: hr_expense_tier_validation
+#: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__validated_message
+msgid "Validated Message"
 msgstr ""
 
 #. module: hr_expense_tier_validation
