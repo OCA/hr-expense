@@ -1,22 +1,22 @@
 # Copyright 2020 Ecosoft Co., Ltd (https://ecosoft.co.th/)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html)
 
-from werkzeug.urls import url_encode
-
 from odoo import _, api, models
 from odoo.exceptions import UserError
+from odoo.models import BaseModel
 
 
 class AccountPaymentRegister(models.TransientModel):
     _inherit = "account.payment.register"
 
-    def _get_default_advance(self):
-        """ This function is default_get from return advance only """
-        return {}
+    def _get_default_advance(self, fields_list):
+        """Call default_get from BaseModel"""
+        defaults = BaseModel.default_get(self, fields_list)
+        return defaults
 
     def _default_return_advance(self, fields_list):
-        """ OVERRIDE: lines without check account_internal_type for return advance only """
-        res = self._get_default_advance()
+        """OVERRIDE: lines without check account_internal_type for return advance only"""
+        res = self._get_default_advance(fields_list)
         if "line_ids" in fields_list:
             lines = (
                 self.env["account.move"]
@@ -73,7 +73,8 @@ class AccountPaymentRegister(models.TransientModel):
 
     def action_create_payments(self):
         if self._context.get("hr_return_advance", False):
-            return self.expense_post_return_advance()
+            self.expense_post_return_advance()
+            return {"type": "ir.actions.act_window_close"}
         return super().action_create_payments()
 
     def expense_post_return_advance(self):
@@ -84,7 +85,8 @@ class AccountPaymentRegister(models.TransientModel):
         context = dict(self._context or {})
         active_ids = context.get("active_ids", [])
         move_ids = self.env["account.move"].browse(active_ids)
-        ctx = {"skip_account_move_synchronization": True}
+        ctx = self._context.copy()
+        ctx.update({"skip_account_move_synchronization": True})
         expense_sheet = move_ids.line_ids.expense_id.sheet_id
         emp_advance = self.env.ref("hr_expense_advance_clearing.product_emp_advance")
         advance_account = emp_advance.property_account_expense_id
@@ -104,17 +106,20 @@ class AccountPaymentRegister(models.TransientModel):
         )
         payment.action_post()
 
+        redirect_link = (
+            "<a href=# data-oe-model=account.payment data-oe-id={}>{}</a>".format(
+                payment.id, payment.name
+            )
+        )  # Account Payment link
         # Log the return advance in the chatter
         body = _(
-            "A remaining advance return of %s %s with the reference "
-            "<a href='/mail/view?%s'>%s</a> related to your expense %s "
-            "has been made."
-        ) % (
-            payment.amount,
-            payment.currency_id.symbol,
-            url_encode({"model": "account.payment", "res_id": payment.id}),
-            payment.name,
-            expense_sheet.name,
+            "A remaining advance return of {} {} with the reference "
+            "{} related to your expense {} has been made.".format(
+                payment.amount,
+                payment.currency_id.symbol,
+                redirect_link,
+                expense_sheet.name,
+            )
         )
         expense_sheet.message_post(body=body)
 
@@ -122,7 +127,7 @@ class AccountPaymentRegister(models.TransientModel):
         # i.e. lookup on the advance account on move lines
         account_move_lines_to_reconcile = self.env["account.move.line"]
         for line in payment.move_id.line_ids + expense_sheet.account_move_id.line_ids:
-            if line.account_id == advance_account:
+            if line.account_id == advance_account and not line.reconciled:
                 account_move_lines_to_reconcile |= line
-        account_move_lines_to_reconcile.with_context(ctx).reconcile()
-        return {"type": "ir.actions.act_window_close"}
+        res = account_move_lines_to_reconcile.with_context(ctx).reconcile()
+        return res

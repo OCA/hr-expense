@@ -54,9 +54,10 @@ class HrExpenseSheet(models.Model):
     @api.depends("expense_line_ids")
     def _compute_advance(self):
         for sheet in self:
-            sheet.advance = sheet.expense_line_ids and all(
-                sheet.expense_line_ids.mapped("advance")
-            )
+            if sheet.expense_line_ids:
+                sheet.advance = all(sheet.expense_line_ids.mapped("advance"))
+            else:
+                sheet.advance = self.env.context.get("default_advance", sheet.advance)
         return
 
     @api.constrains("advance_sheet_id", "expense_line_ids")
@@ -93,6 +94,8 @@ class HrExpenseSheet(models.Model):
         res = super().action_sheet_move_create()
         # Reconcile advance of this sheet with the advance_sheet
         emp_advance = self.env.ref("hr_expense_advance_clearing.product_emp_advance")
+        ctx = self._context.copy()
+        ctx.update({"skip_account_move_synchronization": True})
         for sheet in self:
             advance_residual = float_compare(
                 sheet.advance_sheet_residual,
@@ -115,7 +118,7 @@ class HrExpenseSheet(models.Model):
                     ]
                 )
             )
-            adv_move_lines.reconcile()
+            adv_move_lines.with_context(ctx).reconcile()
             # Update state on clearing advance when advance residual > total amount
             if sheet.advance_sheet_id and advance_residual != -1:
                 sheet.write({"state": "done"})
@@ -126,23 +129,30 @@ class HrExpenseSheet(models.Model):
         action = self.env.ref(
             "hr_expense_advance_clearing.action_hr_expense_sheet_advance_clearing"
         )
-        vals = action.read()[0]
+        vals = action.sudo().read()[0]
         context1 = vals.get("context", {})
         if context1:
             context1 = safe_eval(context1)
         context1["default_advance_sheet_id"] = self.id
+        context1["default_employee_id"] = self.employee_id.id
         vals["context"] = context1
         return vals
+
+    def get_domain_advance_sheet_expense_line(self):
+        return self.advance_sheet_id.expense_line_ids.filtered("clearing_product_id")
+
+    def create_clearing_expense_line(self, line):
+        clear_advance = self._prepare_clear_advance(line)
+        clearing_line = self.env["hr.expense"].new(clear_advance)
+        return clearing_line
 
     @api.onchange("advance_sheet_id")
     def _onchange_advance_sheet_id(self):
         self.expense_line_ids -= self.expense_line_ids.filtered("av_line_id")
-        self.advance_sheet_id.expense_line_ids.read()
-        for line in self.advance_sheet_id.expense_line_ids.filtered(
-            "clearing_product_id"
-        ):
-            clear_advance = self._prepare_clear_advance(line)
-            self.expense_line_ids += self.env["hr.expense"].new(clear_advance)
+        self.advance_sheet_id.expense_line_ids.sudo().read()  # prefetch
+        lines = self.get_domain_advance_sheet_expense_line()
+        for line in lines:
+            self.expense_line_ids += self.create_clearing_expense_line(line)
 
     def _prepare_clear_advance(self, line):
         # Prepare the clearing expense

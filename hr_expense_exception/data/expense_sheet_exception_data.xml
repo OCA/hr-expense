@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <!-- Test Expense Exceptions Scheduler-->
+    <record model="ir.cron" forcecreate="True" id="ir_cron_test_expense_except">
+        <field name="name">Expense: Test Draft Expense Exception</field>
+        <field name="model_id" ref="hr_expense.model_hr_expense_sheet" />
+        <field name="state">code</field>
+        <field name="code">model.test_all_draft_expenses()</field>
+        <field name="user_id" ref="base.user_root" />
+        <field name="interval_number">20</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False" />
+        <field name="active" eval="False" />
+    </record>
+    <record id="ex_excep_no_email" model="exception.rule">
+        <field name="name">No email on employee</field>
+        <field name="description">No Email for Employee</field>
+        <field name="sequence">50</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="code">if not self.employee_id.work_email:
+            failed=True</field>
+        <field name="active" eval="False" />
+    </record>
+    <record id="exl_excep_qty_check" model="exception.rule">
+        <field name="name">Quantity not positive</field>
+        <field name="description">Expense line quantity must be positive</field>
+        <field name="sequence">50</field>
+        <field name="model">hr.expense</field>
+        <field name="code">if self.quantity &lt; 0:
+            failed=True</field>
+        <field name="active" eval="False" />
+    </record>
+</odoo>

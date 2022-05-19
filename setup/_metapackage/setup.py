@@ -11,11 +11,18 @@ setuptools.setup(
         'odoo14-addon-hr_expense_advance_clearing',
         'odoo14-addon-hr_expense_analytic_distribution',
         'odoo14-addon-hr_expense_cancel',
+        'odoo14-addon-hr_expense_exception',
+        'odoo14-addon-hr_expense_invoice',
+        'odoo14-addon-hr_expense_journal',
+        'odoo14-addon-hr_expense_payment',
+        'odoo14-addon-hr_expense_petty_cash',
         'odoo14-addon-hr_expense_sequence',
+        'odoo14-addon-hr_expense_sequence_option',
         'odoo14-addon-hr_expense_tier_validation',
     ],
     classifiers=[
         'Programming Language :: Python',
         'Framework :: Odoo',
+        'Framework :: Odoo :: 14.0',
     ]
 )

@@ -40,6 +40,10 @@ class HrExpense(models.Model):
                 raise ValidationError(
                     _("Employee advance, selected product is not valid")
                 )
+            if expense.account_id != emp_advance.property_account_expense_id:
+                raise ValidationError(
+                    _("Employee advance, account must be the same payable account")
+                )
             if expense.tax_ids:
                 raise ValidationError(_("Employee advance, all taxes must be removed"))
             if expense.payment_mode != "own_account":
@@ -54,9 +58,6 @@ class HrExpense(models.Model):
             self.product_id = self.env.ref(
                 "hr_expense_advance_clearing.product_emp_advance"
             )
-        else:
-            self.product_id = False
-            self.clearing_product_id = False
 
     def _get_account_move_line_values(self):
         move_line_values_by_expense = super()._get_account_move_line_values()

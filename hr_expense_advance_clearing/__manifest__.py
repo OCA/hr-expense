@@ -3,13 +3,18 @@
 
 {
     "name": "Employee Advance and Clearing",
-    "version": "14.0.1.2.1",
+    "version": "14.0.1.5.4",
     "category": "Human Resources",
     "author": "Ecosoft, Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "website": "https://github.com/OCA/hr-expense",
     "depends": ["hr_expense"],
-    "data": ["data/advance_product.xml", "views/hr_expense_views.xml"],
+    "data": [
+        "data/advance_product.xml",
+        "views/hr_expense_views.xml",
+        "views/hr_employee_views.xml",
+        "views/hr_employee_public_views.xml",
+    ],
     "installable": True,
     "maintainers": ["kittiu"],
 }
