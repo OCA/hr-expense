@@ -80,18 +80,15 @@ class HrExpenseSheet(models.Model):
                     )
 
     def paid_expense_sheets(self):
-        """ For expense paid direct to vendor, do not set done """
+        """For expense paid direct to vendor, do not set done"""
         self = self.filtered(
             lambda l: l.payment_mode == "company_account" and not l.vendor_id
         )
-        super(HrExpenseSheet, self).paid_expense_sheets()
+        return super(HrExpenseSheet, self).paid_expense_sheets()
 
     def action_sheet_move_create(self):
         # For expense paid by copany to vendor, only set state to post
-        # Skip create payment (if you install module hr_expense_payment)
-        res = super(
-            HrExpenseSheet, self.with_context(skip_create_payment_company_account=True)
-        ).action_sheet_move_create()
+        res = super().action_sheet_move_create()
         to_post = self.filtered(
             lambda l: l.payment_mode == "company_account" and l.vendor_id
         )
