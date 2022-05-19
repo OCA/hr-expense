@@ -17,11 +17,6 @@ msgstr ""
 "X-Generator: Weblate 4.17\n"
 
 #. module: hr_expense_payment
-#: model:ir.model,name:hr_expense_payment.model_hr_expense
-msgid "Expense"
-msgstr "Spesa"
-
-#. module: hr_expense_payment
 #: model:ir.model,name:hr_expense_payment.model_hr_expense_sheet
 msgid "Expense Report"
 msgstr "Nota spese"
@@ -45,3 +40,6 @@ msgstr "Pagamenti"
 #: model:ir.model,name:hr_expense_payment.model_account_payment_register
 msgid "Register Payment"
 msgstr "Registra pagamento"
+
+#~ msgid "Expense"
+#~ msgstr "Spesa"

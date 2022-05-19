@@ -14,11 +14,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: hr_expense_payment
-#: model:ir.model,name:hr_expense_payment.model_hr_expense
-msgid "Expense"
-msgstr ""
-
-#. module: hr_expense_payment
 #: model:ir.model,name:hr_expense_payment.model_hr_expense_sheet
 msgid "Expense Report"
 msgstr ""
