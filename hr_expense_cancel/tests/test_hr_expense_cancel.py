@@ -79,13 +79,8 @@ class TestHrExpenseCancel(TransactionCase):
     def test_action_cancel_company_account(self):
         self.expense.payment_mode = "company_account"
         self.expense_sheet.action_sheet_move_create()
-
-        self.assertEqual(len(self.expense_sheet.payment_ids), 1)
         self.assertTrue(self.expense_sheet.account_move_id)
-
         self.expense_sheet.action_cancel()
-        payment = self.expense_sheet.payment_ids.filtered(lambda l: l.state != "cancel")
-        self.assertFalse(payment)
         self.assertFalse(self.expense_sheet.account_move_id)
 
     def test_action_cancel_own_account(self):
