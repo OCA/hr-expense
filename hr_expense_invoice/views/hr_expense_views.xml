@@ -8,7 +8,18 @@
             <field name="unit_amount" position="attributes">
                 <attribute name="force_save">1</attribute>
             </field>
+            <label for="quantity" position="attributes">
+                <attribute
+                    name="attrs"
+                >{'invisible': [('invoice_id', '!=', False)]}</attribute>
+            </label>
             <field name="quantity" position="attributes">
+                <attribute name="force_save">1</attribute>
+                <attribute
+                    name="attrs"
+                >{'invisible': [('invoice_id', '!=', False)]}</attribute>
+            </field>
+            <field name="product_uom_id" position="attributes">
                 <attribute name="force_save">1</attribute>
                 <attribute
                     name="attrs"
