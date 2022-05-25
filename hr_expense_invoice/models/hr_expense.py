@@ -96,6 +96,7 @@ class HrExpense(models.Model):
         """
         if self.invoice_id:
             self.quantity = 1
+            self.product_uom_id = self.product_id.uom_id
             self.tax_ids = [(5,)]
             # Assign this amount after removing taxes for avoiding to raise
             # the constraint _check_expense_ids
