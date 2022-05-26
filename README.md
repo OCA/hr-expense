@@ -24,7 +24,7 @@ addon | version | maintainers | summary
 [hr_expense_analytic_distribution](hr_expense_analytic_distribution/) | 14.0.1.0.1 |  | HR Expense Analytic Distribution
 [hr_expense_cancel](hr_expense_cancel/) | 14.0.2.0.0 |  | Hr expense cancel
 [hr_expense_exception](hr_expense_exception/) | 14.0.1.0.1 |  | Custom exceptions on expense report
-[hr_expense_invoice](hr_expense_invoice/) | 14.0.1.0.1 |  | Supplier invoices on HR expenses
+[hr_expense_invoice](hr_expense_invoice/) | 14.0.1.1.0 |  | Supplier invoices on HR expenses
 [hr_expense_journal](hr_expense_journal/) | 14.0.1.0.0 | [![dreispt](https://github.com/dreispt.png?size=30px)](https://github.com/dreispt) | Set the Journal for the payment type used to pay the expense
 [hr_expense_payment](hr_expense_payment/) | 14.0.1.0.0 |  | HR Expense Payment
 [hr_expense_petty_cash](hr_expense_petty_cash/) | 14.0.1.0.0 |  | Petty Cash
