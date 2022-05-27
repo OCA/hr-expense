@@ -8,7 +8,8 @@ class HrExpenseSheetRegisterPaymentWizard(models.TransientModel):
     _inherit = "hr.expense.sheet.register.payment.wizard"
 
     payment_difference = fields.Monetary(
-        compute="_compute_payment_difference", readonly=True,
+        compute="_compute_payment_difference",
+        readonly=True,
     )
     payment_difference_handling = fields.Selection(
         [("open", "Keep open"), ("reconcile", "Mark invoice as fully paid")],

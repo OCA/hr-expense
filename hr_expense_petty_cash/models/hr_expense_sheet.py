@@ -11,7 +11,7 @@ class HrExpenseSheet(models.Model):
 
     @api.model
     def _default_journal_id(self):
-        """ Update expense journal from petty cash """
+        """Update expense journal from petty cash"""
         journal = super()._default_journal_id()
         petty_cash_obj = self.env["petty.cash"]
         petty_cash = self._context.get("default_petty_cash_id", False)

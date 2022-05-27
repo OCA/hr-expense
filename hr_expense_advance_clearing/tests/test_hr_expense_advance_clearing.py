@@ -115,7 +115,7 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         payment_wizard.expense_post_payment()
 
     def test_0_test_constraints(self):
-        """ Test some constraints """
+        """Test some constraints"""
         # Advance Sheet can't be clearing at the same time.
         with self.assertRaises(ValidationError):
             self.advance.advance_sheet_id = self.advance
@@ -155,7 +155,7 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
             )
 
     def test_1_clear_equal_advance(self):
-        """ When clear equal advance, all set """
+        """When clear equal advance, all set"""
         # ------------------ Advance --------------------------
         self.advance.action_submit_sheet()
         self.advance.approve_expense_sheets()
@@ -178,7 +178,7 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         self.assertEqual(self.clearing_equal.advance_sheet_residual, 0.0)
 
     def test_2_clear_more_than_advance(self):
-        """ When clear more than advance, do pay more """
+        """When clear more than advance, do pay more"""
         # ------------------ Advance --------------------------
         self.advance.action_submit_sheet()
         self.advance.approve_expense_sheets()
@@ -200,7 +200,7 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         self.assertEqual(self.clearing_more.state, "done")
 
     def test_3_clear_less_than_advance(self):
-        """ When clear less than advance, do return advance """
+        """When clear less than advance, do return advance"""
         # ------------------ Advance --------------------------
         self.advance.action_submit_sheet()
         self.advance.approve_expense_sheets()

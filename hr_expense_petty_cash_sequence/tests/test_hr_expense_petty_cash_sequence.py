@@ -97,7 +97,7 @@ class TestHrExpenseSequence(SavepointCase):
         return expense_sheet
 
     def test_01_create_sequence_from_expense_or_report(self):
-        """ Returns an open expense """
+        """Returns an open expense"""
         expense = self._create_expense_petty_cash()
         expense_sheet = self.env["hr.expense.sheet"].create(
             {

@@ -26,7 +26,7 @@ class HrExpenseSheetRegisterPaymentWizard(models.TransientModel):
         return super().expense_post_payment()
 
     def expense_post_return_advance(self):
-        """ This is opposite operation of expense_post_payment(),
+        """This is opposite operation of expense_post_payment(),
         it return remaining advance from employee back to company
         """
         self.ensure_one()

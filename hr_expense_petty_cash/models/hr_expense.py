@@ -27,7 +27,7 @@ class HrExpense(models.Model):
         return vals
 
     def _create_sheet_from_expense_petty_cash(self):
-        """ Overwrite function _create_sheet_from_expenses(), if petty cash mode. """
+        """Overwrite function _create_sheet_from_expenses(), if petty cash mode."""
         if any(expense.state != "draft" or expense.sheet_id for expense in self):
             raise UserError(_("You cannot report twice the same line!"))
         if len(self.mapped("employee_id")) != 1:

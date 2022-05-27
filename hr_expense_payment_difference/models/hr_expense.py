@@ -7,7 +7,9 @@ from odoo import fields, models
 class HRExpenseSheet(models.Model):
     _inherit = "hr.expense.sheet"
 
-    difference_residual = fields.Monetary(compute="_compute_difference_residual",)
+    difference_residual = fields.Monetary(
+        compute="_compute_difference_residual",
+    )
 
     def _compute_difference_residual(self):
         for sheet in self:

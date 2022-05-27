@@ -173,6 +173,7 @@ class TestHrExpenseInvoice(common.SavepointCase):
         # We add invoice to expense
         self.invoice.action_post()  # residual = 100.0
         self.expense.invoice_id = self.invoice
+        self.expense._onchange_invoice_id()
         # Test that invoice can't register payment by itself
         ctx = {
             "active_ids": [self.invoice.id],
