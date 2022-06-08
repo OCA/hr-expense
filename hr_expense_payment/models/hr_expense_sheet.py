@@ -19,7 +19,7 @@ class HrExpenseSheet(models.Model):
     )
 
     def action_register_payment(self):
-        """ Send context when you register payment from expense sheet """
+        """Send context when you register payment from expense sheet"""
         action = super().action_register_payment()
         if self._name == "hr.expense.sheet":
             action["context"].update({"expense_sheet_ids": self.ids})
