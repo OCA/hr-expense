@@ -148,7 +148,7 @@ class TestHrExpenseCancel(TransactionCase):
         )
 
     def test_action_cancel_own_account_with_move_policy(self):
-        """ Config back state expense on move = 'Submit'  """
+        """Config back state expense on move = 'Submit'"""
         self.company.expense_move_cancel = "submit"
         self.assertEqual(self.expense_sheet.state, "approve")
         self.expense_sheet.action_sheet_move_create()
@@ -159,7 +159,7 @@ class TestHrExpenseCancel(TransactionCase):
         self.assertEqual(self.expense_sheet.state, "submit")
 
     def test_action_cancel_own_account_with_payment_policy(self):
-        """ Config back state expense on payment = 'Posted'  """
+        """Config back state expense on payment = 'Posted'"""
         self.company.expense_payment_cancel = "post"
         self.assertEqual(self.expense_sheet.state, "approve")
         self.expense_sheet.action_sheet_move_create()

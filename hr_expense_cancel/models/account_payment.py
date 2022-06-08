@@ -8,7 +8,7 @@ class AccountPayment(models.Model):
     _inherit = "account.payment"
 
     def action_cancel(self):
-        """ Send context expense sheet """
+        """Send context expense sheet"""
         return super(
             AccountPayment,
             self.with_context(expense_sheet_ids=self.expense_sheet_ids.ids),

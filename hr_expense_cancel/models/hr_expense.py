@@ -9,7 +9,7 @@ class HrExpenseSheet(models.Model):
     _inherit = "hr.expense.sheet"
 
     def _cancel_account_move_document(self, moves):
-        """ Cancel following standard odoo (posted -> draft -> cancel) """
+        """Cancel following standard odoo (posted -> draft -> cancel)"""
         moves.button_draft()  # unreconciled move line
         moves.button_cancel()
 
