@@ -21,3 +21,17 @@ class HrExpenseSheet(models.Model):
         if move_cancel_state != "cancel":
             self.mapped("expense_line_ids").write({"is_refused": False})
         return self.write({"state": move_cancel_state, "account_move_id": False})
+
+
+class HrExpense(models.Model):
+    _inherit = "hr.expense"
+
+    def refuse_expense(self, reason):
+        active_model = self._context.get("active_model", False)
+        # Ignore state refuse if payment not config with cancel
+        if (
+            active_model == "account.payment"
+            and self.env.company.expense_payment_cancel != "cancel"
+        ):
+            return
+        return super().refuse_expense(reason)
