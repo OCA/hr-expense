@@ -28,10 +28,10 @@ class HrExpense(models.Model):
 
     def refuse_expense(self, reason):
         active_model = self._context.get("active_model", False)
-        # Ignore state refuse if payment not config with cancel
+        # Ignore state refuse if expense not config with cancel
         if (
             active_model == "account.payment"
             and self.env.company.expense_payment_cancel != "cancel"
-        ):
+        ) or self.env.company.expense_move_cancel != "cancel":
             return
         return super().refuse_expense(reason)
