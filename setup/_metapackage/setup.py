@@ -9,6 +9,7 @@ setuptools.setup(
     version=version,
     install_requires=[
         'odoo14-addon-hr_expense_advance_clearing',
+        'odoo14-addon-hr_expense_advance_clearing_sequence',
         'odoo14-addon-hr_expense_analytic_distribution',
         'odoo14-addon-hr_expense_cancel',
         'odoo14-addon-hr_expense_exception',
