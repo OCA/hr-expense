@@ -16,14 +16,8 @@ msgstr ""
 #. module: hr_expense_payment
 #: model:ir.model.fields,field_description:hr_expense_payment.field_account_payment__display_name
 #: model:ir.model.fields,field_description:hr_expense_payment.field_account_payment_register__display_name
-#: model:ir.model.fields,field_description:hr_expense_payment.field_hr_expense__display_name
 #: model:ir.model.fields,field_description:hr_expense_payment.field_hr_expense_sheet__display_name
 msgid "Display Name"
-msgstr ""
-
-#. module: hr_expense_payment
-#: model:ir.model,name:hr_expense_payment.model_hr_expense
-msgid "Expense"
 msgstr ""
 
 #. module: hr_expense_payment
@@ -39,7 +33,6 @@ msgstr ""
 #. module: hr_expense_payment
 #: model:ir.model.fields,field_description:hr_expense_payment.field_account_payment__id
 #: model:ir.model.fields,field_description:hr_expense_payment.field_account_payment_register__id
-#: model:ir.model.fields,field_description:hr_expense_payment.field_hr_expense__id
 #: model:ir.model.fields,field_description:hr_expense_payment.field_hr_expense_sheet__id
 msgid "ID"
 msgstr ""
@@ -47,7 +40,6 @@ msgstr ""
 #. module: hr_expense_payment
 #: model:ir.model.fields,field_description:hr_expense_payment.field_account_payment____last_update
 #: model:ir.model.fields,field_description:hr_expense_payment.field_account_payment_register____last_update
-#: model:ir.model.fields,field_description:hr_expense_payment.field_hr_expense____last_update
 #: model:ir.model.fields,field_description:hr_expense_payment.field_hr_expense_sheet____last_update
 msgid "Last Modified on"
 msgstr ""
