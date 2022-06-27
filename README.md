@@ -17,7 +17,20 @@ Odoo modules related to Human Resources expenses management.
 
 [//]: # (addons)
 
-This part will be replaced when running the oca-gen-addons-table script from OCA/maintainer-tools.
+Available addons
+----------------
+addon | version | maintainers | summary
+--- | --- | --- | ---
+[hr_expense_advance_clearing](hr_expense_advance_clearing/) | 13.0.1.2.0 | [![kittiu](https://github.com/kittiu.png?size=30px)](https://github.com/kittiu) | Employee Advance and Clearing
+[hr_expense_advance_clearing_sequence](hr_expense_advance_clearing_sequence/) | 13.0.1.0.0 |  | HR Expense Advance Clearing Sequence
+[hr_expense_cancel](hr_expense_cancel/) | 13.0.1.0.0 |  | Hr expense cancel
+[hr_expense_invoice](hr_expense_invoice/) | 13.0.1.3.2 |  | Supplier invoices on HR expenses
+[hr_expense_payment_difference](hr_expense_payment_difference/) | 13.0.1.1.0 |  | Payment Difference on HR expenses
+[hr_expense_petty_cash](hr_expense_petty_cash/) | 13.0.1.1.0 |  | Petty Cash
+[hr_expense_petty_cash_sequence](hr_expense_petty_cash_sequence/) | 13.0.1.0.0 |  | HR Expense Petty Cash Sequence
+[hr_expense_portal](hr_expense_portal/) | 13.0.1.0.1 |  | Show current expense in a website.
+[hr_expense_sequence](hr_expense_sequence/) | 13.0.1.0.0 |  | HR expense sequence
+[hr_expense_tier_validation](hr_expense_tier_validation/) | 13.0.1.0.0 | [![ps-tubtim](https://github.com/ps-tubtim.png?size=30px)](https://github.com/ps-tubtim) | Expense Tier Validation
 
 [//]: # (end addons)
 
