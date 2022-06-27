@@ -21,12 +21,14 @@ Available addons
 addon | version | maintainers | summary
 --- | --- | --- | ---
 [hr_expense_advance_clearing](hr_expense_advance_clearing/) | 14.0.1.5.4 | [![kittiu](https://github.com/kittiu.png?size=30px)](https://github.com/kittiu) | Employee Advance and Clearing
+[hr_expense_advance_clearing_sequence](hr_expense_advance_clearing_sequence/) | 14.0.1.0.0 |  | HR Expense Advance Clearing Sequence
 [hr_expense_analytic_distribution](hr_expense_analytic_distribution/) | 14.0.1.0.1 |  | HR Expense Analytic Distribution
-[hr_expense_cancel](hr_expense_cancel/) | 14.0.2.0.0 |  | Hr expense cancel
+[hr_expense_cancel](hr_expense_cancel/) | 14.0.2.0.1 |  | Hr expense cancel
 [hr_expense_exception](hr_expense_exception/) | 14.0.1.0.1 |  | Custom exceptions on expense report
-[hr_expense_invoice](hr_expense_invoice/) | 14.0.1.0.1 |  | Supplier invoices on HR expenses
+[hr_expense_invoice](hr_expense_invoice/) | 14.0.1.1.0 |  | Supplier invoices on HR expenses
 [hr_expense_journal](hr_expense_journal/) | 14.0.1.0.0 | [![dreispt](https://github.com/dreispt.png?size=30px)](https://github.com/dreispt) | Set the Journal for the payment type used to pay the expense
-[hr_expense_payment](hr_expense_payment/) | 14.0.1.0.0 |  | HR Expense Payment
+[hr_expense_payment](hr_expense_payment/) | 14.0.1.0.1 |  | HR Expense Payment
+[hr_expense_payment_widget_amount](hr_expense_payment_widget_amount/) | 14.0.1.0.0 | [![Saran440](https://github.com/Saran440.png?size=30px)](https://github.com/Saran440) | HR Expense Payment Widget Amount
 [hr_expense_petty_cash](hr_expense_petty_cash/) | 14.0.1.0.0 |  | Petty Cash
 [hr_expense_sequence](hr_expense_sequence/) | 14.0.1.0.0 |  | HR expense sequence
 [hr_expense_sequence_option](hr_expense_sequence_option/) | 14.0.1.0.0 | [![ps-tubtim](https://github.com/ps-tubtim.png?size=30px)](https://github.com/ps-tubtim) | Manage sequence options for hr.expense.sheet
