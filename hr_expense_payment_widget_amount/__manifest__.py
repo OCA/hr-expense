@@ -1,16 +1,15 @@
-# Copyright 2019 Tecnativa - Ernesto Tejeda
 # Copyright 2021 Ecosoft Co., Ltd (http://ecosoft.co.th/)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 {
-    "name": "HR Expense Payment",
-    "version": "14.0.1.0.1",
+    "name": "HR Expense Payment Widget Amount",
+    "version": "14.0.1.0.0",
     "category": "Human Resources",
-    "author": "Tecnativa, Ecosoft, Odoo Community Association (OCA)",
+    "author": "Ecosoft, Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "website": "https://github.com/OCA/hr-expense",
-    "depends": ["hr_expense"],
-    "data": [],
+    "depends": ["hr_expense_payment"],
+    "data": ["views/hr_expense_views.xml"],
     "installable": True,
-    "post_init_hook": "post_init_hook",
+    "maintainers": ["Saran440"],
 }
