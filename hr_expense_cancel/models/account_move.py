@@ -4,31 +4,31 @@
 from odoo import _, models
 
 
-class AccountMove(models.Model):
-    _inherit = "account.move"
+class AccountMoveLine(models.Model):
+    _inherit = "account.move.line"
 
-    def button_cancel(self):
-        """Instead of refuse state on expense sheet,
-        return state to your configuration."""
-        res = super().button_cancel()
-        expense_sheet_ids = self.env.context.get("expense_sheet_ids", [])
-        # Make sure that cancel customer payment on payment nothing to do
-        if expense_sheet_ids and self.payment_id.payment_type == "inbound":
-            return res
-        cancel_state = (
-            self.payment_id
-            and self.env.company.expense_payment_cancel
-            or self.env.company.expense_move_cancel
-        )
-        sheets = self.env["hr.expense.sheet"].browse(expense_sheet_ids)
-        for sheet in sheets:
-            # Clear account move, if you config refuse state
-            if cancel_state == "cancel":
-                sheet.write({"account_move_id": False})
-                # Refuse flow with a similar employee who is paid by company
-                if sheet.payment_mode == "company_account":
-                    sheet.expense_line_ids.refuse_expense(reason=_("Payment Cancelled"))
-            else:
-                sheet.expense_line_ids.write({"is_refused": False})
-                sheet.write({"state": cancel_state})
+    def remove_move_reconcile(self):
+        """Remove the relationship between expenses and payments
+        after removing the reconciliation."""
+        res = super().remove_move_reconcile()
+        moves = self.mapped("move_id")
+        sheets = self.mapped("expense_id.sheet_id")
+        for move in moves:
+            cancel_state = (
+                move.payment_id
+                and move.env.company.expense_payment_cancel
+                or move.env.company.expense_move_cancel
+            )
+            for sheet in sheets:
+                # Clear account move, if you config refuse state
+                if cancel_state == "cancel":
+                    sheet.write({"account_move_id": False})
+                    # Refuse flow with a similar employee who is paid by company
+                    if sheet.payment_mode == "company_account":
+                        sheet.expense_line_ids.refuse_expense(
+                            reason=_("Payment Cancelled")
+                        )
+                else:  # Back state
+                    sheet.expense_line_ids.write({"is_refused": False})
+                    sheet.write({"state": cancel_state})
         return res
