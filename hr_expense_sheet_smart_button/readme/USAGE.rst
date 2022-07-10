@@ -1,0 +1,1 @@
+There is new smart button to link the line of expenses.
