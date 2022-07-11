@@ -4,21 +4,18 @@
 from odoo import _, models
 
 
-class AccountMoveLine(models.Model):
-    _inherit = "account.move.line"
+class AccountMove(models.Model):
+    _inherit = "account.move"
 
-    def remove_move_reconcile(self):
-        """Remove the relationship between expenses and payments
-        after removing the reconciliation."""
-        res = super().remove_move_reconcile()
-        moves = self.mapped("move_id")
-        sheets = self.mapped("expense_id.sheet_id")
-        for move in moves:
+    def remove_reconcile_expense_move(self):
+        """The status of the expense will be reversed following configuration."""
+        for move in self:
             cancel_state = (
                 move.payment_id
                 and move.env.company.expense_payment_cancel
                 or move.env.company.expense_move_cancel
             )
+            sheets = move.line_ids.mapped("expense_id.sheet_id")
             for sheet in sheets:
                 # Clear account move, if you config refuse state
                 if cancel_state == "cancel":
@@ -31,4 +28,17 @@ class AccountMoveLine(models.Model):
                 else:  # Back state
                     sheet.expense_line_ids.write({"is_refused": False})
                     sheet.write({"state": cancel_state})
-        return res
+
+    def button_draft(self):
+        self.remove_reconcile_expense_move()
+        return super().button_draft()
+
+    def button_cancel(self):
+        self.remove_reconcile_expense_move()
+        return super().button_cancel()
+
+    def _reverse_moves(self, default_values_list=None, cancel=False):
+        self.remove_reconcile_expense_move()
+        return super()._reverse_moves(
+            default_values_list=default_values_list, cancel=cancel
+        )
