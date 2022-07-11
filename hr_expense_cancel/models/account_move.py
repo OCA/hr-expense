@@ -25,7 +25,7 @@ class AccountMove(models.Model):
                         sheet.expense_line_ids.refuse_expense(
                             reason=_("Payment Cancelled")
                         )
-                else:  # Back state
+                else:  # Reversed status
                     sheet.expense_line_ids.write({"is_refused": False})
                     sheet.write({"state": cancel_state})
 
