@@ -85,7 +85,7 @@ class HrAdvanceOverdueReminderWizard(models.TransientModel):
 
     def run(self):
         self.ensure_one()
-        AdvanceOverdue = self.env["hr.advance.overdue.reminder"]
+        AdvanceOverdue = self.env["hr.advance.overdue.reminder"].sudo()
         user_id = self.env.user.id
         today = self._context.get("manual_date", fields.Date.context_today(self))
         # Unlink data is not send yet

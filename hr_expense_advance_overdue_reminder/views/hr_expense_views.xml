@@ -74,7 +74,7 @@
                 <filter
                     name="overdue_date"
                     string="Overdue Date"
-                    domain="[('clearing_date_due', '&lt;', datetime.date.today().strftime('%Y-%m-%d'))]"
+                    domain="[('clearing_date_due', '&lt;', datetime.date.today().strftime('%Y-%m-%d')), ('clearing_residual', '&gt;', 0.0)]"
                 />
             </xpath>
         </field>
