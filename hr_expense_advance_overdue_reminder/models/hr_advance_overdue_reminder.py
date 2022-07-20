@@ -44,7 +44,7 @@ class HrAdvanceOverdueReminder(models.Model):
             mail_body = mail_tpl_lang._render_template(
                 mail_tpl_lang.body_html, rec._name, rec._origin.ids
             )
-            mail_body = tools.html_sanitize(mail_body.get("rec._origin.id", {}))
+            mail_body = tools.html_sanitize(mail_body.get(rec._origin.id, False))
             rec.mail_body = mail_body
 
     def action_get_mail_view(self):
