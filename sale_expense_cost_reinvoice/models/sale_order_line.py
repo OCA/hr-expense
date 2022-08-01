@@ -14,7 +14,7 @@ class SaleOrderLine(models.Model):
         # instead we will take expense price, from just created order line
         # with the values from _sale_prepare_sale_line_values
         at_cost_expense_lines = self.filtered(
-            lambda line: line.product_id.expense_policy == "cost"
+            lambda line: line.is_expense and line.product_id.expense_policy == "cost"
         )
         at_cost_prices = {
             line.id: line.purchase_price for line in at_cost_expense_lines
