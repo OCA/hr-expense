@@ -9,26 +9,11 @@ from odoo.tools import float_compare
 class HrExpenseSheet(models.Model):
     _inherit = "hr.expense.sheet"
 
-    @api.model
-    def _default_journal_id(self):
-        """Update expense journal from petty cash"""
-        journal = super()._default_journal_id()
-        petty_cash_obj = self.env["petty.cash"]
-        petty_cash = self._context.get("default_petty_cash_id", False)
-        if petty_cash:
-            petty_cash_id = petty_cash_obj.browse(petty_cash)
-            journal = petty_cash_id.journal_id.id or journal
-        return journal
-
     petty_cash_id = fields.Many2one(
         string="Petty cash holder",
         comodel_name="petty.cash",
         ondelete="restrict",
         compute="_compute_petty_cash",
-    )
-    journal_id = fields.Many2one(
-        comodel_name="account.journal",
-        default=_default_journal_id,
     )
 
     @api.depends("expense_line_ids", "payment_mode")
@@ -43,6 +28,9 @@ class HrExpenseSheet(models.Model):
                     rec.petty_cash_id = rec.env["petty.cash"].browse(
                         set_petty_cash_ids.pop()
                     )
+                    journal_petty_cash = rec.petty_cash_id.journal_id
+                    if journal_petty_cash:
+                        rec.journal_id = journal_petty_cash
                 else:
                     raise ValidationError(
                         _("You cannot create report from many petty cash holders.")
@@ -67,13 +55,11 @@ class HrExpenseSheet(models.Model):
                     raise ValidationError(
                         _(
                             "Not enough money in petty cash holder.\n"
-                            "You are requesting %s%s, "
-                            "but the balance is %s%s."
-                        )
-                        % (
-                            "{:,.2f}".format(amount_company),
-                            company_currency.symbol,
-                            "{:,.2f}".format(balance),
-                            company_currency.symbol,
+                            "You are requesting {amount_company}{symbol}, "
+                            "but the balance is {balance}{symbol}."
+                        ).format(
+                            amount_company="{:,.2f}".format(amount_company),
+                            symbol=company_currency.symbol,
+                            balance="{:,.2f}".format(balance),
                         )
                     )

@@ -34,22 +34,22 @@ class AccountMove(models.Model):
                     and account.id in rec.invoice_line_ids.mapped("account_id").ids
                 ):
                     raise UserError(
-                        _("Please check Petty Cash on {}.".format(rec.display_name))
+                        _("Please check Petty Cash on {name}.").format(
+                            name=rec.display_name
+                        )
                     )
                 if rec.is_petty_cash:
                     if len(rec.invoice_line_ids) > 1:
                         raise UserError(
                             _(
-                                "{} with petty cash checked must contain "
-                                "only 1 line.".format(rec.display_name)
-                            )
+                                "{name} with petty cash checked must contain "
+                                "only 1 line."
+                            ).format(name=rec.display_name)
                         )
                     if rec.invoice_line_ids.account_id.id != account.id:
                         raise UserError(
-                            _(
-                                "Account on invoice line should be {}.".format(
-                                    account.display_name
-                                )
+                            _("Account on invoice line should be {name}.").format(
+                                name=account.display_name
                             )
                         )
                     balance = petty_cash.petty_cash_balance
@@ -76,14 +76,12 @@ class AccountMove(models.Model):
                     ):
                         raise ValidationError(
                             _(
-                                "Petty Cash balance is %s %s.\n"
-                                "Max amount to add is %s %s."
-                            )
-                            % (
-                                "{:,.2f}".format(balance),
-                                company_currency.symbol,
-                                "{:,.2f}".format(max_amount),
-                                company_currency.symbol,
+                                "Petty Cash balance is {balance} {symbol}.\n"
+                                "Max amount to add is {max_amount} {symbol}."
+                            ).format(
+                                balance="{:,.2f}".format(balance),
+                                symbol=company_currency.symbol,
+                                max_amount="{:,.2f}".format(max_amount),
                             )
                         )
 
