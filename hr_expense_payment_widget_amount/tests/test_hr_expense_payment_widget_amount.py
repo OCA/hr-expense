@@ -44,7 +44,7 @@ class TestHrExpensePaymentWidgetAmount(TransactionCase):
             {
                 "name": "Expense test",
                 "employee_id": self.ref("hr.employee_admin"),
-                "product_id": self.ref("hr_expense.air_ticket"),
+                "product_id": self.ref("hr_expense.accomodation_expense_product"),
                 "unit_amount": 1,
                 "quantity": 10,
                 "sheet_id": self.expense_sheet.id,
@@ -64,7 +64,7 @@ class TestHrExpensePaymentWidgetAmount(TransactionCase):
             {
                 "name": "Expense test",
                 "employee_id": self.ref("hr.employee_admin"),
-                "product_id": self.ref("hr_expense.air_ticket"),
+                "product_id": self.ref("hr_expense.accomodation_expense_product"),
                 "unit_amount": 1,
                 "quantity": 10,
                 "currency_id": self.currency_eur_id,
@@ -76,7 +76,7 @@ class TestHrExpensePaymentWidgetAmount(TransactionCase):
         action = expense_sheet.action_register_payment()
         ctx = action.get("context")
         with Form(
-            self.account_payment_register.with_context(ctx),
+            self.account_payment_register.with_context(**ctx),
             view="account.view_account_payment_register_form",
         ) as f:
             f.journal_id = self.payment_journal
