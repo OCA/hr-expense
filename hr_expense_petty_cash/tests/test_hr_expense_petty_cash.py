@@ -12,7 +12,7 @@ class TestHrExpensePettyCash(TransactionCase):
 
         self.employee_1 = self.env.ref("hr.employee_admin")
         self.employee_2 = self.env.ref("hr.employee_al")
-        self.product_id = self.env.ref("hr_expense.air_ticket")
+        self.product_id = self.env.ref("hr_expense.accomodation_expense_product")
         self.partner_1 = self.env.ref("base.res_partner_1")
         self.partner_2 = self.env.ref("base.res_partner_2")
         self.partner_3 = self.env.ref("base.res_partner_3")
@@ -83,16 +83,12 @@ class TestHrExpensePettyCash(TransactionCase):
         return expense
 
     def _create_expense_sheet(self, expenses):
-        expense_sheet = (
-            self.env["hr.expense.sheet"]
-            .with_context({"default_petty_cash_id": self.petty_cash_holder.id})
-            .create(
-                {
-                    "name": expenses[0].name,
-                    "employee_id": expenses[0].employee_id.id,
-                    "expense_line_ids": [(6, 0, expenses.ids)],
-                }
-            )
+        expense_sheet = self.env["hr.expense.sheet"].create(
+            {
+                "name": expenses[0].name,
+                "employee_id": expenses[0].employee_id.id,
+                "expense_line_ids": [(6, 0, expenses.ids)],
+            }
         )
         return expense_sheet
 
@@ -147,7 +143,7 @@ class TestHrExpensePettyCash(TransactionCase):
         self.assertEqual(invoice.invoice_line_ids.price_unit, 1000.0)
         # over limit
         with self.assertRaises(ValidationError):
-            invoice.invoice_line_ids.with_context({"check_move_validity": False}).write(
+            invoice.invoice_line_ids.with_context(check_move_validity=False).write(
                 {"price_unit": 1500.0}
             )
             invoice.action_post()
@@ -218,7 +214,8 @@ class TestHrExpensePettyCash(TransactionCase):
             100.0, self.employee_2.id, "petty_cash", self.petty_cash_holder_2.id
         )
         expense_report = expense_own + expense_petty_cash + expense_petty_cash_2
-        with self.assertRaises(UserError):
+        # Check expenses must have 1 petty cash holder only
+        with self.assertRaises(ValidationError):
             expense_report.action_submit_expenses()
         # check create direct expense sheet and many diff petty cash
         expense_diff_holder = expense_petty_cash + expense_petty_cash_2
