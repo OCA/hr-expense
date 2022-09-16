@@ -35,7 +35,7 @@
         <field name="name">petty.cash.list</field>
         <field name="model">petty.cash</field>
         <field name="arch" type="xml">
-            <tree string="Petty Cash">
+            <tree>
                 <field name="partner_id" />
                 <field name="account_id" />
                 <field name="journal_id" />
