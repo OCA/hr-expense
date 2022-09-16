@@ -236,9 +236,9 @@ class TestHrExpensePettyCash(TransactionCase):
         sheet.expense_line_ids.unit_amount = 400.0
         # Submitted to Manager and Approve
         sheet.action_submit_sheet()
-        self.assertEquals(sheet.state, "submit")
+        self.assertEqual(sheet.state, "submit")
         sheet.approve_expense_sheets()
-        self.assertEquals(sheet.state, "approve")
+        self.assertEqual(sheet.state, "approve")
         # Check state != draft, many employee and don't have product
         with self.assertRaises(UserError):
             expense_petty_cash.action_submit_expenses()
@@ -250,9 +250,9 @@ class TestHrExpensePettyCash(TransactionCase):
             expense_petty_cash_3.action_submit_expenses()
         # Create Expense Entries
         sheet.action_sheet_move_create()
-        self.assertEquals(sheet.state, "done")
+        self.assertEqual(sheet.state, "done")
         self.assertTrue(sheet.account_move_id.id)
-        self.assertEquals(self.petty_cash_holder.petty_cash_balance, 600.0)
+        self.assertEqual(self.petty_cash_holder.petty_cash_balance, 600.0)
 
     def test_03_create_expense_petty_cash_with_journal(self):
         self.petty_cash_holder.journal_id = self.petty_cash_journal_id
