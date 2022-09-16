@@ -46,5 +46,5 @@ class PettyCash(models.Model):
                     ("parent_state", "=", "posted"),
                 ]
             )
-            balance = sum([line.debit - line.credit for line in aml])
+            balance = sum(line.debit - line.credit for line in aml)
             rec.petty_cash_balance = balance
