@@ -109,12 +109,13 @@ class TestExpenseSheetException(TransactionCase):
 
         # Simulation the opening of the wizard expense_exception_confirm and
         # set ignore_exception to True
-        ex_except_confirm = self.expense_exception_confirm.with_context(
-            {
-                "active_id": self.ex.id,
-                "active_ids": [self.ex.id],
-                "active_model": self.ex._name,
-            }
-        ).create({"ignore": True})
+        ctx = {
+            "active_id": self.ex.id,
+            "active_ids": [self.ex.id],
+            "active_model": self.ex._name,
+        }
+        ex_except_confirm = self.expense_exception_confirm.with_context(**ctx).create(
+            {"ignore": True}
+        )
         ex_except_confirm.action_confirm()
         self.assertTrue(self.ex.ignore_exception)
