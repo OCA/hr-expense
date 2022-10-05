@@ -56,13 +56,6 @@ class AccountPaymentRegister(models.TransientModel):
                         "to different companies."
                     )
                 )
-            if len(set(available_lines.mapped("account_internal_type"))) > 1:
-                raise UserError(
-                    _(
-                        "You can't register payments for journal items "
-                        "being either all inbound, either all outbound."
-                    )
-                )
             res["line_ids"] = [(6, 0, available_lines.ids)]
         return res
 
