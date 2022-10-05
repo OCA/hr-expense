@@ -4,6 +4,7 @@
 from odoo import _, api, models
 from odoo.exceptions import UserError
 from odoo.models import BaseModel
+from odoo.tools import float_compare
 
 
 class AccountPaymentRegister(models.TransientModel):
@@ -71,8 +72,32 @@ class AccountPaymentRegister(models.TransientModel):
             return self._default_return_advance(fields_list)
         return super().default_get(fields_list)
 
+    def _validate_over_return(self):
+        """Actual remaining = amount to clear - clear pending
+        and it is not legit to return more than remaining"""
+        clearings = (
+            self.env["hr.expense.sheet"]
+            .browse(self.env.context.get("clearing_sheet_ids", []))
+            .filtered(lambda l: l.state == "approve")
+        )
+        amount_not_clear = sum(clearings.mapped("total_amount"))
+        actual_remaining = self.source_amount_currency - amount_not_clear
+        more_info = ""
+        symbol = self.source_currency_id.symbol
+        if amount_not_clear:
+            more_info = _("\nNote: pending amount clearing is %s%s") % (
+                symbol,
+                "{:,.2f}".format(amount_not_clear),
+            )
+        if float_compare(self.amount, actual_remaining, 2) == 1:
+            raise UserError(
+                _("You cannot return advance more than actual remaining (%s%s)%s")
+                % (symbol, "{:,.2f}".format(actual_remaining), more_info)
+            )
+
     def action_create_payments(self):
         if self._context.get("hr_return_advance", False):
+            self._validate_over_return()
             self.expense_post_return_advance()
             return {"type": "ir.actions.act_window_close"}
         return super().action_create_payments()

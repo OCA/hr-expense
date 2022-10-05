@@ -191,3 +191,13 @@ class HrExpenseSheet(models.Model):
             for k, v in clearing_dict.items()
         }
         return clearing_dict
+
+    def action_register_payment(self):
+        action = super().action_register_payment()
+        if self.env.context.get("hr_return_advance"):
+            action["context"].update(
+                {
+                    "clearing_sheet_ids": self.clearing_sheet_ids.ids,
+                }
+            )
+        return action
