@@ -134,6 +134,7 @@ msgid "Create a new expense report"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_account_move__display_name
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_account_payment_register__display_name
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee_base__display_name
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__display_name
@@ -207,6 +208,7 @@ msgid "Final regiter payment amount even after advance clearing"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_account_move__id
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_account_payment_register__id
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee_base__id
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__id
@@ -215,6 +217,12 @@ msgid "ID"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#: model:ir.model,name:hr_expense_advance_clearing.model_account_move
+msgid "Journal Entry"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_account_move____last_update
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_account_payment_register____last_update
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee_base____last_update
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense____last_update
@@ -298,6 +306,14 @@ msgstr ""
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense_sheet__advance_sheet_id
 msgid "Show remaining advance of this employee"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: code:addons/hr_expense_advance_clearing/models/account_move.py:0
+#, python-format
+msgid ""
+"This operation is not allowed as some advance amount was already cleared/returned.\n"
+"Please cancel those documents first."
 msgstr ""
 
 #. module: hr_expense_advance_clearing
