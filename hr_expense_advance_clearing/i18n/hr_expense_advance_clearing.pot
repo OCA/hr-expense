@@ -14,6 +14,14 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: hr_expense_advance_clearing
+#: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
+#, python-format
+msgid ""
+"\n"
+"Note: pending amount clearing is %s%s"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee__advance_count
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee_base__advance_count
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee_public__advance_count
@@ -349,4 +357,10 @@ msgstr ""
 msgid ""
 "You can't register payments for journal items being either all inbound, "
 "either all outbound."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
+#, python-format
+msgid "You cannot return advance more than actual remaining (%s%s)%s"
 msgstr ""
