@@ -15,6 +15,7 @@ setuptools.setup(
         'odoo14-addon-hr_expense_exception',
         'odoo14-addon-hr_expense_invoice',
         'odoo14-addon-hr_expense_journal',
+        'odoo14-addon-hr_expense_pay_to_vendor',
         'odoo14-addon-hr_expense_payment',
         'odoo14-addon-hr_expense_payment_widget_amount',
         'odoo14-addon-hr_expense_petty_cash',
