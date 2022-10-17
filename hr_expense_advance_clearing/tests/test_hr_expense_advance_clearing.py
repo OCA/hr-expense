@@ -165,6 +165,17 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
                 advance=True,
                 payment_mode="company_account",
             )
+        # Advance Expense, must be product advance only
+        with self.assertRaises(ValidationError):
+            expense = self._create_expense(
+                "Advance 1,000",
+                self.employee,
+                self.emp_advance,
+                1.0,
+                advance=True,
+            )
+            expense.product_id = self.product.id
+            expense._check_advance()
         # Advance Expense's product must have account configured
         with self.assertRaises(ValidationError):
             self.emp_advance.property_account_expense_id = False
@@ -245,3 +256,30 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
         # Back to advance and do return advance, clearing residual become 0.0
         self._register_payment(self.advance.account_move_id, hr_return_advance=True)
         self.assertEqual(self.advance.clearing_residual, 0.0)
+        # Check payment of return advance
+        payment = self.env["account.payment"].search(
+            [("advance_id", "=", self.advance.id)]
+        )
+        self.assertEqual(len(payment), 1)
+
+    def test_4_clearing_product_advance(self):
+        """When select clearing product on advance"""
+        # ------------------ Advance --------------------------
+        self.advance.expense_line_ids.clearing_product_id = self.product
+        self.advance.action_submit_sheet()
+        self.advance.approve_expense_sheets()
+        self.advance.action_sheet_move_create()
+        self.assertEqual(self.advance.clearing_residual, 1000.0)
+        self._register_payment(self.advance.account_move_id, 1000.0)
+        self.assertEqual(self.advance.state, "done")
+        # ------------------ Clearing --------------------------
+        with Form(self.env["hr.expense.sheet"]) as sheet:
+            sheet.name = "Test Clearing"
+            sheet.employee_id = self.employee
+        ex_sheet = sheet.save()
+        ex_sheet.advance_sheet_id = self.advance
+        self.assertEqual(len(ex_sheet.expense_line_ids), 0)
+        ex_sheet._onchange_advance_sheet_id()
+        self.assertEqual(len(ex_sheet.expense_line_ids), 1)
+        reverse_move = self.advance.account_move_id._reverse_moves(cancel=True)
+        self.assertNotEqual(reverse_move, self.advance.account_move_id)

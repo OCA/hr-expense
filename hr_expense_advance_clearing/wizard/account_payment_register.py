@@ -117,6 +117,7 @@ class AccountPaymentRegister(models.TransientModel):
         advance_account = emp_advance.property_account_expense_id
         # Create return advance and post it
         payment_vals = self._create_payment_vals_from_wizard()
+        payment_vals["advance_id"] = expense_sheet.id
         payment_vals_list = [payment_vals]
         payment = (
             self.env["account.payment"].with_context(ctx).create(payment_vals_list)
