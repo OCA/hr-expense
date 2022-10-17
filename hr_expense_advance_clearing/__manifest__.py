@@ -11,6 +11,7 @@
     "depends": ["hr_expense"],
     "data": [
         "data/advance_product.xml",
+        "views/account_payment_view.xml",
         "views/hr_expense_views.xml",
         "views/hr_employee_views.xml",
         "views/hr_employee_public_views.xml",
