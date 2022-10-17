@@ -90,7 +90,8 @@ class TestHrExpenseCancel(TransactionCase):
     def test_action_cancel_no_update_posted(self):
         journals = self.payment_journal | self.expense_journal
         journals.write({"restrict_mode_hash_table": True})
-        self.test_action_cancel_company_account()
+        with self.assertRaises(UserError):
+            self.test_action_cancel_company_account()
         with self.assertRaises(UserError):
             self.test_action_cancel_own_account()
 
@@ -114,7 +115,10 @@ class TestHrExpenseCancel(TransactionCase):
         self.assertEqual(len(self.expense_sheet.payment_ids), 1)
         self.assertTrue(self.expense_sheet.account_move_id)
 
-        # cancel from payment only
+        # cancel from payment only (standard odoo)
+        self.assertEqual(self.expense_sheet.payment_ids.mapped("state"), ["posted"])
+        self.expense_sheet.payment_ids.action_draft()
+        self.assertEqual(self.expense_sheet.payment_ids.mapped("state"), ["draft"])
         self.expense_sheet.payment_ids.action_cancel()
         self.assertEqual(self.expense_sheet.payment_ids.mapped("state"), ["cancel"])
         self.assertFalse(self.expense_sheet.account_move_id)
