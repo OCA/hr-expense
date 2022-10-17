@@ -169,6 +169,17 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
                 advance=True,
                 payment_mode="company_account",
             )
+        # Advance Expense, must be product advance only
+        with self.assertRaises(ValidationError):
+            expense = self._create_expense(
+                "Advance 1,000",
+                self.employee,
+                self.emp_advance,
+                1.0,
+                advance=True,
+            )
+            expense.product_id = self.product.id
+            expense._check_advance()
         # Advance Expense's product must have account configured
         with self.assertRaises(ValidationError):
             self.emp_advance.property_account_expense_id = False
@@ -296,6 +307,11 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
             hr_return_advance=True,
         )
         self.assertEqual(self.advance.clearing_residual, 0.0)
+        # Check payment of return advance
+        payment = self.env["account.payment"].search(
+            [("advance_id", "=", self.advance.id)]
+        )
+        self.assertEqual(len(payment), 1)
 
     def test_4_clearing_product_advance(self):
         """When select clearing product on advance"""
