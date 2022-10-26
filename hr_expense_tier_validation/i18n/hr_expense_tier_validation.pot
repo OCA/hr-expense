@@ -19,9 +19,15 @@ msgid "Can Review"
 msgstr ""
 
 #. module: hr_expense_tier_validation
+#: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense__display_name
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__display_name
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_tier_definition__display_name
 msgid "Display Name"
+msgstr ""
+
+#. module: hr_expense_tier_validation
+#: model:ir.model,name:hr_expense_tier_validation.model_hr_expense
+msgid "Expense"
 msgstr ""
 
 #. module: hr_expense_tier_validation
@@ -40,12 +46,14 @@ msgid "Has Comment"
 msgstr ""
 
 #. module: hr_expense_tier_validation
+#: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense__id
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__id
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_tier_definition__id
 msgid "ID"
 msgstr ""
 
 #. module: hr_expense_tier_validation
+#: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense____last_update
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet____last_update
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_tier_definition____last_update
 msgid "Last Modified on"
@@ -84,6 +92,12 @@ msgstr ""
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__reviewer_ids
 msgid "Reviewers"
+msgstr ""
+
+#. module: hr_expense_tier_validation
+#: code:addons/hr_expense_tier_validation/models/hr_expense.py:0
+#, python-format
+msgid "The expense report is under validation."
 msgstr ""
 
 #. module: hr_expense_tier_validation
