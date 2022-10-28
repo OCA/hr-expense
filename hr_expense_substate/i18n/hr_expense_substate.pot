@@ -42,6 +42,11 @@ msgid "Base Substate Type"
 msgstr ""
 
 #. module: hr_expense_substate
+#: model:base.substate,name:hr_expense_substate.base_substate_checked
+msgid "Checked"
+msgstr ""
+
+#. module: hr_expense_substate
 #: model:ir.model.fields,field_description:hr_expense_substate.field_base_substate_type__display_name
 #: model:ir.model.fields,field_description:hr_expense_substate.field_hr_expense_sheet__display_name
 msgid "Display Name"
@@ -99,6 +104,16 @@ msgstr ""
 #. module: hr_expense_substate
 #: model:target.state.value,name:hr_expense_substate.target_state_value_submit
 msgid "Submitted"
+msgstr ""
+
+#. module: hr_expense_substate
+#: model:base.substate,name:hr_expense_substate.base_substate_to_verify
+msgid "To Verify"
+msgstr ""
+
+#. module: hr_expense_substate
+#: model:base.substate,name:hr_expense_substate.base_substate_verified
+msgid "Verified"
 msgstr ""
 
 #. module: hr_expense_substate
