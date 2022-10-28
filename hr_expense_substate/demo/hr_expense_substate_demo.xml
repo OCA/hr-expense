@@ -4,19 +4,19 @@
     <record id="base_substate_to_verify" model="base.substate">
         <field name="name">To Verify</field>
         <field name="sequence">1</field>
-        <field name="target_state_value_id" ref="target_state_value_to_approve" />
+        <field name="target_state_value_id" ref="target_state_value_submit" />
         <field name="active" eval="False" />
     </record>
     <record id="base_substate_checked" model="base.substate">
         <field name="name">Checked</field>
         <field name="sequence">2</field>
-        <field name="target_state_value_id" ref="target_state_value_to_approve" />
+        <field name="target_state_value_id" ref="target_state_value_submit" />
         <field name="active" eval="False" />
     </record>
     <record id="base_substate_verified" model="base.substate">
         <field name="name">Verified</field>
         <field name="sequence">3</field>
-        <field name="target_state_value_id" ref="target_state_value_to_approve" />
+        <field name="target_state_value_id" ref="target_state_value_submit" />
         <field
             name="mail_template_id"
             ref="hr_expense_substate.mail_template_data_hr_expense_substate_verified"
