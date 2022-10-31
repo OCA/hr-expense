@@ -2,10 +2,10 @@
 #                       Pedro M. Baeza <pedro.baeza@serviciosbaeza.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo.tests.common import SavepointCase
+from odoo.tests.common import TransactionCase
 
 
-class TestHrExpenseSequence(SavepointCase):
+class TestHrExpenseSequence(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -34,13 +34,23 @@ class TestHrExpenseSequence(SavepointCase):
         return expense
 
     def test_create_sequence(self):
-        # Test number != '/'
-        self.sheet = self.expense_sheet_model.create(
+        # Test not send number
+        sheet1 = self.expense_sheet_model.create(
             {"name": "Expense Report", "employee_id": self.employee.id}
         )
-        self.assertNotEqual(self.sheet.number, "/", "Number create")
-        # Test number 1 != number 2
-        expense_number_1 = self.sheet.number
-        expense2 = self.sheet.copy()
+        self.assertNotEqual(sheet1.number, "/")
+        # Test send number '/'
+        sheet2 = self.expense_sheet_model.create(
+            {"name": "Expense Report", "employee_id": self.employee.id, "number": "/"}
+        )
+        self.assertNotEqual(sheet2.number, "/")
+        # Test send number 'EX1'
+        sheet_manual_number = self.expense_sheet_model.create(
+            {"name": "Expense Report", "employee_id": self.employee.id, "number": "EX1"}
+        )
+        self.assertEqual(sheet_manual_number.number, "EX1")
+        # Test duplicate expense number '/'
+        sheet2.number = "/"
+        expense2 = sheet2.copy()
         expense_number_2 = expense2.number
-        self.assertNotEqual(expense_number_1, expense_number_2, "Numbers are different")
+        self.assertNotEqual(sheet2.number, expense_number_2)
