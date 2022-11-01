@@ -1,0 +1,83 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record id="action_expense_sheet_test_tree" model="ir.actions.act_window">
+        <field name="name">Expense Report Exception Rules</field>
+        <field name="res_model">exception.rule</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="base_exception.view_exception_rule_tree" />
+        <field
+            name="domain"
+        >[('model', 'in', ['hr.expense.sheet', 'hr.expense'])]</field>
+        <field
+            name="context"
+        >{'active_test': False, 'default_model' : 'hr.expense.sheet'}</field>
+    </record>
+    <menuitem
+        action="action_expense_sheet_test_tree"
+        id="menu_expense_sheet_test"
+        parent="hr_expense.menu_hr_expense_configuration"
+    />
+    <record id="view_hr_expense_sheet_form" model="ir.ui.view">
+        <field name="name">hr_expense_exception.view_hr_expense_sheet_form</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
+        <field name="arch" type="xml">
+            <sheet position="before">
+                <div
+                    class="alert alert-danger"
+                    role="alert"
+                    style="margin-bottom:0px;"
+                    attrs="{'invisible': [('exceptions_summary','=',False)]}"
+                >
+                    <p>
+                        <strong
+                        >There are exceptions blocking this Expense Report:</strong>
+                    </p>
+                    <field name="exceptions_summary" />
+                    <button
+                        name="action_ignore_exceptions"
+                        type="object"
+                        class="btn-danger"
+                        string="Ignore Exceptions"
+                        help="Click here to be able to confirm this Agreement regardless of the exceptions."
+                        groups="base_exception.group_exception_rule_manager"
+                    />
+                </div>
+            </sheet>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field
+                    name="ignore_exception"
+                    states="submit"
+                    groups="base_exception.group_exception_rule_manager"
+                />
+                <field name="exception_ids" widget="many2many_tags" readonly="True" />
+            </xpath>
+        </field>
+    </record>
+    <record id="view_hr_expense_sheet_tree" model="ir.ui.view">
+        <field name="name">hr_expense_exception.view_hr_expense_sheet_tree</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_tree" />
+        <field name="arch" type="xml">
+            <field name="state" position="after">
+                <field name="main_exception_id" />
+            </field>
+        </field>
+    </record>
+    <record id="hr_expense_sheet_view_search" model="ir.ui.view">
+        <field name="name">hr_expense_exception.hr_expense_sheet_view_search</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_sheet_view_search" />
+        <field name="arch" type="xml">
+            <filter name="filter_accounting_date" position="after">
+                <separator orientation="vertical" />
+                <filter
+                    icon="fa-exclamation-circle"
+                    name="tofix"
+                    string="Blocked in Draft"
+                    domain="[('main_exception_id','!=',False)]"
+                />
+            </filter>
+        </field>
+    </record>
+</odoo>
