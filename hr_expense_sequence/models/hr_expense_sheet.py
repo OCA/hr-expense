@@ -14,6 +14,6 @@ class HrExpenseSheet(models.Model):
     @api.model
     def create(self, vals):
         if vals.get("number", "/") == "/":
-            number = self.env["ir.sequence"].next_by_code("hr.expense.sheet")
+            number = self.env["ir.sequence"].next_by_code("hr.expense.sheet") or "/"
             vals["number"] = number
         return super().create(vals)
