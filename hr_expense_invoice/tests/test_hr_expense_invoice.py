@@ -9,10 +9,10 @@ from odoo.tests import common
 from odoo.tests.common import Form
 
 
-class TestHrExpenseInvoice(common.SavepointCase):
+class TestHrExpenseInvoice(common.TransactionCase):
     @classmethod
     def setUpClass(cls):
-        super(TestHrExpenseInvoice, cls).setUpClass()
+        super().setUpClass()
 
         cls.account_payment_register = cls.env["account.payment.register"]
         cls.payment_obj = cls.env["account.payment"]
