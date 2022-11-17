@@ -10,9 +10,9 @@ HR Expense Report Payment Status
 .. |badge1| image:: https://img.shields.io/badge/maturity-Beta-yellow.png
     :target: https://odoo-community.org/page/development-status
     :alt: Beta
-.. |badge2| image:: https://img.shields.io/badge/licence-AGPL--3-blue.png
-    :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
-    :alt: License: AGPL-3
+.. |badge2| image:: https://img.shields.io/badge/licence-LGPL--3-blue.png
+    :target: http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+    :alt: License: LGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fhr--expense-lightgray.png?logo=github
     :target: https://github.com/OCA/hr-expense/tree/14.0/hr_expense_sheet_payment_state
     :alt: OCA/hr-expense
@@ -34,7 +34,6 @@ WARNING: do not migrate to Odoo Community Version 15.0
 .. contents::
    :local:
 
-
 Usage
 =====
 
@@ -53,18 +52,18 @@ Do not contact contributors directly about support or help with technical issues
 Credits
 =======
 
-This module is a backport from Odoo SA and as such, it is not included in the OCA CLA.
-That means we do not have a copy of the copyright on it like all other OCA modules.
-
 Authors
 ~~~~~~~
 
+* Odoo SA
 * Camptocamp
 
 Contributors
 ~~~~~~~~~~~~
 
-* Maksym Yankin <maksym.yankin@camptocamp.com>
+* `Camptocamp <https://www.camptocamp.com>`__:
+
+  * Maksym Yankin
 
 Maintainers
 ~~~~~~~~~~~
@@ -78,14 +77,6 @@ This module is maintained by the OCA.
 OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.
-
-.. |maintainer-ps-tubtim| image:: https://github.com/ps-tubtim.png?size=40px
-    :target: https://github.com/ps-tubtim
-    :alt: ps-tubtim
-
-Current `maintainer <https://odoo-community.org/page/maintainer-role>`__:
-
-|maintainer-ps-tubtim| 
 
 This module is part of the `OCA/hr-expense <https://github.com/OCA/hr-expense/tree/14.0/hr_expense_sheet_payment_state>`_ project on GitHub.
 
