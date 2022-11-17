@@ -8,7 +8,7 @@ class HrExpenseAnalyticDistribution(models.Model):
     _name = "hr.expense.analytic.distribution"
     _description = "Shows the distribution of expenses."
 
-    percentage = fields.Float("Percentage", required=True)
+    percentage = fields.Float(required=True)
     analytic_account_id = fields.Many2one(
         "account.analytic.account",
         string="Analytic Account",

@@ -3,7 +3,7 @@
 
 {
     "name": "HR Expense Analytic Distribution",
-    "version": "14.0.1.0.1",
+    "version": "15.0.1.0.0",
     "category": "Expense Management",
     "author": "Open Source Integrators, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/hr-expense",

@@ -5,7 +5,7 @@ from odoo import exceptions
 from odoo.tests import common
 
 
-class TestHrExpense(common.SavepointCase):
+class TestHrExpense(common.TransactionCase):
     def setUp(self):
         super().setUp()
         self.Distribution = self.env["hr.expense.analytic.distribution"]
