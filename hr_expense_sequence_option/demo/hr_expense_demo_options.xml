@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-
     <record id="seq_hr_expense_option_1" model="ir.sequence">
         <field name="name">Expense Sheet: Option 1</field>
         <field name="padding" eval="5" />
@@ -22,5 +21,4 @@
             ref="hr_expense_sequence_option.seq_hr_expense_option_1"
         />
     </record>
-
 </odoo>
