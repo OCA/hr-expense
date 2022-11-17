@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- pylint:disable=dangerous-view-replace-wo-priority -->
+<odoo>
+    <record id="view_hr_expense_sheet_tree" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.tree.payment.state</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_tree" />
+        <field name="arch" type="xml">
+            <field name="state" position="after">
+                <field
+                    name="payment_state"
+                    optional="show"
+                    decoration-info="payment_state in ('partial','in_payment')"
+                    decoration-success="payment_state == 'paid'"
+                    decoration-danger="payment_state in ('reversed','not_paid')"
+                    widget="badge"
+                />
+            </field>
+        </field>
+    </record>
+    <record id="view_hr_expense_sheet_form" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.form.payment.state</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//widget[@name='web_ribbon']" position="replace">
+                <field name="payment_state" invisible="True" />
+                <widget
+                    name="web_ribbon"
+                    title="Paid"
+                    bg_color="bg-success"
+                    attrs="{'invisible': [('payment_state', '!=', 'paid')]}"
+                />
+                <widget
+                    name="web_ribbon"
+                    title="Partial"
+                    bg_color="bg-info"
+                    attrs="{'invisible': [('payment_state', '!=', 'partial')]}"
+                />
+                <widget
+                    name="web_ribbon"
+                    title="Reversed"
+                    bg_color="bg-danger"
+                    attrs="{'invisible': [('payment_state', '!=', 'reversed')]}"
+                />
+                <widget
+                    name="web_ribbon"
+                    title="In Payment"
+                    attrs="{'invisible': [('payment_state', '!=', 'in_payment')]}"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
