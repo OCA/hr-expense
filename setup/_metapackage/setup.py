@@ -21,6 +21,7 @@ setuptools.setup(
         'odoo14-addon-hr_expense_petty_cash',
         'odoo14-addon-hr_expense_sequence',
         'odoo14-addon-hr_expense_sequence_option',
+        'odoo14-addon-hr_expense_sheet_payment_state',
         'odoo14-addon-hr_expense_substate',
         'odoo14-addon-hr_expense_tier_validation',
         'odoo14-addon-hr_expense_widget_o2m',
