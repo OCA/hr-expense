@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_move_user,access_account_move_user,account.model_account_move,group_enable_wa_on_exp,1,0,0,0
+access_stock_picking_user,access_stock_picking_user,stock.model_stock_picking,group_enable_wa_on_exp,1,0,0,0
+access_work_acceptance_user,access_work_acceptance_user,purchase_work_acceptance.model_work_acceptance,base.group_user,1,1,1,1
+access_work_acceptance_line_user,access_work_acceptance_line_user,purchase_work_acceptance.model_work_acceptance_line,base.group_user,1,1,1,1
