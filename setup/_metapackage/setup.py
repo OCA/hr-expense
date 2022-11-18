@@ -25,6 +25,7 @@ setuptools.setup(
         'odoo14-addon-hr_expense_substate',
         'odoo14-addon-hr_expense_tier_validation',
         'odoo14-addon-hr_expense_widget_o2m',
+        'odoo14-addon-hr_expense_work_acceptance',
     ],
     classifiers=[
         'Programming Language :: Python',
