@@ -38,6 +38,7 @@ addon | version | maintainers | summary
 [hr_expense_substate](hr_expense_substate/) | 14.0.1.0.1 |  | Expense Report Sub State
 [hr_expense_tier_validation](hr_expense_tier_validation/) | 14.0.1.2.0 | [![ps-tubtim](https://github.com/ps-tubtim.png?size=30px)](https://github.com/ps-tubtim) | Expense Tier Validation
 [hr_expense_widget_o2m](hr_expense_widget_o2m/) | 14.0.1.0.0 | [![kittiu](https://github.com/kittiu.png?size=30px)](https://github.com/kittiu) | HR Expense one2many widget
+[hr_expense_work_acceptance](hr_expense_work_acceptance/) | 14.0.1.0.0 |  | Expense Work Acceptance
 
 [//]: # (end addons)
 
