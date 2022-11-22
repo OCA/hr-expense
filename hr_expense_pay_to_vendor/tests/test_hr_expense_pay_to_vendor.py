@@ -1,13 +1,15 @@
 # Copyright 2021 Ecosoft
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
+from odoo.exceptions import UserError
 from odoo.tests.common import Form, TransactionCase
 
 
 class TestHrExpensePayToVendor(TransactionCase):
     def setUp(self):
-        super(TestHrExpensePayToVendor, self).setUp()
+        super().setUp()
         self.vendor = self.env["res.partner"].create({"name": "Test Vendor"})
+        self.vendor2 = self.env["res.partner"].create({"name": "Test Vendor2"})
         self.payment_obj = self.env["account.payment"]
         self.account_payment_register = self.env["account.payment.register"]
         self.payment_journal = self.env["account.journal"].search(
@@ -28,7 +30,7 @@ class TestHrExpensePayToVendor(TransactionCase):
         action = expense_sheet.action_register_payment()
         ctx = action.get("context")
         with Form(
-            self.account_payment_register.with_context(ctx),
+            self.account_payment_register.with_context(**ctx),
             view="account.view_account_payment_register_form",
         ) as f:
             f.journal_id = self.payment_journal
@@ -53,7 +55,7 @@ class TestHrExpensePayToVendor(TransactionCase):
                 {
                     "name": "Expense Line 1",
                     "employee_id": self.ref("hr.employee_admin"),
-                    "product_id": self.ref("hr_expense.air_ticket"),
+                    "product_id": self.ref("hr_expense.product_product_zero_cost"),
                     "unit_amount": 1,
                     "quantity": 10,
                     "sheet_id": self.expense_sheet.id,
@@ -63,7 +65,7 @@ class TestHrExpensePayToVendor(TransactionCase):
                 {
                     "name": "Expense Line 1",
                     "employee_id": self.ref("hr.employee_admin"),
-                    "product_id": self.ref("hr_expense.air_ticket"),
+                    "product_id": self.ref("hr_expense.product_product_zero_cost"),
                     "unit_amount": 1,
                     "quantity": 20,
                     "sheet_id": self.expense_sheet.id,
@@ -77,6 +79,22 @@ class TestHrExpensePayToVendor(TransactionCase):
             list(set(self.expense_sheet.expense_line_ids.mapped("payment_mode"))),
             ["company_account"],
         )
+        # Test create new expense diff vendor
+        with self.assertRaises(UserError):
+            self.env["hr.expense"].create(
+                [
+                    {
+                        "name": "Expense Line 1",
+                        "employee_id": self.ref("hr.employee_admin"),
+                        "product_id": self.ref("hr_expense.product_product_zero_cost"),
+                        "unit_amount": 1,
+                        "quantity": 10,
+                        "sheet_id": self.expense_sheet.id,
+                        "payment_mode": "company_account",
+                        "vendor_id": self.vendor2.id,
+                    },
+                ]
+            )
         # Post Journl Entry
         self.expense_sheet.action_submit_sheet()
         self.expense_sheet.approve_expense_sheets()
