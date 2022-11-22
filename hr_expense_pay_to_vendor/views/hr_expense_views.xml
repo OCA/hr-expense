@@ -7,7 +7,7 @@
             <field name="payment_mode" position="after">
                 <field
                     name="vendor_id"
-                    attrs="{'invisible': [('payment_mode', '!=', 'company_account')]}"
+                    attrs="{'invisible': [('payment_mode', '!=', 'company_account')], 'readonly': True}"
                 />
             </field>
         </field>
@@ -24,7 +24,12 @@
                     attrs="{'invisible': [('payment_mode', '!=', 'company_account')]}"
                 >
                     <label for="vendor_id" />
-                    <field name="vendor_id" style="width: 70%" class="oe_inline" />
+                    <field
+                        name="vendor_id"
+                        style="width: 70%"
+                        class="oe_inline"
+                        attrs="{'readonly': [('state', 'in', ['approved', 'done'])]}"
+                    />
                 </div>
             </field>
         </field>

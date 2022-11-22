@@ -66,18 +66,18 @@ class HrExpenseSheet(models.Model):
 
     @api.constrains("expense_line_ids")
     def _check_payment_mode(self):
-        super()._check_payment_mode()
+        res = super()._check_payment_mode()
         for sheet in self:
-            payment_mode = sheet.expense_line_ids.mapped("payment_mode")
+            expenses = sheet.expense_line_ids
+            payment_mode = expenses.mapped("payment_mode")
             if payment_mode and payment_mode[0] == "company_account":
-                expense_lines = sheet.mapped("expense_line_ids")
-                if expense_lines and any(
-                    expense.vendor_id != expense_lines[0].vendor_id
-                    for expense in expense_lines
+                if expenses and any(
+                    expense.vendor_id != expenses[0].vendor_id for expense in expenses
                 ):
                     raise ValidationError(
                         _("Expenses must be paying to the same vendor.")
                     )
+        return res
 
     def paid_expense_sheets(self):
         """For expense paid direct to vendor, do not set done"""
