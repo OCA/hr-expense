@@ -38,9 +38,8 @@ class TestHrExpensePayment(TransactionCase):
             {
                 "name": "Expense test",
                 "employee_id": self.ref("hr.employee_admin"),
-                "product_id": self.ref("hr_expense.trans_expense_product"),
-                "unit_amount": 1,
-                "quantity": 10,
+                "product_id": self.ref("hr_expense.expense_product_meal"),
+                "total_amount": 1000,
                 "sheet_id": self.expense_sheet.id,
             }
         )

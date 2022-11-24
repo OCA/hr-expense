@@ -1,10 +1,10 @@
 # Copyright 2019 Tecnativa - Ernesto Tejeda
 # Copyright 2021 Ecosoft Co., Ltd (http://ecosoft.co.th/)
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 {
     "name": "HR Expense Payment",
-    "version": "15.0.1.0.0",
+    "version": "16.0.1.0.0",
     "category": "Human Resources",
     "author": "Tecnativa, Ecosoft, Odoo Community Association (OCA)",
     "license": "AGPL-3",
