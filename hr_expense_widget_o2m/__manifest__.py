@@ -3,7 +3,7 @@
 
 {
     "name": "HR Expense one2many widget",
-    "version": "14.0.1.0.0",
+    "version": "15.0.1.0.0",
     "author": "Ecosoft, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/hr-expense",
     "license": "AGPL-3",
