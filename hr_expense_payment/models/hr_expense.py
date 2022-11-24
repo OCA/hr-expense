@@ -36,11 +36,11 @@ class HrExpense(models.Model):
         return payment_dict
 
     def action_move_create(self):
-        move_group_by_sheet = super().action_move_create()
+        move_sheet_dict = super().action_move_create()
         payment_list = []
         # you can skip create payment from expense paid by company_account
         if self.env.context.get("skip_create_payment_company_account", False):
-            return move_group_by_sheet
+            return move_sheet_dict
         for expense in self:
             if expense.payment_mode == "company_account":
                 total_amount_currency = expense.total_amount
@@ -65,4 +65,4 @@ class HrExpense(models.Model):
         if payment_list:
             payment = self.env["account.payment"].create(payment_list)
             payment.action_post()
-        return move_group_by_sheet
+        return move_sheet_dict
