@@ -8,8 +8,8 @@ from odoo import models
 class AccountPaymentRegister(models.TransientModel):
     _inherit = "account.payment.register"
 
-    def _create_payment_vals_from_wizard(self):
-        payment_vals = super()._create_payment_vals_from_wizard()
+    def _create_payment_vals_from_wizard(self, batch_result):
+        payment_vals = super()._create_payment_vals_from_wizard(batch_result)
         expense_sheet_ids = self._context.get("expense_sheet_ids", False)
         if expense_sheet_ids:
             payment_vals.update(expense_sheet_ids=expense_sheet_ids)
