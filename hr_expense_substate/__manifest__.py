@@ -3,7 +3,7 @@
 
 {
     "name": "Expense Report Sub State",
-    "version": "14.0.1.0.0",
+    "version": "14.0.1.0.1",
     "category": "Tools",
     "author": "Ecosoft,Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/hr-expense",
