@@ -1,5 +1,6 @@
 # Copyright 2019 Ecosoft <saranl@ecosoft.co.th>
 # Copyright 2021 Tecnativa - Víctor Martínez
+# Copyright 2022 ForgeFlow - Jordi Ballester
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
@@ -12,6 +13,7 @@ class AccountMove(models.Model):
     expense_ids = fields.One2many(
         comodel_name="hr.expense", inverse_name="invoice_id", string="Expenses"
     )
+    expense_count = fields.Integer(compute="_compute_expense_count")
 
     @api.constrains("amount_total")
     def _check_expense_ids(self):
@@ -26,3 +28,21 @@ class AccountMove(models.Model):
                         "linked to this invoice."
                     )
                 )
+
+    def _compute_expense_count(self):
+        for rec in self:
+            rec.expense_count = len(rec.expense_ids)
+
+    def action_view_expenses(self):
+        self.ensure_one()
+        action = self.env.ref("hr_expense.hr_expense_actions_my_all")
+        result = action.sudo().read()[0]
+        res = self.env.ref("hr_expense.hr_expense_view_form", False)
+        expenses = self.expense_ids
+        result["context"] = {}
+        if len(expenses) != 1:
+            result["domain"] = "[('id', 'in', " + str(expenses.ids) + ")]"
+        elif len(expenses) == 1:
+            result["views"] = [(res and res.id or False, "form")]
+            result["res_id"] = expenses.ids[0]
+        return result
