@@ -122,6 +122,6 @@
         id="menu_petty_cash"
         name="Petty Cash"
         action="action_petty_cash"
-        parent="account.account_account_menu"
+        parent="account.menu_finance_entries_accounting_miscellaneous"
     />
 </odoo>

@@ -18,15 +18,6 @@ class HrExpense(models.Model):
         states={"draft": [("readonly", False)]},
     )
 
-    def _prepare_expense_vals(self):
-        vals = {
-            "company_id": self.company_id.id,
-            "employee_id": self[0].employee_id.id,
-            "name": self[0].name if len(self) == 1 else "",
-            "expense_line_ids": [(6, 0, self.ids)],
-        }
-        return vals
-
     def _get_account_move_line_values(self):
         res = super()._get_account_move_line_values()
         for expense in self.filtered(lambda p: p.payment_mode == "petty_cash"):
