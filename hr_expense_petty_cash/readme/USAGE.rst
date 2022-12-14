@@ -1,6 +1,6 @@
 **Create a Petty Cash Holder**
 
-#. Go to Invoicing > Configuration > Petty Cash
+#. Go to Invoicing > Accounting > Petty Cash
 #. Create a new petty cash holder
 #. Select Petty Cash Account and Journal (optional)
 
