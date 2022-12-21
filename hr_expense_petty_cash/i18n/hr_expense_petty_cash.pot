@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 14.0\n"
+"Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -22,7 +22,7 @@ msgstr ""
 #. module: hr_expense_petty_cash
 #: code:addons/hr_expense_petty_cash/models/account_move.py:0
 #, python-format
-msgid "Account on invoice line should be {}."
+msgid "Account on invoice line should be {name}."
 msgstr ""
 
 #. module: hr_expense_petty_cash
@@ -58,9 +58,6 @@ msgid "Created on"
 msgstr ""
 
 #. module: hr_expense_petty_cash
-#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_account_move__display_name
-#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_hr_expense__display_name
-#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_hr_expense_sheet__display_name
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash__display_name
 msgid "Display Name"
 msgstr ""
@@ -68,11 +65,6 @@ msgstr ""
 #. module: hr_expense_petty_cash
 #: model:ir.model,name:hr_expense_petty_cash.model_hr_expense
 msgid "Expense"
-msgstr ""
-
-#. module: hr_expense_petty_cash
-#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_hr_expense_sheet__journal_id
-msgid "Expense Journal"
 msgstr ""
 
 #. module: hr_expense_petty_cash
@@ -86,9 +78,6 @@ msgid "Group By"
 msgstr ""
 
 #. module: hr_expense_petty_cash
-#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_account_move__id
-#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_hr_expense__id
-#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_hr_expense_sheet__id
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash__id
 msgid "ID"
 msgstr ""
@@ -105,9 +94,6 @@ msgid "Journal Entry"
 msgstr ""
 
 #. module: hr_expense_petty_cash
-#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_account_move____last_update
-#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_hr_expense____last_update
-#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_hr_expense_sheet____last_update
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash____last_update
 msgid "Last Modified on"
 msgstr ""
@@ -137,7 +123,7 @@ msgstr ""
 #, python-format
 msgid ""
 "Not enough money in petty cash holder.\n"
-"You are requesting %s%s, but the balance is %s%s."
+"You are requesting {amount_company}{symbol}, but the balance is {balance}{symbol}."
 msgstr ""
 
 #. module: hr_expense_petty_cash
@@ -156,7 +142,6 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.hr_expense_sheet_view_search_inherit
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.hr_expense_view_search_inherit
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_form
-#: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_list
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_search
 msgid "Petty Cash"
 msgstr ""
@@ -184,8 +169,8 @@ msgstr ""
 #: code:addons/hr_expense_petty_cash/models/account_move.py:0
 #, python-format
 msgid ""
-"Petty Cash balance is %s %s.\n"
-"Max amount to add is %s %s."
+"Petty Cash balance is {balance} {symbol}.\n"
+"Max amount to add is {max_amount} {symbol}."
 msgstr ""
 
 #. module: hr_expense_petty_cash
@@ -197,7 +182,7 @@ msgstr ""
 #. module: hr_expense_petty_cash
 #: code:addons/hr_expense_petty_cash/models/account_move.py:0
 #, python-format
-msgid "Please check Petty Cash on {}."
+msgid "Please check Petty Cash on {name}."
 msgstr ""
 
 #. module: hr_expense_petty_cash
@@ -207,26 +192,16 @@ msgid "Please select petty cash holder"
 msgstr ""
 
 #. module: hr_expense_petty_cash
-#: model:ir.model.fields,help:hr_expense_petty_cash.field_hr_expense_sheet__journal_id
-msgid "The journal used when the expense is done."
+#: code:addons/hr_expense_petty_cash/models/hr_expense.py:0
+#, python-format
+msgid "You can not create report without category."
 msgstr ""
 
 #. module: hr_expense_petty_cash
 #: code:addons/hr_expense_petty_cash/models/hr_expense.py:0
-#, python-format
-msgid "You can not create report without product."
-msgstr ""
-
-#. module: hr_expense_petty_cash
 #: code:addons/hr_expense_petty_cash/models/hr_expense_sheet.py:0
 #, python-format
 msgid "You cannot create report from many petty cash holders."
-msgstr ""
-
-#. module: hr_expense_petty_cash
-#: code:addons/hr_expense_petty_cash/models/hr_expense.py:0
-#, python-format
-msgid "You cannot create report from many petty cash mode and other."
 msgstr ""
 
 #. module: hr_expense_petty_cash
@@ -244,5 +219,5 @@ msgstr ""
 #. module: hr_expense_petty_cash
 #: code:addons/hr_expense_petty_cash/models/account_move.py:0
 #, python-format
-msgid "{} with petty cash checked must contain only 1 line."
+msgid "{name} with petty cash checked must contain only 1 line."
 msgstr ""
