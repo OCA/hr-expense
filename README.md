@@ -26,6 +26,7 @@ addon | version | maintainers | summary
 [hr_expense_exception](hr_expense_exception/) | 15.0.1.0.0 |  | Custom exceptions on expense report
 [hr_expense_invoice](hr_expense_invoice/) | 15.0.1.1.2 |  | Supplier invoices on HR expenses
 [hr_expense_payment](hr_expense_payment/) | 15.0.1.0.0 |  | HR Expense Payment
+[hr_expense_petty_cash](hr_expense_petty_cash/) | 15.0.1.0.0 |  | Petty Cash
 [hr_expense_portal](hr_expense_portal/) | 15.0.1.0.0 |  | Show current expense in a website.
 [hr_expense_sequence](hr_expense_sequence/) | 15.0.1.0.0 |  | HR expense sequence
 [sale_expense_manual_reinvoice](sale_expense_manual_reinvoice/) | 15.0.1.0.1 | [![ivantodorovich](https://github.com/ivantodorovich.png?size=30px)](https://github.com/ivantodorovich) | Allow to manually re-invoice expenses
