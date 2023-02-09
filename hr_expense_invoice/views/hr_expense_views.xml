@@ -28,8 +28,8 @@
             <field name="product_id" position="after">
                 <field
                     name="invoice_id"
-                    context="{'default_type': 'in_invoice',
-                            'type': 'in_invoice',
+                    context="{'default_move_type': 'in_invoice',
+                            'move_type': 'in_invoice',
                             'journal_type': 'purchase',
                             'default_ref': reference,
                             'default_invoice_date': date,
