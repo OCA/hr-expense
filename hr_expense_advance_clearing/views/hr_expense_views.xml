@@ -238,6 +238,12 @@
                 >{'readonly': [('id', '=', False), ('advance_sheet_id', '!=', False)]}</attribute>
                 <attribute name="force_save">True</attribute>
             </xpath>
+            <xpath
+                expr="//field[@name='expense_line_ids']/tree/field[@name='unit_amount']"
+                position="attributes"
+            >
+                <attribute name="force_save">True</attribute>
+            </xpath>
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button
                     name="action_open_clearings"
