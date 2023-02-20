@@ -12,7 +12,7 @@
                 <filter
                     name="needs_review"
                     string="Needs my Review"
-                    domain="[('reviewer_ids','in',uid), ('state', 'not in', ['submit', 'approve', 'post', 'done', 'cancel'])]"
+                    domain="[('reviewer_ids','in',uid), ('state', 'not in', ['approve', 'post', 'done', 'cancel'])]"
                     help="My Expense report to review"
                 />
                 <filter
