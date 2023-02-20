@@ -36,7 +36,7 @@ addon | version | maintainers | summary
 [hr_expense_sequence_option](hr_expense_sequence_option/) | 14.0.1.0.0 | [![ps-tubtim](https://github.com/ps-tubtim.png?size=30px)](https://github.com/ps-tubtim) | Manage sequence options for hr.expense.sheet
 [hr_expense_sheet_payment_state](hr_expense_sheet_payment_state/) | 14.0.1.0.0 |  | Backport of the Payment Status (payment_state field) in Expense Report which is introduced in Odoo Community Version 15.0
 [hr_expense_substate](hr_expense_substate/) | 14.0.1.0.1 |  | Expense Report Sub State
-[hr_expense_tier_validation](hr_expense_tier_validation/) | 14.0.1.2.0 | [![ps-tubtim](https://github.com/ps-tubtim.png?size=30px)](https://github.com/ps-tubtim) | Expense Tier Validation
+[hr_expense_tier_validation](hr_expense_tier_validation/) | 14.0.1.2.1 | [![ps-tubtim](https://github.com/ps-tubtim.png?size=30px)](https://github.com/ps-tubtim) | Expense Tier Validation
 [hr_expense_widget_o2m](hr_expense_widget_o2m/) | 14.0.1.0.0 | [![kittiu](https://github.com/kittiu.png?size=30px)](https://github.com/kittiu) | HR Expense one2many widget
 [hr_expense_work_acceptance](hr_expense_work_acceptance/) | 14.0.1.0.0 |  | Expense Work Acceptance
 
