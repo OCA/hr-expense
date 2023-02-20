@@ -3,7 +3,7 @@
 
 {
     "name": "Expense Tier Validation",
-    "version": "14.0.1.2.0",
+    "version": "14.0.1.2.1",
     "category": "Human Resources",
     "author": "Ecosoft, Odoo Community Association (OCA)",
     "license": "AGPL-3",
