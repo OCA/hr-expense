@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.15.1: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils: http://docutils.sourceforge.net/" />
 <title>Hr expense cancel</title>
 <style type="text/css">
 
@@ -368,51 +368,76 @@ ul.auto-toc {
 !! changes will be overwritten.                   !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 <p><a class="reference external" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external" href="https://github.com/OCA/hr-expense/tree/15.0/hr_expense_cancel"><img alt="OCA/hr-expense" src="https://img.shields.io/badge/github-OCA%2Fhr--expense-lightgray.png?logo=github" /></a> <a class="reference external" href="https://translation.odoo-community.org/projects/hr-expense-15-0/hr-expense-15-0-hr_expense_cancel"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external" href="https://runbot.odoo-community.org/runbot/289/15.0"><img alt="Try me on Runbot" src="https://img.shields.io/badge/runbot-Try%20me-875A7B.png" /></a></p>
-<p>This module allows you to cancel and correct expenses. It adds a cancel button
-on the expense sheet that undo reconciliations and delete payments and journal
-entries.</p>
+<p>This module allows you to cancel and correct expenses.
+It adds a “Cancel all related operations” button on the expense sheet that undo reconciliations
+and delete payments and journal entries.
+if you don’t need delete document payment or journal entries,
+you can use “Cancel” button and config Expense Cancel Policy for backward state expense.</p>
 <p><strong>Table of contents</strong></p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#installation" id="id1">Installation</a></li>
-<li><a class="reference internal" href="#usage" id="id2">Usage</a></li>
-<li><a class="reference internal" href="#bug-tracker" id="id3">Bug Tracker</a></li>
-<li><a class="reference internal" href="#credits" id="id4">Credits</a><ul>
-<li><a class="reference internal" href="#authors" id="id5">Authors</a></li>
-<li><a class="reference internal" href="#contributors" id="id6">Contributors</a></li>
-<li><a class="reference internal" href="#maintainers" id="id7">Maintainers</a></li>
+<li><a class="reference internal" href="#usage" id="id1">Usage</a></li>
+<li><a class="reference internal" href="#cancel-all-related-operations" id="id2">Cancel all related operations</a></li>
+<li><a class="reference internal" href="#cancel-expense-for-backward-state" id="id3">Cancel expense for backward state</a></li>
+<li><a class="reference internal" href="#bug-tracker" id="id4">Bug Tracker</a></li>
+<li><a class="reference internal" href="#credits" id="id5">Credits</a><ul>
+<li><a class="reference internal" href="#authors" id="id6">Authors</a></li>
+<li><a class="reference internal" href="#contributors" id="id7">Contributors</a></li>
+<li><a class="reference internal" href="#maintainers" id="id8">Maintainers</a></li>
 </ul>
 </li>
 </ul>
 </div>
-<div class="section" id="installation">
-<h1><a class="toc-backref" href="#id1">Installation</a></h1>
-<p>It’s assumed that for each expense sheet, the <em>payments</em> that are reconciled
-with their <em>journal entry</em> were created and reconciled by the <em>Expense Tracker</em>
-module automatically. Therefore, when this module is installed, these payments
-will automatically be associated with said expense sheet so that they can be
-deleted in case the expense sheet is canceled.</p>
-</div>
 <div class="section" id="usage">
-<h1><a class="toc-backref" href="#id2">Usage</a></h1>
-<p>To use this module, you need to:</p>
+<h1><a class="toc-backref" href="#id1">Usage</a></h1>
+<p>To use this module, you can do 2 ways:</p>
+</div>
+<div class="section" id="cancel-all-related-operations">
+<h1><a class="toc-backref" href="#id2">Cancel all related operations</a></h1>
+<p>For delete all document related with expense (payment, journal entries) on the system</p>
 <ol class="arabic simple">
-<li>Go to <em>Expenses -&gt; My Expenses -&gt; Expenses to Submit</em> and create a new
-<em>Expense</em> with <em>Employee (to reimburse)</em> checked on the field <em>Payment By</em></li>
+<li>Go to <em>Expenses -&gt; My Expenses -&gt; My Expenses to Report</em> and create a new
+<em>Expense</em> with <em>Employee (to reimburse)</em> checked on the field <em>Paid By</em></li>
 <li>Click on <em>Submit to Manager</em> button</li>
 <li>Click on <em>Approve</em> button</li>
 <li>Click on <em>Post Journal Entries</em> button</li>
 <li>Click on <em>Register Payment</em> button, fill in the data of the wizard and
-click on <em>Validate</em> button</li>
+click on <em>Create Payment</em> button</li>
 <li>After that, the <em>Expense report</em> will have an associated journal entry
 reconciled with a payment</li>
-<li>Click on <em>Cancel</em> button</li>
+<li>Click on <em>Cancel all related operations</em> button</li>
 <li>The <em>Expense report</em> will be set to <em>Submitted</em> state; the journal entry and
 the payment will be deleted</li>
 </ol>
 </div>
+<div class="section" id="cancel-expense-for-backward-state">
+<h1><a class="toc-backref" href="#id3">Cancel expense for backward state</a></h1>
+<p>For cancel expense/payment and journal entries that related expense.
+it will backward state expense following your config</p>
+<ol class="arabic simple">
+<li>Go to <em>Expenses &gt; Configuration &gt; Settings</em></li>
+<li>Set the policy in “Expense Cancellation Policy”</li>
+</ol>
+<p>Case 1: Cancel Expense</p>
+<ol class="arabic simple">
+<li>Go to expenses and normal process until posted</li>
+<li>Click on <em>Cancel</em>, the expense report will be set state following your config in expense cancellation policy (Cancel expense, Expense change state to)</li>
+</ol>
+<p>Case 2: Cancel Journal Entries</p>
+<ol class="arabic simple">
+<li>Go to expenses and normal process until posted</li>
+<li>Go to journal entry that depend on expense &gt; Reset to Draft &gt; Cancel Entry</li>
+<li>The expense report will be set state following your config in expense cancellation policy (Cancel JE, Expense change state to)</li>
+</ol>
+<p>Case 3: Cancel Payment</p>
+<ol class="arabic simple">
+<li>Go to expenses and normal process until Done</li>
+<li>Go to payment that depend on expense &gt; Reset to Draft &gt; Cancel Entry</li>
+<li>The expense report will be set state following your config in expense cancellation policy (Cancel payment, Expense change state to)</li>
+</ol>
+</div>
 <div class="section" id="bug-tracker">
-<h1><a class="toc-backref" href="#id3">Bug Tracker</a></h1>
+<h1><a class="toc-backref" href="#id4">Bug Tracker</a></h1>
 <p>Bugs are tracked on <a class="reference external" href="https://github.com/OCA/hr-expense/issues">GitHub Issues</a>.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us smashing it by providing a detailed and welcomed
@@ -420,15 +445,15 @@ If you spotted it first, help us smashing it by providing a detailed and welcome
 <p>Do not contact contributors directly about support or help with technical issues.</p>
 </div>
 <div class="section" id="credits">
-<h1><a class="toc-backref" href="#id4">Credits</a></h1>
+<h1><a class="toc-backref" href="#id5">Credits</a></h1>
 <div class="section" id="authors">
-<h2><a class="toc-backref" href="#id5">Authors</a></h2>
+<h2><a class="toc-backref" href="#id6">Authors</a></h2>
 <ul class="simple">
 <li>Tecnativa</li>
 </ul>
 </div>
 <div class="section" id="contributors">
-<h2><a class="toc-backref" href="#id6">Contributors</a></h2>
+<h2><a class="toc-backref" href="#id7">Contributors</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://www.tecnativa.com">Tecnativa</a>:<ul>
 <li>Pedro M. Baeza</li>
@@ -441,7 +466,7 @@ If you spotted it first, help us smashing it by providing a detailed and welcome
 </ul>
 </div>
 <div class="section" id="maintainers">
-<h2><a class="toc-backref" href="#id7">Maintainers</a></h2>
+<h2><a class="toc-backref" href="#id8">Maintainers</a></h2>
 <p>This module is maintained by the OCA.</p>
 <a class="reference external image-reference" href="https://odoo-community.org"><img alt="Odoo Community Association" src="https://odoo-community.org/logo.png" /></a>
 <p>OCA, or the Odoo Community Association, is a nonprofit organization whose

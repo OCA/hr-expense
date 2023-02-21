@@ -3,12 +3,12 @@
 
 {
     "name": "Hr expense cancel",
-    "version": "15.0.1.0.0",
+    "version": "15.0.1.2.0",
     "author": "Tecnativa, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/hr-expense",
     "license": "AGPL-3",
     "category": "Human Resources",
     "depends": ["hr_expense_payment"],
-    "data": ["views/hr_expense_views.xml"],
+    "data": ["views/res_config_settings_views.xml", "views/hr_expense_views.xml"],
     "installable": True,
 }

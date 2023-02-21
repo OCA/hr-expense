@@ -25,41 +25,66 @@ Hr expense cancel
 
 |badge1| |badge2| |badge3| |badge4| |badge5| 
 
-This module allows you to cancel and correct expenses. It adds a cancel button
-on the expense sheet that undo reconciliations and delete payments and journal
-entries.
+This module allows you to cancel and correct expenses.
+It adds a "Cancel all related operations" button on the expense sheet that undo reconciliations
+and delete payments and journal entries.
+if you don't need delete document payment or journal entries,
+you can use "Cancel" button and config Expense Cancel Policy for backward state expense.
 
 **Table of contents**
 
 .. contents::
    :local:
 
-Installation
-============
-
-It's assumed that for each expense sheet, the *payments* that are reconciled
-with their *journal entry* were created and reconciled by the *Expense Tracker*
-module automatically. Therefore, when this module is installed, these payments
-will automatically be associated with said expense sheet so that they can be
-deleted in case the expense sheet is canceled.
-
 Usage
 =====
 
-To use this module, you need to:
+To use this module, you can do 2 ways:
 
-#. Go to *Expenses -> My Expenses -> Expenses to Submit* and create a new
-   *Expense* with *Employee (to reimburse)* checked on the field *Payment By*
+Cancel all related operations
+================================
+
+For delete all document related with expense (payment, journal entries) on the system
+
+#. Go to *Expenses -> My Expenses -> My Expenses to Report* and create a new
+   *Expense* with *Employee (to reimburse)* checked on the field *Paid By*
 #. Click on *Submit to Manager* button
 #. Click on *Approve* button
 #. Click on *Post Journal Entries* button
 #. Click on *Register Payment* button, fill in the data of the wizard and
-   click on *Validate* button
+   click on *Create Payment* button
 #. After that, the *Expense report* will have an associated journal entry
    reconciled with a payment
-#. Click on *Cancel* button
+#. Click on *Cancel all related operations* button
 #. The *Expense report* will be set to *Submitted* state; the journal entry and
    the payment will be deleted
+
+
+Cancel expense for backward state
+===================================
+
+For cancel expense/payment and journal entries that related expense.
+it will backward state expense following your config
+
+#. Go to *Expenses > Configuration > Settings*
+#. Set the policy in "Expense Cancellation Policy"
+
+Case 1: Cancel Expense
+
+#. Go to expenses and normal process until posted
+#. Click on *Cancel*, the expense report will be set state following your config in expense cancellation policy (Cancel expense, Expense change state to)
+
+Case 2: Cancel Journal Entries
+
+#. Go to expenses and normal process until posted
+#. Go to journal entry that depend on expense > Reset to Draft > Cancel Entry
+#. The expense report will be set state following your config in expense cancellation policy (Cancel JE, Expense change state to)
+
+Case 3: Cancel Payment
+
+#. Go to expenses and normal process until Done
+#. Go to payment that depend on expense > Reset to Draft > Cancel Entry
+#. The expense report will be set state following your config in expense cancellation policy (Cancel payment, Expense change state to)
 
 Bug Tracker
 ===========
