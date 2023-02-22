@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.15.1: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils: http://docutils.sourceforge.net/" />
 <title>Employee Advance and Clearing</title>
 <style type="text/css">
 
@@ -408,25 +408,45 @@ You will need to setup the Expense Account of this product to your Employee Adva
 </div>
 <div class="section" id="usage">
 <h1><a class="toc-backref" href="#id2">Usage</a></h1>
+<p>To use this module, you must configure product “Employee Advance” with account type = Current Asset and check Allow Reconciliation.
+After that, you can step following:</p>
 <p><strong>Create an Employee Advance</strong></p>
 <ol class="arabic simple">
-<li>Go to Expenses &gt; My Expenses &gt; My Expenses to Report</li>
-<li>Create a new Expense as normal, but also check “Employee Advance” checkbox</li>
-<li>Product = Employee Advance will be set automatically, do not change.</li>
-<li>As an option, user can also set the “Clearing Product”. If this is set, on the clear advance step, the clearing product will create a default product line.</li>
-<li>Set the unit price to advance amount</li>
-<li>Click Create Report as normal. Please note that, this expense report will also has flag “Employee Advance” checked.</li>
-<li>As normal, do Approve &gt; Post Journal Entries &gt; Register Payment.</li>
-<li>As this is Advance, you will see new field “Amount to clear”.</li>
+<li>Go to Expenses &gt; My Expenses &gt; Advances</li>
+<li>Create sheet and add a line with advance</li>
+<li>As an option, the user can also set the “Clearing Product”. If this is set, on the clear advance step, the clearing product will create a default product line.</li>
+<li>Set the unit price to advance amount &gt; Save</li>
+<li>As normal, do Submit to Manager &gt; Approve &gt; Post Journal Entries &gt; Register Payment.</li>
+<li>As this is Advance, you will see a new field “Amount to clear”.</li>
 </ol>
 <p><strong>Clear Advance</strong></p>
+<p>you can do 2 ways,</p>
 <ol class="arabic simple">
-<li>Go to Expenses &gt; My Reports.</li>
+<li><dl class="first docutils">
+<dt>Create clearing from advance document</dt>
+<dd><ol class="first last arabic">
+<li>Go to Expenses &gt; My Expenses &gt; Advances</li>
 <li>Search for the Advance you want to clear, or use filter “Advance (not cleared)” to see all uncleared advance.</li>
 <li>Open an Advance which is now in paid status with some Amount to be cleared.</li>
 <li>Click button “Clear Advance”, system will create new Expense Report with reference to the previous step Advance.</li>
-<li>Add or create Expense line(s) as normal.</li>
+<li>Create name clearing and Save (must save first)</li>
+<li>Edit &gt; Add or create Expense line(s) as normal.</li>
 <li>As normal, do Approve &gt; Post Journal Entries</li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Create clearing from new expense</dt>
+<dd><ol class="first last arabic">
+<li>Go to Expenses &gt; My Expenses &gt; Expenses</li>
+<li>Create sheet and reference advance with field “Clear Advance” &gt; Save (must save first)</li>
+<li>Edit &gt; Add or create Expense line(s) as normal.</li>
+<li>As normal, do Approve &gt; Post Journal Entries</li>
+</ol>
+</dd>
+</dl>
+</li>
 </ol>
 <p>Note:</p>
 <ul class="simple">
@@ -435,7 +455,7 @@ You will need to setup the Expense Account of this product to your Employee Adva
 </ul>
 <p><strong>Return Advance</strong></p>
 <ol class="arabic simple">
-<li>Go to Expenses &gt; My Reports.</li>
+<li>Go to Expenses &gt; My Expenses &gt; Advances</li>
 <li>Search for the Advance you want to clear, or use filter “Advance (not cleared)” to see all uncleared advance.</li>
 <li>Open an Advance which is now in paid status with some Amount to be cleared.</li>
 <li>Click button “Return Advance” will open Register Payment wizard with Amount to clear.</li>
