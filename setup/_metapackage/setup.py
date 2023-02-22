@@ -16,6 +16,7 @@ setuptools.setup(
         'odoo-addon-hr_expense_petty_cash>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_portal>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_sequence>=15.0dev,<15.1dev',
+        'odoo-addon-sale_expense_cost_reinvoice>=15.0dev,<15.1dev',
         'odoo-addon-sale_expense_manual_reinvoice>=15.0dev,<15.1dev',
     ],
     classifiers=[
