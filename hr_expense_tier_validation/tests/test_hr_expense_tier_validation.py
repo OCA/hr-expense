@@ -39,14 +39,12 @@ class TestHrExpenseTierValidation(TransactionCase):
         description,
         employee,
         product,
-        amount,
         payment_mode="own_account",
     ):
         with Form(self.env["hr.expense"]) as expense:
             expense.name = description
             expense.employee_id = employee
             expense.product_id = product
-            expense.unit_amount = amount
             expense.payment_mode = payment_mode
         expense = expense.save()
         expense.tax_ids = False  # Test no vat
@@ -62,10 +60,14 @@ class TestHrExpenseTierValidation(TransactionCase):
             "Test - Expense",
             self.employee,
             self.product_1,
-            1.0,
         )
         sheet_dict = expense.action_submit_expenses()
-        sheet = self.expense_sheet_model.search([("id", "=", sheet_dict["res_id"])])
+        sheet_dict = sheet_dict["context"]
+        with Form(self.env["hr.expense.sheet"]) as sheet:
+            sheet.name = (sheet_dict["default_name"],)
+            sheet.employee_id = self.employee
+        sheet = sheet.save()
+        sheet.expense_line_ids = [(6, 0, expense.id)]
         self.assertEqual(sheet.state, "draft")
         sheet.action_submit_sheet()
         self.assertEqual(sheet.state, "submit")
@@ -77,7 +79,11 @@ class TestHrExpenseTierValidation(TransactionCase):
         self.assertEqual(sheet.state, "submit")
         # not allow edit expense when under validation
         with self.assertRaises(ValidationError):
-            with Form(expense) as ex:
-                ex.name = "New name"
+            with Form(sheet) as s:
+                s.name = "New name"
+        with self.assertRaises(ValidationError):
+            with Form(expense) as exp:
+                exp.name = "Change name"
         # Test change message follower
-        expense.write({"message_follower_ids": self.partner.ids})
+        message = expense.write({"message_follower_ids": self.partner.ids})
+        self.assertEqual(message, True)
