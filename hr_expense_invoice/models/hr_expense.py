@@ -51,6 +51,11 @@ class HrExpense(models.Model):
                 }
             ]
         )
+        attachments = self.env["ir.attachment"].search(
+            [("res_model", "=", self._name), ("res_id", "in", self.ids)]
+        )
+        for attachment in attachments:
+            attachment.copy({"res_model": invoice._name, "res_id": invoice.id})
         self.write(
             {
                 "invoice_id": invoice.id,
