@@ -1,7 +1,8 @@
 # Copyright 2017 Tecnativa - Vicent Cubells
 # Copyright 2021 Tecnativa - Pedro M. Baeza
-# Copyright 2021 Tecnativa - Víctor Martínez
+# Copyright 2021-2023 Tecnativa - Víctor Martínez
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
+import base64
 
 from odoo import fields
 from odoo.exceptions import UserError, ValidationError
@@ -100,8 +101,11 @@ class TestHrExpenseInvoice(common.TransactionCase):
                 "unit_amount": 50.0,
             }
         )
+        cls._create_attachment(cls, cls.expense._name, cls.expense.id)
         cls.expense2 = cls.expense.copy()
+        cls._create_attachment(cls, cls.expense2._name, cls.expense2.id)
         cls.expense3 = cls.expense.copy()
+        cls._create_attachment(cls, cls.expense3._name, cls.expense3.id)
 
     def _register_payment(self, sheet):
         action = sheet.action_register_payment()
@@ -116,6 +120,21 @@ class TestHrExpenseInvoice(common.TransactionCase):
         payment = self.payment_obj.browse(payment_dict["res_id"])
         self.assertEqual(len(payment), 1)
         self.assertEqual(sheet.state, "done")
+
+    def _create_attachment(self, res_model, res_id):
+        return self.env["ir.attachment"].create(
+            {
+                "name": "Test attachment %s (%s)" % (res_id, res_model),
+                "res_model": res_model,
+                "res_id": res_id,
+                "datas": base64.b64encode(b"\xff data"),
+            }
+        )
+
+    def test_0_hr_tests_misc(self):
+        self.assertEqual(self.expense.attachment_number, 1)
+        self.assertEqual(self.expense2.attachment_number, 1)
+        self.assertEqual(self.expense3.attachment_number, 1)
 
     def test_0_hr_test_no_invoice(self):
         # There is not expense lines in sheet
@@ -270,10 +289,12 @@ class TestHrExpenseInvoice(common.TransactionCase):
         self.assertEqual(len(self.sheet.expense_line_ids), 2)
         self.expense.action_expense_create_invoice()
         self.assertTrue(self.expense.invoice_id)
+        self.assertAlmostEqual(self.expense.invoice_id.message_attachment_count, 1)
         self.assertEqual(self.sheet.invoice_count, 1)
         self.sheet.invalidate_cache()
         self.expense2.action_expense_create_invoice()
         self.assertTrue(self.expense2.invoice_id)
+        self.assertAlmostEqual(self.expense2.invoice_id.message_attachment_count, 1)
         self.assertEqual(self.sheet.invoice_count, 2)
         # Only change invoice not assigned to expense yet
         with self.assertRaises(ValidationError):
@@ -326,6 +347,7 @@ class TestHrExpenseInvoice(common.TransactionCase):
         self.sheet.expense_line_ids = [(6, 0, [self.expense.id, self.expense2.id])]
         # We add invoice to expense
         self.expense2.action_expense_create_invoice()
+        self.assertAlmostEqual(self.expense2.invoice_id.message_attachment_count, 1)
         self.expense2.invoice_id.partner_id = self.partner
         self.expense2.invoice_id.action_post()
         # We approve sheet
