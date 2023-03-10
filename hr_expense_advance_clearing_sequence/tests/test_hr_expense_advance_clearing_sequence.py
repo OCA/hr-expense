@@ -1,10 +1,10 @@
 # Copyright 2019 Ecosoft Co., Ltd (http://ecosoft.co.th/)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html)
 
-from odoo.tests.common import Form, SavepointCase
+from odoo.tests.common import Form, TransactionCase
 
 
-class TestHrExpenseAdvanceClearingSequence(SavepointCase):
+class TestHrExpenseAdvanceClearingSequence(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -39,19 +39,14 @@ class TestHrExpenseAdvanceClearingSequence(SavepointCase):
         amount,
         advance=False,
         payment_mode="own_account",
-        account=False,
     ):
         with Form(
             self.env["hr.expense"].with_context(default_advance=advance)
         ) as expense:
             expense.name = description
             expense.employee_id = employee
-            if not advance:
-                expense.product_id = product
             expense.unit_amount = amount
             expense.payment_mode = payment_mode
-            if account:
-                expense.account_id = account
         expense = expense.save()
         expense.tax_ids = False  # Test no vat
         return expense
