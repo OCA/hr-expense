@@ -1,0 +1,12 @@
+<odoo>
+    <record id="hr_expense_form_view_inherit" model="ir.ui.view">
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tax_ids']" position="after">
+                <field name="price_tax" attrs="{'invisible': [('tax_ids', '=', [])]}" />
+                <field name="tax_adjust" invisible="1" />
+            </xpath>
+        </field>
+    </record>
+</odoo>
