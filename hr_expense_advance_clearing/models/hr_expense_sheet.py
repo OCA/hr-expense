@@ -11,7 +11,7 @@ class HrExpenseSheet(models.Model):
     _inherit = "hr.expense.sheet"
 
     advance = fields.Boolean(
-        string="Employee Advance", compute="_compute_advance", store=True
+        string="Employee Advance",
     )
     advance_sheet_id = fields.Many2one(
         comodel_name="hr.expense.sheet",
@@ -53,15 +53,6 @@ class HrExpenseSheet(models.Model):
         compute="_compute_amount_payable",
         help="Final regiter payment amount even after advance clearing",
     )
-
-    @api.depends("expense_line_ids")
-    def _compute_advance(self):
-        for sheet in self:
-            if sheet.expense_line_ids:
-                sheet.advance = all(sheet.expense_line_ids.mapped("advance"))
-            else:
-                sheet.advance = self.env.context.get("default_advance", sheet.advance)
-        return
 
     @api.constrains("advance_sheet_id", "expense_line_ids")
     def _check_advance_expense(self):
