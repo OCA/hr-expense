@@ -110,6 +110,7 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
                 "name": description,
                 "employee_id": expense.employee_id.id,
                 "expense_line_ids": [(6, 0, [expense.id])],
+                "advance": advance,
             }
         )
         return expense_sheet
