@@ -63,12 +63,6 @@ class HrExpense(models.Model):
         # Only when do the clearing, change cr payable to cr advance
         emp_advance = self.env.ref("hr_expense_advance_clearing.product_emp_advance")
         sheets = self.mapped("sheet_id").filtered("advance_sheet_id")
-        sheets_x = sheets.filtered(lambda x: x.advance_sheet_residual <= 0.0)
-        if sheets_x:  # Advance Sheets with no residual left
-            raise ValidationError(
-                _("Advance: %s has no amount to clear")
-                % ", ".join(sheets_x.mapped("name"))
-            )
         for sheet in sheets:
             advance_to_clear = sheet.advance_sheet_residual
             for move_lines in move_line_values_by_expense.values():

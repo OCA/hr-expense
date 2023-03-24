@@ -96,6 +96,31 @@ class AccountPaymentRegister(models.TransientModel):
             return {"type": "ir.actions.act_window_close"}
         return super().action_create_payments()
 
+    def _create_payment_vals_from_wizard(self):
+        payment_vals = super()._create_payment_vals_from_wizard()
+        if self._context.get("hr_return_advance", False):
+            # Add advance in payment return
+            active_ids = self._context.get("active_ids", [])
+            move_ids = self.env["account.move"].browse(active_ids)
+            payment_vals["advance_id"] = move_ids.line_ids.expense_id.sheet_id.id
+        return payment_vals
+
+    def _create_payment_return_advance(self, ctx, advance_account):
+        payment_vals = self._create_payment_vals_from_wizard()
+        payment_vals_list = [payment_vals]
+        payment = (
+            self.env["account.payment"].with_context(**ctx).create(payment_vals_list)
+        )
+        # Set new payment_type and payment entry to be Dr Bank, Cr Advance
+        payment.write(
+            {
+                "payment_type": "inbound",
+                "partner_type": "customer",
+                "destination_account_id": advance_account,
+            }
+        )
+        return payment
+
     def expense_post_return_advance(self):
         """This is opposite operation of action_create_payments(),
         it return remaining advance from employee back to company
@@ -110,20 +135,7 @@ class AccountPaymentRegister(models.TransientModel):
         emp_advance = self.env.ref("hr_expense_advance_clearing.product_emp_advance")
         advance_account = emp_advance.property_account_expense_id
         # Create return advance and post it
-        payment_vals = self._create_payment_vals_from_wizard()
-        payment_vals["advance_id"] = expense_sheet.id
-        payment_vals_list = [payment_vals]
-        payment = (
-            self.env["account.payment"].with_context(**ctx).create(payment_vals_list)
-        )
-        # Set new payment_type and payment entry to be Dr Bank, Cr Advance
-        payment.write(
-            {
-                "payment_type": "inbound",
-                "partner_type": "customer",
-                "destination_account_id": advance_account,
-            }
-        )
+        payment = self._create_payment_return_advance(ctx, advance_account)
         payment.action_post()
 
         redirect_link = (
