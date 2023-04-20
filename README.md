@@ -24,7 +24,7 @@ addon | version | maintainers | summary
 [hr_expense_advance_clearing](hr_expense_advance_clearing/) | 15.0.1.1.0 | [![kittiu](https://github.com/kittiu.png?size=30px)](https://github.com/kittiu) | Employee Advance and Clearing
 [hr_expense_cancel](hr_expense_cancel/) | 15.0.1.0.0 |  | Hr expense cancel
 [hr_expense_exception](hr_expense_exception/) | 15.0.1.0.0 |  | Custom exceptions on expense report
-[hr_expense_invoice](hr_expense_invoice/) | 15.0.1.1.2 |  | Supplier invoices on HR expenses
+[hr_expense_invoice](hr_expense_invoice/) | 15.0.1.1.3 |  | Supplier invoices on HR expenses
 [hr_expense_payment](hr_expense_payment/) | 15.0.1.0.0 |  | HR Expense Payment
 [hr_expense_petty_cash](hr_expense_petty_cash/) | 15.0.1.0.0 |  | Petty Cash
 [hr_expense_portal](hr_expense_portal/) | 15.0.1.0.0 |  | Show current expense in a website.
