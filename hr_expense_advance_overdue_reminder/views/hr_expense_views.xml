@@ -31,6 +31,7 @@
                 <page
                     name="overdue_reminder"
                     string="Overdue Reminder"
+                    attrs="{'invisible': [('reminder_next_time', '=', False)]}"
                     groups="hr.group_hr_manager,account.group_account_user"
                 >
                     <group name="overdue_reminder_main">

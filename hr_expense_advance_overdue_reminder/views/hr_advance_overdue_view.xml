@@ -129,7 +129,6 @@
         <field name="arch" type="xml">
             <tree decoration-info="state == 'draft'">
                 <field name="name" />
-                <!-- <field name="commercial_partner_id" /> -->
                 <field name="employee_id" />
                 <field name="date" />
                 <field name="reminder_type" />
@@ -149,7 +148,6 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name" />
-                <!-- <field name="commercial_partner_id" /> -->
                 <filter
                     name="mail"
                     string="E-mail"
@@ -169,11 +167,6 @@
                 />
                 <filter name="done" string="Done" domain="[('state', '=', 'done')]" />
                 <group name="groupby">
-                    <!-- <filter
-                        name="commercial_partner_groupby"
-                        string="Partner"
-                        context="{'group_by': 'commercial_partner_id'}"
-                    /> -->
                     <filter
                         name="reminder_type_groupby"
                         string="Reminder Type"
@@ -200,6 +193,7 @@
         name="Employee Overdue"
         sequence="5"
         parent="hr_expense.menu_hr_expense_root"
+        groups="hr.group_hr_manager,account.group_account_user"
     />
     <menuitem
         id="menu_advance_overdue_reminder_view"
@@ -207,5 +201,6 @@
         sequence="1"
         action="action_hr_advance_overdue_reminder"
         parent="menu_hr_expense_overdue"
+        groups="hr.group_hr_manager,account.group_account_user"
     />
 </odoo>

@@ -65,14 +65,27 @@ class HrAdvanceOverdueReminder(models.Model):
     activity_type_id = fields.Many2one(
         comodel_name="mail.activity.type",
         string="Activity",
+        states={"done": [("readonly", True)]},
     )
-    activity_summary = fields.Char(string="Summary")
-    activity_scheduled_date = fields.Date(string="Scheduled Date")
-    activity_note = fields.Html(string="Note")
+    activity_summary = fields.Char(
+        string="Summary",
+        states={"done": [("readonly", True)]},
+    )
+    activity_scheduled_date = fields.Date(
+        string="Scheduled Date",
+        states={"done": [("readonly", True)]},
+    )
+    activity_note = fields.Html(
+        string="Note",
+        states={"done": [("readonly", True)]},
+    )
     activity_user_id = fields.Many2one(
         comodel_name="res.users",
         string="Assigned to",
-        default=lambda self: self.env.user,
+        compute="_compute_activity_user",
+        store=True,
+        states={"draft": [("readonly", False)]},
+        tracking=True,
     )
     company_id = fields.Many2one(
         comodel_name="res.company",
@@ -86,6 +99,12 @@ class HrAdvanceOverdueReminder(models.Model):
         readonly=True,
         tracking=True,
     )
+
+    @api.depends("create_activity", "employee_id")
+    def _compute_activity_user(self):
+        for rec in self:
+            if rec.create_activity:
+                rec.activity_user_id = rec.employee_id.user_id.id
 
     @api.model
     def _reminder_type_selection(self):
