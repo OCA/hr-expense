@@ -1,32 +1,20 @@
-**Create an Employee Advance**
+**This module has the following steps to use:**
 
-#. Go to Expenses > My Expenses
-#. Create a new Expense Advance as normal
-#. As normal, Create Report > do Submit to Manager > Approve > Post Journal Entries (Due Date will created when you Post Journal Entries) > Register Payment.
+#. Create an advance document and submit it to manager for approval.
+#. Once approved, post the journal entries.
+#. If the due date is not manually selected, it will be auto-generated from the reminder settings.
+#. Register Payment.
 
-**Following Overdue and NOT Clear Advance by Expenses Form/Tree View**
+**To check for overdue and uncleared advances:**
 
-#. Go to Expenses > Expense Reports > To Overdue.
-#. Open an Advance which is now in overdue to sending expense advance reminders.
-#. Click button "Overdue Reminder".
-#. Check information > Click button "Start" to created a overdue reminder
-#. it will generate only document that you selected.
+#. Go to Expenses > Expense Reports > Reports to Overdue.
+#. Select an advance that needs a reminder.
+#. Click on Action > Overdue Reminder.
+#. Verify the information and click the "Start" button to create an overdue reminder.
+#. It will generate a reminder only for the selected document.
 
-
-**Following Overdue and NOT Clear Advance by Wizard Filter**
-
-#. Go to Expenses > Employee Overdue > Overdue Filters
-#. Filter the partner (partner in address employee) that you want to remind.
-#. Click button "Start" to created a overdue reminder
-
-**Send reminder to employee**
+**To send a reminder to an employee:**
 
 #. Go to Expenses > Employee Overdue > Overdue Reminder
-#. Select document that you need send reminder to employee.
-#. Click button "Send" to reminder employee.
-
-
-Note:
-
-* Employee filter is related from Private Address
-* If you configure "Create Activity" on Reminder Definition, it will automatic create activity next time to remind employee.
+#. Select the document for which you need to send a reminder to the employee.
+#. Verify the information and Send or print the reminder to the employee.

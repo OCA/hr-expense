@@ -6,4 +6,4 @@ The module supports a clever expense reimbursement reminder counter mechanism:
 
 * the reminder counter is a property of an expense advance,
 * the reminder counter of each overdue expense advance is incremented every time when you sending a reminder by email / letter.
-* in an email template, you can configure at *Settings > Technical > Email > Templates > Name 'Overdue Advance Reminder'*
+* in an email template, you can configure at *Settings > Technical > Email > Email Templates > Name 'Advance: Overdue Reminder'*

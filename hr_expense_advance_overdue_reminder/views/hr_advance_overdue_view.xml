@@ -28,17 +28,7 @@
                 </header>
                 <sheet>
                     <h1>
-                        <label
-                            for="name"
-                            string="Draft"
-                            attrs="{'invisible': [('state','!=', 'draft')]}"
-                        />
-                        <field
-                            name="name"
-                            readonly="1"
-                            class="oe_inline"
-                            attrs="{'invisible': [('state', '=', 'draft')]}"
-                        />
+                        <field name="name" readonly="1" class="oe_inline" />
                     </h1>
                     <group name="main">
                         <group name="information">

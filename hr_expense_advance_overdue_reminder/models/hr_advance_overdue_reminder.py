@@ -21,63 +21,74 @@ class HrAdvanceOverdueReminder(models.Model):
         column1="overdue_reminder_id",
         column2="expense_sheet_id",
         string="Overdue Expense Advance Sheet",
-        states={"done": [("readonly", True)]},
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )
     name = fields.Char(required=True, default="/", readonly=True, copy=False)
     employee_id = fields.Many2one(
         comodel_name="hr.employee",
         required=True,
         tracking=True,
-        states={"done": [("readonly", True)]},
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )
     employee_email = fields.Char(
         related="employee_id.private_email",
         string="Email",
-        readonly=True,
     )
     user_id = fields.Many2one(comodel_name="res.users", readonly=True)
     date = fields.Date(default=fields.Date.context_today, readonly=True)
     reminder_definition_id = fields.Many2one(
         comodel_name="reminder.definition",
         required=True,
-        states={"done": [("readonly", True)]},
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )
     reminder_type = fields.Selection(
         selection="_reminder_type_selection",
         default="mail",
         required=True,
-        states={"done": [("readonly", True)]},
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )
     reminder_next_time = fields.Date(
-        states={"done": [("readonly", True)]},
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )
     mail_template_id = fields.Many2one(
         comodel_name="mail.template",
-        states={"done": [("readonly", True)]},
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )
     letter_report = fields.Many2one(
         comodel_name="ir.actions.report",
-        states={"done": [("readonly", True)]},
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )
     create_activity = fields.Boolean(
-        states={"done": [("readonly", True)]},
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )
     activity_type_id = fields.Many2one(
         comodel_name="mail.activity.type",
         string="Activity",
-        states={"done": [("readonly", True)]},
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )
     activity_summary = fields.Char(
         string="Summary",
-        states={"done": [("readonly", True)]},
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )
     activity_scheduled_date = fields.Date(
         string="Scheduled Date",
-        states={"done": [("readonly", True)]},
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )
     activity_note = fields.Html(
         string="Note",
-        states={"done": [("readonly", True)]},
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )
     activity_user_id = fields.Many2one(
         comodel_name="res.users",
@@ -94,7 +105,7 @@ class HrAdvanceOverdueReminder(models.Model):
         default=lambda self: self.env.company,
     )
     state = fields.Selection(
-        [("draft", "Draft"), ("cancel", "Cancelled"), ("done", "Done")],
+        [("draft", "Draft"), ("done", "Done"), ("cancel", "Cancelled")],
         default="draft",
         readonly=True,
         tracking=True,
@@ -218,18 +229,17 @@ class HrAdvanceOverdueReminder(models.Model):
             "context": ctx,
         }
 
-    def _create_sequence(self):
-        self.ensure_one()
-        Sequence = self.env["ir.sequence"]
-        sequence_code = "advance.overdue.reminder.sequence"
-        if self.name == "/":
-            self.name = (
-                Sequence.with_context(ir_sequence_date=self.date).next_by_code(
-                    sequence_code
+    @api.model
+    def create(self, vals):
+        if vals.get("number", "/") == "/":
+            number = (
+                self.env["ir.sequence"].next_by_code(
+                    "advance.overdue.reminder.sequence"
                 )
                 or "/"
             )
-        return True
+            vals["name"] = number
+        return super().create(vals)
 
     def _update_overdue_advance(self):
         self.expense_sheet_ids.write(
@@ -240,7 +250,6 @@ class HrAdvanceOverdueReminder(models.Model):
         )
         self.state = "done"
         self._create_activity()
-        self._create_sequence()
         return False
 
     def _create_activity(self):

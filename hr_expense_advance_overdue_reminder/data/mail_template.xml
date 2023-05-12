@@ -12,7 +12,7 @@
         <field name="partner_to">{{ object.employee_id.address_home_id.id }}</field>
         <field
             name="subject"
-        >{{ object.company_id.name }} - Overdue advance reminder n°1 {{ object.name or 'n/a' }}</field>
+        >{{ object.company_id.name }} - Overdue advance reminder {{ object.name or 'n/a' }}</field>
         <field name="body_html" type="html">
 <div style="margin: 0px; padding: 0px;">
 <p style="margin: 0px; padding: 0px; font-size: 13px;">
@@ -46,27 +46,29 @@
                                         t-out="sheet.clearing_date_due"
                                     /></td>
             <td style="padding: 5px; border: 1px solid black; text-align: right;"><t
-                                        t-out="sheet.total_amount"
+                                        t-out="'{0:,.2f}'.format(sheet.total_amount)"
                                     /></td>
             <td style="padding: 5px; border: 1px solid black; text-align: right;"><t
-                                        t-out="sheet.clearing_residual"
+                                        t-out="'{0:,.2f}'.format(sheet.clearing_residual)"
                                     /></td>
-            <td
-                                    style="padding: 5px; border: 1px solid black;"
-                                >${exp.overdue_reminder_counter}</td>
+            <td style="padding: 5px; border: 1px solid black;">
+                <t t-out="sheet.overdue_reminder_counter" />
+            </td>
         </tr>
     </t>
     <t
                             t-set="total_residual"
                             t-value="sum(object.expense_sheet_ids.mapped('clearing_residual'))"
                         />
-    <tr>
-        <td /><td /><td /><td />
-        <td
+        <tr>
+            <td /><td /><td /><td />
+            <td
                                 style="padding: 5px; border: 1px solid black; font-weight: bold; text-align: right;"
-                            ><t t-out="total_residual" /></td>
-        <td />
-    </tr>
+                            >
+                <t t-out="'{0:,.2f}'.format(total_residual)" />
+            </td>
+            <td /><td />
+        </tr>
     </table>
     <br /><br />
     If you made a clearing for these advance a few days ago, please ignore this email.
