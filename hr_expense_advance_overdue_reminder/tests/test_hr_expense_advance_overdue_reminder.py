@@ -1,202 +1,190 @@
-# Copyright 2020 Ecosoft Co., Ltd (http://ecosoft.co.th/)
+# Copyright 2023 Ecosoft Co., Ltd (http://ecosoft.co.th/)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html)
 
+from freezegun import freeze_time
 
-# class TestHrExpenseAdvanceOverdueReminder(SavepointCase):
-#     @classmethod
-#     def _load(cls, module, *args):
-#         tools.convert_file(
-#             cls.cr,
-#             module,
-#             get_resource_path(module, *args),
-#             {},
-#             "init",
-#             False,
-#             "test",
-#             cls.registry._assertion_report,
-#         )
+from odoo import fields
+from odoo.exceptions import UserError
+from odoo.tests.common import Form, TransactionCase
 
-#     @classmethod
-#     def setUpClass(cls):
-#         super().setUpClass()
-#         cls._load("account", "test", "account_minimal_test.xml")
-#         cls.model_id = cls.env["ir.model"].search([("model", "=", "hr.expense.sheet")])
-#         cls.expense_model = cls.env["hr.expense"]
-#         cls.expense_sheet_model = cls.env["hr.expense.sheet"]
-#         cls.partner_1 = cls.env.ref("base.res_partner_12")
-#         cls.employee_1 = cls.env.ref("hr.employee_hne")
-#         cls.letter_report = cls.env.ref("base.report_ir_model_overview")
-#         cls.employee_1.address_home_id = cls.partner_1.id
-#         transfer_account = cls.browse_ref(cls, "account.transfer_account")
-#         cls.bank_journal = cls.browse_ref(cls, "account.bank_journal")
-#         cls.emp_advance = cls.env.ref("hr_expense_advance_clearing.product_emp_advance")
-#         cls.emp_advance.property_account_expense_id = transfer_account
 
-#         cls.sheet = cls._create_expense_sheet(
-#             cls, "Advance 1,000", cls.employee_1, cls.emp_advance, 1000.0, advance=True
-#         )
-#         date_today = fields.Date.from_string(time.strftime("%Y-05-05"))
-#         cls.sheet = cls.sheet.with_context({"date": date_today})
+class TestHrExpenseAdvanceOverdueReminder(TransactionCase):
+    @classmethod
+    @freeze_time("2001-01-01")
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.reminder_config = cls.env["reminder.definition"]
+        cls.overdue_wizard = cls.env["hr.advance.overdue.reminder.wizard"]
+        cls.mail_compose = cls.env["mail.compose.message"]
+        cls.journal_bank = cls.env["account.journal"].search(
+            [("type", "=", "bank")], limit=1
+        )
+        employee_home = cls.env["res.partner"].create({"name": "Employee Home Address"})
+        cls.employee = cls.env["hr.employee"].create(
+            {"name": "Employee A", "address_home_id": employee_home.id}
+        )
+        # Advance product
+        advance_account = cls.env["account.account"].create(
+            {
+                "code": "154000",
+                "name": "Employee Advance",
+                "user_type_id": cls.env.ref(
+                    "account.data_account_type_current_assets"
+                ).id,
+                "reconcile": True,
+            }
+        )
+        cls.emp_advance = cls.env.ref("hr_expense_advance_clearing.product_emp_advance")
+        cls.emp_advance.property_account_expense_id = advance_account
+        # Create advance expense 1,000
+        cls.advance = cls._create_expense_sheet(
+            cls, "Advance 1,000", cls.employee, cls.emp_advance, 1000.0, advance=True
+        )
 
-#     def _create_expense(
-#         self,
-#         description,
-#         employee,
-#         product,
-#         amount,
-#         advance=False,
-#         payment_mode="own_account",
-#     ):
-#         with Form(self.expense_model) as expense:
-#             expense.advance = advance
-#             expense.name = description
-#             expense.employee_id = employee
-#             expense.product_id = product
-#             expense.unit_amount = amount
-#             expense.payment_mode = payment_mode
-#         expense = expense.save()
-#         expense.tax_ids = False  # Test no vat
-#         return expense
+    def _create_expense(
+        self,
+        description,
+        employee,
+        product,
+        amount,
+        advance=False,
+        payment_mode="own_account",
+        account=False,
+    ):
+        with Form(
+            self.env["hr.expense"].with_context(default_advance=advance)
+        ) as expense:
+            expense.name = description
+            expense.employee_id = employee
+            if not advance:
+                expense.product_id = product
+            expense.unit_amount = amount
+            expense.payment_mode = payment_mode
+            if account:
+                expense.account_id = account
+        expense = expense.save()
+        expense.tax_ids = False  # Test no vat
+        return expense
 
-#     def _create_expense_sheet(
-#         self, description, employee, product, amount, advance=False
-#     ):
-#         expense = self._create_expense(
-#             self, description, employee, product, amount, advance
-#         )
-#         # Add expense to expense sheet
-#         expense_sheet = self.expense_sheet_model.create(
-#             {
-#                 "name": description,
-#                 "employee_id": expense.employee_id.id,
-#                 "expense_line_ids": [(6, 0, [expense.id])],
-#             }
-#         )
-#         return expense_sheet
+    def _create_expense_sheet(
+        self, description, employee, product, amount, advance=False
+    ):
+        expense = self._create_expense(
+            self, description, employee, product, amount, advance
+        )
+        # Add expense to expense sheet
+        expense_sheet = self.env["hr.expense.sheet"].create(
+            {
+                "name": description,
+                "advance": advance,
+                "employee_id": expense.employee_id.id,
+                "expense_line_ids": [(6, 0, [expense.id])],
+            }
+        )
+        return expense_sheet
 
-#     def _create_reminder_definition(self, reminder_type):
-#         hr_reminder = self.env["reminder.definition"].create(
-#             {
-#                 "name": "HR Advance Definition",
-#                 "model_id": self.model_id.id,
-#                 "clearing_terms_days": 5,
-#                 "create_activity": True,
-#                 "activity_summary": "Summary Next",
-#                 "activity_note": "Note something",
-#                 "reminder_type": reminder_type,
-#                 "letter_report": self.letter_report.id,
-#             }
-#         )
-#         return hr_reminder
+    def _register_payment(self, move_id, amount, ctx=False, hr_return_advance=False):
+        if not ctx:
+            ctx = {
+                "active_ids": [move_id.id],
+                "active_id": move_id.id,
+                "active_model": "account.move",
+            }
+        ctx["hr_return_advance"] = hr_return_advance
+        PaymentWizard = self.env["account.payment.register"]
+        with Form(PaymentWizard.with_context(**ctx)) as f:
+            f.journal_id = self.journal_bank
+            f.payment_date = fields.Date.today()
+            f.amount = amount
+        payment_wizard = f.save()
+        payment_wizard.action_create_payments()
 
-#     def _register_payment(self, expense_sheet, hr_return_advance=False):
-#         ctx = {
-#             "active_ids": [expense_sheet.id],
-#             "active_id": expense_sheet.id,
-#             "hr_return_advance": hr_return_advance,
-#             "active_model": "hr.expense.sheet",
-#         }
-#         PaymentWizard = self.env["hr.expense.sheet.register.payment.wizard"]
-#         with Form(PaymentWizard.with_context(ctx)) as f:
-#             f.journal_id = self.bank_journal
-#         payment_wizard = f.save()
-#         payment_wizard.expense_post_payment()
-
-#     def _check_warnings(self, overdue):
-#         overdue.mail_subject = False
-#         with self.assertRaises(UserError):
-#             overdue.action_validate()
-#         overdue.write({"mail_subject": "Subject", "mail_body": False})
-#         with self.assertRaises(UserError):
-#             overdue.action_validate()
-#         overdue.mail_body = "Body"
-#         overdue.partner_id.email = False
-#         with self.assertRaises(UserError):
-#             overdue.action_validate()
-#         overdue.partner_id.email = "test_overdue@reminder.com"
-#         overdue.letter_report = False
-#         with self.assertRaises(UserError):
-#             overdue.action_validate()
-#         overdue.letter_report = self.env.ref("base.report_ir_model_overview").id
-
-#     def _check_normal_process(self, reminder_type):
-#         today = fields.Date.today()
-#         self.assertIn("EXAV", self.sheet.number)
-#         self.assertEqual(self.sheet.state, "draft")
-#         self.sheet.action_submit_sheet()
-#         self.assertEqual(self.sheet.state, "submit")
-#         self.sheet.approve_expense_sheets()
-#         self.assertEqual(self.sheet.state, "approve")
-#         self.assertFalse(self.sheet.clearing_date_due)
-#         with self.assertRaises(UserError):
-#             self.sheet.action_sheet_move_create()
-#         self._create_reminder_definition(reminder_type)
-#         self.sheet.action_sheet_move_create()
-#         self.assertEqual(self.sheet.state, "post")
-#         self.assertEqual(self.sheet.clearing_date_due, today + relativedelta(days=5))
-#         # check state != done should not create wizard overdue
-#         with self.assertRaises(UserError):
-#             self.sheet.action_overdue_reminder()
-#         self._register_payment(self.sheet)
-#         self.assertEqual(self.sheet.state, "done")
-
-#     def test_01_reminder_email(self):
-#         self._check_normal_process("mail")
-#         # Overdue date configured due date < today 1 day
-#         self.sheet.clearing_date_due = fields.Date.from_string(
-#             time.strftime("%Y-05-04")
-#         )
-#         self.assertTrue(self.sheet.overdue)
-#         self.assertFalse(self.sheet.overdue_reminder_last_date)
-#         self.assertFalse(self.sheet.overdue_reminder_counter)
-#         self.sheet.address_id = self.partner_1.id
-#         ctx = self.sheet._context.copy()
-#         ctx.update({"active_ids": [self.sheet.id], "active_model": "hr.expense.sheet"})
-#         action = self.sheet.with_context(ctx).action_overdue_reminder()
-#         with Form(self.env[action["res_model"]].with_context(action["context"])) as f:
-#             wizard = f.save()
-#         action = wizard.run()
-#         overdue = self.env[action["res_model"]].search(action["domain"])
-#         self.assertEqual(overdue.state, "draft")
-#         activity_type = self.env["mail.activity.type"].search([], limit=1)
-#         overdue.activity_type_id = activity_type.id
-#         # check case delete mail subject or mail description
-#         self._check_warnings(overdue)
-#         overdue.action_validate()
-#         self.assertEqual(overdue.state, "done")
-#         self.assertEqual(overdue.expense_sheet_ids.overdue_reminder_counter, 1)
-#         # check mail send
-#         view_mail = overdue.action_get_mail_view()
-#         mail_object = self.env[view_mail["res_model"]].search(view_mail["domain"])
-#         self.assertEqual(overdue.mail_count, len(mail_object))
-#         # filter this expense again, should be error
-#         with self.assertRaises(UserError):
-#             wizard.run()
-#         wizard.min_interval_days = 0
-#         with self.assertRaises(UserError):
-#             wizard.run()
-#         overdue.action_cancel()
-#         self.assertEqual(overdue.state, "cancel")
-
-#     def test_02_reminder_letter(self):
-#         self._check_normal_process("letter")
-#         self.sheet.clearing_date_due = fields.Date.from_string(
-#             time.strftime("%Y-05-04")
-#         )
-#         self.sheet.address_id = self.partner_1.id
-#         ctx = self.sheet._context.copy()
-#         ctx.update({"active_ids": [self.sheet.id], "active_model": "hr.expense.sheet"})
-#         action = self.sheet.with_context(ctx).action_overdue_reminder()
-#         # Test with case no overdue_sheet_ids
-#         action["context"].get("overdue_sheet_ids").pop()
-#         with Form(self.env[action["res_model"]].with_context(action["context"])) as f:
-#             wizard = f.save()
-#         action = wizard.run()
-#         overdue = self.env[action["res_model"]].search(action["domain"])
-#         self.assertEqual(overdue.state, "draft")
-#         activity_type = self.env["mail.activity.type"].search([], limit=1)
-#         overdue.activity_type_id = activity_type.id
-#         action = overdue.action_validate()
-#         self.assertEqual(overdue.state, "done")
-#         self.assertEqual(overdue.expense_sheet_ids.overdue_reminder_counter, 1)
-#         self.assertEqual(action.get("report_type", False), "qweb-pdf")
+    @freeze_time("2001-01-01")
+    def test_01_reminder_advance(self):
+        # Overdue date configured due date < today 1 day
+        self.assertFalse(self.advance.clearing_date_due)
+        self.assertEqual(self.advance.state, "draft")
+        # Change clearing due date less than today, it should error
+        with self.assertRaises(UserError):
+            with Form(self.advance) as av:
+                av.clearing_date_due = "2000-01-01"
+        self.advance.clearing_date_due = False
+        self.advance.action_submit_sheet()
+        self.advance.approve_expense_sheets()
+        # Clearing Due Date is not selected, it will default from reminder config
+        with self.assertRaises(UserError):
+            self.advance.action_sheet_move_create()
+        reminder = self.reminder_config.create({"name": "Overdue Reminder"})
+        self.assertEqual(reminder.clearing_terms_days, 30)
+        self.advance.action_sheet_move_create()
+        self.assertEqual(
+            self.advance.clearing_date_due.strftime("%Y-%m-%d"), "2001-01-31"
+        )
+        self.assertFalse(self.advance.is_overdue)
+        self.assertEqual(self.advance.clearing_residual, 1000.0)
+        self._register_payment(self.advance.account_move_id, 1000.0)
+        self.assertEqual(self.advance.state, "done")
+        # Check Overdue Advance
+        with self.assertRaises(UserError):
+            self.advance.action_overdue_reminder()
+        self.advance.clearing_date_due = "2000-12-31"
+        self.assertTrue(self.advance.is_overdue)
+        result = self.advance.action_overdue_reminder()
+        # Open wizard overdue reminder
+        self.assertEqual(result["res_model"], "hr.advance.overdue.reminder.wizard")
+        with Form(
+            self.overdue_wizard.with_context(
+                active_ids=self.advance.ids,
+                default_employee_ids=self.advance.employee_id.ids,
+                default_reminder_definition_id=reminder.id,
+            )
+        ) as wiz:
+            wiz.reminder_number = 5
+        wizard_reminder = wiz.save()
+        self.assertTrue(wizard_reminder.employee_ids)
+        action = wizard_reminder.run()
+        advance_overdue_reminder = self.env["hr.advance.overdue.reminder"].browse(
+            action["domain"][0][2]
+        )
+        self.assertEqual(advance_overdue_reminder.state, "draft")
+        with Form(advance_overdue_reminder) as av_overdue:
+            av_overdue.create_activity = True
+            av_overdue.reminder_definition_id = reminder
+            av_overdue.reminder_type = "letter"
+        with self.assertRaises(UserError):
+            advance_overdue_reminder.action_validate()
+        with Form(advance_overdue_reminder) as av_overdue:
+            av_overdue.reminder_type = "mail"
+        mail_compose = advance_overdue_reminder.action_validate()
+        with Form(
+            self.mail_compose.with_context(
+                active_ids=mail_compose["context"].get("active_ids"),
+                default_model=mail_compose["context"].get("default_model"),
+                default_res_id=mail_compose["context"].get("default_res_id"),
+                default_template_id=mail_compose["context"].get("default_template_id"),
+            )
+        ) as wiz:
+            wiz.body = "Test"
+        mail_wizard = wiz.save()
+        mail_wizard._action_send_mail()
+        self.assertEqual(advance_overdue_reminder.state, "done")
+        with self.assertRaises(UserError):
+            advance_overdue_reminder.unlink()
+        advance_overdue_reminder.action_cancel()
+        self.assertEqual(advance_overdue_reminder.state, "cancel")
+        advance_overdue_reminder.state = "draft"
+        advance_overdue_reminder.create_activity = True
+        advance_overdue_reminder.activity_scheduled_date = "2001-01-15"
+        advance_overdue_reminder.activity_user_id = self.env.user.id
+        mail_compose = advance_overdue_reminder.action_validate()
+        with Form(
+            self.mail_compose.with_context(
+                active_ids=mail_compose["context"].get("active_ids"),
+                default_model=mail_compose["context"].get("default_model"),
+                default_res_id=mail_compose["context"].get("default_res_id"),
+                default_template_id=mail_compose["context"].get("default_template_id"),
+            )
+        ) as wiz:
+            wiz.body = "Test"
+        mail_wizard = wiz.save()
+        mail_wizard._action_send_mail()
