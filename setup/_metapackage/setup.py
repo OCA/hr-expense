@@ -20,6 +20,7 @@ setuptools.setup(
         'odoo-addon-hr_expense_portal>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_sequence>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_tax_adjust>=15.0dev,<15.1dev',
+        'odoo-addon-hr_expense_tier_validation>=15.0dev,<15.1dev',
         'odoo-addon-sale_expense_cost_reinvoice>=15.0dev,<15.1dev',
         'odoo-addon-sale_expense_manual_reinvoice>=15.0dev,<15.1dev',
     ],
