@@ -138,7 +138,10 @@ class TestHrExpenseAdvanceOverdueReminder(TransactionCase):
             wiz.reminder_number = 5
         wizard_reminder = wiz.save()
         self.assertTrue(wizard_reminder.employee_ids)
+        action = wizard_reminder.with_context(active_ids=False).run()
+        self.assertFalse(action["domain"][0][2])
         action = wizard_reminder.run()
+        self.assertTrue(action["domain"][0][2])
         advance_overdue_reminder = self.env["hr.advance.overdue.reminder"].browse(
             action["domain"][0][2]
         )
