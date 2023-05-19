@@ -19,6 +19,7 @@ class TestHrExpenseAdvanceOverdueReminder(TransactionCase):
         cls.journal_bank = cls.env["account.journal"].search(
             [("type", "=", "bank")], limit=1
         )
+        cls.letter_report = cls.env["ir.actions.report"].search([], limit=1)
         employee_home = cls.env["res.partner"].create({"name": "Employee Home Address"})
         cls.employee = cls.env["hr.employee"].create(
             {"name": "Employee A", "address_home_id": employee_home.id}
@@ -56,12 +57,8 @@ class TestHrExpenseAdvanceOverdueReminder(TransactionCase):
         ) as expense:
             expense.name = description
             expense.employee_id = employee
-            if not advance:
-                expense.product_id = product
             expense.unit_amount = amount
             expense.payment_mode = payment_mode
-            if account:
-                expense.account_id = account
         expense = expense.save()
         expense.tax_ids = False  # Test no vat
         return expense
@@ -84,12 +81,11 @@ class TestHrExpenseAdvanceOverdueReminder(TransactionCase):
         return expense_sheet
 
     def _register_payment(self, move_id, amount, ctx=False, hr_return_advance=False):
-        if not ctx:
-            ctx = {
-                "active_ids": [move_id.id],
-                "active_id": move_id.id,
-                "active_model": "account.move",
-            }
+        ctx = ctx or {
+            "active_ids": [move_id.id],
+            "active_id": move_id.id,
+            "active_model": "account.move",
+        }
         ctx["hr_return_advance"] = hr_return_advance
         PaymentWizard = self.env["account.payment.register"]
         with Form(PaymentWizard.with_context(**ctx)) as f:
@@ -147,14 +143,31 @@ class TestHrExpenseAdvanceOverdueReminder(TransactionCase):
             action["domain"][0][2]
         )
         self.assertEqual(advance_overdue_reminder.state, "draft")
+        # Test reminder by letter
         with Form(advance_overdue_reminder) as av_overdue:
             av_overdue.create_activity = True
             av_overdue.reminder_definition_id = reminder
             av_overdue.reminder_type = "letter"
+        self.assertFalse(av_overdue.letter_report)
         with self.assertRaises(UserError):
             advance_overdue_reminder.action_validate()
+        self.letter_report.model = "hr.advance.overdue.reminder"
+        with Form(advance_overdue_reminder) as av_overdue:
+            av_overdue.letter_report = self.letter_report
+        advance_overdue_reminder.action_validate()
+        self.assertEqual(advance_overdue_reminder.state, "done")
+        # Check name report
+        name_report = advance_overdue_reminder._get_report_base_filename()
+        self.assertEqual(name_report, "overdue_letter-Employee_A")
+        # Test reminder by email
+        advance_overdue_reminder.state = "draft"
         with Form(advance_overdue_reminder) as av_overdue:
             av_overdue.reminder_type = "mail"
+        # Check employee address private, not allow send email
+        advance_overdue_reminder.employee_id.address_home_id.type = "private"
+        with self.assertRaises(UserError):
+            advance_overdue_reminder.action_validate()
+        advance_overdue_reminder.employee_id.address_home_id.type = "contact"
         mail_compose = advance_overdue_reminder.action_validate()
         with Form(
             self.mail_compose.with_context(
@@ -188,3 +201,7 @@ class TestHrExpenseAdvanceOverdueReminder(TransactionCase):
             wiz.body = "Test"
         mail_wizard = wiz.save()
         mail_wizard._action_send_mail()
+        self.assertEqual(advance_overdue_reminder.state, "done")
+        # Check reminder < today
+        self.advance.reminder_next_time = "2000-12-31"
+        self.assertTrue(self.advance.is_overdue)

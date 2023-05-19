@@ -1,7 +1,6 @@
 # Copyright 2023 Ecosoft Co., Ltd. (http://ecosoft.co.th)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-import base64
 
 from dateutil.relativedelta import relativedelta
 
@@ -178,26 +177,26 @@ class HrAdvanceOverdueReminder(models.Model):
         ]
         return vals
 
-    def _prepare_attach_letter(self):
-        attachment_ids = []
-        for sheet in self.expense_sheet_ids:
-            if self.letter_report.report_type in ("qweb-html", "qweb-pdf"):
-                result, report_format = self.letter_report._render_qweb_pdf([sheet.id])
-            else:
-                res = self.letter_report.render([sheet.id])
-                if not res:
-                    raise UserError(
-                        _("Unsupported report type %s found.").format(
-                            self.letter_report.report_type
-                        )
-                    )
-                result, report_format = res
-            # TODO in trunk, change return format to binary
-            # to match message_post expected format
-            result = base64.b64encode(result)
-            filename = "{}.{}".format(self._get_report_base_filename(), report_format)
-            attachment_ids.append([filename, result])
-        return attachment_ids
+    # def _prepare_attach_letter(self):
+    #     attachment_ids = []
+    #     for sheet in self.expense_sheet_ids:
+    #         if self.letter_report.report_type in ("qweb-html", "qweb-pdf"):
+    #             result, report_format = self.letter_report._render_qweb_pdf([sheet.id])
+    #         else:
+    #             res = self.letter_report.render([sheet.id])
+    #             if not res:
+    #                 raise UserError(
+    #                     _("Unsupported report type %s found.").format(
+    #                         self.letter_report.report_type
+    #                     )
+    #                 )
+    #             result, report_format = res
+    #         # TODO in trunk, change return format to binary
+    #         # to match message_post expected format
+    #         result = base64.b64encode(result)
+    #         filename = "{}.{}".format(self._get_report_base_filename(), report_format)
+    #         attachment_ids.append([filename, result])
+    #     return attachment_ids
 
     def _get_mail_template(self):
         return "hr_expense_advance_overdue_reminder.email_template_overdue_reminder"
@@ -261,11 +260,9 @@ class HrAdvanceOverdueReminder(models.Model):
 
     def action_validate(self):
         self.ensure_one()
-        action = True
         if self.reminder_type == "mail":
             return self.validate_mail()
-        if self.reminder_type == "letter":
-            action = self.print_letter()
+        action = self.print_letter()
         self._update_overdue_advance()
         return action
 
