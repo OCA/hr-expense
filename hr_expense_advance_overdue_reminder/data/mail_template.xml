@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="email_template_overdue_reminder" model="mail.template">
+        <field name="name">Advance: Overdue Reminder</field>
+        <field
+            name="model_id"
+            ref="hr_expense_advance_overdue_reminder.model_hr_advance_overdue_reminder"
+        />
+        <field
+            name="email_from"
+        >{{ (object.create_uid.email or object.company_id.email) }}</field>
+        <field name="partner_to">{{ object.employee_id.address_home_id.id }}</field>
+        <field
+            name="subject"
+        >{{ object.company_id.name }} - Overdue advance reminder {{ object.name or 'n/a' }}</field>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+<p style="margin: 0px; padding: 0px; font-size: 13px;">
+    Dear <t t-out="object.employee_id.name" />,
+    <br /><br />
+    According to our books, the following expense advance are overdue:
+    <table
+                        style="border-spacing: 0; border-collapse: collapse; width: 100%; text-align: center;"
+                    >
+        <tr>
+            <th style="padding: 5px; border: 1px solid black;">Expense Number</th>
+            <th style="padding: 5px; border: 1px solid black;">Expense Name</th>
+            <th style="padding: 5px; border: 1px solid black;">Date</th>
+            <th style="padding: 5px; border: 1px solid black;">Due Date</th>
+            <th style="padding: 5px; border: 1px solid black;">Total Amount</th>
+            <th style="padding: 5px; border: 1px solid black;">Residual</th>
+            <th style="padding: 5px; border: 1px solid black;">Past Reminders</th>
+        </tr>
+    <t t-foreach="object.expense_sheet_ids" t-as="sheet">
+        <tr>
+            <td style="padding: 5px; border: 1px solid black;"><t
+                                        t-out="sheet.number"
+                                    /></td>
+            <td style="padding: 5px; border: 1px solid black;"><t
+                                        t-out="sheet.name"
+                                    /></td>
+            <td style="padding: 5px; border: 1px solid black;"><t
+                                        t-out="sheet.account_move_id.date"
+                                    /></td>
+            <td style="padding: 5px; border: 1px solid black;"><t
+                                        t-out="sheet.clearing_date_due"
+                                    /></td>
+            <td style="padding: 5px; border: 1px solid black; text-align: right;"><t
+                                        t-out="'{0:,.2f}'.format(sheet.total_amount)"
+                                    /></td>
+            <td style="padding: 5px; border: 1px solid black; text-align: right;"><t
+                                        t-out="'{0:,.2f}'.format(sheet.clearing_residual)"
+                                    /></td>
+            <td style="padding: 5px; border: 1px solid black;">
+                <t t-out="sheet.overdue_reminder_counter" />
+            </td>
+        </tr>
+    </t>
+    <t
+                            t-set="total_residual"
+                            t-value="sum(object.expense_sheet_ids.mapped('clearing_residual'))"
+                        />
+        <tr>
+            <td /><td /><td /><td />
+            <td
+                                style="padding: 5px; border: 1px solid black; font-weight: bold; text-align: right;"
+                            >
+                <t t-out="'{0:,.2f}'.format(total_residual)" />
+            </td>
+            <td /><td />
+        </tr>
+    </table>
+    <br /><br />
+    If you made a clearing for these advance a few days ago, please ignore this email.
+    <br /><br />
+    Regards,<br />
+    <t t-out="user.signature" />
+</p>
+</div>
+        </field>
+        <field name="lang">{{ object.employee_id.lang }}</field>
+        <field name="auto_delete" eval="False" />
+    </record>
+</odoo>
