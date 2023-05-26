@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="wizard_advance_overdue_reminder_form" model="ir.ui.view">
+        <field name="name">hr.advance.overdue.reminder.wizard.form</field>
+        <field name="model">hr.advance.overdue.reminder.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group colspan="4">
+                        <field
+                            name="employee_ids"
+                            widget="many2many_tags"
+                            readonly="1"
+                            force_save="1"
+                        />
+                        <field name="reminder_definition_id" />
+                    </group>
+                    <group
+                        attrs="{'invisible': [('reminder_definition_id', '=', False)]}"
+                    >
+                        <label for="reminder_number" />
+                        <div name="reminder_number">
+                            <field name="reminder_number" class="oe_inline" /> days
+                        </div>
+                        <field name="reminder_next_time" />
+                    </group>
+                    <group
+                        attrs="{'invisible': [('reminder_definition_id', '=', False)]}"
+                    >
+                        <field name="reminder_type" />
+                        <field
+                            name="mail_template_id"
+                            attrs="{'invisible': [('reminder_type', '!=', 'mail')]}"
+                        />
+                        <field
+                            name="letter_report"
+                            attrs="{'invisible': [('reminder_type', '!=', 'letter')]}"
+                        />
+                    </group>
+                </group>
+                <group string="Activity">
+                    <group colspan="4">
+                        <field name="create_activity" />
+                    </group>
+                    <group attrs="{'invisible': [('create_activity', '=', False)]}">
+                        <field name="activity_type_id" />
+                        <field name="activity_summary" />
+                        <field name="activity_note" />
+                    </group>
+                </group>
+                <footer>
+                    <button
+                        name="run"
+                        type="object"
+                        string="Start"
+                        class="btn-primary"
+                    />
+                    <button special="cancel" string="Cancel" class="btn-default" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_advance_overdue_reminder" model="ir.actions.act_window">
+        <field name="name">Advance Overdue Reminder</field>
+        <field name="res_model">hr.advance.overdue.reminder.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'active_model': 'hr.expense.sheet'}</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
