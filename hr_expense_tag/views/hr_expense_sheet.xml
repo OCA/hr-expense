@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2023 ForgeFlow
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+
+    <record model="ir.ui.view" id="view_hr_expense_sheet_form">
+        <field name="name">hr.expense.sheet.form (in hr_expense_tag)</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
+        <field name="arch" type="xml">
+        <xpath expr="//field[@name='payment_mode']" position="after">
+            <field
+                    name="tag_ids"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color'}"
+                    placeholder="Tags..."
+                />
+         </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_hr_expense_sheet_tree">
+        <field name="name">hr.expense.sheet.tree (in hr_expense_tag)</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_tree" />
+        <field name="arch" type="xml">
+        <xpath expr="//field[@name='state']" position="after">
+            <field
+                    name="tag_ids"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color'}"
+                    placeholder="Tags..."
+                />
+         </xpath>
+        </field>
+    </record>
+
+    <record id="hr_expense_sheet_tag_view_tree" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.tag.view.tree</field>
+        <field name="model">hr.expense.sheet.tag</field>
+        <field name="arch" type="xml">
+            <tree string="Tags" editable="bottom">
+                <field name="name"/>
+                <field name="color" widget="color_picker" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_hr_expense_sheet_tag" model="ir.actions.act_window">
+        <field name="name">Expense Sheet Tags</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hr.expense.sheet.tag</field>
+        <field name="view_id" ref="hr_expense_sheet_tag_view_tree"/>
+        <field name="view_mode">tree</field>
+    </record>
+
+
+    <menuitem id="menu_hr_expense_sheet_tag" name="Expense Sheet Tags" parent="menu_hr_tag" sequence="16" action="action_hr_expense_sheet_tag"/>
+</odoo>
