@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2023 ForgeFlow
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+
+    <record model="ir.ui.view" id="view_hr_expense_sheet_form">
+        <field name="name">hr.expense.sheet.form (in hr_expense_tags)</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
+        <field name="arch" type="xml">
+        <xpath expr="//field[@name='payment_mode']" position="after">
+            <field
+                    name="tag_ids"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color'}"
+                    placeholder="Tags..."
+                />
+         </xpath>
+        </field>
+    </record>
+
+<record model="ir.ui.view" id="view_hr_expense_sheet_tree">
+        <field name="name">hr.expense.sheet.tree (in hr_expense_tags)</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_tree" />
+        <field name="arch" type="xml">
+        <xpath expr="//field[@name='state']" position="after">
+            <field
+                    name="tag_ids"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color'}"
+                    placeholder="Tags..."
+                />
+         </xpath>
+        </field>
+    </record>
+
+</odoo>
