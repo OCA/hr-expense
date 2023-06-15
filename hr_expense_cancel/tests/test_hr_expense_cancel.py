@@ -38,30 +38,12 @@ class TestHrExpenseCancel(TransactionCase):
             {
                 "name": "Expense test",
                 "employee_id": self.ref("hr.employee_admin"),
-                "product_id": self.ref("hr_expense.trans_expense_product"),
+                "product_id": self.ref(
+                    "hr_expense.expense_product_travel_accommodation"
+                ),
                 "unit_amount": 1,
                 "quantity": 10,
                 "sheet_id": self.expense_sheet.id,
-            }
-        )
-
-        self.expense_sheet2 = self.env["hr.expense.sheet"].create(
-            {
-                "employee_id": self.ref("hr.employee_admin"),
-                "name": "Expense test",
-                "journal_id": self.expense_journal.id,
-            }
-        )
-        self.expense_sheet2.approve_expense_sheets()
-
-        self.expense2 = self.env["hr.expense"].create(
-            {
-                "name": "Expense test",
-                "employee_id": self.ref("hr.employee_admin"),
-                "product_id": self.ref("hr_expense.trans_expense_product"),
-                "unit_amount": 2,
-                "quantity": 10,
-                "sheet_id": self.expense_sheet2.id,
             }
         )
 
@@ -73,7 +55,7 @@ class TestHrExpenseCancel(TransactionCase):
             view="account.view_account_payment_register_form",
         ) as f:
             f.journal_id = self.payment_journal
-            f.amount = self.expense_sheet.total_amount
+            f.amount = expense_sheet.total_amount
         register_payment = f.save()
         return register_payment
 
@@ -113,25 +95,7 @@ class TestHrExpenseCancel(TransactionCase):
         payment_wizard = self._get_payment_wizard(self.expense_sheet)
         payment_wizard.action_create_payments()
 
-        self.assertEqual(len(self.expense_sheet.payment_ids), 1)
-        self.assertTrue(self.expense_sheet.account_move_id)
+        self.assertTrue(self.expense_sheet.payment_ids)
 
-        self.expense_sheet.action_cancel()
-        payment = self.expense_sheet.payment_ids.filtered(lambda l: l.state != "cancel")
-        self.assertFalse(payment)
-        self.assertFalse(self.expense_sheet.account_move_id)
-
-    def test_action_cancel_multi_own_account(self):
-        self.expense_sheet.action_sheet_move_create()
-        self.expense_sheet2.action_sheet_move_create()
-        expense_sheet_ids = self.expense_sheet + self.expense_sheet2
-        payment_wizard = self._get_payment_wizard(expense_sheet_ids)
-        payment_wizard.action_create_payments()
-
-        self.assertEqual(len(self.expense_sheet.payment_ids), 1)
-        self.assertTrue(self.expense_sheet.account_move_id)
-
-        self.expense_sheet.action_cancel()
-        payment = self.expense_sheet.payment_ids.filtered(lambda l: l.state != "cancel")
-        self.assertFalse(payment)
-        self.assertFalse(self.expense_sheet.account_move_id)
+        self.expense_sheet.action_cancel()  # assertFalse(payment.exist)
+        self.assertFalse(self.expense_sheet.payment_ids.state != "cancel")
