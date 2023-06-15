@@ -2,6 +2,7 @@
 
   * Pedro M. Baeza
   * Ernesto Tejeda
+  * Stefan Ungureanu
 
 * Danh Vo  <https://github.com/danhvophuong>
 * Saran Lim. <saranl@ecosoft.co.th>
