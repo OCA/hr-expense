@@ -8,6 +8,7 @@ setuptools.setup(
     description="Meta package for oca-hr-expense Odoo addons",
     version=version,
     install_requires=[
+        'odoo-addon-hr_expense_cancel>=16.0dev,<16.1dev',
         'odoo-addon-hr_expense_payment>=16.0dev,<16.1dev',
     ],
     classifiers=[
