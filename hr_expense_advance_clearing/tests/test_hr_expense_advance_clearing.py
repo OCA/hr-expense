@@ -120,7 +120,7 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
             "active_model": "account.move",
         }
         PaymentWizard = self.env["account.payment.register"]
-        with Form(PaymentWizard.with_context(ctx)) as f:
+        with Form(PaymentWizard.with_context(**ctx)) as f:
             f.journal_id = self.journal_bank
             f.payment_date = fields.Date.today()
         payment_wizard = f.save()

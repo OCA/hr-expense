@@ -85,14 +85,20 @@ class AccountPaymentRegister(models.TransientModel):
         more_info = ""
         symbol = self.source_currency_id.symbol
         if amount_not_clear:
-            more_info = _("\nNote: pending amount clearing is %s%s") % (
-                symbol,
-                "{:,.2f}".format(amount_not_clear),
+            more_info = _(
+                "Note: pending amount clearing is %(symbol)s%(amount_not_clear)s",
+                symbol=symbol,
+                amount_not_clear="{:,.2f}".format(amount_not_clear),
             )
         if float_compare(self.amount, actual_remaining, 2) == 1:
             raise UserError(
-                _("You cannot return advance more than actual remaining (%s%s)%s")
-                % (symbol, "{:,.2f}".format(actual_remaining), more_info)
+                _(
+                    "You cannot return advance more than actual remaining"
+                    " (%(symbol)s%(actual_remaining)s)%(more_info)s",
+                    symbol=symbol,
+                    actual_remaining=actual_remaining,
+                    more_info=more_info,
+                )
             )
 
     def action_create_payments(self):
@@ -119,7 +125,7 @@ class AccountPaymentRegister(models.TransientModel):
         payment_vals = self._create_payment_vals_from_wizard()
         payment_vals_list = [payment_vals]
         payment = (
-            self.env["account.payment"].with_context(ctx).create(payment_vals_list)
+            self.env["account.payment"].with_context(**ctx).create(payment_vals_list)
         )
         # Set new payment_type and payment entry to be Dr Bank, Cr Advance
         payment.write(
@@ -138,14 +144,16 @@ class AccountPaymentRegister(models.TransientModel):
         )  # Account Payment link
         # Log the return advance in the chatter
         body = _(
-            "A remaining advance return of {} {} with the reference "
-            "{} related to your expense {} has been made.".format(
-                payment.amount,
-                payment.currency_id.symbol,
-                redirect_link,
-                expense_sheet.name,
-            )
-        )
+            "A remaining advance return of %(payment_amount)s %(payment_cur_sym)s "
+            "with the reference %(redirect_link)s related "
+            "to your expense %(expense_sheet_name)s has been made."
+        ) % {
+            "payment_amount": payment.amount,
+            "payment_cur_sym": payment.currency_id.symbol,
+            "redirect_link": redirect_link,
+            "expense_sheet_name": expense_sheet.name,
+        }
+
         expense_sheet.message_post(body=body)
 
         # Reconcile the return advance and the advance,
@@ -154,5 +162,5 @@ class AccountPaymentRegister(models.TransientModel):
         for line in payment.move_id.line_ids + expense_sheet.account_move_id.line_ids:
             if line.account_id == advance_account and not line.reconciled:
                 account_move_lines_to_reconcile |= line
-        res = account_move_lines_to_reconcile.with_context(ctx).reconcile()
+        res = account_move_lines_to_reconcile.with_context(**ctx).reconcile()
         return res
