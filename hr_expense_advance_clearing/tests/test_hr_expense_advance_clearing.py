@@ -3,11 +3,10 @@
 
 from odoo import fields
 from odoo.exceptions import ValidationError
-from odoo.tests import common
-from odoo.tests.common import Form
+from odoo.tests.common import Form, TransactionCase
 
 
-class TestHrExpenseAdvanceClearing(common.SavepointCase):
+class TestHrExpenseAdvanceClearing(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -39,9 +38,7 @@ class TestHrExpenseAdvanceClearing(common.SavepointCase):
             {
                 "code": "154000",
                 "name": "Employee Advance",
-                "user_type_id": cls.env.ref(
-                    "account.data_account_type_current_assets"
-                ).id,
+                "account_type": "asset_current",
                 "reconcile": True,
             }
         )
