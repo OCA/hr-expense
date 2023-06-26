@@ -6,93 +6,95 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2023-06-26 13:08+0000\n"
+"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
 
 #. module: hr_expense_analytic_distribution
 #: model:ir.model.fields,field_description:hr_expense_analytic_distribution.field_hr_expense_analytic_distribution__analytic_account_id
 msgid "Analytic Account"
-msgstr ""
+msgstr "Conto analitico"
 
 #. module: hr_expense_analytic_distribution
 #: model:ir.model.fields,field_description:hr_expense_analytic_distribution.field_hr_expense_analytic_distribution__create_uid
 msgid "Created by"
-msgstr ""
+msgstr "Creato da"
 
 #. module: hr_expense_analytic_distribution
 #: model:ir.model.fields,field_description:hr_expense_analytic_distribution.field_hr_expense_analytic_distribution__create_date
 msgid "Created on"
-msgstr ""
+msgstr "Creato il"
 
 #. module: hr_expense_analytic_distribution
 #: model:ir.model.fields,field_description:hr_expense_analytic_distribution.field_hr_expense__display_name
 #: model:ir.model.fields,field_description:hr_expense_analytic_distribution.field_hr_expense_analytic_distribution__display_name
 #: model:ir.model.fields,field_description:hr_expense_analytic_distribution.field_hr_expense_sheet__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Nome visualizzato"
 
 #. module: hr_expense_analytic_distribution
 #: model_terms:ir.ui.view,arch_db:hr_expense_analytic_distribution.hr_expense_sheet_form_view_inherit
 msgid "Distribution"
-msgstr ""
+msgstr "Distribuzione"
 
 #. module: hr_expense_analytic_distribution
 #: model:ir.model.fields,field_description:hr_expense_analytic_distribution.field_hr_expense_sheet__expense_distribution_ids
 msgid "Distribution Lines"
-msgstr ""
+msgstr "Righe distribuzione"
 
 #. module: hr_expense_analytic_distribution
 #: model:ir.model,name:hr_expense_analytic_distribution.model_hr_expense
 #: model:ir.model.fields,field_description:hr_expense_analytic_distribution.field_hr_expense_analytic_distribution__expense_id
 msgid "Expense"
-msgstr ""
+msgstr "Spesa"
 
 #. module: hr_expense_analytic_distribution
 #: model:ir.model,name:hr_expense_analytic_distribution.model_hr_expense_sheet
 msgid "Expense Report"
-msgstr ""
+msgstr "Resoconto spesa"
 
 #. module: hr_expense_analytic_distribution
 #: model:ir.model.fields,field_description:hr_expense_analytic_distribution.field_hr_expense__id
 #: model:ir.model.fields,field_description:hr_expense_analytic_distribution.field_hr_expense_analytic_distribution__id
 #: model:ir.model.fields,field_description:hr_expense_analytic_distribution.field_hr_expense_sheet__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: hr_expense_analytic_distribution
 #: model:ir.model.fields,field_description:hr_expense_analytic_distribution.field_hr_expense____last_update
 #: model:ir.model.fields,field_description:hr_expense_analytic_distribution.field_hr_expense_analytic_distribution____last_update
 #: model:ir.model.fields,field_description:hr_expense_analytic_distribution.field_hr_expense_sheet____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Ultima modifica il"
 
 #. module: hr_expense_analytic_distribution
 #: model:ir.model.fields,field_description:hr_expense_analytic_distribution.field_hr_expense_analytic_distribution__write_uid
 msgid "Last Updated by"
-msgstr ""
+msgstr "Ultimo aggiornamento di"
 
 #. module: hr_expense_analytic_distribution
 #: model:ir.model.fields,field_description:hr_expense_analytic_distribution.field_hr_expense_analytic_distribution__write_date
 msgid "Last Updated on"
-msgstr ""
+msgstr "Ultimo aggiornamento il"
 
 #. module: hr_expense_analytic_distribution
 #: model:ir.model.fields,field_description:hr_expense_analytic_distribution.field_hr_expense_analytic_distribution__percentage
 msgid "Percentage"
-msgstr ""
+msgstr "Percentuale"
 
 #. module: hr_expense_analytic_distribution
 #: model:ir.model,name:hr_expense_analytic_distribution.model_hr_expense_analytic_distribution
 msgid "Shows the distribution of expenses."
-msgstr ""
+msgstr "Visualizza distribuzione spese."
 
 #. module: hr_expense_analytic_distribution
 #: code:addons/hr_expense_analytic_distribution/models/hr_expense_sheet.py:0
 #, python-format
 msgid "Sorry, Percentage should be equal to 100."
-msgstr ""
+msgstr "La percentuale deve essere uguale a 100."
