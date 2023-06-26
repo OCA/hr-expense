@@ -83,7 +83,7 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
     ):
         expense_data = {
             "name": description,
-            "employee_id": employee,
+            "employee_id": employee and employee.id or False,
             "unit_amount": amount,
             "payment_mode": payment_mode,
             "tax_ids": False,
