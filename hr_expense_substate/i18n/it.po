@@ -6,13 +6,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2023-06-26 13:08+0000\n"
+"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
 
 #. module: hr_expense_substate
 #: model:mail.template,body_html:hr_expense_substate.mail_template_data_hr_expense_substate_verified
@@ -26,98 +28,107 @@ msgid ""
 "</div>\n"
 "        "
 msgstr ""
+"<div>\n"
+"    Spettabile ${object.employee_id.name or 'requester'},<br/>\n"
+"    questa messaggio è per informarla che il suo resoconto spese ${object."
+"name} è stato verificato dai responsabili approvazione.\n"
+"       <br/><br/>\n"
+"    Grazie,\n"
+"    <br/>\n"
+"</div>\n"
+"        "
 
 #. module: hr_expense_substate
 #: model:ir.model.fields,field_description:hr_expense_substate.field_base_substate_type__model
 msgid "Apply on"
-msgstr ""
+msgstr "Applica a"
 
 #. module: hr_expense_substate
 #: model:target.state.value,name:hr_expense_substate.target_state_value_approve
 msgid "Approved"
-msgstr ""
+msgstr "Approvato"
 
 #. module: hr_expense_substate
 #: model:ir.model,name:hr_expense_substate.model_base_substate_type
 msgid "Base Substate Type"
-msgstr ""
+msgstr "Tipo substato base"
 
 #. module: hr_expense_substate
 #: model:base.substate,name:hr_expense_substate.base_substate_checked
 msgid "Checked"
-msgstr ""
+msgstr "Selezionato"
 
 #. module: hr_expense_substate
 #: model:ir.model.fields,field_description:hr_expense_substate.field_base_substate_type__display_name
 #: model:ir.model.fields,field_description:hr_expense_substate.field_hr_expense_sheet__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Nome visualizzato"
 
 #. module: hr_expense_substate
 #: model:target.state.value,name:hr_expense_substate.target_state_value_draft
 msgid "Draft"
-msgstr ""
+msgstr "Bozza"
 
 #. module: hr_expense_substate
 #: model:ir.model,name:hr_expense_substate.model_hr_expense_sheet
 #: model:ir.model.fields.selection,name:hr_expense_substate.selection__base_substate_type__model__hr_expense_sheet
 msgid "Expense Report"
-msgstr ""
+msgstr "Resoconto spesa"
 
 #. module: hr_expense_substate
 #: model:base.substate.type,name:hr_expense_substate.base_substate_type_hr_expense_sheet
 msgid "Expense Report Substate"
-msgstr ""
+msgstr "Substato resoconto spese"
 
 #. module: hr_expense_substate
 #: model:ir.model.fields,field_description:hr_expense_substate.field_base_substate_type__id
 #: model:ir.model.fields,field_description:hr_expense_substate.field_hr_expense_sheet__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: hr_expense_substate
 #: model:ir.model.fields,field_description:hr_expense_substate.field_base_substate_type____last_update
 #: model:ir.model.fields,field_description:hr_expense_substate.field_hr_expense_sheet____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Ultima modifica il"
 
 #. module: hr_expense_substate
 #: model:target.state.value,name:hr_expense_substate.target_state_value_done
 msgid "Paid"
-msgstr ""
+msgstr "Pagato"
 
 #. module: hr_expense_substate
 #: model:target.state.value,name:hr_expense_substate.target_state_value_post
 msgid "Posted"
-msgstr ""
+msgstr "Inviato"
 
 #. module: hr_expense_substate
 #: model:target.state.value,name:hr_expense_substate.target_state_value_cancel
 msgid "Refused"
-msgstr ""
+msgstr "Rifiutato"
 
 #. module: hr_expense_substate
 #: model:ir.model.fields,field_description:hr_expense_substate.field_hr_expense_sheet__substate_id
 #: model_terms:ir.ui.view,arch_db:hr_expense_substate.hr_expense_sheet_view_search
 msgid "Sub State"
-msgstr ""
+msgstr "Substato"
 
 #. module: hr_expense_substate
 #: model:target.state.value,name:hr_expense_substate.target_state_value_submit
 msgid "Submitted"
-msgstr ""
+msgstr "Inviato"
 
 #. module: hr_expense_substate
 #: model:base.substate,name:hr_expense_substate.base_substate_to_verify
 msgid "To Verify"
-msgstr ""
+msgstr "Da verificare"
 
 #. module: hr_expense_substate
 #: model:base.substate,name:hr_expense_substate.base_substate_verified
 msgid "Verified"
-msgstr ""
+msgstr "Verificato"
 
 #. module: hr_expense_substate
 #: model:mail.template,subject:hr_expense_substate.mail_template_data_hr_expense_substate_verified
 msgid "Your expense report ${object.name} is verified"
-msgstr ""
+msgstr "il suo resoconto spese ${object.name} è stato verificato"
