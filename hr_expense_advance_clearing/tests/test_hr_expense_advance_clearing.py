@@ -41,9 +41,7 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
             {
                 "code": "154000",
                 "name": "Employee Advance",
-                "user_type_id": cls.env.ref(
-                    "account.data_account_type_current_assets"
-                ).id,
+                "account_type": "asset_current",
                 "reconcile": True,
             }
         )
@@ -51,7 +49,7 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
             {
                 "code": "X1020",
                 "name": "Product Sales - (test)",
-                "user_type_id": cls.env.ref("account.data_account_type_revenue").id,
+                "account_type": "income",
             }
         )
         cls.emp_advance = cls.env.ref("hr_expense_advance_clearing.product_emp_advance")
