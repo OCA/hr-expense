@@ -89,9 +89,9 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
             "tax_ids": False,
         }
         if not advance:
-            expense_data["product_id"] = product
+            expense_data["product_id"] = product and product.id or False
         if account:
-            expense_data["account_id"] = account
+            expense_data["account_id"] = account and account.id or False
         expense = self.env["hr.expense"].create(expense_data)
         return expense
 
