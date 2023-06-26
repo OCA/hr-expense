@@ -81,19 +81,18 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
         payment_mode="own_account",
         account=False,
     ):
-        with Form(
-            self.env["hr.expense"].with_context(default_advance=advance)
-        ) as expense:
-            expense.name = description
-            expense.employee_id = employee
-            if not advance:
-                expense.product_id = product
-            expense.unit_amount = amount
-            expense.payment_mode = payment_mode
-            if account:
-                expense.account_id = account
-        expense = expense.save()
-        expense.tax_ids = False  # Test no vat
+        expense_data = {
+            "name": description,
+            "employee_id": employee,
+            "unit_amount": amount,
+            "payment_mode": payment_mode,
+            "tax_ids": False,
+        }
+        if not advance:
+            expense_data["product_id"] = product
+        if account:
+            expense_data["account_id"] = account
+        expense = self.env["hr.expense"].create(expense_data)
         return expense
 
     def _create_expense_sheet(
