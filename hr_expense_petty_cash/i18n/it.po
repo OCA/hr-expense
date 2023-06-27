@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-06-26 13:08+0000\n"
-"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
+"PO-Revision-Date: 2023-06-27 13:10+0000\n"
+"Last-Translator: Sergio Zanchetta <primes2h@gmail.com>\n"
 "Language-Team: none\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -81,7 +81,7 @@ msgstr "Registro spese"
 #. module: hr_expense_petty_cash
 #: model:ir.model,name:hr_expense_petty_cash.model_hr_expense_sheet
 msgid "Expense Report"
-msgstr "Resoconto spesa"
+msgstr "Nota spese"
 
 #. module: hr_expense_petty_cash
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_search
@@ -216,7 +216,7 @@ msgstr "Selezionare il taccuino fondo spese"
 #. module: hr_expense_petty_cash
 #: model:ir.model.fields,help:hr_expense_petty_cash.field_hr_expense_sheet__journal_id
 msgid "The journal used when the expense is done."
-msgstr "Il registro da usare quando è fatta la spesa."
+msgstr "Il registro utilizzato quando viene creata la spesa."
 
 #. module: hr_expense_petty_cash
 #: code:addons/hr_expense_petty_cash/models/hr_expense.py:0
