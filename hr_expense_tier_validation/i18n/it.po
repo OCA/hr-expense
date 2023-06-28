@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-06-26 13:08+0000\n"
+"PO-Revision-Date: 2023-06-28 09:08+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -36,7 +36,7 @@ msgstr "Spesa"
 #. module: hr_expense_tier_validation
 #: model:ir.model,name:hr_expense_tier_validation.model_hr_expense_sheet
 msgid "Expense Report"
-msgstr "Resoconto spesa"
+msgstr "Nota spese"
 
 #. module: hr_expense_tier_validation
 #: model_terms:ir.ui.view,arch_db:hr_expense_tier_validation.hr_expense_sheet_view_search
@@ -101,7 +101,7 @@ msgstr "Revisori"
 #: code:addons/hr_expense_tier_validation/models/hr_expense.py:0
 #, python-format
 msgid "The expense report is under validation."
-msgstr "Il resoconto spese è in validazione."
+msgstr "La nota spese è in validazione."
 
 #. module: hr_expense_tier_validation
 #: model:ir.model,name:hr_expense_tier_validation.model_tier_definition
