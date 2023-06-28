@@ -11,8 +11,8 @@ msgstr ""
 "POT-Creation-Date: 2017-07-01 01:04+0000\n"
 "PO-Revision-Date: 2022-02-01 19:33+0000\n"
 "Last-Translator: Rodrigo Macedo <rmsolucoeseminformatica@protonmail.com>\n"
-"Language-Team: Portuguese (Brazil) (https://www.transifex.com/oca/teams/"
-"23907/pt_BR/)\n"
+"Language-Team: Portuguese (Brazil) (https://www.transifex.com/oca/"
+"teams/23907/pt_BR/)\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,11 +26,9 @@ msgid "Expense Report"
 msgstr "Relatório de despesa"
 
 #. module: hr_expense_sequence
-#: model_terms:ir.ui.view,arch_db:hr_expense_sequence.report_expense_sheet
-msgid "Expenses Report"
-msgstr "Relatórios de despesas"
-
-#. module: hr_expense_sequence
 #: model:ir.model.fields,field_description:hr_expense_sequence.field_hr_expense_sheet__number
 msgid "Number"
 msgstr "Número"
+
+#~ msgid "Expenses Report"
+#~ msgstr "Relatórios de despesas"
