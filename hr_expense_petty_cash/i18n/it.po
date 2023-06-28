@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-06-27 13:10+0000\n"
-"Last-Translator: Sergio Zanchetta <primes2h@gmail.com>\n"
+"PO-Revision-Date: 2023-06-28 09:08+0000\n"
+"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: code:addons/hr_expense_petty_cash/models/account_move.py:0
 #, python-format
 msgid "%s is not a petty cash holder"
-msgstr "%s non è un taccuino fondo spese"
+msgstr "%s non è un titolare piccola cassa"
 
 #. module: hr_expense_petty_cash
 #: code:addons/hr_expense_petty_cash/models/account_move.py:0
@@ -48,7 +48,7 @@ msgstr "Saldo"
 #. module: hr_expense_petty_cash
 #: model_terms:ir.actions.act_window,help:hr_expense_petty_cash.action_petty_cash
 msgid "Create a new petty cash holder"
-msgstr "Crea un nuovo taccuino fondo spese"
+msgstr "Crea un nuovo titolare piccola cassa"
 
 #. module: hr_expense_petty_cash
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash__create_uid
@@ -142,7 +142,7 @@ msgid ""
 "Not enough money in petty cash holder.\n"
 "You are requesting %s%s, but the balance is %s%s."
 msgstr ""
-"Non c'è abbastanza denaro nel taccuino fondo spese.\n"
+"Non c'è abbastanza denaro assegnato al titolare della piccola cassa.\n"
 "È stato richiesto %s%s, ma il saldo è %s%s."
 
 #. module: hr_expense_petty_cash
@@ -164,13 +164,13 @@ msgstr "Pagato da"
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_list
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_search
 msgid "Petty Cash"
-msgstr "Fondo spese"
+msgstr "Piccola cassa"
 
 #. module: hr_expense_petty_cash
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash__account_id
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_search
 msgid "Petty Cash Account"
-msgstr "Conto fondo spese"
+msgstr "Conto piccola cassa"
 
 #. module: hr_expense_petty_cash
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash__partner_id
@@ -178,12 +178,12 @@ msgstr "Conto fondo spese"
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.hr_expense_view_search_inherit
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_search
 msgid "Petty Cash Holder"
-msgstr "Taccuino fondo spese"
+msgstr "Titolare piccola cassa"
 
 #. module: hr_expense_petty_cash
 #: model:ir.model.constraint,message:hr_expense_petty_cash.constraint_petty_cash_partner_uniq
 msgid "Petty Cash Holder must be unique!"
-msgstr "Taccuino fondo spese deve essere univoco!"
+msgstr "Il titolare piccola cassa deve essere univoco!"
 
 #. module: hr_expense_petty_cash
 #: code:addons/hr_expense_petty_cash/models/account_move.py:0
@@ -192,26 +192,26 @@ msgid ""
 "Petty Cash balance is %s %s.\n"
 "Max amount to add is %s %s."
 msgstr ""
-"Il saldo del fondo spese è %s %s.\n"
+"Il saldo della piccola cassa è %s %s.\n"
 "Il valore massimo da aggiungere è %s %s."
 
 #. module: hr_expense_petty_cash
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_hr_expense__petty_cash_id
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_hr_expense_sheet__petty_cash_id
 msgid "Petty cash holder"
-msgstr "Taccuino fondo spese"
+msgstr "Titolare piccola cassa"
 
 #. module: hr_expense_petty_cash
 #: code:addons/hr_expense_petty_cash/models/account_move.py:0
 #, python-format
 msgid "Please check Petty Cash on {}."
-msgstr "Verificare il fondo spese su {}."
+msgstr "Verificare la piccola cassa su {}."
 
 #. module: hr_expense_petty_cash
 #: code:addons/hr_expense_petty_cash/models/account_move.py:0
 #, python-format
 msgid "Please select petty cash holder"
-msgstr "Selezionare il taccuino fondo spese"
+msgstr "Selezionare il titolare piccola cassa"
 
 #. module: hr_expense_petty_cash
 #: model:ir.model.fields,help:hr_expense_petty_cash.field_hr_expense_sheet__journal_id
@@ -228,21 +228,20 @@ msgstr "Non si puà generare il resoconto senza prodotto."
 #: code:addons/hr_expense_petty_cash/models/hr_expense_sheet.py:0
 #, python-format
 msgid "You cannot create report from many petty cash holders."
-msgstr "Non si può creare un resoconto da più taccuini fondo spese."
+msgstr "Non si può creare un resoconto da più titolari piccola cassa."
 
 #. module: hr_expense_petty_cash
 #: code:addons/hr_expense_petty_cash/models/hr_expense.py:0
 #, python-format
 msgid "You cannot create report from many petty cash mode and other."
-msgstr "Non si può creare un resoconto da più taccuini fondo spese e altro."
+msgstr "Non si può creare un resoconto da più titolari piccola cassa e altro."
 
 #. module: hr_expense_petty_cash
 #: code:addons/hr_expense_petty_cash/models/hr_expense.py:0
 #, python-format
 msgid "You cannot report expenses for different employees in the same report."
 msgstr ""
-"Non si può fare il resoconto spese per diversi dipendenti nello stesso "
-"resoconto."
+"Non si può fare la nota spese per diversi dipendenti nello stesso resoconto."
 
 #. module: hr_expense_petty_cash
 #: code:addons/hr_expense_petty_cash/models/hr_expense.py:0
@@ -254,4 +253,4 @@ msgstr "Non si può rendicontare due volte la stessa riga!"
 #: code:addons/hr_expense_petty_cash/models/account_move.py:0
 #, python-format
 msgid "{} with petty cash checked must contain only 1 line."
-msgstr "{} con il fondo spese selezionato deve contenere solo una riga."
+msgstr "{} con la piccola cassa selezionata deve contenere solo una riga."
