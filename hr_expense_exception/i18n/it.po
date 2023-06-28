@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-06-28 09:08+0000\n"
+"PO-Revision-Date: 2023-06-28 16:08+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -25,12 +25,12 @@ msgstr ""
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_exception_rule__model
 msgid "Apply on"
-msgstr ""
+msgstr "Applica a"
 
 #. module: hr_expense_exception
 #: model_terms:ir.ui.view,arch_db:hr_expense_exception.hr_expense_sheet_view_search
 msgid "Blocked in Draft"
-msgstr ""
+msgstr "Bloccati in bozza"
 
 #. module: hr_expense_exception
 #: model_terms:ir.ui.view,arch_db:hr_expense_exception.view_hr_expense_sheet_form
@@ -38,16 +38,18 @@ msgid ""
 "Click here to be able to confirm this Agreement regardless of the "
 "exceptions."
 msgstr ""
+"Fare clic qui per poter confermare questo accordo indipendentemente dalle "
+"eccezioni."
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__create_uid
 msgid "Created by"
-msgstr ""
+msgstr "Creato da"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__create_date
 msgid "Created on"
-msgstr ""
+msgstr "Creato il"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_exception_rule__display_name
@@ -55,27 +57,27 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense__display_name
 #: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense_sheet__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Nome visualizzato"
 
 #. module: hr_expense_exception
 #: model:ir.model,name:hr_expense_exception.model_exception_rule
 msgid "Exception Rule"
-msgstr ""
+msgstr "Regola eccezione"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense_sheet__exception_ids
 msgid "Exceptions"
-msgstr ""
+msgstr "Eccezioni"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense_sheet__exceptions_summary
 msgid "Exceptions Summary"
-msgstr ""
+msgstr "Riepilogo eccezioni"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__exception_ids
 msgid "Exceptions to resolve"
-msgstr ""
+msgstr "Eccezioni da risolvere"
 
 #. module: hr_expense_exception
 #: model:ir.model,name:hr_expense_exception.model_hr_expense
@@ -104,7 +106,7 @@ msgstr "Note spese"
 #. module: hr_expense_exception
 #: model:exception.rule,description:hr_expense_exception.exl_excep_qty_check
 msgid "Expense line quantity must be positive"
-msgstr ""
+msgstr "La quantità della riga spesa deve essere positiva"
 
 #. module: hr_expense_exception
 #: model:ir.model,name:hr_expense_exception.model_expense_sheet_exception_confirm
@@ -116,7 +118,7 @@ msgstr "Procedura guidata eccezione nota spese"
 #: model:ir.cron,cron_name:hr_expense_exception.ir_cron_test_expense_except
 #: model:ir.cron,name:hr_expense_exception.ir_cron_test_expense_except
 msgid "Expense: Test Draft Expense Exception"
-msgstr ""
+msgstr "Spesa: test eccezione spesa bozza"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_exception_rule__id
@@ -124,7 +126,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense__id
 #: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense_sheet__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__ignore
@@ -132,7 +134,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense_sheet__ignore_exception
 #: model_terms:ir.ui.view,arch_db:hr_expense_exception.view_hr_expense_sheet_form
 msgid "Ignore Exceptions"
-msgstr ""
+msgstr "Ignora eccezioni"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_exception_rule____last_update
@@ -140,39 +142,39 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense____last_update
 #: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense_sheet____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Ultima modifica il"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__write_uid
 msgid "Last Updated by"
-msgstr ""
+msgstr "Ultimo aggiornamento di"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__write_date
 msgid "Last Updated on"
-msgstr ""
+msgstr "Ultimo aggiornamento il"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense_sheet__main_exception_id
 msgid "Main Exception"
-msgstr ""
+msgstr "Eccezione principale"
 
 #. module: hr_expense_exception
 #: model:exception.rule,description:hr_expense_exception.ex_excep_no_email
 msgid "No Email for Employee"
-msgstr ""
+msgstr "Nessuna e-mail per il dipendente"
 
 #. module: hr_expense_exception
 #: model:exception.rule,name:hr_expense_exception.ex_excep_no_email
 msgid "No email on employee"
-msgstr ""
+msgstr "Nessuna e-mail sul dipendente"
 
 #. module: hr_expense_exception
 #: model:ir.actions.act_window,name:hr_expense_exception.action_expense_sheet_exception_confirm
 msgid "Outstanding exceptions to manage"
-msgstr ""
+msgstr "Eccezione rilevante da gestire"
 
 #. module: hr_expense_exception
 #: model:exception.rule,name:hr_expense_exception.exl_excep_qty_check
 msgid "Quantity not positive"
-msgstr ""
+msgstr "Quantità non positiva"
