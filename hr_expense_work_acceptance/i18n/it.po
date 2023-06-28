@@ -6,33 +6,35 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2023-06-28 09:08+0000\n"
+"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
 
 #. module: hr_expense_work_acceptance
 #: model_terms:ir.ui.view,arch_db:hr_expense_work_acceptance.view_hr_expense_sheet_form
 msgid "Accepted"
-msgstr ""
+msgstr "Accettata"
 
 #. module: hr_expense_work_acceptance
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_hr_expense__qty_accepted
 msgid "Accepted Qty."
-msgstr ""
+msgstr "Qta accettata"
 
 #. module: hr_expense_work_acceptance
 #: model:ir.model,name:hr_expense_work_acceptance.model_res_config_settings
 msgid "Config Settings"
-msgstr ""
+msgstr "Impostazioni configurazione"
 
 #. module: hr_expense_work_acceptance
 #: model_terms:ir.ui.view,arch_db:hr_expense_work_acceptance.view_hr_expense_sheet_form
 msgid "Create WA"
-msgstr ""
+msgstr "Crea approvazione lavoro"
 
 #. module: hr_expense_work_acceptance
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_hr_expense__display_name
@@ -41,29 +43,29 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_work_acceptance__display_name
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_work_acceptance_line__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Nome visualizzato"
 
 #. module: hr_expense_work_acceptance
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_res_config_settings__group_enable_wa_on_exp
 #: model:res.groups,name:hr_expense_work_acceptance.group_enable_wa_on_exp
 msgid "Enable WA on Expense Sheet"
-msgstr ""
+msgstr "Abilita approvazione lavoro sul foglio spesa"
 
 #. module: hr_expense_work_acceptance
 #: model:ir.model,name:hr_expense_work_acceptance.model_hr_expense
 msgid "Expense"
-msgstr ""
+msgstr "Spesa"
 
 #. module: hr_expense_work_acceptance
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_work_acceptance_line__expense_id
 msgid "Expense Line"
-msgstr ""
+msgstr "Riga spesa"
 
 #. module: hr_expense_work_acceptance
 #: model:ir.model,name:hr_expense_work_acceptance.model_hr_expense_sheet
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_work_acceptance__sheet_id
 msgid "Expense Report"
-msgstr ""
+msgstr "Nota spese"
 
 #. module: hr_expense_work_acceptance
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_hr_expense__id
@@ -72,7 +74,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_work_acceptance__id
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_work_acceptance_line__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: hr_expense_work_acceptance
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_hr_expense____last_update
@@ -81,62 +83,64 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_work_acceptance____last_update
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_work_acceptance_line____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Ultima modifica il"
 
 #. module: hr_expense_work_acceptance
 #: model_terms:ir.ui.view,arch_db:hr_expense_work_acceptance.view_hr_expense_sheet_form
 msgid "To Accept"
-msgstr ""
+msgstr "Da approvare"
 
 #. module: hr_expense_work_acceptance
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_hr_expense__qty_to_accept
 msgid "To Accept Qty."
-msgstr ""
+msgstr "Qta da approvare"
 
 #. module: hr_expense_work_acceptance
 #: model_terms:ir.ui.view,arch_db:hr_expense_work_acceptance.view_hr_expense_sheet_form
 msgid "WA"
-msgstr ""
+msgstr "Approvazione lavoro"
 
 #. module: hr_expense_work_acceptance
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_hr_expense_sheet__wa_accepted
 msgid "WA Accepted"
-msgstr ""
+msgstr "Approvazione lavoro accettata"
 
 #. module: hr_expense_work_acceptance
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_res_config_settings__group_wa_accepted_before_inv
 #: model:res.groups,name:hr_expense_work_acceptance.group_wa_accepted_before_inv
 msgid "WA Accepted before Accounting"
-msgstr ""
+msgstr "Approvazione lavoro accettata ante contabilizzazione"
 
 #. module: hr_expense_work_acceptance
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_hr_expense__wa_line_ids
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_hr_expense_sheet__wa_line_ids
 msgid "WA Lines"
-msgstr ""
+msgstr "Righe approvazione lavoro"
 
 #. module: hr_expense_work_acceptance
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_hr_expense_sheet__wa_count
 msgid "WA count"
-msgstr ""
+msgstr "Conto approvazione lavoro"
 
 #. module: hr_expense_work_acceptance
 #: model:ir.model,name:hr_expense_work_acceptance.model_work_acceptance
 msgid "Work Acceptance"
-msgstr ""
+msgstr "Approvazione lavoro"
 
 #. module: hr_expense_work_acceptance
 #: model:ir.model,name:hr_expense_work_acceptance.model_work_acceptance_line
 msgid "Work Acceptance Line"
-msgstr ""
+msgstr "Riga approvazione lavoro"
 
 #. module: hr_expense_work_acceptance
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_hr_expense_sheet__wa_ids
 msgid "Work Acceptances"
-msgstr ""
+msgstr "Approvazioni lavoro"
 
 #. module: hr_expense_work_acceptance
 #: code:addons/hr_expense_work_acceptance/models/hr_expense.py:0
 #, python-format
 msgid "You must have accept WA before Post Journal Entries."
 msgstr ""
+"Bisogna accettare l'approvazione lavoro prima di inserire le registrazioni "
+"contabili."
