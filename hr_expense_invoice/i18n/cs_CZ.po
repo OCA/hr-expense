@@ -40,7 +40,9 @@ msgid "Expense Report State"
 msgstr ""
 
 #. module: hr_expense_invoice
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_account_bank_statement_line__expense_ids
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_account_move__expense_ids
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_account_payment__expense_ids
 #, fuzzy
 msgid "Expenses"
 msgstr "Výdaje"
@@ -60,16 +62,16 @@ msgstr "Faktura"
 
 #. module: hr_expense_invoice
 #: model:ir.model,name:hr_expense_invoice.model_account_move
-msgid "Journal Entries"
+msgid "Journal Entry"
 msgstr ""
 
 #. module: hr_expense_invoice
-#: model:ir.model,name:hr_expense_invoice.model_account_payment
-msgid "Payments"
+#: model:ir.model,name:hr_expense_invoice.model_account_payment_register
+msgid "Register Payment"
 msgstr ""
 
 #. module: hr_expense_invoice
-#: code:addons/hr_expense_invoice/models/account_payment.py:0
+#: code:addons/hr_expense_invoice/wizard/account_payment_register.py:0
 #, python-format
 msgid "Register payment on expense's invoice is not allowed"
 msgstr ""
