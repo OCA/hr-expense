@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-06-28 09:08+0000\n"
+"PO-Revision-Date: 2023-06-30 10:08+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -41,7 +41,7 @@ msgstr "Nota spese"
 #. module: hr_expense_tier_validation
 #: model_terms:ir.ui.view,arch_db:hr_expense_tier_validation.hr_expense_sheet_view_search
 msgid "Expense report validated and ready to be approved"
-msgstr "Nota spese approvata e pronta ad essere accettata"
+msgstr "Nota spese validata e pronta ad essere approvata"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__has_comment
@@ -111,18 +111,18 @@ msgstr "Definizione livello"
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__to_validate_message
 msgid "To Validate Message"
-msgstr "Messaggio da approvare"
+msgstr "Messaggio da validare"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__validated
 #: model_terms:ir.ui.view,arch_db:hr_expense_tier_validation.hr_expense_sheet_view_search
 msgid "Validated"
-msgstr "Approvato"
+msgstr "Validata"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__validated_message
 msgid "Validated Message"
-msgstr "Messaggio approvato"
+msgstr "Messaggio validato"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__review_ids
