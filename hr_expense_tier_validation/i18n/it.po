@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-06-30 10:08+0000\n"
+"PO-Revision-Date: 2023-07-03 11:10+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -70,17 +70,17 @@ msgstr "La mia nota spese da revisionare"
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__need_validation
 msgid "Need Validation"
-msgstr "Richiede approvazione"
+msgstr "Richiede conferma"
 
 #. module: hr_expense_tier_validation
 #: model_terms:ir.ui.view,arch_db:hr_expense_tier_validation.hr_expense_sheet_view_search
 msgid "Needs my Review"
-msgstr "Richiede la mia approvazione"
+msgstr "Richiede la mia revisione"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__next_review
 msgid "Next Review"
-msgstr "Prossima approvazione"
+msgstr "Prossima revisione"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__rejected
@@ -127,4 +127,4 @@ msgstr "Messaggio validato"
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__review_ids
 msgid "Validations"
-msgstr "Approvazioni"
+msgstr "Validazioni"
