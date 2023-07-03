@@ -6,102 +6,104 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2023-07-03 11:08+0000\n"
+"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__can_review
 msgid "Can Review"
-msgstr ""
+msgstr "Può revisionare"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model,name:hr_expense_tier_validation.model_hr_expense
 msgid "Expense"
-msgstr ""
+msgstr "Spesa"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model,name:hr_expense_tier_validation.model_hr_expense_sheet
 msgid "Expense Report"
-msgstr ""
+msgstr "Nota spese"
 
 #. module: hr_expense_tier_validation
 #: model_terms:ir.ui.view,arch_db:hr_expense_tier_validation.hr_expense_sheet_view_search
 msgid "Expense report validated and ready to be approved"
-msgstr ""
+msgstr "Nota spese validata e pronta ad essere approvata"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__has_comment
 msgid "Has Comment"
-msgstr ""
+msgstr "Ha commenti"
 
 #. module: hr_expense_tier_validation
 #: model_terms:ir.ui.view,arch_db:hr_expense_tier_validation.hr_expense_sheet_view_search
 msgid "My Expense report to review"
-msgstr ""
+msgstr "La mia nota spese da revisionare"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__need_validation
 msgid "Need Validation"
-msgstr ""
+msgstr "Richiede conferma"
 
 #. module: hr_expense_tier_validation
 #: model_terms:ir.ui.view,arch_db:hr_expense_tier_validation.hr_expense_sheet_view_search
 msgid "Needs my Review"
-msgstr ""
+msgstr "Richiede la mia revisione"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__next_review
 msgid "Next Review"
-msgstr ""
+msgstr "Prossima revisione"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__rejected
 msgid "Rejected"
-msgstr ""
+msgstr "Rifiutato"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__rejected_message
 msgid "Rejected Message"
-msgstr ""
+msgstr "Messaggio rifiuto"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__reviewer_ids
 msgid "Reviewers"
-msgstr ""
+msgstr "Revisori"
 
 #. module: hr_expense_tier_validation
 #: code:addons/hr_expense_tier_validation/models/hr_expense.py:0
 #, python-format
 msgid "The expense report is under validation."
-msgstr ""
+msgstr "La nota spese è in validazione."
 
 #. module: hr_expense_tier_validation
 #: model:ir.model,name:hr_expense_tier_validation.model_tier_definition
 msgid "Tier Definition"
-msgstr ""
+msgstr "Definizione livello"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__to_validate_message
 msgid "To Validate Message"
-msgstr ""
+msgstr "Messaggio da validare"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__validated
 #: model_terms:ir.ui.view,arch_db:hr_expense_tier_validation.hr_expense_sheet_view_search
 msgid "Validated"
-msgstr ""
+msgstr "Validato"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__validated_message
 msgid "Validated Message"
-msgstr ""
+msgstr "Messaggio validato"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__review_ids
 msgid "Validations"
-msgstr ""
+msgstr "Validazioni"
