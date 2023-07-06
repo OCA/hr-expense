@@ -101,6 +101,8 @@ class AccountPaymentRegister(models.TransientModel):
         it return remaining advance from employee back to company
         """
         self.ensure_one()
+        batches = self._get_batches()
+        first_batch_result = batches[0]
         context = dict(self._context or {})
         active_ids = context.get("active_ids", [])
         move_ids = self.env["account.move"].browse(active_ids)
@@ -110,7 +112,7 @@ class AccountPaymentRegister(models.TransientModel):
         emp_advance = self.env.ref("hr_expense_advance_clearing.product_emp_advance")
         advance_account = emp_advance.property_account_expense_id
         # Create return advance and post it
-        payment_vals = self._create_payment_vals_from_wizard()
+        payment_vals = self._create_payment_vals_from_wizard(first_batch_result)
         payment_vals["advance_id"] = expense_sheet.id
         payment_vals_list = [payment_vals]
         payment = (

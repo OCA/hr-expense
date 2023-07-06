@@ -3,7 +3,7 @@
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
-from odoo.tools import float_compare
+from odoo.tools.misc import clean_context
 from odoo.tools.safe_eval import safe_eval
 
 
@@ -88,39 +88,44 @@ class HrExpenseSheet(models.Model):
         for sheet in self:
             sheet.clearing_count = len(sheet.clearing_sheet_ids)
 
-    def action_sheet_move_create(self):
-        res = super().action_sheet_move_create()
-        # Reconcile advance of this sheet with the advance_sheet
-        emp_advance = self.env.ref("hr_expense_advance_clearing.product_emp_advance")
-        ctx = self._context.copy()
-        ctx.update({"skip_account_move_synchronization": True})
-        for sheet in self:
-            advance_residual = float_compare(
-                sheet.advance_sheet_residual,
-                sheet.total_amount,
-                precision_rounding=sheet.currency_id.rounding,
-            )
-            move_lines = (
-                sheet.account_move_id.line_ids
-                | sheet.advance_sheet_id.account_move_id.line_ids
-            )
-            account_id = emp_advance.property_account_expense_id.id
-            adv_move_lines = (
-                self.env["account.move.line"]
-                .sudo()
-                .search(
-                    [
-                        ("id", "in", move_lines.ids),
-                        ("account_id", "=", account_id),
-                        ("reconciled", "=", False),
-                    ]
-                )
-            )
-            adv_move_lines.with_context(**ctx).reconcile()
-            # Update state on clearing advance when advance residual > total amount
-            if sheet.advance_sheet_id and advance_residual != -1:
-                sheet.write({"state": "done"})
-        return res
+    # def action_sheet_move_create(self):
+    #     res = super().action_sheet_move_create()
+    #     # Reconcile advance of this sheet with the advance_sheet
+    #     emp_advance = self.env.ref("hr_expense_advance_clearing.product_emp_advance")
+    #     ctx = self._context.copy()
+    #     ctx.update({"skip_account_move_synchronization": True})
+    #     for sheet in self:
+    #         if sheet.advance_sheet_id and not sheet.advance:
+    #             moves = res[sheet.id]
+    #             self.pay_bill_by_advance(moves, sheet, emp_advance)
+
+    # advance_residual = float_compare(
+    #     sheet.advance_sheet_residual,
+    #     sheet.total_amount,
+    #     precision_rounding=sheet.currency_id.rounding,
+    # )
+    # move_lines = (
+    #     sheet.account_move_id.line_ids
+    #     | sheet.advance_sheet_id.account_move_id.line_ids
+    # )
+    # account_id = emp_advance.property_account_expense_id.id
+    # adv_move_lines = (
+    #     self.env["account.move.line"]
+    #     .sudo()
+    #     .search(
+    #         [
+    #             ("id", "in", move_lines.ids),
+    #             ("account_id", "=", account_id),
+    #             ("reconciled", "=", False),
+    #         ]
+    #     )
+    # )
+    # adv_move_lines.with_context(**ctx).reconcile()
+    # # Update state on clearing advance when advance residual > total amount
+    # if sheet.advance_sheet_id and advance_residual != -1:
+    #     sheet.write({"state": "done"})
+    # print("ISI RES PADA ACTION SHEET", res)
+    # return res
 
     def open_clear_advance(self):
         self.ensure_one()
@@ -209,3 +214,53 @@ class HrExpenseSheet(models.Model):
                 }
             )
         return action
+
+    # ========================================
+
+    def _do_create_moves(self):
+        self = self.with_context(**clean_context(self.env.context))  # remove default_*
+        if self.advance_sheet_id:
+            own_account_sheets = self.filtered(
+                lambda sheet: sheet.payment_mode == "own_account"
+            )
+            company_account_sheets = self - own_account_sheets
+            moves = self.env["account.move"].create(
+                [sheet._prepare_bill_vals() for sheet in own_account_sheets]
+            )
+            payments = self.env["account.payment"].create(
+                [sheet._prepare_payment_vals() for sheet in company_account_sheets]
+            )
+
+            moves |= payments.move_id
+            moves.action_post()
+
+            # if company_account_sheets:
+            #     return super()._do_create_moves()
+            # else:
+            #
+            #     moves = self.env['account.payment'].
+            # create([sheet._prepare_payment_vals() for sheet in own_account_sheets])
+            # advance_account_sheets =
+            # self.filtered(lambda sheet: sheet.advance_sheet_id != False)
+            # own_account_sheets -= advance_account_sheets
+            # print("ADVANCE ACCOUNT SHEET.. ", advance_account_sheets)
+            # print("OWN ACCOUNT SHEET - ADVANCE.. ", own_account_sheets)
+            # moves = self.env['account.move']
+            # .create([sheet._prepare_bill_vals() for sheet in own_account_sheets])
+            # print("MOVE ADVANCE BEFORE OR  .. ", moves)
+            # advance_payments = self.env['account.payment'].create(
+            #     [sheet._prepare_payment_vals() for sheet in advance_account_sheets])
+            # print(" ADVANCE PAYMENT  .. ", advance_payments)
+            # moves |= advance_payments.move_id
+            # print("MOVE ADVANCE AFTER OR  .. ", moves)
+            # print("OUTSTANDING ACCOUNT NYA ", moves.outstanding_account_id.name)
+            # moves.action_post()
+
+            self.activity_update()
+
+            for sheet in self.filtered(lambda s: not s.accounting_date):
+                sheet.accounting_date = sheet.account_move_id.date
+
+            return {move.expense_sheet_id.id: move for move in moves}
+        else:
+            return super()._do_create_moves()

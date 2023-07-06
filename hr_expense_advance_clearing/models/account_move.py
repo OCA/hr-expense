@@ -36,3 +36,10 @@ class AccountMove(models.Model):
         return super()._reverse_moves(
             default_values_list=default_values_list, cancel=cancel
         )
+
+    # @api.depends('expense_sheet_id.advance_sheet_id')
+    # def _compute_payment_state(self):
+    #     advance_paid = self.filtered(lambda m: m.expense_sheet_id.advance_sheet_id != False)
+    #     for move in advance_paid:
+    #         move.payment_state = move._get_invoice_in_payment_state()
+    #     super(AccountMove, self - advance_paid)._compute_payment_state()
