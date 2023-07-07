@@ -1,7 +1,7 @@
 # Copyright 2022 Ecosoft Co., Ltd. (https://ecosoft.co.th)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-from odoo import _, models
+from odoo import _, api, models
 from odoo.exceptions import UserError
 
 
@@ -37,9 +37,15 @@ class AccountMove(models.Model):
             default_values_list=default_values_list, cancel=cancel
         )
 
-    # @api.depends('expense_sheet_id.advance_sheet_id')
-    # def _compute_payment_state(self):
-    #     advance_paid = self.filtered(lambda m: m.expense_sheet_id.advance_sheet_id != False)
-    #     for move in advance_paid:
-    #         move.payment_state = move._get_invoice_in_payment_state()
-    #     super(AccountMove, self - advance_paid)._compute_payment_state()
+
+class AccountMoveLine(models.Model):
+    _inherit = "account.move.line"
+
+    @api.constrains("account_id", "display_type")
+    def _check_payable_receivable(self):
+        return super(
+            AccountMoveLine,
+            self.filtered(
+                lambda line: not line.move_id.expense_sheet_id.advance_sheet_id
+            ),
+        )._check_payable_receivable()

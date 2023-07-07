@@ -57,3 +57,16 @@ class HrExpense(models.Model):
             self.product_id = self.env.ref(
                 "hr_expense_advance_clearing.product_emp_advance"
             )
+
+    # =================================
+
+    def _get_expense_account_destination(self):
+        self.ensure_one()
+        if self.sheet_id.advance_sheet_id and self.payment_mode != "company_account":
+            emp_advance = self.env.ref(
+                "hr_expense_advance_clearing.product_emp_advance"
+            )
+            account_dest = emp_advance.property_account_expense_id
+            return account_dest.id or super()._get_expense_account_destination()
+        else:
+            return super()._get_expense_account_destination()
