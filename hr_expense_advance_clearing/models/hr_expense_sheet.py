@@ -4,7 +4,6 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import float_compare
-from odoo.tools.misc import clean_context
 from odoo.tools.safe_eval import safe_eval
 
 
@@ -214,24 +213,40 @@ class HrExpenseSheet(models.Model):
     # ========================================
 
     def _do_create_moves(self):
-        self = self.with_context(**clean_context(self.env.context))  # remove default_*
-        if self.advance_sheet_id:
-            own_account_sheets = self.filtered(
-                lambda sheet: sheet.payment_mode == "own_account"
+        res = super()._do_create_moves()
+
+        # self = self.with_context(**clean_context(self.env.context))  # remove default_*
+        if self.advance_sheet_id and self.payment_mode == "own_account":
+            moves = res[self.id]
+            counter_line = moves.line_ids.filtered(
+                lambda ln: ln.account_type in ("asset_receivable", "liability_payable")
             )
-            company_account_sheets = self - own_account_sheets
-            if company_account_sheets:
-                return super()._do_create_moves()
-            else:
-                moves = self.env["account.payment"].create(
-                    [sheet._prepare_payment_vals() for sheet in own_account_sheets]
-                )
-                moves.action_post()
-                self.activity_update()
 
-                for sheet in self.filtered(lambda s: not s.accounting_date):
-                    sheet.accounting_date = sheet.account_move_id.date
+            amount = self.total_amount
+            if self.total_amount > self.advance_sheet_residual:
+                amount = self.advance_sheet_residual
+            partner_id = (
+                self.employee_id.sudo().address_home_id.commercial_partner_id.id
+            )
+            payment_by_advance = self.env["account.payment"].create(
+                {
+                    "amount": abs(amount),
+                    "journal_id": self.bank_journal_id.id,
+                    "destination_account_id": counter_line.account_id.id,
+                    "move_type": "entry",
+                    "ref": self.name,
+                    "payment_type": "outbound",
+                    "partner_type": "supplier",
+                    "partner_id": partner_id,
+                    "advance_id": self.id,
+                }
+            )
+            payment_by_advance.action_post()
+            self.account_move_id = payment_by_advance.move_id.id or False
 
-                return {move.expense_sheet_id.id: move for move in moves}
-        else:
-            return super()._do_create_moves()
+            advance_line = payment_by_advance.line_ids.filtered(
+                lambda ln: ln.account_type in ("asset_receivable", "liability_payable")
+            )
+            (counter_line + advance_line).reconcile()
+
+        return res
