@@ -83,6 +83,18 @@ class HrExpense(models.Model):
             if not expense.invoice_id:
                 continue
             for move_line in move_lines:
+                if expense.payment_mode == "company_account":
+                    # When paying from company account means that the employee paid
+                    # with the company money.
+                    # Therefore we should expect the payment to be associated
+                    # with the vendor, not the employee.
+                    move_line[
+                        "partner_id"
+                    ] = expense.invoice_id.partner_id.commercial_partner_id.id
+                bill_ref = expense.invoice_id.name
+                if expense.invoice_id.ref:
+                    bill_ref = "%s: %s"(bill_ref, expense.invoice_id.ref)
+                move_line["name"] = "%s (%s)" % (move_line["name"], bill_ref)
                 if move_line["debit"]:
                     move_line[
                         "partner_id"

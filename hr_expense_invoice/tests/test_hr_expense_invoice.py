@@ -244,8 +244,8 @@ class TestHrExpenseInvoice(common.SavepointCase):
         ).action_sheet_move_create()
         self.assertEqual(self.sheet.state, "done")
         self.assertTrue(self.sheet.account_move_id)
-        # Invoice is not paid
-        self.assertEqual(self.invoice.payment_state, "not_paid")
+        # Invoice is paid
+        self.assertEqual(self.invoice.payment_state, "paid")
         # Click on View Invoice button link to the correct invoice
         res = self.sheet.action_view_invoices()
         self.assertEqual(res["view_mode"], "form")

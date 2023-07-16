@@ -82,7 +82,7 @@
                     type="object"
                     attrs="{'invisible': [('invoice_count', '=', 0)]}"
                 >
-                    <field name="invoice_count" widget="statinfo" string="Invoices" />
+                    <field name="invoice_count" widget="statinfo" string="Bills" />
                 </button>
             </div>
         </field>
