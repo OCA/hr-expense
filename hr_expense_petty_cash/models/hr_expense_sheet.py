@@ -14,6 +14,7 @@ class HrExpenseSheet(models.Model):
         comodel_name="petty.cash",
         ondelete="restrict",
         compute="_compute_petty_cash",
+        store=True,
     )
 
     @api.depends("expense_line_ids", "payment_mode")
