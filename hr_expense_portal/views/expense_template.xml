@@ -10,7 +10,7 @@
             <t t-call="portal.portal_docs_entry">
                 <t t-set="title">My Expense</t>
                 <t t-set="url" t-value="'/my/expenses'" />
-                <t t-set="count" t-value="expense_count" />
+                <t t-set="placeholder_count" t-value="'expense_count'" />
             </t>
         </xpath>
     </template>
@@ -49,9 +49,9 @@
                 <thead>
                     <tr class="active portal_my_expenses_list">
                         <th>Description</th>
-                        <th class="text-right">Date</th>
+                        <th class="text-end">Date</th>
                         <th>Employee</th>
-                        <th class="text-right">Total</th>
+                        <th class="text-end">Total</th>
                     </tr>
                 </thead>
                 <t t-foreach="expenses" t-as="expense">
@@ -63,7 +63,7 @@
                                 <t t-esc="expense.name" />
                             </a>
                         </td>
-                        <td class="text-right">
+                        <td class="text-end">
                             <span t-field="expense.date" />
                         </td>
                         <td>
@@ -71,7 +71,7 @@
                                 t-esc="expense.employee_id and expense.employee_id.display_name"
                             />
                         </td>
-                        <td class="text-right">
+                        <td class="text-end">
                             <span t-field="expense.total_amount" />
                         </td>
                     </tr>
@@ -92,11 +92,11 @@
                                 </small>
                             </h5>
                         </div>
-                        <div class="col-md text-md-right">
-                            <small class="text-right">Status:</small>
+                        <div class="col-md text-md-end">
+                            <small class="text-end">Status:</small>
                             <span
                                 t-field="expense.state"
-                                class=" badge badge-pill badge-info"
+                                class="badge bg-info rounded-pill"
                                 title="Current stage of this Expense"
                             />
                         </div>

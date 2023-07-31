@@ -9,9 +9,12 @@ from odoo.addons.portal.controllers.portal import CustomerPortal, pager as porta
 
 
 class ExpensePortal(CustomerPortal):
-    def _prepare_portal_layout_values(self):
-        values = super(ExpensePortal, self)._prepare_portal_layout_values()
-        values["expense_count"] = request.env["hr.expense"].search_count([])
+    def _prepare_home_portal_values(self, counters):
+        values = super()._prepare_home_portal_values(counters)
+
+        if "expense_count" in counters:
+            values["expense_count"] = request.env["hr.expense"].search_count([])
+
         return values
 
     def _expense_get_page_view_values(self, expense, access_token, **kwargs):

@@ -10,6 +10,11 @@
     "author": "Open Source Integrators, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/hr-expense",
     "depends": ["sale_expense", "website"],
+    "assets": {
+        "web.assets_frontend": [
+            "hr_expense_portal/static/src/js/expense_portal.esm.js",
+        ]
+    },
     "data": [
         "security/ir.model.access.csv",
         "security/security.xml",
