@@ -16,4 +16,7 @@ class AccountMove(models.Model):
                 [("debit_move_id", "in", self.line_ids.ids)]
             )
             partial_id = len(partial) > 1 and partial.ids or partial_id
-        return super().js_remove_outstanding_partial(partial_id)
+        res = super().js_remove_outstanding_partial(partial_id)
+        # Back state to posted (if paid)
+        self.payment_id.expense_sheet_ids.write({"state": "post"})
+        return res
