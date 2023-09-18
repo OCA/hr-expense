@@ -41,8 +41,7 @@ class TestHrExpenseCancel(TransactionCase):
                 "product_id": self.ref(
                     "hr_expense.expense_product_travel_accommodation"
                 ),
-                "unit_amount": 1,
-                "quantity": 10,
+                "total_amount": 10,
                 "sheet_id": self.expense_sheet.id,
             }
         )
