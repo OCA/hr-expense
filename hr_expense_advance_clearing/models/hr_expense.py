@@ -1,7 +1,7 @@
 # Copyright 2019 Kitti Upariphutthiphong <kittiu@ecosoft.co.th>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, fields, models
+from odoo import Command, _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -26,12 +26,13 @@ class HrExpense(models.Model):
         help="Expense created from this advance expense line",
     )
 
+    def _get_product_advance(self):
+        return self.env.ref("hr_expense_advance_clearing.product_emp_advance", False)
+
     @api.constrains("advance")
     def _check_advance(self):
         for expense in self.filtered("advance"):
-            emp_advance = self.env.ref(
-                "hr_expense_advance_clearing.product_emp_advance"
-            )
+            emp_advance = expense._get_product_advance()
             if not emp_advance.property_account_expense_id:
                 raise ValidationError(
                     _("Employee advance product has no payable account")
@@ -54,42 +55,57 @@ class HrExpense(models.Model):
     def onchange_advance(self):
         self.tax_ids = False
         if self.advance:
-            self.product_id = self.env.ref(
-                "hr_expense_advance_clearing.product_emp_advance"
-            )
+            self.product_id = self._get_product_advance()
 
-    def _get_account_move_line_values(self):
-        move_line_values_by_expense = super()._get_account_move_line_values()
-        # Only when do the clearing, change cr payable to cr advance
-        emp_advance = self.env.ref("hr_expense_advance_clearing.product_emp_advance")
-        sheets = self.mapped("sheet_id").filtered("advance_sheet_id")
-        sheets_x = sheets.filtered(lambda x: x.advance_sheet_residual <= 0.0)
-        if sheets_x:  # Advance Sheets with no residual left
-            raise ValidationError(
-                _("Advance: %s has no amount to clear")
-                % ", ".join(sheets_x.mapped("name"))
-            )
-        for sheet in sheets:
-            advance_to_clear = sheet.advance_sheet_residual
-            for move_lines in move_line_values_by_expense.values():
-                payable_move_line = False
-                for move_line in move_lines:
-                    credit = move_line["credit"]
-                    if not credit:
-                        continue
-                    # cr payable -> cr advance
-                    remain_payable = 0.0
-                    if credit > advance_to_clear:
-                        remain_payable = credit - advance_to_clear
-                        move_line["credit"] = advance_to_clear
-                        advance_to_clear = 0.0
-                        # extra payable line
-                        payable_move_line = move_line.copy()
-                        payable_move_line["credit"] = remain_payable
-                    else:
-                        advance_to_clear -= credit
-                    # advance line
-                    move_line["account_id"] = emp_advance.property_account_expense_id.id
-                if payable_move_line:
-                    move_lines.append(payable_move_line)
-        return move_line_values_by_expense
+    def _get_move_line_src(self, move_line_name, partner_id):
+        self.ensure_one()
+        unit_amount = self.unit_amount or self.total_amount
+        quantity = self.quantity if self.unit_amount else 1
+        taxes = self.tax_ids.with_context(round=True).compute_all(
+            unit_amount, self.currency_id, quantity, self.product_id
+        )
+        amount_currency = self.total_amount - self.amount_tax
+        balance = self.total_amount_company - self.amount_tax_company
+        ml_src_dict = {
+            "name": move_line_name,
+            "quantity": quantity,
+            "debit": balance if balance > 0 else 0,
+            "credit": -balance if balance < 0 else 0,
+            "amount_currency": amount_currency,
+            "account_id": self.account_id.id,
+            "product_id": self.product_id.id,
+            "product_uom_id": self.product_uom_id.id,
+            "analytic_distribution": self.analytic_distribution,
+            "expense_id": self.id,
+            "partner_id": partner_id,
+            "tax_ids": [Command.set(self.tax_ids.ids)],
+            "tax_tag_ids": [Command.set(taxes["base_tags"])],
+            "currency_id": self.currency_id.id,
+        }
+        return ml_src_dict
+
+    def _get_move_line_dst(
+        self,
+        move_line_name,
+        partner_id,
+        total_amount,
+        total_amount_currency,
+        account_advance,
+    ):
+        account_date = (
+            self.date
+            or self.sheet_id.accounting_date
+            or fields.Date.context_today(self)
+        )
+        ml_dst_dict = {
+            "name": move_line_name,
+            "debit": total_amount > 0 and total_amount,
+            "credit": total_amount < 0 and -total_amount,
+            "account_id": account_advance.id,
+            "date_maturity": account_date,
+            "amount_currency": total_amount_currency,
+            "currency_id": self.currency_id.id,
+            "expense_id": self.id,
+            "partner_id": partner_id,
+        }
+        return ml_dst_dict

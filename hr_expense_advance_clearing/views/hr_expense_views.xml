@@ -141,12 +141,7 @@
                     placeholder="Optional clearing product is used during clear advance"
                 />
             </field>
-            <field name="analytic_account_id" position="attributes">
-                <attribute name="attrs">
-                    {'invisible': [('advance', '!=', False)]}
-                </attribute>
-            </field>
-            <field name="analytic_tag_ids" position="attributes">
+            <field name="analytic_distribution" position="attributes">
                 <attribute name="attrs">
                     {'invisible': [('advance', '!=', False)]}
                 </attribute>
