@@ -41,9 +41,7 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
             {
                 "code": "154000",
                 "name": "Employee Advance",
-                "user_type_id": cls.env.ref(
-                    "account.data_account_type_current_assets"
-                ).id,
+                "account_type": "asset_current",
                 "reconcile": True,
             }
         )
@@ -51,7 +49,7 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
             {
                 "code": "X1020",
                 "name": "Product Sales - (test)",
-                "user_type_id": cls.env.ref("account.data_account_type_revenue").id,
+                "account_type": "asset_current",
             }
         )
         cls.emp_advance = cls.env.ref("hr_expense_advance_clearing.product_emp_advance")
@@ -81,7 +79,6 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
         amount,
         advance=False,
         payment_mode="own_account",
-        account=False,
     ):
         with Form(
             self.env["hr.expense"].with_context(default_advance=advance)
@@ -90,10 +87,8 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
             expense.employee_id = employee
             if not advance:
                 expense.product_id = product
-            expense.unit_amount = amount
+            expense.total_amount = amount
             expense.payment_mode = payment_mode
-            if account:
-                expense.account_id = account
         expense = expense.save()
         expense.tax_ids = False  # Test no vat
         return expense
@@ -145,8 +140,9 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
                 self.emp_advance,
                 1.0,
                 advance=True,
-                account=self.account_sales,
             )
+            expense.account_id = self.account_sales.id
+            expense._check_advance()
         # Advance Sheet should not have > 1 expense lines
         with self.assertRaises(ValidationError):
             expense = self._create_expense(
@@ -333,5 +329,10 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
         self.assertEqual(len(ex_sheet.expense_line_ids), 0)
         ex_sheet._onchange_advance_sheet_id()
         self.assertEqual(len(ex_sheet.expense_line_ids), 1)
-        reverse_move = self.advance.account_move_id._reverse_moves(cancel=True)
+        reverse_move = self.advance.account_move_id._reverse_moves(
+            default_values_list=[
+                {"invoice_date": self.advance.account_move_id.date, "ref": False}
+            ],
+            cancel=True,
+        )
         self.assertNotEqual(reverse_move, self.advance.account_move_id)

@@ -1,9 +1,9 @@
 # Copyright 2019 Kitti Upariphutthiphong <kittiu@ecosoft.co.th>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, fields, models
+from odoo import Command, _, api, fields, models
 from odoo.exceptions import ValidationError
-from odoo.tools import float_compare
+from odoo.tools import float_compare, float_is_zero
 from odoo.tools.safe_eval import safe_eval
 
 
@@ -64,12 +64,22 @@ class HrExpenseSheet(models.Model):
         if advance_lines and len(advance_lines) != len(self.expense_line_ids):
             raise ValidationError(_("Advance must contain only advance expense line"))
 
+    @api.depends("account_move_id.payment_state")
+    def _compute_payment_state(self):
+        """After clear advance. payment state will change to 'paid'"""
+        res = super()._compute_payment_state()
+        for sheet in self:
+            if sheet.advance_sheet_id and sheet.account_move_id.state == "posted":
+                sheet.payment_state = "paid"
+        return res
+
+    def _get_product_advance(self):
+        return self.env.ref("hr_expense_advance_clearing.product_emp_advance", False)
+
     @api.depends("account_move_id.line_ids.amount_residual")
     def _compute_clearing_residual(self):
-        emp_advance = self.env.ref(
-            "hr_expense_advance_clearing.product_emp_advance", False
-        )
         for sheet in self:
+            emp_advance = sheet._get_product_advance()
             residual_company = 0.0
             if emp_advance:
                 for line in sheet.sudo().account_move_id.line_ids:
@@ -90,13 +100,12 @@ class HrExpenseSheet(models.Model):
 
     def action_sheet_move_create(self):
         res = super().action_sheet_move_create()
-        # Reconcile advance of this sheet with the advance_sheet
-        emp_advance = self.env.ref("hr_expense_advance_clearing.product_emp_advance")
-        ctx = self._context.copy()
-        ctx.update({"skip_account_move_synchronization": True})
         for sheet in self:
+            if not sheet.advance_sheet_id:
+                continue
+            amount_residual_bf_reconcile = sheet.advance_sheet_residual
             advance_residual = float_compare(
-                sheet.advance_sheet_residual,
+                amount_residual_bf_reconcile,
                 sheet.total_amount,
                 precision_rounding=sheet.currency_id.rounding,
             )
@@ -104,6 +113,7 @@ class HrExpenseSheet(models.Model):
                 sheet.account_move_id.line_ids
                 | sheet.advance_sheet_id.account_move_id.line_ids
             )
+            emp_advance = sheet._get_product_advance()
             account_id = emp_advance.property_account_expense_id.id
             adv_move_lines = (
                 self.env["account.move.line"]
@@ -116,10 +126,104 @@ class HrExpenseSheet(models.Model):
                     ]
                 )
             )
-            adv_move_lines.with_context(**ctx).reconcile()
+            adv_move_lines.reconcile()
             # Update state on clearing advance when advance residual > total amount
-            if sheet.advance_sheet_id and advance_residual != -1:
-                sheet.write({"state": "done"})
+            if advance_residual != -1:
+                sheet.write(
+                    {
+                        "state": "done",
+                    }
+                )
+            # Update amount residual and state when advance residual < total amount
+            else:
+                sheet.write(
+                    {
+                        "state": "post",
+                        "payment_state": "not_paid",
+                        "amount_residual": sheet.total_amount
+                        - amount_residual_bf_reconcile,
+                    }
+                )
+        return res
+
+    def _get_move_line_vals(self):
+        self.ensure_one()
+        move_line_vals = []
+        advance_to_clear = self.advance_sheet_residual
+        emp_advance = self._get_product_advance()
+        account_advance = emp_advance.property_account_expense_id
+        for expense in self.expense_line_ids:
+            move_line_name = (
+                expense.employee_id.name + ": " + expense.name.split("\n")[0][:64]
+            )
+            total_amount = 0.0
+            total_amount_currency = 0.0
+            partner_id = (
+                expense.employee_id.sudo().address_home_id.commercial_partner_id.id
+            )
+            # source move line
+            move_line_src = expense._get_move_line_src(move_line_name, partner_id)
+            move_line_values = [move_line_src]
+            total_amount -= expense.total_amount_company
+            total_amount_currency -= expense.total_amount
+
+            # destination move line
+            move_line_dst = expense._get_move_line_dst(
+                move_line_name,
+                partner_id,
+                total_amount,
+                total_amount_currency,
+                account_advance,
+            )
+            # Check clearing > advance, it will split line
+            credit = move_line_dst["credit"]
+            # cr payable -> cr advance
+            remain_payable = 0.0
+            payable_move_line = []
+            rounding = expense.currency_id.rounding
+            if (
+                float_compare(
+                    credit,
+                    advance_to_clear,
+                    precision_rounding=rounding,
+                )
+                == 1
+            ):
+                remain_payable = credit - advance_to_clear
+                move_line_dst["credit"] = advance_to_clear
+                move_line_dst["amount_currency"] = -advance_to_clear
+                advance_to_clear = 0.0
+                # extra payable line
+                payable_move_line = move_line_dst.copy()
+                payable_move_line["credit"] = remain_payable
+                payable_move_line["amount_currency"] = -remain_payable
+                payable_move_line[
+                    "account_id"
+                ] = expense._get_expense_account_destination()
+            else:
+                advance_to_clear -= credit
+            # Add destination first (if credit is not zero)
+            if not float_is_zero(move_line_dst["credit"], precision_rounding=rounding):
+                move_line_values.append(move_line_dst)
+            if payable_move_line:
+                move_line_values.append(payable_move_line)
+            move_line_vals.extend(move_line_values)
+        return move_line_vals
+
+    def _prepare_bill_vals(self):
+        """create journal entry instead of bills when clearing document"""
+        self.ensure_one()
+        res = super()._prepare_bill_vals()
+        if self.advance_sheet_id and self.payment_mode == "own_account":
+            if (
+                self.advance_sheet_residual <= 0.0
+            ):  # Advance Sheets with no residual left
+                raise ValidationError(
+                    _("Advance: %s has no amount to clear") % (self.name)
+                )
+            res["move_type"] = "entry"
+            move_line_vals = self._get_move_line_vals()
+            res["line_ids"] = [Command.create(x) for x in move_line_vals]
         return res
 
     def open_clear_advance(self):
@@ -156,7 +260,7 @@ class HrExpenseSheet(models.Model):
         # Prepare the clearing expense
         clear_line_dict = {
             "advance": False,
-            "name": False,
+            "name": line.clearing_product_id.display_name,
             "product_id": line.clearing_product_id.id,
             "clearing_product_id": False,
             "date": fields.Date.context_today(self),
@@ -166,7 +270,7 @@ class HrExpenseSheet(models.Model):
             "av_line_id": line.id,
         }
         clear_line = self.env["hr.expense"].new(clear_line_dict)
-        clear_line._compute_from_product_id_company_id()  # Set some vals
+        clear_line._compute_account_id()  # Set some vals
         # Prepare the original advance line
         adv_dict = line._convert_to_write(line._cache)
         # remove no update columns
