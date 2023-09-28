@@ -34,6 +34,7 @@ addon | version | maintainers | summary
 [hr_expense_sequence](hr_expense_sequence/) | 15.0.1.0.0 |  | HR expense sequence
 [hr_expense_tax_adjust](hr_expense_tax_adjust/) | 15.0.1.1.0 | [![ps-tubtim](https://github.com/ps-tubtim.png?size=30px)](https://github.com/ps-tubtim) | Allow to edit tax amount on expenses
 [hr_expense_tier_validation](hr_expense_tier_validation/) | 15.0.1.0.0 | [![ps-tubtim](https://github.com/ps-tubtim.png?size=30px)](https://github.com/ps-tubtim) | Expense Tier Validation
+[hr_expense_widget_o2m](hr_expense_widget_o2m/) | 15.0.1.0.0 | [![kittiu](https://github.com/kittiu.png?size=30px)](https://github.com/kittiu) | HR Expense one2many widget
 [sale_expense_cost_reinvoice](sale_expense_cost_reinvoice/) | 15.0.1.0.0 | [![yankinmax](https://github.com/yankinmax.png?size=30px)](https://github.com/yankinmax) | Provide cost on order line when Auto Re-invoice at cost
 [sale_expense_manual_reinvoice](sale_expense_manual_reinvoice/) | 15.0.1.0.1 | [![ivantodorovich](https://github.com/ivantodorovich.png?size=30px)](https://github.com/ivantodorovich) | Allow to manually re-invoice expenses
 
