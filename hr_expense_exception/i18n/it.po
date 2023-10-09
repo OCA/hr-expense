@@ -35,8 +35,7 @@ msgstr "Bloccati in bozza"
 #. module: hr_expense_exception
 #: model_terms:ir.ui.view,arch_db:hr_expense_exception.view_hr_expense_sheet_form
 msgid ""
-"Click here to be able to confirm this Agreement regardless of the "
-"exceptions."
+"Click here to be able to confirm this Agreement regardless of the exceptions."
 msgstr ""
 "Fare clic qui per poter confermare questo accordo indipendentemente dalle "
 "eccezioni."
