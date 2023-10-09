@@ -20,11 +20,11 @@ msgstr ""
 #: code:addons/hr_expense_advance_clearing/wizard/hr_expense_sheet_register_payment.py:0
 #, python-format
 msgid ""
-"A remaining advance return of %s %s with the reference <a "
-"href='/mail/view?%s'>%s</a> related to your expense %s has been made."
+"A remaining advance return of %s %s with the reference <a href='/mail/view?"
+"%s'>%s</a> related to your expense %s has been made."
 msgstr ""
-"Un anticipo rimborso residuo di %s%s con riferimento <a href='/mail/"
-"view?%s'>%s</a> relativo alla spesa %s è stato eseguito."
+"Un anticipo rimborso residuo di %s%s con riferimento <a href='/mail/view?%s'>"
+"%s</a> relativo alla spesa %s è stato eseguito."
 
 #. module: hr_expense_advance_clearing
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_sheet_view_search
@@ -50,7 +50,8 @@ msgstr "Residuo anticipo"
 #: code:addons/hr_expense_advance_clearing/models/hr_expense_sheet.py:0
 #, python-format
 msgid "Advance clearing must not contain any advance expense line"
-msgstr "La liquidazione anticipo non deve contenere nessuna riga anticipo spesa"
+msgstr ""
+"La liquidazione anticipo non deve contenere nessuna riga anticipo spesa"
 
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/models/hr_expense_sheet.py:0
