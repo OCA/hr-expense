@@ -80,7 +80,8 @@ msgstr "Foglio anticipo"
 #: code:addons/hr_expense_advance_clearing/models/hr_expense_sheet.py:0
 #, python-format
 msgid "Advance clearing must not contain any advance expense line"
-msgstr "La liquidazione anticipo non deve contenere nessuna riga anticipo spesa"
+msgstr ""
+"La liquidazione anticipo non deve contenere nessuna riga anticipo spesa"
 
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/models/hr_expense_sheet.py:0
@@ -333,7 +334,8 @@ msgstr "Visualizza residuo anticipo di questo dipendente"
 #: code:addons/hr_expense_advance_clearing/models/account_move.py:0
 #, python-format
 msgid ""
-"This operation is not allowed as some advance amount was already cleared/returned.\n"
+"This operation is not allowed as some advance amount was already cleared/"
+"returned.\n"
 "Please cancel those documents first."
 msgstr ""
 "Questa operazione non è consentita perché una parte del valore anticipato è "
@@ -356,8 +358,7 @@ msgstr ""
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
 #, python-format
-msgid ""
-"You can't create payments for entries belonging to different companies."
+msgid "You can't create payments for entries belonging to different companies."
 msgstr ""
 "Non si possono creare pagamenti per entrate appartenenti a diverse aziende."
 
