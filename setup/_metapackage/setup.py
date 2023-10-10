@@ -10,6 +10,7 @@ setuptools.setup(
     install_requires=[
         'odoo-addon-hr_expense_advance_clearing>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_advance_clearing_sequence>=15.0dev,<15.1dev',
+        'odoo-addon-hr_expense_advance_overdue_reminder>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_cancel>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_exception>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_invoice>=15.0dev,<15.1dev',
