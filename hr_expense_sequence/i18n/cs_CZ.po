@@ -20,6 +20,11 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #. module: hr_expense_sequence
+#: model:ir.model.fields,field_description:hr_expense_sequence.field_hr_expense_sheet__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: hr_expense_sequence
 #: model:ir.model,name:hr_expense_sequence.model_hr_expense_sheet
 msgid "Expense Report"
 msgstr "Zpráva o výdajích"
@@ -28,6 +33,16 @@ msgstr "Zpráva o výdajích"
 #: model_terms:ir.ui.view,arch_db:hr_expense_sequence.report_expense_sheet
 msgid "Expenses Report"
 msgstr "Zpráva o nákladech"
+
+#. module: hr_expense_sequence
+#: model:ir.model.fields,field_description:hr_expense_sequence.field_hr_expense_sheet__id
+msgid "ID"
+msgstr ""
+
+#. module: hr_expense_sequence
+#: model:ir.model.fields,field_description:hr_expense_sequence.field_hr_expense_sheet____last_update
+msgid "Last Modified on"
+msgstr ""
 
 #. module: hr_expense_sequence
 #: model:ir.model.fields,field_description:hr_expense_sequence.field_hr_expense_sheet__number
