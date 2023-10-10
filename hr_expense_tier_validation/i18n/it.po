@@ -28,7 +28,8 @@ msgstr ""
 #. module: hr_expense_tier_validation
 #: model_terms:ir.ui.view,arch_db:hr_expense_tier_validation.view_hr_expense_sheet_form
 msgid "<i class=\"fa fa-thumbs-down\"/> Operation has been <b>rejected</b>."
-msgstr "<i class=\"fa fa-thumbs-down\"/> L'operazione è stata <b>rifiutata</b>."
+msgstr ""
+"<i class=\"fa fa-thumbs-down\"/> L'operazione è stata <b>rifiutata</b>."
 
 #. module: hr_expense_tier_validation
 #: model_terms:ir.ui.view,arch_db:hr_expense_tier_validation.view_hr_expense_sheet_form
