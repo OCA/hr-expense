@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-07-03 11:08+0000\n"
-"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
+"PO-Revision-Date: 2023-10-13 12:36+0000\n"
+"Last-Translator: Francesco Foresti <francesco.foresti@ooops404.com>\n"
 "Language-Team: none\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -46,7 +46,7 @@ msgstr "Spese"
 #. module: hr_expense_invoice
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_hr_expense_sheet__invoice_count
 msgid "Invoice Count"
-msgstr "Conteggio fatture"
+msgstr "Numero fatture"
 
 #. module: hr_expense_invoice
 #: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
