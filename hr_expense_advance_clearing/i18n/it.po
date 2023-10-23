@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-07-04 09:10+0000\n"
+"PO-Revision-Date: 2023-10-29 08:30+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -250,7 +250,7 @@ msgstr "Ultima modifica il"
 #. module: hr_expense_advance_clearing
 #: model_terms:ir.actions.act_window,help:hr_expense_advance_clearing.action_my_hr_advance_sheet
 msgid "No advance report found. Let's create one!"
-msgstr "Nessuna nota spese trovata. Crearne una!"
+msgstr "Nessun resoconto anticipo trovato. Crearne uno!"
 
 #. module: hr_expense_advance_clearing
 #: model_terms:ir.actions.act_window,help:hr_expense_advance_clearing.action_my_hr_expense_sheet
