@@ -6,13 +6,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2023-10-28 20:07+0000\n"
+"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:mail.template,body_html:hr_expense_advance_overdue_reminder.email_template_overdue_reminder
@@ -63,31 +65,91 @@ msgid ""
 "</div>\n"
 "        "
 msgstr ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"<p style=\"margin: 0px; padding: 0px; font-size: 13px;\">\n"
+"    Spettabile <t t-out=\"object.employee_id.name\"/>,\n"
+"    <br/><br/>\n"
+"    in base ai nostri registri, i seguenti anticipi spese sono scaduti:\n"
+"    <table style=\"border-spacing: 0; border-collapse: collapse; width: 100%;"
+" text-align: center;\">\n"
+"        <tr>\n"
+"            <th style=\"padding: 5px; border: 1px solid black;\">Spesa "
+"numero</th>\n"
+"            <th style=\"padding: 5px; border: 1px solid black;\">Nome "
+"spesa</th>\n"
+"            <th style=\"padding: 5px; border: 1px solid black;\">Data</th>\n"
+"            <th style=\"padding: 5px; border: 1px solid black;\""
+">Scadenza</th>\n"
+"            <th style=\"padding: 5px; border: 1px solid black;\">Valore "
+"totale</th>\n"
+"            <th style=\"padding: 5px; border: 1px solid black;\">Residuo</th>"
+"\n"
+"            <th style=\"padding: 5px; border: 1px solid black;\">Promemoria "
+"precedenti</th>\n"
+"        </tr>\n"
+"    <t t-foreach=\"object.expense_sheet_ids\" t-as=\"sheet\">\n"
+"        <tr>\n"
+"            <td style=\"padding: 5px; border: 1px solid black;\"><t t-out="
+"\"sheet.number\"/></td>\n"
+"            <td style=\"padding: 5px; border: 1px solid black;\"><t t-out="
+"\"sheet.name\"/></td>\n"
+"            <td style=\"padding: 5px; border: 1px solid black;\"><t t-out="
+"\"sheet.account_move_id.date\"/></td>\n"
+"            <td style=\"padding: 5px; border: 1px solid black;\"><t t-out="
+"\"sheet.clearing_date_due\"/></td>\n"
+"            <td style=\"padding: 5px; border: 1px solid black; text-align: "
+"right;\"><t t-out=\"'{0:,.2f}'.format(sheet.total_amount)\"/></td>\n"
+"            <td style=\"padding: 5px; border: 1px solid black; text-align: "
+"right;\"><t t-out=\"'{0:,.2f}'.format(sheet.clearing_residual)\"/></td>\n"
+"            <td style=\"padding: 5px; border: 1px solid black;\">\n"
+"                <t t-out=\"sheet.overdue_reminder_counter\"/>\n"
+"            </td>\n"
+"        </tr>\n"
+"    </t>\n"
+"    <t t-set=\"total_residual\" t-value=\"sum(object.expense_sheet_ids."
+"mapped('clearing_residual'))\"/>\n"
+"        <tr>\n"
+"            <td/><td/><td/><td/>\n"
+"            <td style=\"padding: 5px; border: 1px solid black; font-weight: "
+"bold; text-align: right;\">\n"
+"                <t t-out=\"'{0:,.2f}'.format(total_residual)\"/>\n"
+"            </td>\n"
+"            <td/><td/>\n"
+"        </tr>\n"
+"    </table>\n"
+"    <br/><br/>\n"
+"    Se ha saldato questi anticipi qualche giorno fa, ignori questa email.\n"
+"    <br/><br/>\n"
+"    Cordialmente,<br/>\n"
+"    <t t-out=\"user.signature\"/>\n"
+"</p>\n"
+"</div>\n"
+"        "
 
 #. module: hr_expense_advance_overdue_reminder
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.reminder_definition_view_form
 msgid "<span class=\"oe_edit_only\">Name</span>"
-msgstr ""
+msgstr "<span class=\"oe_edit_only\">Nome</span>"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.reminder_definition_view_form
 msgid "<span> days</span>"
-msgstr ""
+msgstr "<span> giorni</span>"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_needaction
 msgid "Action Needed"
-msgstr ""
+msgstr "Azione richiesta"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.reminder_definition_view_form
 msgid "Action Reminder"
-msgstr ""
+msgstr "Promemoria azione"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_reminder_definition__active
 msgid "Active"
-msgstr ""
+msgstr "Attivo"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_base_reminder_mixin__activity_type_id
@@ -96,61 +158,61 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_reminder_definition__activity_type_id
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.wizard_advance_overdue_reminder_form
 msgid "Activity"
-msgstr ""
+msgstr "Attività"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.actions.act_window,name:hr_expense_advance_overdue_reminder.action_advance_overdue_reminder
 msgid "Advance Overdue Reminder"
-msgstr ""
+msgstr "Promemoria scadenza anticipo"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:mail.template,name:hr_expense_advance_overdue_reminder.email_template_overdue_reminder
 msgid "Advance: Overdue Reminder"
-msgstr ""
+msgstr "Avanza: promemoria scadenza"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__activity_user_id
 msgid "Assigned to"
-msgstr ""
+msgstr "Assegnato a"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_attachment_count
 msgid "Attachment Count"
-msgstr ""
+msgstr "Conteggio allegati"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.hr_advance_overdue_reminder_form
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.wizard_advance_overdue_reminder_form
 msgid "Cancel"
-msgstr ""
+msgstr "Annulla"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields.selection,name:hr_expense_advance_overdue_reminder.selection__hr_advance_overdue_reminder__state__cancel
 msgid "Cancelled"
-msgstr ""
+msgstr "Annullato"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_expense_sheet__clearing_date_due
 msgid "Clearing Due Date"
-msgstr ""
+msgstr "Annullamento data richiesta"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_reminder_definition__clearing_terms_days
 msgid "Clearing Terms"
-msgstr ""
+msgstr "Annullamento termini"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__company_id
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder_wizard__company_id
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_reminder_definition__company_id
 msgid "Company"
-msgstr ""
+msgstr "Azienda"
 
 #. module: hr_expense_advance_overdue_reminder
 #: code:addons/hr_expense_advance_overdue_reminder/models/hr_advance_overdue_reminder.py:0
 #, python-format
 msgid "Compose Email"
-msgstr ""
+msgstr "Componi e-mail"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_base_reminder_mixin__create_activity
@@ -158,56 +220,56 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder_wizard__create_activity
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_reminder_definition__create_activity
 msgid "Create Activity"
-msgstr ""
+msgstr "Crea attività"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__create_uid
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder_wizard__create_uid
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_reminder_definition__create_uid
 msgid "Created by"
-msgstr ""
+msgstr "Creato da"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__create_date
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder_wizard__create_date
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_reminder_definition__create_date
 msgid "Created on"
-msgstr ""
+msgstr "Creato il"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.hr_advance_overdue_reminder_form
 msgid "Current Remind Counter"
-msgstr ""
+msgstr "Contatore sollecito corrente"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__date
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.hr_advance_overdue_reminder_search
 msgid "Date"
-msgstr ""
+msgstr "Data"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_reminder_definition__name
 msgid "Description"
-msgstr ""
+msgstr "Descrizione"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__display_name
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder_wizard__display_name
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_reminder_definition__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Nome visualizzato"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields.selection,name:hr_expense_advance_overdue_reminder.selection__hr_advance_overdue_reminder__state__done
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.hr_advance_overdue_reminder_search
 msgid "Done"
-msgstr ""
+msgstr "Evaso"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields.selection,name:hr_expense_advance_overdue_reminder.selection__hr_advance_overdue_reminder__state__draft
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.hr_advance_overdue_reminder_search
 msgid "Draft"
-msgstr ""
+msgstr "Bozza"
 
 #. module: hr_expense_advance_overdue_reminder
 #: code:addons/hr_expense_advance_overdue_reminder/models/base_reminder_mixin.py:0
@@ -216,88 +278,88 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.hr_advance_overdue_reminder_search
 #, python-format
 msgid "E-mail"
-msgstr ""
+msgstr "E-mail"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__employee_email
 msgid "Email"
-msgstr ""
+msgstr "E-mail"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model,name:hr_expense_advance_overdue_reminder.model_mail_compose_message
 msgid "Email composition wizard"
-msgstr ""
+msgstr "Procedura guidata creazione e-mail"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__employee_id
 msgid "Employee"
-msgstr ""
+msgstr "Dipendente"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.ui.menu,name:hr_expense_advance_overdue_reminder.menu_hr_expense_overdue
 msgid "Employee Overdue"
-msgstr ""
+msgstr "Scadenza dipendente"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder_wizard__employee_ids
 msgid "Employee(s)"
-msgstr ""
+msgstr "Dipendente(i)"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model,name:hr_expense_advance_overdue_reminder.model_hr_expense_sheet
 msgid "Expense Report"
-msgstr ""
+msgstr "Nota spese"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.actions.act_window,name:hr_expense_advance_overdue_reminder.action_hr_expense_sheet_all_to_overdue
 msgid "Expense Reports to Overdue"
-msgstr ""
+msgstr "Nota spese alla scadenza"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_follower_ids
 msgid "Followers"
-msgstr ""
+msgstr "Seguito da"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_partner_ids
 msgid "Followers (Partners)"
-msgstr ""
+msgstr "Seguito da (partner)"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__has_message
 msgid "Has Message"
-msgstr ""
+msgstr "Ha un messaggio"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model,name:hr_expense_advance_overdue_reminder.model_hr_advance_overdue_reminder
 msgid "Hr Advance Overdue Reminder"
-msgstr ""
+msgstr "Promemoria scadenza anticipo RU"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__id
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder_wizard__id
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_reminder_definition__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,help:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_needaction
 #: model:ir.model.fields,help:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_unread
 msgid "If checked, new messages require your attention."
-msgstr ""
+msgstr "Se selezionata, nuovi messaggi richiedono attenzione."
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,help:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_has_error
 #: model:ir.model.fields,help:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr ""
+msgstr "Se selezionata, alcuni messaggi hanno un errore di consegna."
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,help:hr_expense_advance_overdue_reminder.field_base_reminder_mixin__create_activity
 #: model:ir.model.fields,help:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__create_activity
 #: model:ir.model.fields,help:hr_expense_advance_overdue_reminder.field_reminder_definition__create_activity
 msgid "If set, system will be notified reminder next time."
-msgstr ""
+msgstr "Se impostata, il sistema avviserà con un promemoria la prossima volta."
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,help:hr_expense_advance_overdue_reminder.field_reminder_definition__clearing_terms_days
@@ -305,47 +367,49 @@ msgid ""
 "In case this field is configured, the system will help calculate Clearing "
 "Date Due according to the term."
 msgstr ""
+"Nel caso in cui questo campo sia configurato, il sistema aiuterà nel calcolo "
+"della data scadenza saldo in accorto al termine."
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_is_follower
 msgid "Is Follower"
-msgstr ""
+msgstr "Segue"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_expense_sheet__is_overdue
 msgid "Is Overdue"
-msgstr ""
+msgstr "È scaduta"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder____last_update
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder_wizard____last_update
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_reminder_definition____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Ultima modifica il"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.hr_advance_overdue_reminder_form
 msgid "Last Reminder"
-msgstr ""
+msgstr "Ultimo promemoria"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_expense_sheet__overdue_reminder_last_date
 msgid "Last Reminder Date"
-msgstr ""
+msgstr "Data ultimo promemoria"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__write_uid
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder_wizard__write_uid
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_reminder_definition__write_uid
 msgid "Last Updated by"
-msgstr ""
+msgstr "Ultimo aggiornamento di"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__write_date
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder_wizard__write_date
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_reminder_definition__write_date
 msgid "Last Updated on"
-msgstr ""
+msgstr "Ultimo aggiornamento il"
 
 #. module: hr_expense_advance_overdue_reminder
 #: code:addons/hr_expense_advance_overdue_reminder/models/base_reminder_mixin.py:0
@@ -354,7 +418,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.hr_advance_overdue_reminder_search
 #, python-format
 msgid "Letter"
-msgstr ""
+msgstr "Lettera"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_base_reminder_mixin__letter_report
@@ -362,13 +426,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder_wizard__letter_report
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_reminder_definition__letter_report
 msgid "Letter Report"
-msgstr ""
+msgstr "Resoconto lettera"
 
 #. module: hr_expense_advance_overdue_reminder
 #: code:addons/hr_expense_advance_overdue_reminder/models/hr_advance_overdue_reminder.py:0
 #, python-format
 msgid "Letter report is not use in '{}'"
-msgstr ""
+msgstr "Il resoconto lettera non è utilizzato in '{}'"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_base_reminder_mixin__mail_template_id
@@ -376,48 +440,48 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder_wizard__mail_template_id
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_reminder_definition__mail_template_id
 msgid "Mail Template"
-msgstr ""
+msgstr "Modello e-mail"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_main_attachment_id
 msgid "Main Attachment"
-msgstr ""
+msgstr "Allegato principale"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_has_error
 msgid "Message Delivery error"
-msgstr ""
+msgstr "Errore di consegna messaggio"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_ids
 msgid "Messages"
-msgstr ""
+msgstr "Messaggi"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model,name:hr_expense_advance_overdue_reminder.model_base_reminder_mixin
 msgid "Mixin used in base model that reminder"
-msgstr ""
+msgstr "Mixin utilizzato nel modello base del promemoria"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__name
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 
 #. module: hr_expense_advance_overdue_reminder
 #: code:addons/hr_expense_advance_overdue_reminder/models/hr_expense_sheet.py:0
 #, python-format
 msgid "New Advance Overdue"
-msgstr ""
+msgstr "Nuova scadenza anticipo"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder_wizard__reminder_next_time
 msgid "Next Reminder"
-msgstr ""
+msgstr "Promemoria successivo"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_expense_sheet__reminder_next_time
 msgid "Next Reminder Date"
-msgstr ""
+msgstr "Data promemoria successivo"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_base_reminder_mixin__activity_note
@@ -425,77 +489,79 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder_wizard__activity_note
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_reminder_definition__activity_note
 msgid "Note"
-msgstr ""
+msgstr "Nota"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_needaction_counter
 msgid "Number of Actions"
-msgstr ""
+msgstr "Numero di azioni"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_has_error_counter
 msgid "Number of errors"
-msgstr ""
+msgstr "Numero di errori"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,help:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_needaction_counter
 msgid "Number of messages which requires an action"
-msgstr ""
+msgstr "Numero di messaggi che richiedono un'azione"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,help:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr ""
+msgstr "Numero di messaggi con errore di consegna"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,help:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_unread_counter
 msgid "Number of unread messages"
-msgstr ""
+msgstr "Numero di messaggi non letti"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.hr_advance_overdue_reminder_form
 msgid "Order Ref"
-msgstr ""
+msgstr "Rif. ordine"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__expense_sheet_ids
 msgid "Overdue Expense Advance Sheet"
-msgstr ""
+msgstr "Foglio scadenza anticipo spese"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.actions.server,name:hr_expense_advance_overdue_reminder.action_hr_advance_overdue_server
 #: model:ir.ui.menu,name:hr_expense_advance_overdue_reminder.menu_advance_overdue_reminder_view
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.view_hr_expense_sheet_form
 msgid "Overdue Reminder"
-msgstr ""
+msgstr "Promemoria scadenza"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.actions.act_window,name:hr_expense_advance_overdue_reminder.action_hr_advance_overdue_reminder
 msgid "Overdue Reminder Action"
-msgstr ""
+msgstr "Azione per promemoria scadenza"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_expense_sheet__overdue_reminder_ids
 msgid "Overdue Reminder Action History"
-msgstr ""
+msgstr "Storico azione promemoria scadenza"
 
 #. module: hr_expense_advance_overdue_reminder
 #: code:addons/hr_expense_advance_overdue_reminder/models/hr_expense_sheet.py:0
 #, python-format
 msgid "Please configured reminder definition before Post Journal Entries"
 msgstr ""
+"Configurare la definizione del promemoria prima di inserire registrazioni "
+"contabili"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_base_reminder_mixin__reminder_type
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__reminder_type
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_reminder_definition__reminder_type
 msgid "Reminder"
-msgstr ""
+msgstr "Promemoria"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_expense_sheet__overdue_reminder_counter
 msgid "Reminder Count"
-msgstr ""
+msgstr "Conteggio promemoria"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.actions.act_window,name:hr_expense_advance_overdue_reminder.reminder_definition_action
@@ -505,60 +571,60 @@ msgstr ""
 #: model:ir.ui.menu,name:hr_expense_advance_overdue_reminder.menu_hr_advance_overdue_setting
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.reminder_definition_view_form
 msgid "Reminder Definition"
-msgstr ""
+msgstr "Definizione promemoria"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder_wizard__reminder_number
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_reminder_definition__reminder_number
 msgid "Reminder Every"
-msgstr ""
+msgstr "Promemoria ogni"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__reminder_next_time
 msgid "Reminder Next Time"
-msgstr ""
+msgstr "Prossima data promemoria"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model,name:hr_expense_advance_overdue_reminder.model_hr_advance_overdue_reminder_wizard
 msgid "Reminder Overdue Advance"
-msgstr ""
+msgstr "Promemoria scadenza anticipo"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder_wizard__reminder_type
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.hr_advance_overdue_reminder_search
 msgid "Reminder Type"
-msgstr ""
+msgstr "Tipo promemoria"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.ui.menu,name:hr_expense_advance_overdue_reminder.menu_hr_expense_sheet_all_to_overdue
 msgid "Reports to Overdue"
-msgstr ""
+msgstr "Resoconti alla scadenza"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr ""
+msgstr "Errore consegna SMS"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__activity_scheduled_date
 msgid "Scheduled Date"
-msgstr ""
+msgstr "Data programmata"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.hr_advance_overdue_reminder_form
 msgid "Send or Print"
-msgstr ""
+msgstr "Invia alla stampante"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.wizard_advance_overdue_reminder_form
 msgid "Start"
-msgstr ""
+msgstr "Avvia"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__state
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.hr_advance_overdue_reminder_search
 msgid "State"
-msgstr ""
+msgstr "Stato"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_base_reminder_mixin__activity_summary
@@ -566,76 +632,76 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder_wizard__activity_summary
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_reminder_definition__activity_summary
 msgid "Summary"
-msgstr ""
+msgstr "Riepilogo"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,help:hr_expense_advance_overdue_reminder.field_hr_expense_sheet__overdue_reminder_counter
 msgid "This counter is increased when reminder."
-msgstr ""
+msgstr "Questo contatore viene incrementato con il promemoria."
 
 #. module: hr_expense_advance_overdue_reminder
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.hr_expense_sheet_view_search
 msgid "To Overdue"
-msgstr ""
+msgstr "Alla scadenza"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.hr_advance_overdue_reminder_form
 msgid "Total"
-msgstr ""
+msgstr "Totale"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_unread
 msgid "Unread Messages"
-msgstr ""
+msgstr "Messaggi non letti"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_unread_counter
 msgid "Unread Messages Counter"
-msgstr ""
+msgstr "Contatore messaggi non letti"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__user_id
 msgid "User"
-msgstr ""
+msgstr "Utente"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__website_message_ids
 msgid "Website Messages"
-msgstr ""
+msgstr "Messaggi sito web"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,help:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__website_message_ids
 msgid "Website communication history"
-msgstr ""
+msgstr "Cronologia comunicazioni sito web"
 
 #. module: hr_expense_advance_overdue_reminder
 #: code:addons/hr_expense_advance_overdue_reminder/models/hr_advance_overdue_reminder.py:0
 #, python-format
 msgid "You are attempting to delete a record that has already been sent."
-msgstr ""
+msgstr "Si sta cercando di eleiminare un record già inviato."
 
 #. module: hr_expense_advance_overdue_reminder
 #: code:addons/hr_expense_advance_overdue_reminder/models/hr_expense_sheet.py:0
 #, python-format
 msgid "You can not select clearing due date less than today."
-msgstr ""
+msgstr "Non si può selezionare una data richiesta saldo inferiore a oggi."
 
 #. module: hr_expense_advance_overdue_reminder
 #: code:addons/hr_expense_advance_overdue_reminder/models/hr_advance_overdue_reminder.py:0
 #, python-format
 msgid "You can not sent email with address private contact."
-msgstr ""
+msgstr "Non si può inviare una e-mail con l'indirizzo privato del contatto."
 
 #. module: hr_expense_advance_overdue_reminder
 #: code:addons/hr_expense_advance_overdue_reminder/models/hr_expense_sheet.py:0
 #, python-format
 msgid "You cannot remind this report."
-msgstr ""
+msgstr "Non si può associare il resoconto ad un promemoria."
 
 #. module: hr_expense_advance_overdue_reminder
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.wizard_advance_overdue_reminder_form
 msgid "days"
-msgstr ""
+msgstr "giorni"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:mail.template,subject:hr_expense_advance_overdue_reminder.email_template_overdue_reminder
@@ -643,3 +709,5 @@ msgid ""
 "{{ object.company_id.name }} - Overdue advance reminder {{ object.name or "
 "'n/a' }}"
 msgstr ""
+"{{ object.company_id.name }} - Promemoria anticipo scadenza {{ object.name "
+"or 'n/a' }}"
