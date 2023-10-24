@@ -14,6 +14,6 @@ class BaseSubstateType(models.Model):
 
 
 class HrExpenseSheet(models.Model):
-    _inherit = ["hr.expense.sheet", "base.substate.mixin"]
     _name = "hr.expense.sheet"
+    _inherit = ["hr.expense.sheet", "base.substate.mixin"]
     _state_field = "state"
