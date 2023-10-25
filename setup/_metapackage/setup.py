@@ -14,6 +14,7 @@ setuptools.setup(
         'odoo-addon-hr_expense_cancel>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_exception>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_invoice>=15.0dev,<15.1dev',
+        'odoo-addon-hr_expense_journal>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_pay_to_vendor>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_payment>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_payment_widget_amount>=15.0dev,<15.1dev',
