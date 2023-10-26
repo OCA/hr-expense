@@ -82,7 +82,7 @@ msgid "Advance must contain only advance expense line"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
-#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+#: code:addons/hr_expense_advance_clearing/models/hr_expense_sheet.py:0
 #, python-format
 msgid "Advance: %s has no amount to clear"
 msgstr ""
