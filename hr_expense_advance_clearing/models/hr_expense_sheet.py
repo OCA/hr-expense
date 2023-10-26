@@ -64,6 +64,19 @@ class HrExpenseSheet(models.Model):
         if advance_lines and len(advance_lines) != len(self.expense_line_ids):
             raise ValidationError(_("Advance must contain only advance expense line"))
 
+    @api.constrains("state")
+    def _check_constraint_clearing_amount(self):
+        sheets_x = self.filtered(
+            lambda x: x.advance_sheet_id
+            and x.advance_sheet_residual <= 0.0
+            and x.state in ["submit", "approve", "post"]
+        )
+        if sheets_x:  # Advance Sheets with no residual left
+            raise ValidationError(
+                _("Advance: %s has no amount to clear")
+                % ", ".join(sheets_x.mapped("name"))
+            )
+
     @api.depends("account_move_id.line_ids.amount_residual")
     def _compute_clearing_residual(self):
         emp_advance = self.env.ref(
@@ -88,10 +101,13 @@ class HrExpenseSheet(models.Model):
         for sheet in self:
             sheet.clearing_count = len(sheet.clearing_sheet_ids)
 
+    def _get_product_advance(self):
+        return self.env.ref("hr_expense_advance_clearing.product_emp_advance")
+
     def action_sheet_move_create(self):
         res = super().action_sheet_move_create()
         # Reconcile advance of this sheet with the advance_sheet
-        emp_advance = self.env.ref("hr_expense_advance_clearing.product_emp_advance")
+        emp_advance = self._get_product_advance()
         ctx = self._context.copy()
         ctx.update({"skip_account_move_synchronization": True})
         for sheet in self:
@@ -116,7 +132,9 @@ class HrExpenseSheet(models.Model):
                     ]
                 )
             )
-            adv_move_lines.with_context(**ctx).reconcile()
+            # Reconcile when line more than 1
+            if len(adv_move_lines) > 1:
+                adv_move_lines.with_context(**ctx).reconcile()
             # Update state on clearing advance when advance residual > total amount
             if sheet.advance_sheet_id and advance_residual != -1:
                 sheet.write({"state": "done"})
