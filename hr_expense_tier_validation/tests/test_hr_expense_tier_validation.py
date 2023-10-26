@@ -39,13 +39,11 @@ class TestHrExpenseTierValidation(TransactionCase):
         description,
         employee,
         product,
-        payment_mode="own_account",
     ):
         with Form(self.env["hr.expense"]) as expense:
             expense.name = description
             expense.employee_id = employee
             expense.product_id = product
-            expense.payment_mode = payment_mode
         expense = expense.save()
         expense.tax_ids = False  # Test no vat
         return expense
@@ -75,6 +73,9 @@ class TestHrExpenseTierValidation(TransactionCase):
         with self.assertRaises(ValidationError):
             sheet.approve_expense_sheets()
         sheet.request_validation()
+        self.assertTrue(sheet)
+        sheet.invalidate_model()
+
         # tier validation but state still submit
         self.assertEqual(sheet.state, "submit")
         # not allow edit expense when under validation
