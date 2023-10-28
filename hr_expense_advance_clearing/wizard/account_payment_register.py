@@ -78,15 +78,21 @@ class AccountPaymentRegister(models.TransientModel):
         more_info = ""
         symbol = self.source_currency_id.symbol
         if amount_not_clear:
-            more_info = _("\nNote: pending amount clearing is {}{}").format(
-                symbol,
-                "{:,.2f}".format(amount_not_clear),
-            )
+            more_info = _("\nNote: pending amount clearing is %(symbol)s%(amount)s") % {
+                "symbol": symbol,
+                "amount": "{:,.2f}".format(amount_not_clear),
+            }
         if float_compare(self.amount, actual_remaining, 2) == 1:
             raise UserError(
                 _(
-                    "You cannot return advance more than actual remaining ({}{}){}"
-                ).format(symbol, "{:,.2f}".format(actual_remaining), more_info)
+                    "You cannot return advance more than actual remaining "
+                    "(%(symbol)s%(amount)s)%(more_info)s"
+                )
+                % {
+                    "symbol": symbol,
+                    "amount": "{:,.2f}".format(actual_remaining),
+                    "more_info": more_info,
+                }
             )
 
     def action_create_payments(self):
@@ -139,20 +145,19 @@ class AccountPaymentRegister(models.TransientModel):
         payment.action_post()
 
         redirect_link = (
-            "<a href=# data-oe-model=account.payment data-oe-id={}>{}</a>".format(
-                payment.id, payment.name
-            )
+            f"<a href=# data-oe-model=account.payment data-oe-id={payment.id}>"
+            f"{payment.name}</a>"
         )  # Account Payment link
         # Log the return advance in the chatter
         body = _(
-            "A remaining advance return of {} {} with the reference "
-            "{} related to your expense {} has been made."
-        ).format(
-            payment.amount,
-            payment.currency_id.symbol,
-            redirect_link,
-            expense_sheet.name,
-        )
+            "A remaining advance return of %(amount)s %(symbol)s with the reference "
+            "%(ref)s related to your expense %(name)s has been made."
+        ) % {
+            "amount": payment.amount,
+            "symbol": payment.currency_id.symbol,
+            "ref": redirect_link,
+            "name": expense_sheet.name,
+        }
         expense_sheet.message_post(body=body)
 
         # Reconcile the return advance and the advance,
