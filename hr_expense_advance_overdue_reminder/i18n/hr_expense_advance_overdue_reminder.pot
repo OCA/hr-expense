@@ -287,7 +287,6 @@ msgstr ""
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,help:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_has_error
-#: model:ir.model.fields,help:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr ""
 
@@ -531,11 +530,6 @@ msgstr ""
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.ui.menu,name:hr_expense_advance_overdue_reminder.menu_hr_expense_sheet_all_to_overdue
 msgid "Reports to Overdue"
-msgstr ""
-
-#. module: hr_expense_advance_overdue_reminder
-#: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__message_has_sms_error
-msgid "SMS Delivery error"
 msgstr ""
 
 #. module: hr_expense_advance_overdue_reminder
