@@ -18,7 +18,7 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"Note: pending amount clearing is {}{}"
+"Note: pending amount clearing is %(symbol)s%(amount)s"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
@@ -32,8 +32,8 @@ msgstr ""
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
 #, python-format
 msgid ""
-"A remaining advance return of {} {} with the reference {} related to your "
-"expense {} has been made."
+"A remaining advance return of %(amount)s %(symbol)s with the reference "
+"%(ref)s related to your expense %(name)s has been made."
 msgstr ""
 
 #. module: hr_expense_advance_clearing
@@ -349,5 +349,7 @@ msgstr ""
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
 #, python-format
-msgid "You cannot return advance more than actual remaining ({}{}){}"
+msgid ""
+"You cannot return advance more than actual remaining "
+"(%(symbol)s%(amount)s)%(more_info)s"
 msgstr ""
