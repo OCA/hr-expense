@@ -6,28 +6,30 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2023-10-30 19:36+0000\n"
+"Last-Translator: Ivorra78 <informatica@totmaterial.es>\n"
 "Language-Team: none\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
 
 #. module: hr_expense_exception
 #: model_terms:ir.ui.view,arch_db:hr_expense_exception.view_hr_expense_sheet_form
 msgid "<strong>There are exceptions blocking this Expense Report:</strong>"
-msgstr ""
+msgstr "<strong>Hay excepciones que bloquean este Informe de Gastos:</strong>"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_exception_rule__model
 msgid "Apply on"
-msgstr ""
+msgstr "Aplicar sobre"
 
 #. module: hr_expense_exception
 #: model_terms:ir.ui.view,arch_db:hr_expense_exception.hr_expense_sheet_view_search
 msgid "Blocked in Draft"
-msgstr ""
+msgstr "Bloqueado en Borrador"
 
 #. module: hr_expense_exception
 #: model_terms:ir.ui.view,arch_db:hr_expense_exception.view_hr_expense_sheet_form
@@ -35,87 +37,89 @@ msgid ""
 "Click here to be able to confirm this Agreement regardless of the "
 "exceptions."
 msgstr ""
+"Haga clic aquí para poder confirmar este Acuerdo independientemente de las "
+"excepciones."
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__create_uid
 msgid "Created by"
-msgstr ""
+msgstr "Creado por"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__create_date
 msgid "Created on"
-msgstr ""
+msgstr "Creado el"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Mostrar Nombre"
 
 #. module: hr_expense_exception
 #: model:ir.model,name:hr_expense_exception.model_exception_rule
 msgid "Exception Rule"
-msgstr ""
+msgstr "Regla de Excepción"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense_sheet__exception_ids
 msgid "Exceptions"
-msgstr ""
+msgstr "Excepciones"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense_sheet__exceptions_summary
 msgid "Exceptions Summary"
-msgstr ""
+msgstr "Resumen de Excepciones"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__exception_ids
 msgid "Exceptions to resolve"
-msgstr ""
+msgstr "Excepciones a resolver"
 
 #. module: hr_expense_exception
 #: model:ir.model,name:hr_expense_exception.model_hr_expense
 #: model:ir.model.fields.selection,name:hr_expense_exception.selection__exception_rule__model__hr_expense
 msgid "Expense"
-msgstr ""
+msgstr "Gasto"
 
 #. module: hr_expense_exception
 #: model:ir.model,name:hr_expense_exception.model_hr_expense_sheet
 #: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__related_model_id
 #: model:ir.model.fields.selection,name:hr_expense_exception.selection__exception_rule__model__hr_expense_sheet
 msgid "Expense Report"
-msgstr ""
+msgstr "Informe de Gastos"
 
 #. module: hr_expense_exception
 #: model:ir.actions.act_window,name:hr_expense_exception.action_expense_sheet_test_tree
 #: model:ir.ui.menu,name:hr_expense_exception.menu_expense_sheet_test
 msgid "Expense Report Exception Rules"
-msgstr ""
+msgstr "Reglas de Excepción del Informe de Gastos"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_exception_rule__expense_sheet_ids
 msgid "Expense Reports"
-msgstr ""
+msgstr "Informes de Gastos"
 
 #. module: hr_expense_exception
 #: model:exception.rule,description:hr_expense_exception.exl_excep_qty_check
 msgid "Expense line quantity must be positive"
-msgstr ""
+msgstr "La cantidad de la línea de gastos debe ser positiva"
 
 #. module: hr_expense_exception
 #: model:ir.model,name:hr_expense_exception.model_expense_sheet_exception_confirm
 msgid "Expense report exception wizard"
-msgstr ""
+msgstr "Asistente para excepciones de informes de gastos"
 
 #. module: hr_expense_exception
 #: model:ir.actions.server,name:hr_expense_exception.ir_cron_test_expense_except_ir_actions_server
 #: model:ir.cron,cron_name:hr_expense_exception.ir_cron_test_expense_except
 #: model:ir.cron,name:hr_expense_exception.ir_cron_test_expense_except
 msgid "Expense: Test Draft Expense Exception"
-msgstr ""
+msgstr "Gastos: Excepción de Gastos de Borrador de Prueba"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__id
 msgid "ID"
-msgstr ""
+msgstr "ID (identificación)"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__ignore
@@ -123,44 +127,44 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense_sheet__ignore_exception
 #: model_terms:ir.ui.view,arch_db:hr_expense_exception.view_hr_expense_sheet_form
 msgid "Ignore Exceptions"
-msgstr ""
+msgstr "Ignorar Excepciones"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Última Modificación el"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__write_uid
 msgid "Last Updated by"
-msgstr ""
+msgstr "Última Actualización por"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_expense_sheet_exception_confirm__write_date
 msgid "Last Updated on"
-msgstr ""
+msgstr "Última Actualización el"
 
 #. module: hr_expense_exception
 #: model:ir.model.fields,field_description:hr_expense_exception.field_hr_expense_sheet__main_exception_id
 msgid "Main Exception"
-msgstr ""
+msgstr "Excepción Principal"
 
 #. module: hr_expense_exception
 #: model:exception.rule,description:hr_expense_exception.ex_excep_no_email
 msgid "No Email for Employee"
-msgstr ""
+msgstr "Sin Correo Electrónico para el Empleado"
 
 #. module: hr_expense_exception
 #: model:exception.rule,name:hr_expense_exception.ex_excep_no_email
 msgid "No email on employee"
-msgstr ""
+msgstr "No hay correo electrónico del empleado"
 
 #. module: hr_expense_exception
 #: model:ir.actions.act_window,name:hr_expense_exception.action_expense_sheet_exception_confirm
 msgid "Outstanding exceptions to manage"
-msgstr ""
+msgstr "Excepciones pendientes de gestión"
 
 #. module: hr_expense_exception
 #: model:exception.rule,name:hr_expense_exception.exl_excep_qty_check
 msgid "Quantity not positive"
-msgstr ""
+msgstr "Cantidad no positiva"
