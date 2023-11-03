@@ -156,7 +156,6 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.hr_expense_sheet_view_search_inherit
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.hr_expense_view_search_inherit
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_form
-#: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_list
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_search
 msgid "Petty Cash"
 msgstr ""
