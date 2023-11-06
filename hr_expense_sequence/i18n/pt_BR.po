@@ -31,11 +31,6 @@ msgid "Expense Report"
 msgstr "Relatório de despesa"
 
 #. module: hr_expense_sequence
-#: model_terms:ir.ui.view,arch_db:hr_expense_sequence.report_expense_sheet
-msgid "Expenses Report"
-msgstr "Relatórios de despesas"
-
-#. module: hr_expense_sequence
 #: model:ir.model.fields,field_description:hr_expense_sequence.field_hr_expense_sheet__id
 msgid "ID"
 msgstr ""
@@ -49,3 +44,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_sequence.field_hr_expense_sheet__number
 msgid "Number"
 msgstr "Número"
+
+#~ msgid "Expenses Report"
+#~ msgstr "Relatórios de despesas"

@@ -30,11 +30,6 @@ msgid "Expense Report"
 msgstr "Nota spese"
 
 #. module: hr_expense_sequence
-#: model_terms:ir.ui.view,arch_db:hr_expense_sequence.report_expense_sheet
-msgid "Expenses Report"
-msgstr "Note spese"
-
-#. module: hr_expense_sequence
 #: model:ir.model.fields,field_description:hr_expense_sequence.field_hr_expense_sheet__id
 msgid "ID"
 msgstr "ID"
@@ -48,3 +43,6 @@ msgstr "Ultima modifica il"
 #: model:ir.model.fields,field_description:hr_expense_sequence.field_hr_expense_sheet__number
 msgid "Number"
 msgstr "Numero"
+
+#~ msgid "Expenses Report"
+#~ msgstr "Note spese"
