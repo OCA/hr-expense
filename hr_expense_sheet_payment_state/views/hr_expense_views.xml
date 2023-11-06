@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- pylint:disable=dangerous-view-replace-wo-priority -->
 <odoo>
     <record id="view_hr_expense_sheet_tree" model="ir.ui.view">
         <field name="name">hr.expense.sheet.tree.payment.state</field>
@@ -21,6 +20,7 @@
     <record id="view_hr_expense_sheet_form" model="ir.ui.view">
         <field name="name">hr.expense.sheet.form.payment.state</field>
         <field name="model">hr.expense.sheet</field>
+        <field name="priority">100</field>
         <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
         <field name="arch" type="xml">
             <xpath expr="//widget[@name='web_ribbon']" position="replace">
