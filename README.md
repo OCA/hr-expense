@@ -31,10 +31,10 @@ addon | version | maintainers | summary
 [hr_expense_pay_to_vendor](hr_expense_pay_to_vendor/) | 14.0.1.0.0 | [![kittiu](https://github.com/kittiu.png?size=30px)](https://github.com/kittiu) | HR Expense - Pay To Vendor
 [hr_expense_payment](hr_expense_payment/) | 14.0.1.0.1 |  | HR Expense Payment
 [hr_expense_payment_widget_amount](hr_expense_payment_widget_amount/) | 14.0.1.0.0 | [![Saran440](https://github.com/Saran440.png?size=30px)](https://github.com/Saran440) | HR Expense Payment Widget Amount
-[hr_expense_petty_cash](hr_expense_petty_cash/) | 14.0.1.0.0 |  | Petty Cash
-[hr_expense_sequence](hr_expense_sequence/) | 14.0.1.0.1 |  | HR expense sequence
+[hr_expense_petty_cash](hr_expense_petty_cash/) | 14.0.1.0.1 |  | Petty Cash
+[hr_expense_sequence](hr_expense_sequence/) | 14.0.1.0.2 |  | HR expense sequence
 [hr_expense_sequence_option](hr_expense_sequence_option/) | 14.0.1.0.0 | [![ps-tubtim](https://github.com/ps-tubtim.png?size=30px)](https://github.com/ps-tubtim) | Manage sequence options for hr.expense.sheet
-[hr_expense_sheet_payment_state](hr_expense_sheet_payment_state/) | 14.0.1.0.0 |  | Backport of the Payment Status (payment_state field) in Expense Report which is introduced in Odoo Community Version 15.0
+[hr_expense_sheet_payment_state](hr_expense_sheet_payment_state/) | 14.0.1.0.1 |  | Backport of the Payment Status (payment_state field) in Expense Report which is introduced in Odoo Community Version 15.0
 [hr_expense_substate](hr_expense_substate/) | 14.0.1.0.1 |  | Expense Report Sub State
 [hr_expense_tier_validation](hr_expense_tier_validation/) | 14.0.1.2.1 | [![ps-tubtim](https://github.com/ps-tubtim.png?size=30px)](https://github.com/ps-tubtim) | Expense Tier Validation
 [hr_expense_widget_o2m](hr_expense_widget_o2m/) | 14.0.1.0.0 | [![kittiu](https://github.com/kittiu.png?size=30px)](https://github.com/kittiu) | HR Expense one2many widget

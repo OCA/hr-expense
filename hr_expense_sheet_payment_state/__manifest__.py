@@ -5,7 +5,7 @@
     "name": "HR Expense Report Payment Status",
     "summary": "Backport of the Payment Status (payment_state field) "
     "in Expense Report which is introduced in Odoo Community Version 15.0",
-    "version": "14.0.1.0.0",
+    "version": "14.0.1.0.1",
     "author": "Odoo SA, Odoo Community Association (OCA), Camptocamp",
     "license": "LGPL-3",
     "category": "Human Resources/Expenses",
