@@ -79,10 +79,8 @@ class HrExpenseSheet(models.Model):
 
     @api.depends("account_move_id.line_ids.amount_residual")
     def _compute_clearing_residual(self):
-        emp_advance = self.env.ref(
-            "hr_expense_advance_clearing.product_emp_advance", False
-        )
         for sheet in self:
+            emp_advance = sheet._get_product_advance()
             residual_company = 0.0
             if emp_advance:
                 for line in sheet.sudo().account_move_id.line_ids:
@@ -102,15 +100,15 @@ class HrExpenseSheet(models.Model):
             sheet.clearing_count = len(sheet.clearing_sheet_ids)
 
     def _get_product_advance(self):
-        return self.env.ref("hr_expense_advance_clearing.product_emp_advance")
+        return self.env.ref("hr_expense_advance_clearing.product_emp_advance", False)
 
     def action_sheet_move_create(self):
         res = super().action_sheet_move_create()
         # Reconcile advance of this sheet with the advance_sheet
-        emp_advance = self._get_product_advance()
         ctx = self._context.copy()
         ctx.update({"skip_account_move_synchronization": True})
         for sheet in self:
+            emp_advance = sheet._get_product_advance()
             advance_residual = float_compare(
                 sheet.advance_sheet_residual,
                 sheet.total_amount,
