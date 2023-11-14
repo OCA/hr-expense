@@ -1,20 +1,18 @@
 # Copyright 2022 - TODAY, Marcel Savegnago <marcel.savegnago@escodoo.com.br>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import api, fields, models, _
+from odoo import _, fields, models
 from odoo.exceptions import UserError
 
 
 class HrExpenseSheet(models.Model):
-    _inherit = 'hr.expense.sheet'
+    _inherit = "hr.expense.sheet"
 
     is_consolidated_advance = fields.Boolean(
-        string='Is Consolidated Advance',
-        readonly=True
+        string="Is Consolidated Advance", readonly=True
     )
 
-    @api.multi
-    def _consolidate_open_advances(self):
+    def _consolidate_open_advances(self):  # noqa: C901
         if not len(self) > 1:
             raise UserError(
                 _(
@@ -35,11 +33,11 @@ class HrExpenseSheet(models.Model):
         if any(rec.state != "done" for rec in self):
             raise UserError(_("You cannot consolidate advances that are not paid."))
 
-        if self.env['hr.expense.sheet'].search(
+        if self.env["hr.expense.sheet"].search(
             [
-                ('advance', '=', False),
-                ('state', '!=', 'done'),
-                ('advance_sheet_id', 'in', self.ids)
+                ("advance", "=", False),
+                ("state", "!=", "done"),
+                ("advance_sheet_id", "in", self.ids),
             ]
         ):
             raise UserError(
@@ -48,7 +46,6 @@ class HrExpenseSheet(models.Model):
                     "report that is open."
                 )
             )
-
         writeoff_lines = self.env["account.move.line"]
         emp_advance = self.env.ref("hr_expense_advance_clearing." "product_emp_advance")
 
@@ -57,14 +54,24 @@ class HrExpenseSheet(models.Model):
             for line in advance.sudo().account_move_id.line_ids:
                 if line.account_id == emp_advance.property_account_expense_id:
                     residual_value += line.amount_residual
-                    writeoff_acc_id = self.env["account.account"].search(
-                        [("code", "=", line.counterpart)]
+
+                    line.reconcile()
+
+                    counterpart_line = self.env["account.move.line"].search(
+                        [
+                            ("move_id", "=", line.move_id.id),
+                            ("account_id", "!=", line.account_id.id),
+                        ]
                     )
-                    writeoff_journal_id = line.move_id.journal_id
-                    line.reconcile(
-                        writeoff_acc_id=writeoff_acc_id,
-                        writeoff_journal_id=writeoff_journal_id,
-                    )
+
+                    writeoff_vals = {
+                        "account_id": counterpart_line.account_id.id,
+                        "journal_id": line.move_id.journal_id.id,
+                    }
+
+                    writeoff_to_reconcile = line._create_writeoff([writeoff_vals])
+                    (line + writeoff_to_reconcile).reconcile()
+
                     for matched_credit_id in line.matched_credit_ids:
                         for (
                             move_line
@@ -89,12 +96,13 @@ class HrExpenseSheet(models.Model):
                     "name": "Consolidated Advance",
                     "employee_id": employee.id,
                     "product_id": emp_advance.id,
+                    "account_id": emp_advance.property_account_expense_id.id,
                     "unit_amount": residual_value,
                     "sheet_id": consolidated_advance.id,
                     "advance": True,
                 }
             )
-            consolidated_advance_line._onchange_product_id()
+            consolidated_advance_line._onchange_product_id_date_account_id()
             consolidated_advance_line.unit_amount = residual_value
 
             # Submitted to Manager
@@ -117,29 +125,32 @@ class HrExpenseSheet(models.Model):
                     if line.debit > 0:
                         aml_to_reconcile_debit |= line
 
-            aml._reconcile_lines(
-                aml_to_reconcile_debit,
-                aml_to_reconcile_credit,
-                "amount_residual_currency",
-            )
-            aml_to_reconcile.check_full_reconcile()
+            aml_to_reconcile.reconcile()
             consolidated_advance.set_to_paid()
 
             self._log_consolidation_open_advance(self, consolidated_advance)
 
             return consolidated_advance
 
-    @api.multi
     def consolidate_open_advances(self):
         if self.env.user.has_group("account.group_account_manager"):
             self._consolidate_open_advances()
         else:
-            raise UserError(
-                _("You do not have permission to perform this action.")
-            )
+            raise UserError(_("You do not have permission to perform this action."))
 
-    @api.multi
     def _log_consolidation_open_advance(self, advances, consolidated_advance):
-        consolidated_advance.message_post(body='%s %s' % (_("Consolidated advances:"), ", ".join('%s (ID %s)' % (p.name or 'n/a', p.id) for p in advances)))
+        consolidated_advance.message_post(
+            body="%s %s"
+            % (
+                _("Consolidated advances:"),
+                ", ".join("%s (ID %s)" % (p.name or "n/a", p.id) for p in advances),
+            )
+        )
         for advance in advances:
-            advance.message_post(body='%s' % (_("This advance was consolidated in the advance: %s (ID %s)") % (consolidated_advance.name or 'n/a', consolidated_advance.id)))
+            advance.message_post(
+                body=_("%s")
+                % (
+                    _("This advance was consolidated in the advance: %s (ID %s)")
+                    % (consolidated_advance.name or "n/a", consolidated_advance.id)
+                )
+            )
