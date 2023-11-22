@@ -23,8 +23,16 @@ class HrExpense(models.Model):
         ],
         copy=False,
     )
+    with_invoice_id = fields.Boolean(
+        compute="_compute_with_invoice_id", compute_sudo=True, store=True
+    )
 
-    def action_expense_create_invoice(self):
+    @api.depends("invoice_id")
+    def _compute_with_invoice_id(self):
+        for item in self:
+            item.with_invoice_id = bool(item.invoice_id)
+
+    def _prepare_invoice_values(self):
         invoice_lines = [
             (
                 0,
@@ -35,22 +43,35 @@ class HrExpense(models.Model):
                     "price_unit": self.unit_amount or self.total_amount,
                     "quantity": self.quantity,
                     "account_id": self.account_id.id,
-                    "analytic_account_id": self.analytic_account_id.id,
+                    "analytic_distribution": self.analytic_distribution,
                     "tax_ids": [(6, 0, self.tax_ids.ids)],
                 },
             )
         ]
-        invoice = self.env["account.move"].create(
-            [
-                {
-                    "name": "/",
-                    "ref": self.reference,
-                    "move_type": "in_invoice",
-                    "invoice_date": self.date,
-                    "invoice_line_ids": invoice_lines,
-                }
-            ]
-        )
+        return {
+            "name": "/",
+            "ref": self.reference,
+            "move_type": "in_invoice",
+            "invoice_date": self.date,
+            "invoice_line_ids": invoice_lines,
+        }
+
+    def action_move_create(self):
+        """It overrides the journal item values to match the invoice payable one."""
+        res = super().action_move_create()
+        for item in self.filtered(lambda x: x.invoice_id):
+            invoice = item.invoice_id
+            debit_move_line = res.line_ids.filtered(
+                lambda x: x.expense_id == item and x.debit
+            )
+            debit_move_line.partner_id = invoice.partner_id.commercial_partner_id
+            debit_move_line.account_id = invoice.line_ids.filtered(
+                lambda x: x.account_type == "liability_payable"
+            ).account_id
+        return res
+
+    def action_expense_create_invoice(self):
+        invoice = self.env["account.move"].create(self._prepare_invoice_values())
         attachments = self.env["ir.attachment"].search(
             [("res_model", "=", self._name), ("res_id", "in", self.ids)]
         )
@@ -75,23 +96,6 @@ class HrExpense(models.Model):
                 and expense.invoice_id.state != "posted"
             ):
                 raise UserError(_("Vendor bill state must be Posted"))
-
-    def _get_account_move_line_values(self):
-        """It overrides the journal item values to match the invoice payable one."""
-        move_line_values_by_expense = super()._get_account_move_line_values()
-        for expense_id, move_lines in move_line_values_by_expense.items():
-            expense = self.browse(expense_id)
-            if not expense.invoice_id:
-                continue
-            for move_line in move_lines:
-                if move_line["debit"]:
-                    move_line[
-                        "partner_id"
-                    ] = expense.invoice_id.partner_id.commercial_partner_id.id
-                    move_line["account_id"] = expense.invoice_id.line_ids.filtered(
-                        lambda l: l.account_internal_type == "payable"
-                    ).account_id.id
-        return move_line_values_by_expense
 
     @api.onchange("invoice_id")
     def _onchange_invoice_id(self):

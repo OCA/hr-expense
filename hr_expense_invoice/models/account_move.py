@@ -15,9 +15,9 @@ class AccountMove(models.Model):
 
     @api.constrains("amount_total")
     def _check_expense_ids(self):
+        DecimalPrecision = self.env["decimal.precision"]
+        precision = DecimalPrecision.precision_get("Product Price")
         for move in self.filtered("expense_ids"):
-            DecimalPrecision = self.env["decimal.precision"]
-            precision = DecimalPrecision.precision_get("Product Price")
             expense_amount = sum(move.expense_ids.mapped("total_amount"))
             if float_compare(expense_amount, move.amount_total, precision) != 0:
                 raise ValidationError(
@@ -26,3 +26,12 @@ class AccountMove(models.Model):
                         "linked to this invoice."
                     )
                 )
+
+
+class AccountMoveLine(models.Model):
+    _inherit = "account.move.line"
+
+    @api.constrains("account_id", "display_type")
+    def _check_payable_receivable(self):
+        _self = self.filtered("expense_id")
+        return super(AccountMoveLine, (self - _self))._check_payable_receivable()

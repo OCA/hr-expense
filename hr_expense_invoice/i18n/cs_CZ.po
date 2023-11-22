@@ -108,15 +108,3 @@ msgid ""
 "You can't change the total amount, as there's an expense linked to this "
 "invoice."
 msgstr ""
-
-#, fuzzy
-#~ msgid "Create Invoice"
-#~ msgstr "Faktura"
-
-#~ msgid ""
-#~ "Cannot reconcile supplier invoice payable with generated line. Please "
-#~ "check amounts and see if the invoice is already added or paid. Invoice: %s"
-#~ msgstr ""
-#~ "Nelze sladit dodavatelskou fakturu se zaplacenou generovanou linkou. "
-#~ "Zkontrolujte částky a zjistěte, zda již faktura již byla přidána nebo "
-#~ "zaplacena. Faktura: %s"

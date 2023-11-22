@@ -109,15 +109,3 @@ msgid ""
 msgstr ""
 "No puede modificar el importe total, ya que hay un gasto vinculado a esta "
 "factura."
-
-#, fuzzy
-#~ msgid "Create Invoice"
-#~ msgstr "Factura"
-
-#~ msgid ""
-#~ "Cannot reconcile supplier invoice payable with generated line. Please "
-#~ "check amounts and see if the invoice is already added or paid. Invoice: %s"
-#~ msgstr ""
-#~ "No se puede conciliar el saldo a pagar de la factura con la línea "
-#~ "generada. Compruebe por favor las cantidades y vea si la factura ya está "
-#~ "añadida previamente o pagada. Factura: %s"
