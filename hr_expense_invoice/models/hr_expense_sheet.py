@@ -13,21 +13,17 @@ class HrExpenseSheet(models.Model):
     invoice_count = fields.Integer(compute="_compute_invoice_count")
 
     def action_sheet_move_create(self):
-        expense_line_ids = self.mapped("expense_line_ids").filtered("invoice_id")
-        self._validate_expense_invoice(expense_line_ids)
+        self._validate_expense_invoice()
         res = super().action_sheet_move_create()
-        for sheet in self:
-            move_lines = res[sheet.id].line_ids
-            if sheet.payment_mode != "own_account":
-                continue
-            for line in self.expense_line_ids.filtered("invoice_id"):
+        move_lines = res.line_ids
+        for sheet in self.filtered(lambda x: x.payment_mode == "own_account"):
+            for line in sheet.expense_line_ids.filtered("invoice_id"):
                 c_move_lines = move_lines.filtered(
                     lambda x: x.expense_id == line
                     and x.partner_id == line.invoice_id.commercial_partner_id
                 )
                 c_move_lines |= line.invoice_id.line_ids.filtered(
-                    lambda x: x.account_id.internal_type == "payable"
-                    and not x.reconciled
+                    lambda x: x.account_type == "liability_payable" and not x.reconciled
                 )
                 c_move_lines.with_context(use_hr_expense_invoice=True).reconcile()
         return res
@@ -47,8 +43,9 @@ class HrExpenseSheet(models.Model):
             )
 
     @api.model
-    def _validate_expense_invoice(self, expense_lines):
+    def _validate_expense_invoice(self):
         """Check several criteria that needs to be met for creating the move."""
+        expense_lines = self.mapped("expense_line_ids").filtered("invoice_id")
         DecimalPrecision = self.env["decimal.precision"]
         precision = DecimalPrecision.precision_get("Product Price")
         invoices = expense_lines.mapped("invoice_id")
