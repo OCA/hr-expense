@@ -1,0 +1,6 @@
+<odoo noupdate="1">
+    <record id="hr_expense_cancel_confirm_disable" model="ir.config_parameter">
+        <field name="key">hr.expense.sheet.cancel_confirm_disable</field>
+        <field name="value">True</field>
+    </record>
+</odoo>
