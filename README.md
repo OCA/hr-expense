@@ -25,6 +25,7 @@ addon | version | maintainers | summary
 [hr_expense_advance_clearing_sequence](hr_expense_advance_clearing_sequence/) | 15.0.1.0.0 |  | HR Expense Advance Clearing Sequence
 [hr_expense_advance_overdue_reminder](hr_expense_advance_overdue_reminder/) | 15.0.1.0.0 | [![Saran440](https://github.com/Saran440.png?size=30px)](https://github.com/Saran440) | Simple mail overdue employee advance reminder
 [hr_expense_cancel](hr_expense_cancel/) | 15.0.1.0.1 |  | Hr expense cancel
+[hr_expense_cancel_confirm](hr_expense_cancel_confirm/) | 15.0.1.0.0 | [![Saran440](https://github.com/Saran440.png?size=30px)](https://github.com/Saran440) | HR Expense Cancel Confirm
 [hr_expense_exception](hr_expense_exception/) | 15.0.1.0.0 |  | Custom exceptions on expense report
 [hr_expense_invoice](hr_expense_invoice/) | 15.0.1.1.3 |  | Supplier invoices on HR expenses
 [hr_expense_journal](hr_expense_journal/) | 15.0.1.0.0 | [![dreispt](https://github.com/dreispt.png?size=30px)](https://github.com/dreispt) | Set the Journal for the payment type used to pay the expense
