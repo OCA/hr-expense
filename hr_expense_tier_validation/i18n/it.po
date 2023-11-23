@@ -77,6 +77,7 @@ msgid "Reviewers"
 msgstr "Revisori"
 
 #. module: hr_expense_tier_validation
+#. odoo-python
 #: code:addons/hr_expense_tier_validation/models/hr_expense.py:0
 #, python-format
 msgid "The expense report is under validation."
@@ -102,6 +103,11 @@ msgstr "Validato"
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__validated_message
 msgid "Validated Message"
 msgstr "Messaggio validato"
+
+#. module: hr_expense_tier_validation
+#: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__validation_status
+msgid "Validation Status"
+msgstr ""
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__review_ids
