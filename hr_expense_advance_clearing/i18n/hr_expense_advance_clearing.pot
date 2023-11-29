@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 15.0\n"
+"Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -14,11 +14,12 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: hr_expense_advance_clearing
+#. odoo-python
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
 #, python-format
 msgid ""
 "\n"
-"Note: pending amount clearing is {}{}"
+"Note: pending amount clearing is %(symbol)s%(amount)s"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
@@ -29,11 +30,12 @@ msgid "# of Advance"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#. odoo-python
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
 #, python-format
 msgid ""
-"A remaining advance return of {} {} with the reference {} related to your "
-"expense {} has been made."
+"A remaining advance return of %(amount)s %(symbol)s with the reference "
+"%(ref)s related to your expense %(name)s has been made."
 msgstr ""
 
 #. module: hr_expense_advance_clearing
@@ -61,6 +63,7 @@ msgid "Advance Remaining"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/hr_employee_base.py:0
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee__advance_sheet_ids
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee_base__advance_sheet_ids
@@ -70,19 +73,22 @@ msgid "Advance Sheet"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/hr_expense_sheet.py:0
 #, python-format
 msgid "Advance clearing must not contain any advance expense line"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/hr_expense_sheet.py:0
 #, python-format
 msgid "Advance must contain only advance expense line"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
-#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense_sheet.py:0
 #, python-format
 msgid "Advance: %s has no amount to clear"
 msgstr ""
@@ -135,6 +141,7 @@ msgid "Clearing Sheet"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/hr_expense_sheet.py:0
 #, python-format
 msgid "Clearing Sheets"
@@ -160,36 +167,40 @@ msgstr ""
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__advance
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet__advance
-#: model:product.product,name:hr_expense_advance_clearing.product_emp_advance
 #: model:product.template,name:hr_expense_advance_clearing.product_emp_advance_product_template
 msgid "Employee Advance"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
 #, python-format
 msgid "Employee advance product has no payable account"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
 #, python-format
 msgid "Employee advance, account must be the same payable account"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
 #, python-format
 msgid "Employee advance, all taxes must be removed"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
 #, python-format
 msgid "Employee advance, paid by must be employee"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
 #, python-format
 msgid "Employee advance, selected product is not valid"
@@ -312,6 +323,7 @@ msgid "Show remaining advance of this employee"
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/account_move.py:0
 #, python-format
 msgid ""
@@ -320,18 +332,14 @@ msgid ""
 msgstr ""
 
 #. module: hr_expense_advance_clearing
-#: model:product.product,uom_name:hr_expense_advance_clearing.product_emp_advance
-#: model:product.template,uom_name:hr_expense_advance_clearing.product_emp_advance_product_template
-msgid "Units"
-msgstr ""
-
-#. module: hr_expense_advance_clearing
+#. odoo-python
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
 #, python-format
 msgid "You can only register payment for posted journal entries."
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#. odoo-python
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
 #, python-format
 msgid ""
@@ -339,6 +347,7 @@ msgid ""
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#. odoo-python
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
 #, python-format
 msgid ""
@@ -347,7 +356,10 @@ msgid ""
 msgstr ""
 
 #. module: hr_expense_advance_clearing
+#. odoo-python
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
 #, python-format
-msgid "You cannot return advance more than actual remaining ({}{}){}"
+msgid ""
+"You cannot return advance more than actual remaining "
+"(%(symbol)s%(amount)s)%(more_info)s"
 msgstr ""
