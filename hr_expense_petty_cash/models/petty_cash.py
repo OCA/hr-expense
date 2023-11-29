@@ -37,7 +37,7 @@ class PettyCash(models.Model):
 
     @api.depends("partner_id", "account_id")
     def _compute_petty_cash_balance(self):
-        aml_env = self.env["account.move.line"]
+        aml_env = self.sudo().env["account.move.line"]
         for rec in self:
             aml = aml_env.search(
                 [
