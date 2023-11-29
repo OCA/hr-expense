@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <!-- New menus Advance and Expense under My Reports -->
+
+    <record id="action_my_hr_advance_sheet" model="ir.actions.act_window">
+        <field name="name">Advances</field>
+        <field name="res_model">hr.expense.sheet</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph,activity</field>
+        <field name="search_view_id" ref="hr_expense.hr_expense_sheet_view_search" />
+        <field name="domain">[('state', '!=', 'cancel'), ('advance', '=', True)]</field>
+        <field
+            name="context"
+        >{'search_default_my_reports': 1, 'default_advance': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            No advance report found. Let's create one!
+            </p><p>
+            Once you have created your advance, submit it to your manager who will validate it.
+            </p>
+        </field>
+    </record>
+    <record id="action_my_hr_expense_sheet" model="ir.actions.act_window">
+        <field name="name">Expenses</field>
+        <field name="res_model">hr.expense.sheet</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph,activity</field>
+        <field name="search_view_id" ref="hr_expense.hr_expense_sheet_view_search" />
+        <field
+            name="domain"
+        >[('state', '!=', 'cancel'), ('advance', '=', False)]</field>
+        <field name="context">{'search_default_my_reports': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            No expense report found. Let's create one!
+            </p><p>
+            Once you have created your expense, submit it to your manager who will validate it.
+            </p>
+        </field>
+    </record>
+    <menuitem
+        id="menu_my_hr_advance_sheet"
+        sequence="1"
+        parent="hr_expense.menu_hr_expense_sheet_my_reports"
+        action="action_my_hr_advance_sheet"
+        name="Advances"
+    />
+    <menuitem
+        id="menu_my_hr_expense_sheet"
+        sequence="2"
+        parent="hr_expense.menu_hr_expense_sheet_my_reports"
+        action="action_my_hr_expense_sheet"
+        name="Expenses"
+    />
+
+    <!-- End new menus -->
+
+    <record id="hr_expense_view_search" model="ir.ui.view">
+        <field name="name">hr.expense.view.search</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_search" />
+        <field name="arch" type="xml">
+            <separator position="after">
+                <filter
+                    string="Advance"
+                    name="is_advance"
+                    domain="[('advance', '=', True)]"
+                />
+                <filter
+                    string="Expense"
+                    name="is_expense"
+                    domain="[('advance', '=', False)]"
+                />
+            </separator>
+        </field>
+    </record>
+    <record id="hr_expense_sheet_view_search" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.view.search</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_sheet_view_search" />
+        <field name="arch" type="xml">
+            <separator position="after">
+                <filter
+                    string="Advance"
+                    name="advance_expense"
+                    domain="[('advance', '=', True)]"
+                />
+                <filter
+                    string="Advance (not cleared)"
+                    name="advance_expense_uncleared"
+                    domain="[('advance', '=', True), ('clearing_residual', '>', 0.0)]"
+                />
+                <filter
+                    string="Clearing"
+                    name="advance_clearing"
+                    domain="[('advance_sheet_id', '!=', False)]"
+                />
+            </separator>
+        </field>
+    </record>
+    <record id="action_hr_expense_sheet_advance_clearing" model="ir.actions.act_window">
+        <field name="name">Advance Clearing</field>
+        <field name="res_model">hr.expense.sheet</field>
+        <field name="view_mode">form</field>
+        <field name="search_view_id" ref="hr_expense_sheet_view_search" />
+        <field name="domain">
+            [('employee_id.user_id', '=', uid), ('state', '!=', 'cancel')]
+        </field>
+        <field name="context">{'search_default_my_reports': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a new expense report</p>
+            <p>
+                Once you have created your expense, submit it to your manager who will
+                validate it.
+            </p>
+        </field>
+    </record>
+    <record id="hr_expense_view_form" model="ir.ui.view">
+        <field name="name">hr.expense.view.form</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form" />
+        <field name="arch" type="xml">
+            <h1 position="after">
+                <field
+                    name="advance"
+                    invisible="not context.get('default_advance')"
+                    readonly="1"
+                    force_save="1"
+                />
+                <label for="advance" invisible="not context.get('default_advance')" />
+            </h1>
+            <field name="product_id" position="attributes">
+                <attribute
+                    name="attrs"
+                >{'readonly': [('advance', '=', True)]}</attribute>
+                <attribute name="force_save">1</attribute>
+            </field>
+            <field name="product_id" position="after">
+                <field
+                    name="clearing_product_id"
+                    attrs="{'invisible': [('advance', '=', False)]}"
+                    placeholder="Optional clearing product is used during clear advance"
+                />
+            </field>
+            <field name="analytic_distribution" position="attributes">
+                <attribute name="attrs">
+                    {'invisible': [('advance', '!=', False)]}
+                </attribute>
+            </field>
+        </field>
+    </record>
+    <record id="view_hr_expense_sheet_tree" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.tree</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_tree" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="advance_sheet_id" optional="show" />
+            </field>
+            <field name="total_amount" position="after">
+                <field name="clearing_residual" optional="show" />
+            </field>
+        </field>
+    </record>
+    <record id="view_hr_expense_sheet_form" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.form</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
+        <field name="arch" type="xml">
+            <field name="state" position="before">
+                <button
+                    name="open_clear_advance"
+                    type="object"
+                    string="Clear Advance"
+                    class="oe_highlight"
+                    attrs="{'invisible': ['|', '|', ('advance', '=', False), ('state', '!=', 'done'), ('clearing_residual', '=', 0.0)]}"
+                />
+                <button
+                    name="action_register_payment"
+                    type="object"
+                    string="Return Advance"
+                    attrs="{'invisible': ['|', '|', ('advance', '=', False), ('state', '!=', 'done'), ('clearing_residual', '=', 0.0)]}"
+                    context="{'hr_return_advance': True}"
+                    groups="account.group_account_user"
+                />
+            </field>
+            <h1 position="after">
+                <field
+                    name="advance"
+                    attrs="{'invisible': [('advance', '=', False)]}"
+                    readonly="1"
+                    force_save="1"
+                />
+                <label for="advance" attrs="{'invisible': [('advance', '=', False)]}" />
+            </h1>
+            <xpath expr="/form/sheet/group/group" position="after">
+                <group>
+                    <field name="id" invisible="1" />
+                    <field
+                        name="advance_sheet_id"
+                        attrs="{'invisible': [('advance', '=', True)], 'readonly': [('id', '!=', False)]}"
+                        force_save="1"
+                    />
+                    <field
+                        name="clearing_residual"
+                        attrs="{'invisible': [('advance', '=', False)]}"
+                    />
+                    <field
+                        name="advance_sheet_residual"
+                        attrs="{'invisible': [('advance_sheet_id', '=', False)]}"
+                    />
+                </group>
+            </xpath>
+            <xpath
+                expr="//field[@name='expense_line_ids']/tree/field[@name='name']"
+                position="after"
+            >
+                <field name="employee_id" invisible="1" />
+                <field name="payment_mode" invisible="1" />
+                <field name="advance" invisible="1" />
+                <field name="product_id" invisible="1" />
+                <field name="product_uom_id" invisible="1" />
+                <field name="product_uom_category_id" invisible="1" />
+                <field
+                    name="clearing_product_id"
+                    attrs="{'column_invisible': [('parent.advance', '=', False)]}"
+                />
+                <field name="av_line_id" invisible="1" />
+            </xpath>
+            <xpath expr="//field[@name='expense_line_ids']" position="attributes">
+                <attribute
+                    name="context"
+                >{'default_advance': advance, 'search_default_is_advance': advance, 'search_default_is_expense': not advance, 'form_view_ref' : 'hr_expense.hr_expense_view_form_without_header', 'default_company_id': company_id, 'default_employee_id': employee_id}</attribute>
+                <attribute
+                    name="attrs"
+                >{'readonly': [('id', '=', False), ('advance_sheet_id', '!=', False)]}</attribute>
+                <attribute name="force_save">True</attribute>
+            </xpath>
+            <xpath
+                expr="//field[@name='expense_line_ids']/tree/field[@name='unit_amount']"
+                position="attributes"
+            >
+                <attribute name="force_save">True</attribute>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_open_clearings"
+                    class="oe_stat_button"
+                    icon="fa-file-text-o"
+                    type="object"
+                    attrs="{'invisible': [('advance', '=', False)]}"
+                >
+                    <field name="clearing_count" widget="statinfo" string="Clearings" />
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>
