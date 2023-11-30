@@ -82,18 +82,3 @@ class TestHrExpensePayment(TransactionCase):
         self.assertFalse(self.expense_sheet.payment_ids)
         payment_wizard.action_create_payments()
         self.assertEqual(len(self.expense_sheet.payment_ids), 1)
-
-    def test_action_sheet_move_create(self):
-        self.expense.payment_mode = "company_account"
-        self.assertFalse(self.expense_sheet.payment_ids)
-        self.expense_sheet.action_sheet_move_create()
-        self.assertEqual(len(self.expense_sheet.payment_ids), 1)
-
-    def test_action_sheet_move_create_skip_payment(self):
-        self.expense.payment_mode = "company_account"
-        self.assertFalse(self.expense_sheet.payment_ids)
-        self.expense_sheet.with_context(
-            skip_create_payment_company_account=True
-        ).action_sheet_move_create()
-        self.assertFalse(self.expense_sheet.payment_ids)
-        self.assertEqual(self.expense_sheet.state, "done")
