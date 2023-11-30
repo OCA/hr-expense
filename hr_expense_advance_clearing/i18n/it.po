@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-07-04 09:09+0000\n"
+"PO-Revision-Date: 2023-11-30 15:35+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -24,6 +24,8 @@ msgid ""
 "\n"
 "Note: pending amount clearing is %(symbol)s%(amount)s"
 msgstr ""
+"\n"
+"Nota: valore liquidazione in attesa è %(symbol)s%(amount)s"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee__advance_count
@@ -40,6 +42,8 @@ msgid ""
 "A remaining advance return of %(amount)s %(symbol)s with the reference "
 "%(ref)s related to your expense %(name)s has been made."
 msgstr ""
+"È stato fatto un residuo reso anticipo di %(amount)s %(symbol)s con "
+"riferimento %(ref)s relativo alla sua spesa %(name)s."
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_account_payment__advance_id
@@ -385,6 +389,8 @@ msgid ""
 "You cannot return advance more than actual remaining (%(symbol)s"
 "%(amount)s)%(more_info)s"
 msgstr ""
+"Non è possibile restituire un anticipo superiore al rimanente effettivo "
+"(%(symbol)s%(amount)s)%(more_info)s"
 
 #, python-format
 #~ msgid ""
