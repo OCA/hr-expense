@@ -8,10 +8,7 @@ class HrExpenseType(models.Model):
     _name = "hr.expense.type"
     _description = "Define Expense Types"
 
-    name = fields.Char(
-        string="Name",
-        required=True
-    )
+    name = fields.Char(string="Name", required=True)
     code = fields.Char()
     description = fields.Text()
     company_id = fields.Many2one(

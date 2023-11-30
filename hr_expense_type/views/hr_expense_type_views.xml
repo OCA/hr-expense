@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_hr_expense_type_tree" model="ir.ui.view">
         <field name="model">hr.expense.type</field>
         <field name="arch" type="xml">
             <tree string="Expense Type">
-                <field name="name"/>
-                <field name="code"/>
-                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="name" />
+                <field name="code" />
+                <field name="company_id" groups="base.group_multi_company" />
             </tree>
         </field>
     </record>
@@ -16,12 +16,12 @@
             <form string="Expense Type">
                 <sheet>
                     <group>
-                        <field name="name"/>
-                        <field name="code"/>
-                        <field name="company_id" groups="base.group_multi_company"/>
+                        <field name="name" />
+                        <field name="code" />
+                        <field name="company_id" groups="base.group_multi_company" />
                     </group>
                     <div>
-                        <field name="description" placeholder="Description..."/>
+                        <field name="description" placeholder="Description..." />
                     </div>
                 </sheet>
             </form>
@@ -32,7 +32,13 @@
         <field name="res_model">hr.expense.type</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_hr_expense_type_tree"/>
+        <field name="view_id" ref="view_hr_expense_type_tree" />
     </record>
-    <menuitem action="hr_expense_type_tree" id="menu_hr_expense_type" parent="hr_expense.menu_hr_expense_configuration" sequence="21" groups="hr_expense.group_hr_expense_user"/>
+    <menuitem
+        action="hr_expense_type_tree"
+        id="menu_hr_expense_type"
+        parent="hr_expense.menu_hr_expense_configuration"
+        sequence="21"
+        groups="hr_expense.group_hr_expense_user"
+    />
 </odoo>

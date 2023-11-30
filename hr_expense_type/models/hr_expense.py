@@ -8,6 +8,6 @@ class HrExpense(models.Model):
     _inherit = "hr.expense"
 
     expense_type_id = fields.Many2one(
-        comodel_name='hr.expense.type',
-        string='Expense Type',
+        comodel_name="hr.expense.type",
+        string="Expense Type",
     )

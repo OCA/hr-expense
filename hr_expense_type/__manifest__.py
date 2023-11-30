@@ -9,7 +9,7 @@
     "author": "Trey (www.trey.es), Odoo Community Association (OCA)",
     "maintainers": ["cubells"],
     "category": "Human Resources",
-    "website": "https://github.com/OCA/hr",
+    "website": "https://github.com/OCA/hr-expense",
     "depends": ["hr_expense"],
     "data": [
         "security/ir.model.access.csv",
