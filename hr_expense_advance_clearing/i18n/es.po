@@ -6,13 +6,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2024-01-03 12:34+0000\n"
+"Last-Translator: Ivorra78 <informatica@totmaterial.es>\n"
 "Language-Team: none\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
 
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
@@ -21,13 +23,15 @@ msgid ""
 "\n"
 "Note: pending amount clearing is %s%s"
 msgstr ""
+"\n"
+"Nota: el importe pendiente de compensación es %s%s"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee__advance_count
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee_base__advance_count
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee_public__advance_count
 msgid "# of Advance"
-msgstr ""
+msgstr "# de Anticipo"
 
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
@@ -36,6 +40,8 @@ msgid ""
 "A remaining advance return of {} {} with the reference {} related to your "
 "expense {} has been made."
 msgstr ""
+"Se ha realizado una devolución anticipada restante de {} {} con la "
+"referencia {} relacionada con tu gasto {}."
 
 #. module: hr_expense_advance_clearing
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_employee_public_view_form
@@ -43,22 +49,22 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_view_search
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.view_employee_form
 msgid "Advance"
-msgstr ""
+msgstr "Anticipo"
 
 #. module: hr_expense_advance_clearing
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_sheet_view_search
 msgid "Advance (not cleared)"
-msgstr ""
+msgstr "Anticipo (no compensado)"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.actions.act_window,name:hr_expense_advance_clearing.action_hr_expense_sheet_advance_clearing
 msgid "Advance Clearing"
-msgstr ""
+msgstr "Compensación Anticipada"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet__advance_sheet_residual
 msgid "Advance Remaining"
-msgstr ""
+msgstr "Anticipo Restante"
 
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/models/hr_employee_base.py:0
@@ -67,80 +73,82 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee_public__advance_sheet_ids
 #, python-format
 msgid "Advance Sheet"
-msgstr ""
+msgstr "Hoja de Anticipo"
 
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/models/hr_expense_sheet.py:0
 #, python-format
 msgid "Advance clearing must not contain any advance expense line"
 msgstr ""
+"La liquidación anticipada no debe contener ninguna línea de gastos "
+"anticipados"
 
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/models/hr_expense_sheet.py:0
 #, python-format
 msgid "Advance must contain only advance expense line"
-msgstr ""
+msgstr "El anticipo debe contener únicamente la línea de gastos anticipados"
 
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
 #, python-format
 msgid "Advance: %s has no amount to clear"
-msgstr ""
+msgstr "Avance: %s no tiene importe que compensar"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.actions.act_window,name:hr_expense_advance_clearing.action_my_hr_advance_sheet
 #: model:ir.ui.menu,name:hr_expense_advance_clearing.menu_my_hr_advance_sheet
 msgid "Advances"
-msgstr ""
+msgstr "Anticipos"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet__clearing_residual
 msgid "Amount to clear"
-msgstr ""
+msgstr "Importe a compensar"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense_sheet__clearing_residual
 msgid "Amount to clear of this expense sheet in company currency"
-msgstr ""
+msgstr "Importe a compensar de esta hoja de gastos en divisa de la compañía"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model,name:hr_expense_advance_clearing.model_hr_employee_base
 msgid "Basic Employee"
-msgstr ""
+msgstr "Empleado Básico"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet__advance_sheet_id
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.view_hr_expense_sheet_form
 msgid "Clear Advance"
-msgstr ""
+msgstr "Borrar Avance"
 
 #. module: hr_expense_advance_clearing
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_sheet_view_search
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.view_hr_expense_sheet_form
 msgid "Clearing"
-msgstr ""
+msgstr "Compensar"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__clearing_product_id
 msgid "Clearing Product"
-msgstr ""
+msgstr "Producto de Compensación"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet__clearing_sheet_ids
 msgid "Clearing Sheet"
-msgstr ""
+msgstr "Hoja de Compensación"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_employee__advance_count
 #: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_employee_base__advance_count
 #: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_employee_public__advance_count
 msgid "Count advance sheet in expense report"
-msgstr ""
+msgstr "Contar la hoja de anticipos en el informe de gastos"
 
 #. module: hr_expense_advance_clearing
 #: model_terms:ir.actions.act_window,help:hr_expense_advance_clearing.action_hr_expense_sheet_advance_clearing
 msgid "Create a new expense report"
-msgstr ""
+msgstr "Crear un nuevo informe de gastos"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_account_move__display_name
@@ -149,7 +157,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__display_name
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Mostrar Nombre"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__advance
@@ -157,64 +165,66 @@ msgstr ""
 #: model:product.product,name:hr_expense_advance_clearing.product_emp_advance
 #: model:product.template,name:hr_expense_advance_clearing.product_emp_advance_product_template
 msgid "Employee Advance"
-msgstr ""
+msgstr "Anticipo de Empleado"
 
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
 #, python-format
 msgid "Employee advance product has no payable account"
-msgstr ""
+msgstr "El producto Anticipo de empleado no tiene cuenta a pagar"
 
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
 #, python-format
 msgid "Employee advance, account must be the same payable account"
-msgstr ""
+msgstr "Anticipo de empleado, la cuenta debe ser la misma cuenta a pagar"
 
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
 #, python-format
 msgid "Employee advance, all taxes must be removed"
-msgstr ""
+msgstr "Anticipo de empleado, todos los impuestos deben ser eliminados"
 
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
 #, python-format
 msgid "Employee advance, paid by must be employee"
-msgstr ""
+msgstr "Anticipo de empleado, pagado por debe ser empleado"
 
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
 #, python-format
 msgid "Employee advance, selected product is not valid"
-msgstr ""
+msgstr "Anticipo de empleado, el producto seleccionado no es válido"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model,name:hr_expense_advance_clearing.model_hr_expense
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_view_search
 msgid "Expense"
-msgstr ""
+msgstr "Gasto"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model,name:hr_expense_advance_clearing.model_hr_expense_sheet
 msgid "Expense Report"
-msgstr ""
+msgstr "Informe de Gasto"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense__av_line_id
 msgid "Expense created from this advance expense line"
-msgstr ""
+msgstr "Gasto creado a partir de esta línea de gastos anticipados"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.actions.act_window,name:hr_expense_advance_clearing.action_my_hr_expense_sheet
 #: model:ir.ui.menu,name:hr_expense_advance_clearing.menu_my_hr_expense_sheet
 msgid "Expenses"
-msgstr ""
+msgstr "Gastos"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense_sheet__amount_payable
 msgid "Final regiter payment amount even after advance clearing"
 msgstr ""
+"Importe final del pago del registrador incluso después de la compensación "
+"anticipada"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_account_move__id
@@ -223,12 +233,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__id
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet__id
 msgid "ID"
-msgstr ""
+msgstr "ID (identificación)"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model,name:hr_expense_advance_clearing.model_account_move
 msgid "Journal Entry"
-msgstr ""
+msgstr "Entrada de Diario"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_account_move____last_update
@@ -237,17 +247,17 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense____last_update
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Última Modificación el"
 
 #. module: hr_expense_advance_clearing
 #: model_terms:ir.actions.act_window,help:hr_expense_advance_clearing.action_my_hr_advance_sheet
 msgid "No advance report found. Let's create one!"
-msgstr ""
+msgstr "No se ha encontrado ningún informe previo. ¡Vamos a crear uno!"
 
 #. module: hr_expense_advance_clearing
 #: model_terms:ir.actions.act_window,help:hr_expense_advance_clearing.action_my_hr_expense_sheet
 msgid "No expense report found. Let's create one!"
-msgstr ""
+msgstr "No se ha encontrado ningún informe de gastos. ¡Vamos a crear uno!"
 
 #. module: hr_expense_advance_clearing
 #: model_terms:ir.actions.act_window,help:hr_expense_advance_clearing.action_my_hr_advance_sheet
@@ -255,6 +265,8 @@ msgid ""
 "Once you have created your advance, submit it to your manager who will "
 "validate it."
 msgstr ""
+"Una vez que haya creado su anticipo, envíelo a su gestor, que se encargará "
+"de validarlo."
 
 #. module: hr_expense_advance_clearing
 #: model_terms:ir.actions.act_window,help:hr_expense_advance_clearing.action_hr_expense_sheet_advance_clearing
@@ -262,18 +274,21 @@ msgid ""
 "Once you have created your expense, submit it to your manager who will\n"
 "                validate it."
 msgstr ""
+"Una vez que haya creado su gasto, envíelo a su gestor que lo\n"
+"                lvalidará."
 
 #. module: hr_expense_advance_clearing
 #: model_terms:ir.actions.act_window,help:hr_expense_advance_clearing.action_my_hr_expense_sheet
 msgid ""
 "Once you have created your expense, submit it to your manager who will "
 "validate it."
-msgstr ""
+msgstr "Una vez que haya creado su gasto, envíelo a su gestor, que lo validará."
 
 #. module: hr_expense_advance_clearing
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_view_form
 msgid "Optional clearing product is used during clear advance"
 msgstr ""
+"El producto de limpieza opcional se utiliza durante el avance de limpieza"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense__clearing_product_id
@@ -281,41 +296,43 @@ msgid ""
 "Optional: On the clear advance, the clearing product will create default "
 "product line."
 msgstr ""
+"Opcional: En el avance de compensación, el producto de compensación creará "
+"línea de producto por defecto."
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet__amount_payable
 msgid "Payable Amount"
-msgstr ""
+msgstr "Importe a Pagar"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__av_line_id
 msgid "Ref: Advance"
-msgstr ""
+msgstr "Ref: Anticipo"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model,name:hr_expense_advance_clearing.model_account_payment_register
 msgid "Register Payment"
-msgstr ""
+msgstr "Registrar Pago"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense_sheet__advance_sheet_residual
 msgid "Remaining amount to clear the selected advance sheet"
-msgstr ""
+msgstr "Importe restante para compensar el anticipo seleccionado"
 
 #. module: hr_expense_advance_clearing
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.view_hr_expense_sheet_form
 msgid "Return Advance"
-msgstr ""
+msgstr "Devolución Anticipada"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense_sheet__clearing_sheet_ids
 msgid "Show reference clearing on advance"
-msgstr ""
+msgstr "Mostrar compensación de referencia en avance"
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense_sheet__advance_sheet_id
 msgid "Show remaining advance of this employee"
-msgstr ""
+msgstr "Mostrar el adelanto restante de este empleado"
 
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/models/account_move.py:0
@@ -324,18 +341,21 @@ msgid ""
 "This operation is not allowed as some advance amount was already cleared/returned.\n"
 "Please cancel those documents first."
 msgstr ""
+"Esta operación no está permitida porque ya se han liquidado o devuelto "
+"algunos anticipos.\n"
+"Por favor, cancele primero esos documentos."
 
 #. module: hr_expense_advance_clearing
 #: model:product.product,uom_name:hr_expense_advance_clearing.product_emp_advance
 #: model:product.template,uom_name:hr_expense_advance_clearing.product_emp_advance_product_template
 msgid "Units"
-msgstr ""
+msgstr "Unidades"
 
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
 #, python-format
 msgid "You can only register payment for posted journal entries."
-msgstr ""
+msgstr "Sólo se puede registrar el pago de las entradas de diario publicadas."
 
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
@@ -343,6 +363,8 @@ msgstr ""
 msgid ""
 "You can't create payments for entries belonging to different companies."
 msgstr ""
+"No se pueden crear pagos para entradas que pertenezcan a compañías "
+"diferentes."
 
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
@@ -351,6 +373,8 @@ msgid ""
 "You can't register a payment because there is nothing left to pay on the "
 "selected journal items."
 msgstr ""
+"No puede registrar un pago porque no queda nada por pagar en los artículos "
+"del diario seleccionados."
 
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
@@ -359,9 +383,11 @@ msgid ""
 "You can't register payments for journal items being either all inbound, "
 "either all outbound."
 msgstr ""
+"No se pueden registrar pagos para asientos que sean todos de entrada o todos "
+"de salida."
 
 #. module: hr_expense_advance_clearing
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
 #, python-format
 msgid "You cannot return advance more than actual remaining (%s%s)%s"
-msgstr ""
+msgstr "No se puede devolver un anticipo superior al real restante (%s%s)%s"
