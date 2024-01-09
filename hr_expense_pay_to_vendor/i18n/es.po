@@ -6,56 +6,58 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2024-01-09 15:33+0000\n"
+"Last-Translator: Ivorra78 <informatica@totmaterial.es>\n"
 "Language-Team: none\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
 
 #. module: hr_expense_pay_to_vendor
 #: model:ir.model.fields,field_description:hr_expense_pay_to_vendor.field_hr_expense__display_name
 #: model:ir.model.fields,field_description:hr_expense_pay_to_vendor.field_hr_expense_sheet__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Mostrar Nombre"
 
 #. module: hr_expense_pay_to_vendor
 #: model:ir.model,name:hr_expense_pay_to_vendor.model_hr_expense
 msgid "Expense"
-msgstr ""
+msgstr "Gasto"
 
 #. module: hr_expense_pay_to_vendor
 #: model:ir.model,name:hr_expense_pay_to_vendor.model_hr_expense_sheet
 msgid "Expense Report"
-msgstr ""
+msgstr "Informe de Gasto"
 
 #. module: hr_expense_pay_to_vendor
 #: code:addons/hr_expense_pay_to_vendor/models/hr_expense.py:0
 #, python-format
 msgid "Expenses must be paying to the same vendor."
-msgstr ""
+msgstr "Los gastos deben pagarse al mismo vendedor."
 
 #. module: hr_expense_pay_to_vendor
 #: model:ir.model.fields,field_description:hr_expense_pay_to_vendor.field_hr_expense__id
 #: model:ir.model.fields,field_description:hr_expense_pay_to_vendor.field_hr_expense_sheet__id
 msgid "ID"
-msgstr ""
+msgstr "ID (identificación)"
 
 #. module: hr_expense_pay_to_vendor
 #: model:ir.model.fields,field_description:hr_expense_pay_to_vendor.field_hr_expense____last_update
 #: model:ir.model.fields,field_description:hr_expense_pay_to_vendor.field_hr_expense_sheet____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Última Modificación el"
 
 #. module: hr_expense_pay_to_vendor
 #: model:ir.model.fields,help:hr_expense_pay_to_vendor.field_hr_expense__vendor_id
 #: model:ir.model.fields,help:hr_expense_pay_to_vendor.field_hr_expense_sheet__vendor_id
 msgid "Paid by company direct to this vendor"
-msgstr ""
+msgstr "Pagado por la compañía directamente a este vendedor"
 
 #. module: hr_expense_pay_to_vendor
 #: model:ir.model.fields,field_description:hr_expense_pay_to_vendor.field_hr_expense__vendor_id
 #: model:ir.model.fields,field_description:hr_expense_pay_to_vendor.field_hr_expense_sheet__vendor_id
 msgid "To Vendor"
-msgstr ""
+msgstr "Al Vendedor"
