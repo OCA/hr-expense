@@ -26,12 +26,13 @@ class HrExpense(models.Model):
         help="Expense created from this advance expense line",
     )
 
+    def _get_product_advance(self):
+        return self.env.ref("hr_expense_advance_clearing.product_emp_advance")
+
     @api.constrains("advance")
     def _check_advance(self):
         for expense in self.filtered("advance"):
-            emp_advance = self.env.ref(
-                "hr_expense_advance_clearing.product_emp_advance"
-            )
+            emp_advance = expense._get_product_advance()
             if not emp_advance.property_account_expense_id:
                 raise ValidationError(
                     _("Employee advance product has no payable account")
@@ -61,9 +62,9 @@ class HrExpense(models.Model):
     def _get_account_move_line_values(self):
         move_line_values_by_expense = super()._get_account_move_line_values()
         # Only when do the clearing, change cr payable to cr advance
-        emp_advance = self.env.ref("hr_expense_advance_clearing.product_emp_advance")
         sheets = self.mapped("sheet_id").filtered("advance_sheet_id")
         for sheet in sheets:
+            emp_advance = sheet._get_product_advance()
             advance_to_clear = sheet.advance_sheet_residual
             for move_lines in move_line_values_by_expense.values():
                 payable_move_line = False
