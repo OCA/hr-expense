@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_expenses_tree" model="ir.ui.view">
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.view_expenses_tree" />
+        <field name="arch" type="xml">
+            <field name="employee_id" position="after">
+                <field name="expense_type_id" />
+            </field>
+        </field>
+    </record>
+    <record id="hr_expense_view_form" model="ir.ui.view">
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form" />
+        <field name="arch" type="xml">
+            <field name="employee_id" position="after">
+                <field name="expense_type_id" />
+            </field>
+        </field>
+    </record>
+    <record id="hr_expense_view_search" model="ir.ui.view">
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="expense_type_id" />
+            </xpath>
+            <xpath expr="//filter[@name='status']" position="after">
+                <filter
+                    string="Expense Type"
+                    name="expense_type"
+                    context="{'group_by': 'expense_type_id'}"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
