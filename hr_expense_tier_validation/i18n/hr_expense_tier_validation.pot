@@ -106,6 +106,11 @@ msgid "Tier Definition"
 msgstr ""
 
 #. module: hr_expense_tier_validation
+#: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__tier_validation_before_write
+msgid "Tier Validation Before Write"
+msgstr ""
+
+#. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__to_validate_message
 msgid "To Validate Message"
 msgstr ""
