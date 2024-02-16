@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-06-28 17:08+0000\n"
+"PO-Revision-Date: 2024-02-16 18:34+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -24,14 +24,14 @@ msgstr "Spesa"
 #. module: hr_expense_tax_adjust
 #: model:ir.model.fields,field_description:hr_expense_tax_adjust.field_hr_expense__price_tax
 msgid "Price Tax"
-msgstr "Valorizzare tassa"
+msgstr "Valorizzare imposta"
 
 #. module: hr_expense_tax_adjust
 #: model:ir.model.fields,field_description:hr_expense_tax_adjust.field_hr_expense__tax_adjust
 msgid "Tax Adjust"
-msgstr "Aggiustamento tassa"
+msgstr "Aggiustamento imposta"
 
 #. module: hr_expense_tax_adjust
 #: model:ir.model.fields,help:hr_expense_tax_adjust.field_hr_expense__tax_adjust
 msgid "trigger line with adjust tax"
-msgstr "attiva riga con tassa aggiustamento"
+msgstr "attiva riga con imposta aggiustamento"
