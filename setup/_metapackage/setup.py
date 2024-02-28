@@ -13,6 +13,7 @@ setuptools.setup(
         'odoo-addon-hr_expense_advance_overdue_reminder>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_cancel>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_cancel_confirm>=15.0dev,<15.1dev',
+        'odoo-addon-hr_expense_employee_analytic_default>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_exception>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_excluded_tax>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_invoice>=15.0dev,<15.1dev',
