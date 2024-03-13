@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-10-29 17:39+0000\n"
+"PO-Revision-Date: 2024-03-13 13:37+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -120,7 +120,7 @@ msgstr "Righe approvazione lavoro"
 #. module: hr_expense_work_acceptance
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_hr_expense_sheet__wa_count
 msgid "WA count"
-msgstr "Conto approvazione lavoro"
+msgstr "Conteggio approvazione lavoro"
 
 #. module: hr_expense_work_acceptance
 #: model:ir.model,name:hr_expense_work_acceptance.model_work_acceptance
@@ -130,7 +130,7 @@ msgstr "Approvazione lavoro"
 #. module: hr_expense_work_acceptance
 #: model:ir.model,name:hr_expense_work_acceptance.model_work_acceptance_line
 msgid "Work Acceptance Line"
-msgstr "Riga approvazione lavoro"
+msgstr "Riga accettazione lavoro"
 
 #. module: hr_expense_work_acceptance
 #: model:ir.model.fields,field_description:hr_expense_work_acceptance.field_hr_expense_sheet__wa_ids
