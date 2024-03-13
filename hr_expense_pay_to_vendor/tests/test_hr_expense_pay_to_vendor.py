@@ -55,9 +55,8 @@ class TestHrExpensePayToVendor(TransactionCase):
                 {
                     "name": "Expense Line 1",
                     "employee_id": self.ref("hr.employee_admin"),
-                    "product_id": self.ref("hr_expense.product_product_zero_cost"),
-                    "unit_amount": 1,
-                    "quantity": 10,
+                    "product_id": self.ref("hr_expense.product_product_no_cost"),
+                    "total_amount": 10,
                     "sheet_id": self.expense_sheet.id,
                     "payment_mode": "company_account",
                     "vendor_id": self.vendor.id,
@@ -65,9 +64,8 @@ class TestHrExpensePayToVendor(TransactionCase):
                 {
                     "name": "Expense Line 1",
                     "employee_id": self.ref("hr.employee_admin"),
-                    "product_id": self.ref("hr_expense.product_product_zero_cost"),
-                    "unit_amount": 1,
-                    "quantity": 20,
+                    "product_id": self.ref("hr_expense.product_product_no_cost"),
+                    "total_amount": 20,
                     "sheet_id": self.expense_sheet.id,
                     "payment_mode": "company_account",
                     "vendor_id": self.vendor.id,
@@ -86,7 +84,7 @@ class TestHrExpensePayToVendor(TransactionCase):
                     {
                         "name": "Expense Line 1",
                         "employee_id": self.ref("hr.employee_admin"),
-                        "product_id": self.ref("hr_expense.product_product_zero_cost"),
+                        "product_id": self.ref("hr_expense.product_product_no_cost"),
                         "unit_amount": 1,
                         "quantity": 10,
                         "sheet_id": self.expense_sheet.id,
