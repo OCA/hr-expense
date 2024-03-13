@@ -86,11 +86,14 @@ class HrExpenseSheet(models.Model):
         )
         return super(HrExpenseSheet, self).paid_expense_sheets()
 
+    def _update_sheets_pay_to_vendor(self):
+        return self.write({"state": "post"})
+
     def action_sheet_move_create(self):
         # For expense paid by copany to vendor, only set state to post
         res = super().action_sheet_move_create()
         to_post = self.filtered(
             lambda l: l.payment_mode == "company_account" and l.vendor_id
         )
-        to_post.write({"state": "post"})
+        to_post._update_sheets_pay_to_vendor()
         return res
