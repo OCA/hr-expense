@@ -6,18 +6,27 @@ from odoo.tests.common import Form, TransactionCase
 
 
 class TestHrExpensePayToVendor(TransactionCase):
-    def setUp(self):
-        super().setUp()
-        self.vendor = self.env["res.partner"].create({"name": "Test Vendor"})
-        self.vendor2 = self.env["res.partner"].create({"name": "Test Vendor2"})
-        self.payment_obj = self.env["account.payment"]
-        self.account_payment_register = self.env["account.payment.register"]
-        self.payment_journal = self.env["account.journal"].search(
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.partner_obj = cls.env["res.partner"]
+        cls.payment_obj = cls.env["account.payment"]
+        cls.journal_obj = cls.env["account.journal"]
+        cls.sheet_obj = cls.env["hr.expense.sheet"]
+        cls.expense_obj = cls.env["hr.expense"]
+        cls.account_payment_register_obj = cls.env["account.payment.register"]
+
+        cls.main_company = company = cls.env.ref("base.main_company")
+        cls.employee_admin = cls.env.ref("hr.employee_admin")
+        cls.product_no_cost = cls.env.ref("hr_expense.product_product_no_cost")
+
+        cls.vendor = cls.partner_obj.create({"name": "Test Vendor"})
+        cls.vendor2 = cls.partner_obj.create({"name": "Test Vendor2"})
+        cls.payment_journal = cls.journal_obj.search(
             [("type", "in", ["cash", "bank"])], limit=1
         )
 
-        self.main_company = company = self.env.ref("base.main_company")
-        self.expense_journal = self.env["account.journal"].create(
+        cls.expense_journal = cls.journal_obj.create(
             {
                 "name": "Purchase Journal - Test",
                 "code": "HRTPJ",
@@ -30,7 +39,7 @@ class TestHrExpensePayToVendor(TransactionCase):
         action = expense_sheet.action_register_payment()
         ctx = action.get("context")
         with Form(
-            self.account_payment_register.with_context(**ctx),
+            self.account_payment_register_obj.with_context(**ctx),
             view="account.view_account_payment_register_form",
         ) as f:
             f.journal_id = self.payment_journal
@@ -43,31 +52,29 @@ class TestHrExpensePayToVendor(TransactionCase):
         - After post journal entries, all journal items will use partner_id = vendor
         - After make payment, all journal items will use partner_id = vendor
         """
-        self.expense_sheet = self.env["hr.expense.sheet"].create(
+        self.expense_sheet = self.sheet_obj.create(
             {
-                "employee_id": self.ref("hr.employee_admin"),
+                "employee_id": self.employee_admin.id,
                 "name": "Expense test",
                 "journal_id": self.expense_journal.id,
             }
         )
-        self.expenses = self.env["hr.expense"].create(
+        self.expenses = self.expense_obj.create(
             [
                 {
                     "name": "Expense Line 1",
-                    "employee_id": self.ref("hr.employee_admin"),
-                    "product_id": self.ref("hr_expense.product_product_zero_cost"),
-                    "unit_amount": 1,
-                    "quantity": 10,
+                    "employee_id": self.employee_admin.id,
+                    "product_id": self.product_no_cost.id,
+                    "total_amount": 10,
                     "sheet_id": self.expense_sheet.id,
                     "payment_mode": "company_account",
                     "vendor_id": self.vendor.id,
                 },
                 {
                     "name": "Expense Line 1",
-                    "employee_id": self.ref("hr.employee_admin"),
-                    "product_id": self.ref("hr_expense.product_product_zero_cost"),
-                    "unit_amount": 1,
-                    "quantity": 20,
+                    "employee_id": self.employee_admin.id,
+                    "product_id": self.product_no_cost.id,
+                    "total_amount": 20,
                     "sheet_id": self.expense_sheet.id,
                     "payment_mode": "company_account",
                     "vendor_id": self.vendor.id,
@@ -81,12 +88,12 @@ class TestHrExpensePayToVendor(TransactionCase):
         )
         # Test create new expense diff vendor
         with self.assertRaises(UserError):
-            self.env["hr.expense"].create(
+            self.expense_obj.create(
                 [
                     {
                         "name": "Expense Line 1",
-                        "employee_id": self.ref("hr.employee_admin"),
-                        "product_id": self.ref("hr_expense.product_product_zero_cost"),
+                        "employee_id": self.employee_admin.id,
+                        "product_id": self.product_no_cost.id,
                         "unit_amount": 1,
                         "quantity": 10,
                         "sheet_id": self.expense_sheet.id,
