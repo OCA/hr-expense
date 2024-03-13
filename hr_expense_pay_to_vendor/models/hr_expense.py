@@ -14,28 +14,6 @@ class HrExpense(models.Model):
         help="Paid by company direct to this vendor",
     )
 
-    def _get_account_move_line_values(self):
-        move_line_values_by_expense = super()._get_account_move_line_values()
-        # If pay from company to vendor, change partner_id = vendor_id
-        if move_line_values_by_expense:
-            sheet = self[0].sheet_id
-            payment_mode = sheet.payment_mode
-            vendor_id = sheet.vendor_id.id
-            if payment_mode == "company_account" and vendor_id:
-                for expense_id, vals in move_line_values_by_expense.items():
-                    expense = self.env["hr.expense"].browse(expense_id)
-                    move_line_name = (
-                        expense.vendor_id.name + ": " + expense.name.split("\n")[0][:64]
-                    )
-                    account_src = expense._get_expense_account_source()
-                    account_dst = expense._get_expense_account_destination()
-                    account_ids = [account_src.id, account_dst]
-                    for val in vals:
-                        val["partner_id"] = vendor_id
-                        if val["account_id"] in account_ids:
-                            val["name"] = move_line_name
-        return move_line_values_by_expense
-
     def _get_expense_account_destination(self):
         self.ensure_one()
         if not (self.payment_mode == "company_account" and self.vendor_id):
@@ -46,12 +24,6 @@ class HrExpense(models.Model):
             or self.vendor_id.parent_id.property_account_payable_id.id
         )
         return account_dest
-
-    def _prepare_move_values(self):
-        move_values = super()._prepare_move_values()
-        if self.payment_mode == "company_account" and self.vendor_id:
-            move_values["journal_id"] = self.sheet_id.journal_id.id
-        return move_values
 
 
 class HrExpenseSheet(models.Model):
@@ -79,13 +51,6 @@ class HrExpenseSheet(models.Model):
                     )
         return res
 
-    def paid_expense_sheets(self):
-        """For expense paid direct to vendor, do not set done"""
-        self = self.filtered(
-            lambda l: l.payment_mode == "company_account" and not l.vendor_id
-        )
-        return super(HrExpenseSheet, self).paid_expense_sheets()
-
     def action_sheet_move_create(self):
         # For expense paid by copany to vendor, only set state to post
         res = super().action_sheet_move_create()
@@ -94,3 +59,16 @@ class HrExpenseSheet(models.Model):
         )
         to_post.write({"state": "post"})
         return res
+
+    def _prepare_payment_vals(self):
+        self.ensure_one()
+        payment_vals = super()._prepare_payment_vals()
+        if self.payment_mode == "company_account" and self.vendor_id:
+            for line in payment_vals["line_ids"]:
+                line[2]["partner_id"] = self.vendor_id.id
+                # Overwrite name without taxes
+                if line[2].get("tax_base_amount", False):
+                    continue
+                expense_name = line[2]["name"].split(":")[1].strip()
+                line[2]["name"] = f"{self.vendor_id.name}: {expense_name}"
+        return payment_vals
