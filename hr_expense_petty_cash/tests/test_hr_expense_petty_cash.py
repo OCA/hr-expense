@@ -7,50 +7,58 @@ from odoo.tests.common import Form, TransactionCase
 
 
 class TestHrExpensePettyCash(TransactionCase):
-    def setUp(self):
-        super(TestHrExpensePettyCash, self).setUp()
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
 
-        self.employee_1 = self.env.ref("hr.employee_admin")
-        self.employee_2 = self.env.ref("hr.employee_al")
-        self.product_id = self.env.ref("hr_expense.accomodation_expense_product")
-        self.partner_1 = self.env.ref("base.res_partner_1")
-        self.partner_2 = self.env.ref("base.res_partner_2")
-        self.partner_3 = self.env.ref("base.res_partner_3")
-        self.payable_type = self.env.ref("account.data_account_type_payable")
-        self.liquidity_type = self.env.ref("account.data_account_type_liquidity")
-        self.cost_type = self.env.ref("account.data_account_type_direct_costs")
-        self.account_id = self.env["account.account"].create(
+        # Object
+        cls.account_obj = cls.env["account.account"]
+        cls.journal_obj = cls.env["account.journal"]
+        cls.petty_cash_obj = cls.env["petty.cash"]
+        cls.move_obj = cls.env["account.move"]
+        cls.sheet_obj = cls.env["hr.expense.sheet"]
+        cls.exp_obj = cls.env["hr.expense"]
+
+        # Demo data
+        cls.employee_1 = cls.env.ref("hr.employee_admin")
+        cls.employee_2 = cls.env.ref("hr.employee_al")
+        cls.product = cls.env.ref("hr_expense.expense_product_travel_accommodation")
+        cls.partner_1 = cls.env.ref("base.res_partner_1")
+        cls.partner_2 = cls.env.ref("base.res_partner_2")
+        cls.partner_3 = cls.env.ref("base.res_partner_3")
+
+        cls.account_id = cls.account_obj.create(
             {
                 "code": "111111",
                 "name": "Payable - Test",
-                "user_type_id": self.payable_type.id,
+                "account_type": "liability_payable",
                 "reconcile": True,
             }
         )
-        self.account_revenue_id = self.env["account.account"].create(
+        cls.account_revenue_id = cls.account_obj.create(
             {
                 "code": "111112",
                 "name": "Cost Of Revenue - Test",
-                "user_type_id": self.cost_type.id,
+                "account_type": "expense_direct_cost",
             }
         )
-        self.petty_cash_journal_id = self.env["account.journal"].create(
+        cls.petty_cash_journal_id = cls.journal_obj.create(
             {"code": "PC", "name": "Petty Cash", "type": "purchase"}
         )
 
         # Create a Petty Cash Account
-        self.petty_cash_account_id = self.env["account.account"].create(
+        cls.petty_cash_account_id = cls.account_obj.create(
             {
                 "code": "000000",
                 "name": "Petty Cash - Test",
-                "user_type_id": self.liquidity_type.id,
+                "account_type": "asset_cash",
             }
         )
-        self.petty_cash_holder = self._create_petty_cash_holder(self.partner_1)
-        self.petty_cash_holder_2 = self._create_petty_cash_holder(self.partner_3)
+        cls.petty_cash_holder = cls._create_petty_cash_holder(cls, cls.partner_1)
+        cls.petty_cash_holder_2 = cls._create_petty_cash_holder(cls, cls.partner_3)
 
     def _create_petty_cash_holder(self, partner):
-        petty_cash_holder = self.env["petty.cash"].create(
+        petty_cash_holder = self.petty_cash_obj.create(
             {
                 "partner_id": partner.id,
                 "account_id": self.petty_cash_account_id.id,
@@ -60,7 +68,7 @@ class TestHrExpensePettyCash(TransactionCase):
         return petty_cash_holder
 
     def _create_invoice(self, partner=False):
-        invoice = self.env["account.move"].create(
+        invoice = self.move_obj.create(
             {
                 "partner_id": partner,
                 "move_type": "in_invoice",
@@ -70,11 +78,11 @@ class TestHrExpensePettyCash(TransactionCase):
         return invoice
 
     def _create_expense(self, amount, employee_id, mode, petty_cash_holder=False):
-        expense = self.env["hr.expense"].create(
+        expense = self.exp_obj.create(
             {
                 "name": "Expense - Test",
                 "employee_id": employee_id,
-                "product_id": self.product_id.id,
+                "product_id": self.product.id,
                 "unit_amount": amount,
                 "payment_mode": mode,
                 "petty_cash_id": petty_cash_holder,
@@ -83,7 +91,7 @@ class TestHrExpensePettyCash(TransactionCase):
         return expense
 
     def _create_expense_sheet(self, expenses):
-        expense_sheet = self.env["hr.expense.sheet"].create(
+        expense_sheet = self.sheet_obj.create(
             {
                 "name": expenses[0].name,
                 "employee_id": expenses[0].employee_id.id,
@@ -93,7 +101,7 @@ class TestHrExpensePettyCash(TransactionCase):
         return expense_sheet
 
     def _create_multi_invoice_line(self, petty_cash=False):
-        invoice = self.env["account.move"].create(
+        invoice = self.move_obj.create(
             {
                 "partner_id": self.partner_1.id,
                 "move_type": "in_invoice",
@@ -157,7 +165,7 @@ class TestHrExpensePettyCash(TransactionCase):
             invoice.write({"partner_id": False})
             invoice.action_post()
         # Create line manual and not check petty cash
-        invoice = self.env["account.move"].create(
+        invoice = self.move_obj.create(
             {
                 "partner_id": self.partner_1.id,
                 "move_type": "in_invoice",
