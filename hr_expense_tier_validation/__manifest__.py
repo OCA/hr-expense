@@ -3,13 +3,13 @@
 
 {
     "name": "Expense Tier Validation",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "category": "Human Resources",
     "author": "Ecosoft, Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "website": "https://github.com/OCA/hr-expense",
     "depends": ["hr_expense", "base_tier_validation"],
-    "data": ["views/hr_expense_sheet_view.xml"],
+    "data": ["data/ir_config_parameter.xml", "views/hr_expense_sheet_view.xml"],
     "installable": True,
     "maintainers": ["ps-tubtim"],
 }

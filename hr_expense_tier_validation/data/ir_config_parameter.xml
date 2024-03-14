@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="parameter_expense_validation_exceptions" model="ir.config_parameter">
+        <field name="key">hr_expense.tier_exceptions</field>
+        <field name="value">["message_follower_ids", "access_token"]</field>
+    </record>
+</odoo>
