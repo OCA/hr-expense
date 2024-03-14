@@ -1,0 +1,37 @@
+<odoo>
+    <record id="view_hr_expense_sheet_form" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.form.inherit</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
+        <field name="arch" type="xml">
+            <field name="payment_mode" position="after">
+                <field
+                    name="vendor_id"
+                    attrs="{'invisible': [('payment_mode', '!=', 'company_account')], 'readonly': True}"
+                />
+            </field>
+        </field>
+    </record>
+
+    <record id="hr_expense_view_form" model="ir.ui.view">
+        <field name="name">hr.expense.view.form</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form" />
+        <field name="arch" type="xml">
+            <field name="payment_mode" position="after">
+                <div
+                    name="to_vendor"
+                    attrs="{'invisible': [('payment_mode', '!=', 'company_account')]}"
+                >
+                    <label for="vendor_id" />
+                    <field
+                        name="vendor_id"
+                        style="width: 70%"
+                        class="oe_inline"
+                        attrs="{'readonly': [('state', 'in', ['approved', 'done'])]}"
+                    />
+                </div>
+            </field>
+        </field>
+    </record>
+</odoo>
