@@ -104,6 +104,7 @@ class AccountMove(models.Model):
                 "partner_id": petty_cash.partner_id.id,
                 "price_unit": amount_doc_currency,
                 "quantity": 1,
+                "tax_ids": [],  # no tax need
             }
         )
         return inv_line
@@ -124,9 +125,7 @@ class AccountMove(models.Model):
                     _("%s is not a petty cash holder") % self.partner_id.name
                 )
             self.invoice_line_ids = self._add_petty_cash_invoice_line(petty_cash)
-            self._onchange_invoice_line_ids()
-            self.line_ids._onchange_price_subtotal()
-            self._onchange_recompute_dynamic_lines()
+
             if petty_cash.journal_id:
                 # Prevent inconsistent journal_id
                 if (
