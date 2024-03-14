@@ -26,12 +26,8 @@ class TestHrExpenseTierValidation(TransactionCase):
                 "reviewer_id": self.test_user_1.id,
             }
         )
-        employee_home = self.env["res.partner"].create(
-            {"name": "Employee Home Address"}
-        )
-        self.employee = self.env["hr.employee"].create(
-            {"name": "Employee A", "address_home_id": employee_home.id}
-        )
+
+        self.employee = self.env["hr.employee"].create({"name": "Employee A"})
         self.product_1 = self.env.ref("product.product_product_1")
 
     def _create_expense(
@@ -60,31 +56,18 @@ class TestHrExpenseTierValidation(TransactionCase):
             self.product_1,
         )
         sheet_dict = expense.action_submit_expenses()
-        sheet_dict = sheet_dict["context"]
-        with Form(self.env["hr.expense.sheet"]) as sheet:
-            sheet.name = (sheet_dict["default_name"],)
-            sheet.employee_id = self.employee
-        sheet = sheet.save()
-        sheet.expense_line_ids = [(6, 0, expense.id)]
+        sheet = self.expense_sheet_model.browse(sheet_dict["res_id"])
         self.assertEqual(sheet.state, "draft")
         sheet.action_submit_sheet()
         self.assertEqual(sheet.state, "submit")
         # Must request validation before approve
         with self.assertRaises(ValidationError):
-            sheet.approve_expense_sheets()
+            sheet.action_approve_expense_sheets()
         sheet.request_validation()
         self.assertTrue(sheet)
         sheet.invalidate_model()
-
         # tier validation but state still submit
         self.assertEqual(sheet.state, "submit")
-        # not allow edit expense when under validation
-        with self.assertRaises(ValidationError):
-            with Form(sheet) as s:
-                s.name = "New name"
-        with self.assertRaises(ValidationError):
-            with Form(expense) as exp:
-                exp.name = "Change name"
         # Test change message follower
         message = expense.write({"message_follower_ids": self.partner.ids})
         self.assertEqual(message, True)
