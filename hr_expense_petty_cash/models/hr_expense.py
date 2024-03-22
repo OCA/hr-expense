@@ -18,15 +18,6 @@ class HrExpense(models.Model):
         states={"draft": [("readonly", False)]},
     )
 
-    def _get_account_move_line_values(self):
-        res = super()._get_account_move_line_values()
-        for expense in self.filtered(lambda p: p.payment_mode == "petty_cash"):
-            line = res[expense.id][-1]
-            line["account_id"] = expense.petty_cash_id.account_id.id
-            line["partner_id"] = expense.petty_cash_id.partner_id.id
-            res[expense.id][-1] = line
-        return res
-
     def _get_default_expense_sheet_values(self):
         """Core Odoo filter own_account and company only.
         this function overwrite for petty cash"""
@@ -73,3 +64,29 @@ class HrExpense(models.Model):
                 values["default_journal_id"] = journal_petty_cash.id
             return values
         return super(HrExpense, todo)._get_default_expense_sheet_values()
+
+    def _get_petty_cash_move_line(
+        self,
+        move_line_name,
+        partner_id,
+        total_amount,
+        total_amount_currency,
+        account=False,
+    ):
+        account_date = (
+            self.date
+            or self.sheet_id.accounting_date
+            or fields.Date.context_today(self)
+        )
+        ml_dict = {
+            "name": move_line_name,
+            "debit": total_amount if total_amount > 0.0 else 0.0,
+            "credit": -total_amount if total_amount < 0.0 else 0.0,
+            "account_id": account and account.id or self.account_id.id,
+            "date_maturity": account_date,
+            "amount_currency": total_amount_currency,
+            "currency_id": self.currency_id.id,
+            "expense_id": self.id,
+            "partner_id": partner_id,
+        }
+        return ml_dict
