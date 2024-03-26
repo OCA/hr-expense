@@ -18,12 +18,12 @@ class HrExpenseSheet(models.Model):
         res = super().action_sheet_move_create()
         for sheet in self:
             move_lines = res[sheet.id].line_ids
-            if sheet.payment_mode != "own_account":
-                continue
             for line in self.expense_line_ids.filtered("invoice_id"):
                 c_move_lines = move_lines.filtered(
                     lambda x: x.expense_id == line
                     and x.partner_id == line.invoice_id.commercial_partner_id
+                    and x.account_id.internal_type == "payable"
+                    and not x.reconciled
                 )
                 c_move_lines |= line.invoice_id.line_ids.filtered(
                     lambda x: x.account_id.internal_type == "payable"
