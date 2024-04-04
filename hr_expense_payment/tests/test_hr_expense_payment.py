@@ -8,15 +8,16 @@ from ..hooks import post_init_hook
 
 
 class TestHrExpensePayment(TransactionCase):
-    def setUp(self):
-        super().setUp()
-        self.account_payment_register = self.env["account.payment.register"]
-        self.payment_journal = self.env["account.journal"].search(
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.account_payment_register = cls.env["account.payment.register"]
+        cls.payment_journal = cls.env["account.journal"].search(
             [("type", "in", ["cash", "bank"])], limit=1
         )
 
-        company = self.env.ref("base.main_company")
-        self.expense_journal = self.env["account.journal"].create(
+        company = cls.env.ref("base.main_company")
+        cls.expense_journal = cls.env["account.journal"].create(
             {
                 "name": "Purchase Journal - Test",
                 "code": "HRTPJ",
@@ -25,22 +26,22 @@ class TestHrExpensePayment(TransactionCase):
             }
         )
 
-        self.expense_sheet = self.env["hr.expense.sheet"].create(
+        cls.expense_sheet = cls.env["hr.expense.sheet"].create(
             {
-                "employee_id": self.ref("hr.employee_admin"),
+                "employee_id": cls.env.ref("hr.employee_admin").id,
                 "name": "Expense test",
-                "journal_id": self.expense_journal.id,
+                "journal_id": cls.expense_journal.id,
             }
         )
-        self.expense_sheet.approve_expense_sheets()
+        cls.expense_sheet.action_approve_expense_sheets()
 
-        self.expense = self.env["hr.expense"].create(
+        cls.expense = cls.env["hr.expense"].create(
             {
                 "name": "Expense test",
-                "employee_id": self.ref("hr.employee_admin"),
-                "product_id": self.ref("hr_expense.expense_product_meal"),
+                "employee_id": cls.env.ref("hr.employee_admin").id,
+                "product_id": cls.env.ref("hr_expense.expense_product_meal").id,
                 "total_amount": 1000,
-                "sheet_id": self.expense_sheet.id,
+                "sheet_id": cls.expense_sheet.id,
             }
         )
 
@@ -72,7 +73,7 @@ class TestHrExpensePayment(TransactionCase):
 
         self.assertFalse(payment)
         self.assertFalse(payment.expense_sheet_ids)
-        post_init_hook(self.env.cr, self.registry)
+        post_init_hook(self.env)
 
         self.assertEqual(len(self.expense_sheet.payment_ids), 1)
 
