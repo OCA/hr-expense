@@ -24,7 +24,7 @@ class AccountPaymentRegister(models.TransientModel):
             )
             sheet_ids = self.env["hr.expense.sheet"].browse(expense_sheet_ids)
             sheet_id = sheet_ids.filtered(
-                lambda l: l.account_move_id.id == move_line_ids.move_id.id
+                lambda x: x.account_move_id.id == move_line_ids.move_id.id
             )
             payment_vals.update(expense_sheet_ids=sheet_id.ids)
         return payment_vals
