@@ -3,4 +3,4 @@ System will popup a selection window (many2many widget) allowing user to select 
 
 This can be confusing for some user, and might not be suitable for some use case.
 
-With this module, user have option to directly add new lines on expense report (one2many widget).
+With this module, While directly adding new lines on expense report (one2many widget).

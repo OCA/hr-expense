@@ -3,15 +3,13 @@
 
 {
     "name": "HR Expense one2many widget",
-    "version": "15.0.1.0.0",
+    "version": "16.0.1.0.0",
     "author": "Ecosoft, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/hr-expense",
     "license": "AGPL-3",
     "category": "Human Resources",
     "depends": ["hr_expense"],
     "data": [
-        "security/hr_expense_security.xml",
-        "views/res_config_settings_views.xml",
         "views/hr_expense_views.xml",
     ],
     "installable": True,
