@@ -37,6 +37,7 @@ addon | version | maintainers | summary
 [hr_expense_petty_cash](hr_expense_petty_cash/) | 15.0.1.2.0 |  | Petty Cash
 [hr_expense_portal](hr_expense_portal/) | 15.0.1.0.0 |  | Show current expense in a website.
 [hr_expense_sequence](hr_expense_sequence/) | 15.0.1.0.0 |  | HR expense sequence
+[hr_expense_sequence_option](hr_expense_sequence_option/) | 15.0.1.0.0 | [![ps-tubtim](https://github.com/ps-tubtim.png?size=30px)](https://github.com/ps-tubtim) | Manage sequence options for hr.expense.sheet
 [hr_expense_tax_adjust](hr_expense_tax_adjust/) | 15.0.1.1.0 | [![ps-tubtim](https://github.com/ps-tubtim.png?size=30px)](https://github.com/ps-tubtim) | Allow to edit tax amount on expenses
 [hr_expense_tier_validation](hr_expense_tier_validation/) | 15.0.1.0.0 | [![ps-tubtim](https://github.com/ps-tubtim.png?size=30px)](https://github.com/ps-tubtim) | Expense Tier Validation
 [hr_expense_widget_o2m](hr_expense_widget_o2m/) | 15.0.1.0.0 | [![kittiu](https://github.com/kittiu.png?size=30px)](https://github.com/kittiu) | HR Expense one2many widget

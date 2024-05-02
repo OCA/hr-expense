@@ -24,6 +24,7 @@ setuptools.setup(
         'odoo-addon-hr_expense_petty_cash>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_portal>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_sequence>=15.0dev,<15.1dev',
+        'odoo-addon-hr_expense_sequence_option>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_tax_adjust>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_tier_validation>=15.0dev,<15.1dev',
         'odoo-addon-hr_expense_widget_o2m>=15.0dev,<15.1dev',
