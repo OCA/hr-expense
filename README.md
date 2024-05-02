@@ -33,7 +33,7 @@ addon | version | maintainers | summary
 [hr_expense_journal](hr_expense_journal/) | 15.0.1.0.0 | [![dreispt](https://github.com/dreispt.png?size=30px)](https://github.com/dreispt) | Set the Journal for the payment type used to pay the expense
 [hr_expense_pay_to_vendor](hr_expense_pay_to_vendor/) | 15.0.1.0.1 | [![kittiu](https://github.com/kittiu.png?size=30px)](https://github.com/kittiu) | HR Expense - Pay To Vendor
 [hr_expense_payment](hr_expense_payment/) | 15.0.1.0.1 |  | HR Expense Payment
-[hr_expense_payment_widget_amount](hr_expense_payment_widget_amount/) | 15.0.1.0.0 | [![Saran440](https://github.com/Saran440.png?size=30px)](https://github.com/Saran440) | HR Expense Payment Widget Amount
+[hr_expense_payment_widget_amount](hr_expense_payment_widget_amount/) | 15.0.1.0.1 | [![Saran440](https://github.com/Saran440.png?size=30px)](https://github.com/Saran440) | HR Expense Payment Widget Amount
 [hr_expense_petty_cash](hr_expense_petty_cash/) | 15.0.1.2.0 |  | Petty Cash
 [hr_expense_portal](hr_expense_portal/) | 15.0.1.0.0 |  | Show current expense in a website.
 [hr_expense_sequence](hr_expense_sequence/) | 15.0.1.0.0 |  | HR expense sequence
