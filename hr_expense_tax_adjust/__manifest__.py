@@ -3,7 +3,7 @@
 
 {
     "name": "Expense Tax Adjustment",
-    "version": "15.0.1.1.0",
+    "version": "15.0.1.1.1",
     "author": "Ecosoft, Odoo Community Association (OCA)",
     "summary": "Allow to edit tax amount on expenses",
     "website": "https://github.com/OCA/hr-expense",
