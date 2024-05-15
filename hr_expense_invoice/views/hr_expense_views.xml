@@ -10,7 +10,7 @@
             <label for="quantity" position="attributes">
                 <attribute
                     name="attrs"
-                >{'invisible': [('with_invoice_id', '=', True)]}</attribute>
+                >{'invisible': [('invoice_id', '!=', False)]}</attribute>
             </label>
             <xpath
                 expr='//field[@name="quantity"]/parent::div/parent::div'
@@ -18,25 +18,73 @@
             >
                 <attribute
                     name="attrs"
-                >{'invisible': [('with_invoice_id', '=', True)]}</attribute>
+                >{'invisible': [('invoice_id', '!=', False)]}</attribute>
             </xpath>
+            <label for="tax_ids" position="attributes">
+                <attribute
+                    name="attrs"
+                >{'invisible': [('invoice_id', '!=', False)]}</attribute>
+            </label>
+            <xpath
+                expr='//field[@name="tax_ids"]/parent::div/parent::div'
+                position="attributes"
+            >
+                <attribute
+                    name="attrs"
+                >{'invisible': [('invoice_id', '!=', False)]}</attribute>
+            </xpath>
+            <!-- Force saved to be sure they are stored when selecting the vendor bill in any state -->
             <field name="quantity" position="attributes">
                 <attribute name="force_save">1</attribute>
-                <attribute
-                    name="attrs"
-                >{'invisible': [('with_invoice_id', '=', True)]}</attribute>
             </field>
-            <field name="product_uom_id" position="attributes">
+            <field name="reference" position="attributes">
+                <attribute name="force_save">1</attribute>
+            </field>
+            <field name="date" position="attributes">
+                <attribute name="force_save">1</attribute>
+            </field>
+            <field name="total_amount" position="attributes">
                 <attribute name="force_save">1</attribute>
                 <attribute
                     name="attrs"
-                >{'invisible': [('with_invoice_id', '=', True)]}</attribute>
+                >{'readonly': [('invoice_id', '!=', False)]}</attribute>
             </field>
+            <xpath
+                expr="//field[@name='total_amount']/../field[@name='currency_id']"
+                position="attributes"
+            >
+                <attribute
+                    name="attrs"
+                >{'readonly': [('invoice_id', '!=', False)]}</attribute>
+            </xpath>
+            <field name="reference" position="attributes">
+                <attribute name="force_save">1</attribute>
+                <attribute
+                    name="attrs"
+                >{'readonly': ['|', ('is_ref_editable', '=', False), ('invoice_id', '!=', False)], 'invisible': [('product_has_cost', '=', True)]}</attribute>
+            </field>
+            <field name="date" position="attributes">
+                <attribute name="force_save">1</attribute>
+                <attribute
+                    name="attrs"
+                >{'readonly': ['|', ('sheet_is_editable', '=', False), ('invoice_id', '!=', False)]}</attribute>
+            </field>
+            <field name="account_id" position="attributes">
+                <attribute
+                    name="attrs"
+                >{'readonly': ['|', ('is_editable', '=', False), ('sheet_is_editable', '=', False)], 'invisible': [('invoice_id', '!=', False)]}</attribute>
+            </field>
+            <xpath
+                expr="//field[@name='analytic_distribution']/../field[@name='company_id']"
+                position="attributes"
+            >
+                <attribute
+                    name="attrs"
+                >{'readonly': [('invoice_id', '!=', False)]}</attribute>
+            </xpath>
             <xpath expr='//field[@name="product_id"]/parent::div' position="after">
-                <!-- It is not possible to use the invoice_id field for invisible of
-                    others since it has a groups and the others do not, for this reason,
-                    an extra field has been created without groups. -->
-                <field name="with_invoice_id" invisible="1" />
+                <!-- Added double, one as invisible and w/o group, for those without the permission -->
+                <field name="invoice_id" invisible="1" />
                 <field
                     name="invoice_id"
                     groups="account.group_account_readonly"
@@ -57,7 +105,7 @@
             <field name="tax_ids" position="attributes">
                 <attribute
                     name="attrs"
-                >{'invisible': [('with_invoice_id', '=', True)]}</attribute>
+                >{'invisible': [('invoice_id', '!=', False)]}</attribute>
             </field>
         </field>
     </record>
