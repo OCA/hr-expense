@@ -9,51 +9,58 @@ class HrExpenseSheet(models.Model):
 
     def action_cancel(self):
         for sheet in self:
-            account_move = sheet.account_move_id
-            sheet.account_move_id = False
+            account_moves = sheet.account_move_ids
+            sheet.account_move_ids = False
             payments = sheet.payment_ids.filtered(lambda line: line.state != "cancel")
             # case : cancel invoice from hr_expense
-            self._remove_reconcile_hr_invoice(account_move)
+            self._remove_reconcile_hr_invoice(account_moves)
             # If the sheet is paid then remove payments
-            if sheet.state == "done":
+            if sheet.state in ("done", "approve"):
                 if sheet.expense_line_ids[:1].payment_mode == "own_account":
-                    self._remove_move_reconcile(payments, account_move)
-                    self._cancel_payments(payments)
-                else:
-                    # In this case, during the cancellation the journal entry
-                    # will be deleted
-                    self._cancel_payments(payments)
+                    self._remove_move_reconcile(payments, account_moves)
+                payments.action_draft_cancel()
             # Deleting the Journal entry if in the previous steps
             # (if the expense sheet is paid and payment_mode == 'own_account')
             # it has not been deleted
-            if account_move.exists():
-                if account_move.state != "draft":
-                    account_move.button_cancel()
-                account_move.with_context(force_delete=True).unlink()
+            if account_moves.exists():
+                moves_to_cancel = account_moves.filtered(
+                    lambda move: move.state != "draft"
+                )
+                if moves_to_cancel:
+                    moves_to_cancel.button_cancel()
+                account_moves.with_context(force_delete=True).unlink()
             sheet.state = "submit"
 
-    def _remove_reconcile_hr_invoice(self, account_move):
+    def _remove_reconcile_hr_invoice(self, account_moves):
         """Cancel invoice made by hr_expense_invoice module automatically"""
-        reconcile = account_move.mapped("line_ids.full_reconcile_id")
-        aml = self.env["account.move.line"].search(
-            [("full_reconcile_id", "in", reconcile.ids)]
+        exp_move_lines = self.env["account.move.line"].search(
+            [
+                (
+                    "full_reconcile_id",
+                    "in",
+                    account_moves.line_ids.full_reconcile_id.ids,
+                ),
+                ("move_id", "not in", account_moves.ids),
+            ]
         )
-        exp_move_line = aml.filtered(lambda line: line.move_id.id != account_move.id)
         # set state to cancel
-        exp_move_line.move_id.button_draft()
-        exp_move_line.move_id.button_cancel()
+        if exp_move_lines:
+            moves = exp_move_lines.move_id
+            moves.button_draft()
+            moves.button_cancel()
 
-    def _remove_move_reconcile(self, payments, account_move):
+    def _remove_move_reconcile(self, payments, account_moves):
         """Delete only reconciliations made with the payments generated
         by hr_expense module automatically"""
-        reconcile = account_move.mapped("line_ids.full_reconcile_id")
-        payments_aml = payments.move_id.line_ids
-        aml_unreconcile = payments_aml.filtered(
-            lambda r: r.full_reconcile_id in reconcile
+        to_unreconcile_move_lines = self.env["account.move.line"].search(
+            [
+                (
+                    "full_reconcile_id",
+                    "in",
+                    account_moves.line_ids.full_reconcile_id.ids,
+                ),
+                ("move_id", "in", payments.move_id.ids),
+            ]
         )
-
-        aml_unreconcile.remove_move_reconcile()
-
-    def _cancel_payments(self, payments):
-        for rec in payments:
-            rec.move_id.button_cancel()
+        if to_unreconcile_move_lines:
+            to_unreconcile_move_lines.remove_move_reconcile()
