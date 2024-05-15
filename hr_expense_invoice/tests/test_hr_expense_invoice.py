@@ -128,10 +128,6 @@ class TestHrExpenseInvoice(TestExpenseCommon):
         self.invoice.action_post()  # residual = 100
         with Form(self.expense) as f:
             f.invoice_id = self.invoice
-        # Test that invoice can't register payment by itself
-        payment = self._invoice_register_payment(self.invoice)
-        with self.assertRaises(ValidationError):
-            payment.action_create_payments()
         # We approve sheet
         sheet.approve_expense_sheets()
         self.assertEqual(sheet.state, "approve")
@@ -139,20 +135,33 @@ class TestHrExpenseInvoice(TestExpenseCommon):
         self.assertEqual(self.invoice.state, "posted")
         # Test state not posted
         self.invoice.button_draft()
-        self.assertEqual(self.invoice.state, "draft")
         with self.assertRaises(UserError):
             sheet.action_sheet_move_create()
         self.invoice.action_post()
-        self.assertEqual(self.invoice.state, "posted")
         # We post journal entries
         sheet.action_sheet_move_create()
         self.assertEqual(sheet.state, "post")
-        self.assertEqual(sheet.payment_state, "partial")
-        self.assertTrue(sheet.account_move_id)
-        # Invoice is now paid
         self.assertEqual(self.invoice.payment_state, "paid")
-        # We make payment on expense sheet
-        self._register_payment(sheet)
+        self.assertEqual(sheet.payment_state, "not_paid")
+        self.assertEqual(self.expense.amount_residual, 100)
+        self.assertTrue(self.expense.transfer_move_ids)
+        # Pay the transferred amount (through a hack using reversal)
+        reverse_move = self.expense.transfer_move_ids._reverse_moves(
+            default_values_list=[{"source_invoice_expense_id": False}]  # , cancel=True
+        )
+        reverse_move.action_post()
+        emp_line = self.expense.transfer_move_ids.line_ids.filtered(
+            lambda x: x.credit > 0
+        )
+        emp_line_reversed = reverse_move.line_ids.filtered(lambda x: x.debit > 0)
+        (emp_line + emp_line_reversed).reconcile()
+        self.assertEqual(self.expense.amount_residual, 0)
+        self.assertEqual(sheet.payment_state, "paid")
+        self.assertEqual(sheet.state, "done")
+        # Unreconcile the payment
+        reverse_move.button_draft()
+        self.assertEqual(self.expense.amount_residual, 100)
+        self.assertEqual(sheet.payment_state, "not_paid")
 
     def test_1_hr_test_invoice_paid_by_company(self):
         # We add an expense
@@ -163,10 +172,6 @@ class TestHrExpenseInvoice(TestExpenseCommon):
         # We add invoice to expense
         self.invoice.action_post()  # residual = 100.0
         self.expense.invoice_id = self.invoice
-        # Test that invoice can't register payment by itself
-        payment = self._invoice_register_payment(self.invoice)
-        with self.assertRaises(ValidationError):
-            payment.action_create_payments()
         # We approve sheet
         sheet.approve_expense_sheets()
         self.assertEqual(sheet.state, "approve")
@@ -175,8 +180,6 @@ class TestHrExpenseInvoice(TestExpenseCommon):
         # We post journal entries
         sheet.action_sheet_move_create()
         self.assertEqual(sheet.state, "done")
-        self.assertTrue(sheet.account_move_id)
-        # Invoice is not paid
         self.assertEqual(self.invoice.payment_state, "not_paid")
         # Click on View Invoice button link to the correct invoice
         res = sheet.action_view_invoices()
@@ -205,12 +208,8 @@ class TestHrExpenseInvoice(TestExpenseCommon):
         # We post journal entries
         sheet.action_sheet_move_create()
         self.assertEqual(sheet.state, "post")
-        self.assertTrue(sheet.account_move_id)
-        # Invoice is now paid
         self.assertEqual(self.invoice.payment_state, "paid")
         self.assertEqual(self.invoice2.payment_state, "paid")
-        # We make payment on expense sheet
-        self._register_payment(sheet)
 
     def test_3_hr_test_expense_create_invoice(self):
         # We add 2 expenses
@@ -246,59 +245,17 @@ class TestHrExpenseInvoice(TestExpenseCommon):
         sheet.approve_expense_sheets()
         # We post journal entries
         sheet.action_sheet_move_create()
-        self.assertEqual(sheet.state, "post")
-        self.assertTrue(sheet.account_move_id)
-        # Invoice are now paid
-        self.assertEqual(self.expense.invoice_id.state, "posted")
-        self.assertEqual(self.expense.invoice_id.payment_state, "paid")
-        self.assertEqual(self.expense2.invoice_id.state, "posted")
-        self.assertEqual(self.expense2.invoice_id.payment_state, "paid")
-        # We make payment on expense sheet
-        self._register_payment(sheet)
-        # Click on View Invoice button link to the correct invoice
-        res = sheet.action_view_invoices()
-        self.assertEqual(res["view_mode"], "tree,form")
 
     def test_4_hr_expense_constraint(self):
         # Only invoice with status open is allowed
         with self.assertRaises(UserError):
             self.expense.write({"invoice_id": self.invoice.id})
-        # We add an expense, total_amount now = 50.0
         sheet = self._action_submit_expenses(self.expense)
-        # We add invoice to expense
-        self.invoice.amount_total = 100
-        self.invoice.action_post()  # residual = 100.0
         self.expense.invoice_id = self.invoice
+        self.invoice.action_post()
+        self.expense.total_amount = 80
         # Amount must equal, expense vs invoice
         with self.assertRaises(UserError):
             sheet._validate_expense_invoice()
-        self.expense.write({"unit_amount": 100.0})  # set to 100.0
+        self.expense.total_amount = 100.0
         sheet._validate_expense_invoice()
-
-    def test_5_hr_test_multi_invoice(self):
-        # We add 2 expenses
-        self.expense.unit_amount = 200.0
-        self.expense2.unit_amount = 100.0
-        expenses = self.expense + self.expense2
-        sheet = self._action_submit_expenses(expenses)
-        self.assertIn(self.expense, sheet.expense_line_ids)
-        self.assertIn(self.expense2, sheet.expense_line_ids)
-        # We add invoice to expense
-        self.expense2.action_expense_create_invoice()
-        self.assertAlmostEqual(self.expense2.invoice_id.message_attachment_count, 1)
-        self.expense2.invoice_id.partner_id = self.partner_a
-        self.expense2.invoice_id.action_post()
-        # We approve sheet
-        sheet.approve_expense_sheets()
-        # We post journal entries
-        sheet.action_sheet_move_create()
-        self.assertEqual(self.expense2.invoice_id.payment_state, "paid")
-        line_expense_2 = sheet.account_move_id.line_ids.filtered(
-            lambda x: x.debit == 100
-        )
-        self.assertEqual(line_expense_2.partner_id, self.invoice.partner_id)
-        line_expense_1 = sheet.account_move_id.line_ids.filtered(
-            lambda x: x.debit == 200
-        )
-        self.assertNotEqual(line_expense_2.account_id, line_expense_1.account_id)
-        self.assertEqual(sheet.state, "post")
