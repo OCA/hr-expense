@@ -11,7 +11,7 @@ class HrExpenseSheet(models.Model):
         for sheet in self:
             account_move = sheet.account_move_id
             sheet.account_move_id = False
-            payments = sheet.payment_ids.filtered(lambda l: l.state != "cancel")
+            payments = sheet.payment_ids.filtered(lambda line: line.state != "cancel")
             # case : cancel invoice from hr_expense
             self._remove_reconcile_hr_invoice(account_move)
             # If the sheet is paid then remove payments
@@ -38,7 +38,7 @@ class HrExpenseSheet(models.Model):
         aml = self.env["account.move.line"].search(
             [("full_reconcile_id", "in", reconcile.ids)]
         )
-        exp_move_line = aml.filtered(lambda l: l.move_id.id != account_move.id)
+        exp_move_line = aml.filtered(lambda line: line.move_id.id != account_move.id)
         # set state to cancel
         exp_move_line.move_id.button_draft()
         exp_move_line.move_id.button_cancel()
