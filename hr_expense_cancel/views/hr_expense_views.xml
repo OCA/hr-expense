@@ -10,7 +10,7 @@
             <xpath expr="//header/field[@name='state']" position="before">
                 <button
                     name="action_cancel"
-                    states="post,done"
+                    invisible="state not in ('post', 'done')"
                     string="Cancel all related operations"
                     type="object"
                     groups="account.group_account_manager"
