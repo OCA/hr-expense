@@ -30,3 +30,8 @@ msgstr "Annulla registrazioni contabili, pagamenti e riconciliazioni"
 #: model:ir.model,name:hr_expense_cancel.model_hr_expense_sheet
 msgid "Expense Report"
 msgstr "Nota spese"
+
+#. module: hr_expense_cancel
+#: model:ir.model,name:hr_expense_cancel.model_account_payment
+msgid "Payments"
+msgstr ""

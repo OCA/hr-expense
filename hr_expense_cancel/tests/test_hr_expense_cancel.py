@@ -25,15 +25,6 @@ class TestHrExpenseCancel(TransactionCase):
             }
         )
 
-        self.expense_sheet = self.env["hr.expense.sheet"].create(
-            {
-                "employee_id": self.ref("hr.employee_admin"),
-                "name": "Expense test",
-                "journal_id": self.expense_journal.id,
-            }
-        )
-        self.expense_sheet.approve_expense_sheets()
-
         self.expense = self.env["hr.expense"].create(
             {
                 "name": "Expense test",
@@ -42,9 +33,13 @@ class TestHrExpenseCancel(TransactionCase):
                     "hr_expense.expense_product_travel_accommodation"
                 ),
                 "total_amount": 10,
-                "sheet_id": self.expense_sheet.id,
             }
         )
+        self.expense.action_submit_expenses()
+
+        self.expense_sheet = self.expense.sheet_id
+        self.expense_sheet.journal_id = self.expense_journal
+        self.expense_sheet.action_approve_expense_sheets()
 
     def _get_payment_wizard(self, expense_sheet):
         action = expense_sheet.action_register_payment()
@@ -53,7 +48,6 @@ class TestHrExpenseCancel(TransactionCase):
             self.account_payment_register.with_context(**ctx),
             view="account.view_account_payment_register_form",
         ) as f:
-            f.journal_id = self.payment_journal
             f.amount = expense_sheet.total_amount
         register_payment = f.save()
         return register_payment
@@ -62,26 +56,28 @@ class TestHrExpenseCancel(TransactionCase):
         self.expense_sheet.action_sheet_move_create()
 
         self.assertFalse(len(self.expense_sheet.payment_ids), 1)
-        self.assertTrue(self.expense_sheet.account_move_id)
+        self.assertTrue(self.expense_sheet.account_move_ids)
 
         self.expense_sheet.action_cancel()
 
         self.assertFalse(self.expense_sheet.payment_ids)
-        self.assertFalse(self.expense_sheet.account_move_id)
+        self.assertFalse(self.expense_sheet.account_move_ids)
 
     def test_action_cancel_no_update_posted(self):
         journals = self.payment_journal | self.expense_journal
         journals.write({"restrict_mode_hash_table": True})
-        self.test_action_cancel_company_account()
+        with self.assertRaises(UserError):
+            self.test_action_cancel_company_account()
         with self.assertRaises(UserError):
             self.test_action_cancel_own_account()
 
     def test_action_cancel_company_account(self):
         self.expense.payment_mode = "company_account"
+        self.expense_sheet.journal_id = self.payment_journal
         self.expense_sheet.action_sheet_move_create()
-        self.assertTrue(self.expense_sheet.account_move_id)
+        self.assertTrue(self.expense_sheet.account_move_ids)
         self.expense_sheet.action_cancel()
-        self.assertFalse(self.expense_sheet.account_move_id)
+        self.assertFalse(self.expense_sheet.account_move_ids)
 
     def test_action_cancel_own_account(self):
         self.expense_sheet.action_sheet_move_create()
