@@ -1,5 +1,5 @@
-# Copyright 2015 Tecnativa - Pedro M. Baeza
 # Copyright 2017 Tecnativa - Vicent Cubells
+# Copyright 2015-2024 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import _, api, fields, models
@@ -13,19 +13,17 @@ class HrExpenseSheet(models.Model):
     invoice_count = fields.Integer(compute="_compute_invoice_count")
 
     def action_sheet_move_create(self):
+        """Perform extra checks and set proper state and payment state according linked
+        invoices.
+        """
         self._validate_expense_invoice()
         res = super().action_sheet_move_create()
-        move_lines = res.line_ids
-        for sheet in self.filtered(lambda x: x.payment_mode == "own_account"):
-            for line in sheet.expense_line_ids.filtered("invoice_id"):
-                c_move_lines = move_lines.filtered(
-                    lambda x: x.expense_id == line
-                    and x.partner_id == line.invoice_id.commercial_partner_id
-                )
-                c_move_lines |= line.invoice_id.line_ids.filtered(
-                    lambda x: x.account_type == "liability_payable" and not x.reconciled
-                )
-                c_move_lines.with_context(use_hr_expense_invoice=True).reconcile()
+        # The payment state is set in a fixed way in super, but it depends on the
+        # payment state of the invoices when there are some of them linked
+        self.filtered(
+            lambda x: x.expense_line_ids.invoice_id
+            and x.payment_mode == "company_account"
+        )._compute_payment_state()
         return res
 
     def set_to_paid(self):
@@ -42,7 +40,37 @@ class HrExpenseSheet(models.Model):
                 can_read and len(sheet.expense_line_ids.mapped("invoice_id")) or 0
             )
 
-    @api.model
+    @api.depends(
+        "expense_line_ids.invoice_id.payment_state",
+        "expense_line_ids.amount_residual",
+    )
+    def _compute_payment_state(self):
+        """Determine the payment status for lines with expense invoices linked"""
+        invoice_sheets = self.filtered(lambda x: x.expense_line_ids.invoice_id)
+        invoice_sheets.payment_state = "not_paid"
+        for sheet in invoice_sheets:
+            lines = sheet.expense_line_ids
+            lines_with_invoices = len(lines.filtered("invoice_id"))
+            if sheet.payment_mode == "company_account":
+                lines_with_paid_invoices = len(
+                    lines.filtered(lambda x: x.invoice_id.payment_state == "paid")
+                )
+                lines_with_partial_invoices = len(
+                    lines.filtered(lambda x: x.invoice_id.payment_state == "partial")
+                )
+            else:
+                lines_with_paid_invoices = len(
+                    lines.filtered(
+                        lambda x: x.transfer_move_ids and x.amount_residual == 0
+                    )
+                )
+                lines_with_partial_invoices = 0  # TODO: Consider partial reconciliation
+            if lines_with_invoices == lines_with_paid_invoices:
+                sheet.payment_state = "paid"
+            elif lines_with_paid_invoices or lines_with_partial_invoices:
+                sheet.payment_state = "partial"
+        return super(HrExpenseSheet, self - invoice_sheets)._compute_payment_state()
+
     def _validate_expense_invoice(self):
         """Check several criteria that needs to be met for creating the move."""
         expense_lines = self.mapped("expense_line_ids").filtered("invoice_id")

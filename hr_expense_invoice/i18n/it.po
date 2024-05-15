@@ -17,6 +17,11 @@ msgstr ""
 "X-Generator: Weblate 4.17\n"
 
 #. module: hr_expense_invoice
+#: model_terms:ir.ui.view,arch_db:hr_expense_invoice.view_move_form
+msgid "<span>Expense</span>"
+msgstr ""
+
+#. module: hr_expense_invoice
 #: model_terms:ir.ui.view,arch_db:hr_expense_invoice.hr_expense_sheet_form_view_inherit_sale_expense
 msgid "Create Vendor Bill"
 msgstr "Crea una fattura fornitore"
@@ -32,11 +37,6 @@ msgid "Expense Report"
 msgstr "Nota spese"
 
 #. module: hr_expense_invoice
-#: model:ir.model.fields,help:hr_expense_invoice.field_hr_expense__sheet_id_state
-msgid "Expense Report State"
-msgstr "Stato nota spese"
-
-#. module: hr_expense_invoice
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_account_bank_statement_line__expense_ids
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_account_move__expense_ids
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_account_payment__expense_ids
@@ -49,6 +49,7 @@ msgid "Invoice Count"
 msgstr "Numero fatture"
 
 #. module: hr_expense_invoice
+#. odoo-python
 #: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
 #: model_terms:ir.ui.view,arch_db:hr_expense_invoice.hr_expense_sheet_form_view_inherit_sale_expense
 #, python-format
@@ -61,15 +62,18 @@ msgid "Journal Entry"
 msgstr "Registrazione contabile"
 
 #. module: hr_expense_invoice
-#: model:ir.model,name:hr_expense_invoice.model_account_payment_register
-msgid "Register Payment"
-msgstr "Registra pagamento"
+#: model:ir.model,name:hr_expense_invoice.model_account_move_line
+msgid "Journal Item"
+msgstr ""
 
 #. module: hr_expense_invoice
-#: code:addons/hr_expense_invoice/wizard/account_payment_register.py:0
-#, python-format
-msgid "Register payment on expense's invoice is not allowed"
-msgstr "Non è consentito registrare il pagamento sulla fattura delle spese"
+#: model:ir.model.fields,help:hr_expense_invoice.field_account_bank_statement_line__source_invoice_expense_id
+#: model:ir.model.fields,help:hr_expense_invoice.field_account_move__source_invoice_expense_id
+#: model:ir.model.fields,help:hr_expense_invoice.field_account_payment__source_invoice_expense_id
+msgid ""
+"Reference to the expense with a linked invoice that generated thistransfer "
+"journal entry"
+msgstr ""
 
 #. module: hr_expense_invoice
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_hr_expense__sheet_id_state
@@ -77,11 +81,24 @@ msgid "Sheet state"
 msgstr "Stato prospetto"
 
 #. module: hr_expense_invoice
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_account_bank_statement_line__source_invoice_expense_id
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_account_move__source_invoice_expense_id
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_account_payment__source_invoice_expense_id
+msgid "Source Invoice Expense"
+msgstr ""
+
+#. module: hr_expense_invoice
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_hr_expense__transfer_move_ids
+msgid "Transfer Move"
+msgstr ""
+
+#. module: hr_expense_invoice
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_hr_expense__invoice_id
 msgid "Vendor Bill"
 msgstr "Fattura fornitore"
 
 #. module: hr_expense_invoice
+#. odoo-python
 #: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
 #, python-format
 msgid ""
@@ -93,6 +110,7 @@ msgstr ""
 "righe di spesa"
 
 #. module: hr_expense_invoice
+#. odoo-python
 #: code:addons/hr_expense_invoice/models/hr_expense.py:0
 #: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
 #, python-format
@@ -100,6 +118,7 @@ msgid "Vendor bill state must be Posted"
 msgstr "Lo stato del conto fornitore deve essere Inviato"
 
 #. module: hr_expense_invoice
+#. odoo-python
 #: code:addons/hr_expense_invoice/models/account_move.py:0
 #, python-format
 msgid ""
@@ -108,3 +127,13 @@ msgid ""
 msgstr ""
 "Non si può cambiare il valore totale, perché c'è una spesa collegata a "
 "questa fattura."
+
+#~ msgid "Expense Report State"
+#~ msgstr "Stato nota spese"
+
+#~ msgid "Register Payment"
+#~ msgstr "Registra pagamento"
+
+#, python-format
+#~ msgid "Register payment on expense's invoice is not allowed"
+#~ msgstr "Non è consentito registrare il pagamento sulla fattura delle spese"
