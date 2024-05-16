@@ -80,6 +80,7 @@ class TestHrExpenseTierValidation(TransactionCase):
         self.assertEqual(sheet.state, "submit")
         # not allow edit expense when under validation
         with self.assertRaises(ValidationError):
+            sheet.review_ids = [(6, 0, self.test_user_1.ids)]
             with Form(sheet) as s:
                 s.name = "New name"
         with self.assertRaises(ValidationError):
