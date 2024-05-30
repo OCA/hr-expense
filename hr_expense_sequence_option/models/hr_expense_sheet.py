@@ -7,9 +7,11 @@ from odoo import api, models
 class HrExpenseSheet(models.Model):
     _inherit = "hr.expense.sheet"
 
-    @api.model
-    def create(self, vals):
-        seq = self.env["ir.sequence.option.line"].get_sequence(self.new(vals))
-        self = self.with_context(sequence_option_id=seq.id)
-        res = super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        sequence_option_obj = self.env["ir.sequence.option.line"]
+        for vals in vals_list:
+            seq = sequence_option_obj.get_sequence(self.new(vals))
+            self = self.with_context(sequence_option_id=seq.id)
+            res = super().create(vals)
         return res
