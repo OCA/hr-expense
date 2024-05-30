@@ -2,6 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import api, fields, models
+from odoo.tools import float_round
 
 
 class HrExpense(models.Model):
@@ -65,15 +66,17 @@ class HrExpense(models.Model):
         move_line_values_by_expense = super()._get_account_move_line_values()
         for expense in self.filtered(lambda l: l.tax_adjust):
             account_src = expense._get_expense_account_source()
-            account_dst = expense._get_expense_account_destination()
             account_date = (
                 expense.sheet_id.accounting_date
                 or expense.date
                 or fields.Date.context_today(expense)
             )
-            # Find price diff origin and adjust
+            # Find price diff origin and adjust with rounding
+            prec = expense.currency_id.rounding
             price_tax = expense._get_expense_price_tax()
-            diff_price_tax_currency = price_tax - expense.price_tax
+            diff_price_tax_currency = float_round(
+                price_tax - expense.price_tax, precision_rounding=prec
+            )
             diff_price_tax = expense._get_expense_balance(
                 diff_price_tax_currency, account_date
             )
@@ -117,7 +120,7 @@ class HrExpense(models.Model):
                 # Destination adjust move line, For case exclude price
                 elif (
                     not expense.tax_ids.filtered("price_include")
-                    and move_line_values.get("account_id") == account_dst
+                    and move_line_values.get("account_id") != account_src.id
                 ):
                     move_line_values.update(
                         {

@@ -3,7 +3,7 @@
 
 {
     "name": "HR Expense Payment Widget Amount",
-    "version": "15.0.1.0.0",
+    "version": "15.0.1.0.1",
     "category": "Human Resources",
     "author": "Ecosoft, Odoo Community Association (OCA)",
     "license": "AGPL-3",

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-10-28 20:07+0000\n"
+"PO-Revision-Date: 2024-01-25 16:34+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -618,7 +618,7 @@ msgstr "Resoconti alla scadenza"
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_advance_overdue_reminder__activity_scheduled_date
 msgid "Scheduled Date"
-msgstr "Data programmata"
+msgstr "Data schedulata"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_overdue_reminder.hr_advance_overdue_reminder_form
