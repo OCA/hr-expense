@@ -7,11 +7,14 @@ from odoo import api, models
 class HrExpenseSheet(models.Model):
     _inherit = "hr.expense.sheet"
 
-    @api.model
-    def create(self, vals):
-        if vals.get("advance") or self.env.context.get("default_advance"):
-            number = (
-                self.env["ir.sequence"].next_by_code("hr.expense.sheet.advance") or "/"
-            )
-            vals["number"] = number
+    @api.model_create_multi
+    def create(self, vals_list):
+        default_advance = self.env.context.get("default_advance")
+        for vals in vals_list:
+            if vals.get("advance") or default_advance:
+                number = (
+                    self.env["ir.sequence"].next_by_code("hr.expense.sheet.advance")
+                    or "/"
+                )
+                vals["number"] = number
         return super().create(vals)

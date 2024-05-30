@@ -13,12 +13,11 @@ class TestHrExpenseAdvanceClearingSequence(TransactionCase):
         cls.partner_1 = cls.env.ref("base.res_partner_12")
         cls.employee_1 = cls.env.ref("hr.employee_hne")
         cls.employee_1.address_home_id = cls.partner_1.id
-        user_type_expense = cls.env.ref("account.data_account_type_expenses")
         account_expense = cls.env["account.account"].create(
             {
                 "code": "NC1113",
                 "name": "HR Expense - Test Purchase Account",
-                "user_type_id": user_type_expense.id,
+                "account_type": "expense",
             }
         )
         cls.emp_advance = cls.env.ref("hr_expense_advance_clearing.product_emp_advance")
@@ -45,7 +44,7 @@ class TestHrExpenseAdvanceClearingSequence(TransactionCase):
         ) as expense:
             expense.name = description
             expense.employee_id = employee
-            expense.unit_amount = amount
+            expense.total_amount = amount
             expense.payment_mode = payment_mode
         expense = expense.save()
         expense.tax_ids = False  # Test no vat
