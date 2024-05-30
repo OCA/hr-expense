@@ -10,10 +10,10 @@ class HrExpense(models.Model):
 
     @api.constrains("advance")
     def _check_advance(self):
+        vendor_advance = self.env.ref(
+            "hr_expense_advance_vendor.product_vendor_advance"
+        )
         for expense in self.filtered("advance"):
-            vendor_advance = self.env.ref(
-                "hr_expense_advance_vendor.product_vendor_advance"
-            )
             if expense.product_id != vendor_advance:
                 super(HrExpense, expense)._check_advance()
                 continue
