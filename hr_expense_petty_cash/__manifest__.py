@@ -11,6 +11,7 @@
     "depends": ["hr_expense"],
     "data": [
         "security/ir.model.access.csv",
+        "security/petty_cash_security.xml",
         "views/account_move_views.xml",
         "views/hr_expense_sheet_views.xml",
         "views/hr_expense_views.xml",
