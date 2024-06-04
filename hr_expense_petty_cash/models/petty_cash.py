@@ -8,17 +8,20 @@ class PettyCash(models.Model):
     _name = "petty.cash"
     _description = "Petty Cash"
     _rec_name = "partner_id"
+    _check_company_auto = True
 
     active = fields.Boolean(default=True)
     partner_id = fields.Many2one(
         comodel_name="res.partner",
         string="Petty Cash Holder",
         required=True,
+        check_company=True,
     )
     account_id = fields.Many2one(
         comodel_name="account.account",
         string="Petty Cash Account",
         required=True,
+        check_company=True,
     )
     petty_cash_limit = fields.Float(
         string="Max Limit",
@@ -30,9 +33,20 @@ class PettyCash(models.Model):
     )
     journal_id = fields.Many2one(
         comodel_name="account.journal",
+        check_company=True,
     )
+    company_id = fields.Many2one(
+        comodel_name="res.company",
+        required=True,
+        default=lambda self: self.env.company,
+    )
+
     _sql_constraints = [
-        ("partner_uniq", "unique(partner_id)", "Petty Cash Holder must be unique!"),
+        (
+            "partner_uniq",
+            "unique(partner_id, company_id)",
+            "Petty Cash Holder must be unique!",
+        ),
     ]
 
     @api.depends("partner_id", "account_id")

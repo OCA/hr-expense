@@ -1,7 +1,7 @@
 # Copyright 2019 Ecosoft Co., Ltd. (http://ecosoft.co.th)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import fields
+from odoo import Command, fields
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests.common import Form, TransactionCase
 
@@ -77,17 +77,23 @@ class TestHrExpensePettyCash(TransactionCase):
         )
         return invoice
 
-    def _create_expense(self, amount, employee_id, mode, petty_cash_holder=False):
-        expense = self.exp_obj.create(
-            {
-                "name": "Expense - Test",
-                "employee_id": employee_id,
-                "product_id": self.product.id,
-                "unit_amount": amount,
-                "payment_mode": mode,
-                "petty_cash_id": petty_cash_holder,
-            }
-        )
+    def _create_expense(
+        self,
+        amount,
+        employee,
+        payment_mode="own_account",
+        petty_cash_holder=False,
+    ):
+        with Form(self.exp_obj) as expense:
+            expense.name = "Expense - Test"
+            expense.employee_id = employee
+            expense.product_id = self.product
+            expense.total_amount = amount
+            expense.payment_mode = payment_mode
+            if payment_mode == "petty_cash":
+                expense.petty_cash_id = petty_cash_holder
+        expense = expense.save()
+        expense.tax_ids = False  # Test no vat
         return expense
 
     def _create_expense_sheet(self, expenses):
@@ -95,7 +101,7 @@ class TestHrExpensePettyCash(TransactionCase):
             {
                 "name": expenses[0].name,
                 "employee_id": expenses[0].employee_id.id,
-                "expense_line_ids": [(6, 0, expenses.ids)],
+                "expense_line_ids": [Command.set(expenses.ids)],
             }
         )
         return expense_sheet
@@ -108,25 +114,21 @@ class TestHrExpensePettyCash(TransactionCase):
                 "invoice_date": fields.Date.today(),
                 "is_petty_cash": petty_cash,
                 "invoice_line_ids": [
-                    (
-                        0,
-                        0,
+                    Command.create(
                         {
                             "name": "Test line 1",
                             "quantity": 1,
                             "price_unit": 100,
                             "account_id": self.account_revenue_id.id,
-                        },
+                        }
                     ),
-                    (
-                        0,
-                        0,
+                    Command.create(
                         {
                             "name": "Test line 2",
                             "quantity": 1,
                             "price_unit": 100,
                             "account_id": self.account_revenue_id.id,
-                        },
+                        }
                     ),
                 ],
             }
@@ -145,8 +147,9 @@ class TestHrExpensePettyCash(TransactionCase):
             with Form(invoice) as inv:
                 inv.is_petty_cash = True
         invoice = self._create_invoice(self.partner_1.id)
-        with Form(invoice) as inv:
-            inv.is_petty_cash = True
+        invoice.is_petty_cash = True
+        invoice._onchange_is_petty_cash()
+
         self.assertEqual(len(invoice.invoice_line_ids), 1)
         self.assertEqual(invoice.invoice_line_ids.price_unit, 1000.0)
         # over limit
@@ -196,30 +199,30 @@ class TestHrExpensePettyCash(TransactionCase):
         self.assertEqual(self.petty_cash_holder.petty_cash_balance, 0.00)
         self._check_warning()
         invoice = self._create_invoice(self.partner_1.id)
-        with Form(invoice) as inv:
-            inv.is_petty_cash = True
+        invoice.is_petty_cash = True
+        invoice._onchange_is_petty_cash()
         invoice.action_post()
         self.petty_cash_holder._compute_petty_cash_balance()
         self.assertEqual(self.petty_cash_holder.petty_cash_balance, 1000.0)
 
     def test_02_create_expense_petty_cash(self):
         invoice = self._create_invoice(self.partner_1.id)
-        with Form(invoice) as inv:
-            inv.is_petty_cash = True
-            inv.invoice_line_ids.price_unit = 1000.0
+        invoice.is_petty_cash = True
+        invoice._onchange_is_petty_cash()
+        invoice.invoice_line_ids.price_unit = 1000.0
         invoice.action_post()
         self.petty_cash_holder._compute_petty_cash_balance()
         self.assertEqual(self.petty_cash_holder.petty_cash_balance, 1000.0)
         # Create expense
-        expense_own = self._create_expense(400.0, self.employee_1.id, "own_account")
+        expense_own = self._create_expense(400.0, self.employee_1, "own_account")
         expense_petty_cash = self._create_expense(
-            400.0, self.employee_1.id, "petty_cash", self.petty_cash_holder.id
+            400.0, self.employee_1, "petty_cash", self.petty_cash_holder
         )
         expense_petty_cash_2 = self._create_expense(
-            200.0, self.employee_1.id, "petty_cash", self.petty_cash_holder_2.id
+            200.0, self.employee_1, "petty_cash", self.petty_cash_holder_2
         )
         expense_petty_cash_3 = self._create_expense(
-            100.0, self.employee_2.id, "petty_cash", self.petty_cash_holder_2.id
+            100.0, self.employee_2, "petty_cash", self.petty_cash_holder_2
         )
         expense_report = expense_own + expense_petty_cash + expense_petty_cash_2
         # Check expenses must have 1 petty cash holder only
@@ -236,9 +239,9 @@ class TestHrExpensePettyCash(TransactionCase):
         sheet = self._create_expense_sheet(expense_petty_cash)
         self.assertEqual(sheet.state, "draft")
         with self.assertRaises(ValidationError):
-            sheet.expense_line_ids.unit_amount = 1600.0
+            sheet.expense_line_ids.total_amount = 1600.0
             sheet._check_petty_cash_amount()
-        sheet.expense_line_ids.unit_amount = 400.0
+        sheet.expense_line_ids.total_amount = 400.0
         # Submitted to Manager and Approve
         sheet.action_submit_sheet()
         self.assertEqual(sheet.state, "submit")
@@ -262,15 +265,15 @@ class TestHrExpensePettyCash(TransactionCase):
     def test_03_create_expense_petty_cash_with_journal(self):
         self.petty_cash_holder.journal_id = self.petty_cash_journal_id
         invoice = self._create_invoice(self.partner_1.id)
-        with Form(invoice) as inv:
-            inv.is_petty_cash = True
-            inv.invoice_line_ids.price_unit = 1000.0
+        invoice.is_petty_cash = True
+        invoice._onchange_is_petty_cash()
+        invoice.invoice_line_ids.price_unit = 1000.0
         self.assertEqual(invoice.journal_id, self.petty_cash_holder.journal_id)
         invoice.action_post()
         self.petty_cash_holder._compute_petty_cash_balance()
         self.assertEqual(self.petty_cash_holder.petty_cash_balance, 1000.0)
         expense_petty_cash = self._create_expense(
-            400.0, self.employee_1.id, "petty_cash", self.petty_cash_holder.id
+            400.0, self.employee_1, "petty_cash", self.petty_cash_holder
         )
         expense_petty_cash.action_submit_expenses()
         sheet = self._create_expense_sheet(expense_petty_cash)
