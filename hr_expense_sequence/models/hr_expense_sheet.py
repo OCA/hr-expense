@@ -11,9 +11,10 @@ class HrExpenseSheet(models.Model):
 
     number = fields.Char(required=True, default="/", readonly=True, copy=False)
 
-    @api.model
-    def create(self, vals):
-        if vals.get("number", "/") == "/":
-            number = self.env["ir.sequence"].next_by_code("hr.expense.sheet") or "/"
-            vals["number"] = number
-        return super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get("number", "/") == "/":
+                number = self.env["ir.sequence"].next_by_code("hr.expense.sheet") or "/"
+                vals["number"] = number
+        return super().create(vals_list)
