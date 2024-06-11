@@ -185,7 +185,7 @@ class HrExpense(models.Model):
     def _compute_tax_ids(self):
         with_invoice = self.filtered("invoice_id")
         # for record in with_invoice:
-            # record.tax_ids = [(5,)]
+        # record.tax_ids = [(5,)]
         return super(HrExpense, self - with_invoice)._compute_tax_ids()
 
     @api.depends(

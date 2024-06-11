@@ -269,8 +269,11 @@ class TestHrExpenseInvoice(TestExpenseCommon):
         # use the actual action instead. This is a workaround.
         res = self.expense.action_submit_expenses()
         # The base create cleans the context, so we have to pass the values.
-        sheet_values = {field.replace("default_", ""): res["context"][field] for field in res["context"]}
-        sheet = self.env[["hr.expense.sheet"]].create(sheet_values)
+        sheet_values = {
+            field.replace("default_", ""): res["context"][field]
+            for field in res["context"]
+        }
+        sheet = self.env["hr.expense.sheet"].create(sheet_values)
         self.assertEqual(sheet.expense_line_ids.tax_ids, tax_id)
         self.assertEqual(self.expense.tax_ids, tax_id)
         self.assertAlmostEqual(sheet.untaxed_amount, 20.0, places=2)
