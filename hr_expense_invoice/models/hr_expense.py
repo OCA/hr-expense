@@ -36,7 +36,7 @@ class HrExpense(models.Model):
                 {
                     "product_id": self.product_id.id,
                     "name": self.name,
-                    "price_unit": self.unit_amount or self.total_amount,
+                    "price_unit": self.untaxed_amount or self.total_amount,
                     "quantity": self.quantity,
                     "account_id": self.account_id.id,
                     "analytic_distribution": self.analytic_distribution,
@@ -130,7 +130,6 @@ class HrExpense(models.Model):
             {
                 "invoice_id": invoice.id,
                 "quantity": 1,
-                "tax_ids": False,
                 "unit_amount": invoice.amount_total,
             }
         )
@@ -185,8 +184,8 @@ class HrExpense(models.Model):
     @api.depends("invoice_id")
     def _compute_tax_ids(self):
         with_invoice = self.filtered("invoice_id")
-        for record in with_invoice:
-            record.tax_ids = [(5,)]
+        # for record in with_invoice:
+            # record.tax_ids = [(5,)]
         return super(HrExpense, self - with_invoice)._compute_tax_ids()
 
     @api.depends(

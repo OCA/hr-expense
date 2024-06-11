@@ -259,3 +259,20 @@ class TestHrExpenseInvoice(TestExpenseCommon):
             sheet._validate_expense_invoice()
         self.expense.total_amount = 100.0
         sheet._validate_expense_invoice()
+
+    def test_5_hr_expense_sheet_tax(self):
+        """Test if the tax is correctly calculated in the expense sheet."""
+        tax_id = self.env.ref("l10n_generic_coa.1_purchase_tax_template").sudo()
+        self.expense.write({"tax_ids": [(6, 0, [tax_id.id])]})
+        self.expense.total_amount = 23.0
+        # There is a bug where the Form deletes the tax_ids, so we have to
+        # use the actual action instead. This is a workaround.
+        res = self.expense.action_submit_expenses()
+        # The base create cleans the context, so we have to pass the values.
+        sheet_values = {field.replace("default_", ""): res["context"][field] for field in res["context"]}
+        sheet = self.env[["hr.expense.sheet"]].create(sheet_values)
+        self.assertEqual(sheet.expense_line_ids.tax_ids, tax_id)
+        self.assertEqual(self.expense.tax_ids, tax_id)
+        self.assertAlmostEqual(sheet.untaxed_amount, 20.0, places=2)
+        self.assertAlmostEqual(sheet.total_amount_taxes, 3.0, places=2)
+        self.assertAlmostEqual(sheet.total_amount, 23.0)
