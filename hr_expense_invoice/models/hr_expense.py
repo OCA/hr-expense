@@ -36,7 +36,7 @@ class HrExpense(models.Model):
                 {
                     "product_id": self.product_id.id,
                     "name": self.name,
-                    "price_unit": self.unit_amount or self.total_amount,
+                    "price_unit": self.untaxed_amount,
                     "quantity": self.quantity,
                     "account_id": self.account_id.id,
                     "analytic_distribution": self.analytic_distribution,
@@ -126,6 +126,8 @@ class HrExpense(models.Model):
         )
         for attachment in attachments:
             attachment.copy({"res_model": invoice._name, "res_id": invoice.id})
+        # Normalize data in the expense for avoiding mismatchings. Examples: the tax
+        # reported is not correct, there's more than one concept, etc...
         self.write(
             {
                 "invoice_id": invoice.id,
