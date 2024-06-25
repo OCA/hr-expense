@@ -7,10 +7,13 @@ from odoo import fields, models
 class HrExpense(models.Model):
     _inherit = "hr.expense"
 
-    payment_type_id = fields.Many2one("account.journal", string="Payment Journal")
+    payment_type_id = fields.Many2one(
+        comodel_name="account.journal", string="Payment Journal"
+    )
 
     def _get_default_expense_sheet_values(self):
-        context = super()._get_default_expense_sheet_values()
+        values = super()._get_default_expense_sheet_values()
         if self.payment_type_id:
-            context["default_bank_journal_id"] = self.payment_type_id.id
-        return context
+            for val in values:
+                val["bank_journal_id"] = self.payment_type_id.id
+        return values

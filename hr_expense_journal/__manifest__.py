@@ -3,7 +3,7 @@
 
 {
     "name": "Select Expense Journal",
-    "version": "15.0.1.0.0",
+    "version": "16.0.1.0.0",
     "author": "Open Source Integrators, Odoo Community Association (OCA)",
     "summary": "Set the Journal for the payment type used to pay the expense",
     "website": "https://github.com/OCA/hr-expense",
