@@ -13,7 +13,7 @@ class TestHrExpenseJournal(common.TransactionCase):
         cls.journal_model = cls.env["account.journal"]
 
         cls.employee_admin = cls.env.ref("hr.employee_admin")
-        cls.product = cls.env.ref("hr_expense.product_product_zero_cost")
+        cls.product = cls.env.ref("hr_expense.product_product_no_cost")
         cls.new_journal = cls.journal_model.create(
             {
                 "name": "New Journal",
@@ -29,8 +29,7 @@ class TestHrExpenseJournal(common.TransactionCase):
                     "name": "Expense Line",
                     "employee_id": self.employee_admin.id,
                     "product_id": self.product.id,
-                    "unit_amount": 1,
-                    "quantity": 10,
+                    "total_amount": 10,
                     "payment_mode": "company_account",
                     "payment_type_id": self.new_journal.id,
                 },
