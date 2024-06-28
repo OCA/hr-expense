@@ -1,74 +1,79 @@
 # Copyright 2021 Ecosoft Co., Ltd (http://ecosoft.co.th/)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-import json
-
 from odoo.tests.common import Form, TransactionCase
 
 
 class TestHrExpensePaymentWidgetAmount(TransactionCase):
-    def setUp(self):
-        super().setUp()
-        self.account_payment_register = self.env["account.payment.register"]
-        self.payment_journal = self.env["account.journal"].search(
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        cls.journal_obj = cls.env["account.journal"]
+        cls.sheet_obj = cls.env["hr.expense.sheet"]
+        cls.expense_obj = cls.env["hr.expense"]
+        cls.account_payment_register_obj = cls.env["account.payment.register"]
+
+        cls.expense_product = cls.env.ref("hr_expense.expense_product_meal")
+        cls.employee = cls.env.ref("hr.employee_admin")
+        cls.currency_usd_id = cls.env.ref("base.USD").id
+        cls.currency_eur_id = cls.env.ref("base.EUR").id
+        cls.company = cls.env.ref("base.main_company")
+
+        # Set company currency to USD
+        cls.env.cr.execute(
+            "UPDATE res_company SET currency_id = %s WHERE id = %s",
+            [cls.currency_usd_id, cls.company.id],
+        )
+
+        cls.payment_journal = cls.journal_obj.search(
             [("type", "in", ["cash", "bank"])], limit=1
         )
-        company = self.env.ref("base.main_company")
-        self.currency_usd_id = self.env.ref("base.USD").id
-        self.currency_eur_id = self.env.ref("base.EUR").id
-        self.env.cr.execute(
-            "UPDATE res_company SET currency_id = %s WHERE id = %s",
-            [self.currency_usd_id, company.id],
-        )
-        company.invalidate_cache()
-
-        self.expense_journal = self.env["account.journal"].create(
+        cls.expense_journal = cls.journal_obj.create(
             {
                 "name": "Purchase Journal - Test",
                 "code": "HRTPJ",
                 "type": "purchase",
-                "company_id": company.id,
+                "company_id": cls.company.id,
             }
         )
 
-        self.expense_sheet = self.env["hr.expense.sheet"].create(
+        cls.expense_sheet = cls.sheet_obj.create(
             {
-                "employee_id": self.ref("hr.employee_admin"),
+                "employee_id": cls.employee.id,
                 "name": "Expense test",
-                "journal_id": self.expense_journal.id,
+                "journal_id": cls.expense_journal.id,
             }
         )
-        self.expense_sheet.approve_expense_sheets()
+        cls.expense_sheet.approve_expense_sheets()
 
-        self.expense = self.env["hr.expense"].create(
+        cls.expense = cls.expense_obj.create(
             {
                 "name": "Expense test",
-                "employee_id": self.ref("hr.employee_admin"),
-                "product_id": self.ref("hr_expense.accomodation_expense_product"),
-                "unit_amount": 1,
-                "quantity": 10,
-                "sheet_id": self.expense_sheet.id,
+                "employee_id": cls.employee.id,
+                "product_id": cls.expense_product.id,
+                "total_amount": 10,
+                "sheet_id": cls.expense_sheet.id,
             }
         )
 
-        self.expense_sheet_currency = self.env["hr.expense.sheet"].create(
+        cls.expense_sheet_currency = cls.sheet_obj.create(
             {
-                "employee_id": self.ref("hr.employee_admin"),
+                "employee_id": cls.employee.id,
                 "name": "Expense test",
-                "journal_id": self.expense_journal.id,
+                "journal_id": cls.expense_journal.id,
             }
         )
-        self.expense_sheet_currency.approve_expense_sheets()
+        cls.expense_sheet_currency.approve_expense_sheets()
 
-        self.expense_currency = self.env["hr.expense"].create(
+        cls.expense_currency = cls.expense_obj.create(
             {
                 "name": "Expense test",
-                "employee_id": self.ref("hr.employee_admin"),
-                "product_id": self.ref("hr_expense.accomodation_expense_product"),
-                "unit_amount": 1,
-                "quantity": 10,
-                "currency_id": self.currency_eur_id,
-                "sheet_id": self.expense_sheet_currency.id,
+                "employee_id": cls.employee.id,
+                "product_id": cls.expense_product.id,
+                "total_amount": 10,
+                "currency_id": cls.currency_eur_id,
+                "sheet_id": cls.expense_sheet_currency.id,
             }
         )
 
@@ -76,34 +81,39 @@ class TestHrExpensePaymentWidgetAmount(TransactionCase):
         action = expense_sheet.action_register_payment()
         ctx = action.get("context")
         with Form(
-            self.account_payment_register.with_context(**ctx),
+            self.account_payment_register_obj.with_context(**ctx),
             view="account.view_account_payment_register_form",
         ) as f:
             f.journal_id = self.payment_journal
-            f.amount = self.expense_sheet.total_amount
+            f.amount = expense_sheet.total_amount
         register_payment = f.save()
         return register_payment
 
     def test_01_expense_sheet_employee(self):
         # Post Journal Entries
         self.expense_sheet.action_sheet_move_create()
+        self.assertEqual(self.expense_sheet.state, "post")
         payment_wizard = self._get_payment_wizard(self.expense_sheet)
-        payment_widget = json.loads(self.expense_sheet.expense_payments_widget)
+        payment_widget = self.expense_sheet.expense_payments_widget
         self.assertFalse(self.expense_sheet.payment_ids)
         self.assertFalse(payment_widget)
         # Register Payment
         payment_wizard.action_create_payments()
         self.assertEqual(len(self.expense_sheet.payment_ids), 1)
-        payment_widget = json.loads(self.expense_sheet.expense_payments_widget)
+
+        payment_widget = self.expense_sheet.expense_payments_widget
         self.assertTrue(payment_widget)
         content_payment_widget = payment_widget.get("content", False)
         self.assertEqual(len(content_payment_widget), 1)
-        # Unreconciled widget
+        # Unreconciled widget from expense sheet view
         move = self.expense_sheet.payment_ids.move_id
         self.assertEqual(move.id, content_payment_widget[0].get("move_id"))
-        move.js_remove_outstanding_partial(content_payment_widget[0].get("partial_id"))
-        payment_widget = json.loads(self.expense_sheet.expense_payments_widget)
-        self.assertFalse(payment_widget.get("content"))
+        # when click on unreconciled button from expense sheet,
+        # it will send id from move but object is hr.expense.sheet
+        x = self.sheet_obj.browse(move.id)
+        x.js_remove_outstanding_partial(content_payment_widget[0].get("partial_id"))
+        payment_widget = self.expense_sheet.expense_payments_widget
+        self.assertFalse(payment_widget)
 
     def test_02_expense_sheet_employee_currency(self):
         """
@@ -112,12 +122,12 @@ class TestHrExpensePaymentWidgetAmount(TransactionCase):
         """
         self.expense_sheet_currency.action_sheet_move_create()
         payment_wizard = self._get_payment_wizard(self.expense_sheet_currency)
-        payment_widget = json.loads(self.expense_sheet_currency.expense_payments_widget)
+        payment_widget = self.expense_sheet_currency.expense_payments_widget
         self.assertFalse(self.expense_sheet_currency.payment_ids)
         self.assertFalse(payment_widget)
         payment_wizard.action_create_payments()
         self.assertEqual(len(self.expense_sheet_currency.payment_ids), 1)
-        payment_widget = json.loads(self.expense_sheet_currency.expense_payments_widget)
+        payment_widget = self.expense_sheet_currency.expense_payments_widget
         self.assertTrue(payment_widget)
         content_payment_widget = payment_widget.get("content", False)
         self.assertEqual(len(content_payment_widget), 1)
