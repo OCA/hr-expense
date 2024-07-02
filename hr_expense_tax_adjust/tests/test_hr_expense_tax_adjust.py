@@ -11,7 +11,12 @@ class TestHrExpenseTaxAdjust(TransactionCase):
         cls.expense = cls.env["hr.expense"]
         cls.sheet = cls.env["hr.expense.sheet"]
         cls.employee_admin = cls.env.ref("hr.employee_admin")
-        cls.expense_product = cls.env.ref("hr_expense.trans_expense_product")
+        cls.expense_product = cls.env.ref("hr_expense.expense_product_meal")
+        cls.eur_currency = cls.env.ref("base.EUR")
+        cls.usd_currency = cls.env.ref("base.USD")
+        cls.company = cls.env.ref("base.main_company")
+        cls.company.currency_id = cls.usd_currency
+
         cls.tax_purchase_include = cls.env["account.tax"].create(
             {
                 "name": "Test tax 10% (include)",
@@ -34,19 +39,20 @@ class TestHrExpenseTaxAdjust(TransactionCase):
                 "name": "Expense test",
                 "employee_id": self.employee_admin.id,
                 "product_id": self.expense_product.id,
-                "unit_amount": 10,
-                "quantity": 10,
+                "total_amount": 100.0,
                 "tax_ids": [(6, 0, [self.tax_purchase_include.id])],
             }
         )
         self.assertEqual(expense.total_amount, 100)
         self.assertFalse(expense.tax_adjust)
-        self.assertEqual(expense.price_tax, 9.09)  # (100 * 10) / 110
+        self.assertEqual(expense.amount_tax, 9.09)  # (100 * 10) / 110
         # Test increase taxes adjust
         with Form(expense) as ex:
-            ex.price_tax = 10.0
+            ex.tax_adjust = True
+            ex.amount_tax = 10.0
+        ex.save()
         self.assertTrue(expense.tax_adjust)
-        self.assertEqual(expense.price_tax, 10.0)
+        self.assertEqual(expense.amount_tax, 10.0)
         # Create expense sheet
         sheet = self.sheet.create(
             {
@@ -55,7 +61,11 @@ class TestHrExpenseTaxAdjust(TransactionCase):
                 "expense_line_ids": [(6, 0, expense.id)],
             }
         )
+        sheet._compute_amount()
         self.assertEqual(sheet.state, "draft")
+        self.assertEqual(sheet.total_amount, 100.0)
+        self.assertEqual(sheet.total_amount_taxes, 10.0)
+        self.assertEqual(sheet.untaxed_amount, 90.0)
         sheet.action_submit_sheet()
         self.assertEqual(sheet.state, "submit")
         sheet.approve_expense_sheets()
@@ -64,54 +74,45 @@ class TestHrExpenseTaxAdjust(TransactionCase):
         self.assertEqual(sheet.state, "post")
         self.assertTrue(sheet.account_move_id)
         self.assertEqual(len(sheet.account_move_id.line_ids), 3)
-        sheet.expense_line_ids._get_expense_account_source()
-        src_move_line = sheet.account_move_id.line_ids[0]
-        tax_move_line = sheet.account_move_id.line_ids[1]
+        self.assertEqual(sheet.account_move_id.amount_residual, 100.0)
         # Before adjust tax, source move line must accounting debit = 90.91
         # After adjust tax, it change accounting debit = 90 and tax debit = 10
-        self.assertEqual(src_move_line.debit, 90.0)
-        self.assertEqual(tax_move_line.debit, 10.0)
+        self.assertEqual(
+            sheet.account_move_id.line_ids.filtered(
+                lambda line: line.display_type == "product"
+            ).debit,
+            90.0,
+        )
+        self.assertEqual(
+            sheet.account_move_id.line_ids.filtered(
+                lambda line: line.display_type == "tax"
+            ).debit,
+            10.0,
+        )
 
-        sheet.action_unpost()
-        # Test increase taxes adjust
-        with Form(expense) as ex:
-            ex.price_tax = 8
-        self.assertTrue(expense.tax_adjust)
-        self.assertEqual(expense.price_tax, 8.0)
-        sheet.action_submit_sheet()
-        self.assertEqual(sheet.state, "submit")
-        sheet.approve_expense_sheets()
-        self.assertEqual(sheet.state, "approve")
-        sheet.action_sheet_move_create()
-        self.assertEqual(sheet.state, "post")
-        src_move_line = sheet.account_move_id.line_ids[0]
-        tax_move_line = sheet.account_move_id.line_ids[1]
-        # Before adjust tax, source move line must accounting debit = 90.91
-        # After adjust tax, it change accounting debit = 92 and tax debit = 8
-        self.assertEqual(src_move_line.debit, 92.0)
-        self.assertEqual(tax_move_line.debit, 8.0)
-
-    def test_02_expense_adjust_tax_exclude_tax(self):
-        """In the core Odoo implementation, Tax exclude is invisible.
-        This test supports tax exclude if you develop it see it."""
+    def test_02_expense_adjust_tax_multi_currency(self):
         expense = self.expense.create(
             {
                 "name": "Expense test",
                 "employee_id": self.employee_admin.id,
                 "product_id": self.expense_product.id,
-                "unit_amount": 10,
-                "quantity": 10,
-                "tax_ids": [(6, 0, [self.tax_purchase.id])],
+                "currency_id": self.eur_currency.id,
+                "total_amount": 100.0,
+                "tax_ids": [(6, 0, [self.tax_purchase_include.id])],
             }
         )
-        self.assertEqual(expense.total_amount, 110)
+        self.assertEqual(expense.total_amount, 100)
         self.assertFalse(expense.tax_adjust)
-        self.assertEqual(expense.price_tax, 10)
+        self.assertEqual(expense.amount_tax, 9.09)  # (100 * 10) / 110
+        self.assertAlmostEqual(expense.amount_tax_company, 13.9)  # (152.89 * 10) / 110
         # Test increase taxes adjust
         with Form(expense) as ex:
-            ex.price_tax = 12.0
+            ex.tax_adjust = True
+            ex.amount_tax = 10.0
+        ex.save()
         self.assertTrue(expense.tax_adjust)
-        self.assertEqual(expense.price_tax, 12.0)
+        self.assertEqual(expense.amount_tax, 10.0)
+        self.assertAlmostEqual(expense.amount_tax_company, 15.29)
         # Create expense sheet
         sheet = self.sheet.create(
             {
@@ -120,7 +121,11 @@ class TestHrExpenseTaxAdjust(TransactionCase):
                 "expense_line_ids": [(6, 0, expense.id)],
             }
         )
+        sheet._compute_amount()
         self.assertEqual(sheet.state, "draft")
+        self.assertAlmostEqual(sheet.total_amount, 152.89)  # 1 EUR = 1.5289 USD
+        self.assertAlmostEqual(sheet.total_amount_taxes, 15.29)
+        self.assertAlmostEqual(sheet.untaxed_amount, 137.6)
         sheet.action_submit_sheet()
         self.assertEqual(sheet.state, "submit")
         sheet.approve_expense_sheets()
@@ -129,29 +134,18 @@ class TestHrExpenseTaxAdjust(TransactionCase):
         self.assertEqual(sheet.state, "post")
         self.assertTrue(sheet.account_move_id)
         self.assertEqual(len(sheet.account_move_id.line_ids), 3)
-        sheet.expense_line_ids._get_expense_account_source()
-        tax_move_line = sheet.account_move_id.line_ids[1]
-        dest_move_line = sheet.account_move_id.line_ids[2]
-        # Before adjust tax, dest move line must accounting credit = 110
-        # After adjust tax, it change accounting credit = 112 and tax debit = 12
-        self.assertEqual(tax_move_line.debit, 12.0)
-        self.assertEqual(dest_move_line.credit, 112.0)
-
-        sheet.action_unpost()
-        # Test increase taxes adjust
-        with Form(expense) as ex:
-            ex.price_tax = 8
-        self.assertTrue(expense.tax_adjust)
-        self.assertEqual(expense.price_tax, 8.0)
-        sheet.action_submit_sheet()
-        self.assertEqual(sheet.state, "submit")
-        sheet.approve_expense_sheets()
-        self.assertEqual(sheet.state, "approve")
-        sheet.action_sheet_move_create()
-        self.assertEqual(sheet.state, "post")
-        tax_move_line = sheet.account_move_id.line_ids[1]
-        dest_move_line = sheet.account_move_id.line_ids[2]
-        # Before adjust tax, source move line must accounting credit = 110
-        # After adjust tax, it change accounting credit = 108 and tax debit = 8
-        self.assertEqual(tax_move_line.debit, 8.0)
-        self.assertEqual(dest_move_line.credit, 108.0)
+        self.assertAlmostEqual(sheet.account_move_id.amount_residual, 152.89)
+        # Before adjust tax, source move line must accounting debit = 138.99
+        # After adjust tax, it change accounting debit = 137.6 and tax debit = 15.29
+        self.assertAlmostEqual(
+            sheet.account_move_id.line_ids.filtered(
+                lambda line: line.display_type == "product"
+            ).debit,
+            137.6,
+        )
+        self.assertAlmostEqual(
+            sheet.account_move_id.line_ids.filtered(
+                lambda line: line.display_type == "tax"
+            ).debit,
+            15.29,
+        )
