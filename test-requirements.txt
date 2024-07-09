@@ -1,0 +1,1 @@
+odoo-addon-base_substate @ git+https://github.com/OCA/server-ux.git@refs/pull/735/head#subdirectory=setup/base_substate
