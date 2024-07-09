@@ -4,7 +4,7 @@
         <field name="name">Verified</field>
         <field name="model_id" ref="hr_expense.model_hr_expense_sheet" />
         <field name="subject">Your expense report {{ object.name }} is verified</field>
-        <field name="use_default_to" eval="True" />
+        <field name="email_to">{{ object.user_id.email_formatted }}</field>
         <field name="body_html" type="html">
             <div>
     Dear <t t-out="object.employee_id.name or 'Requester'" />,<br />
