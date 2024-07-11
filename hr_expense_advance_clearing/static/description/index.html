@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -9,10 +8,11 @@
 
 /*
 :Author: David Goodger (goodger@python.org)
-:Id: $Id: html4css1.css 8954 2022-01-20 10:10:25Z milde $
+:Id: $Id: html4css1.css 9511 2024-01-13 09:50:07Z milde $
 :Copyright: This stylesheet has been placed in the public domain.
 
 Default cascading style sheet for the HTML output of Docutils.
+Despite the name, some widely supported CSS2 features are used.
 
 See https://docutils.sourceforge.io/docs/howto/html-stylesheets.html for how to
 customize this style sheet.
@@ -275,7 +275,7 @@ pre.literal-block, pre.doctest-block, pre.math, pre.code {
   margin-left: 2em ;
   margin-right: 2em }
 
-pre.code .ln { color: grey; } /* line numbers */
+pre.code .ln { color: gray; } /* line numbers */
 pre.code, code { background-color: #eeeeee }
 pre.code .comment, code .comment { color: #5C6576 }
 pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
@@ -301,7 +301,7 @@ span.option {
 span.pre {
   white-space: pre }
 
-span.problematic {
+span.problematic, pre.problematic {
   color: red }
 
 span.section-subtitle {
@@ -370,15 +370,20 @@ ul.auto-toc {
 !! source digest: sha256:0b18f15b48427652d4b03f061e7f129f606678149ad968880eb441c870633931
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 <p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/hr-expense/tree/17.0/hr_expense_advance_clearing"><img alt="OCA/hr-expense" src="https://img.shields.io/badge/github-OCA%2Fhr--expense-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/hr-expense-17-0/hr-expense-17-0-hr_expense_advance_clearing"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/hr-expense&amp;target_branch=17.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
-<p>Standard Expenses module allow employee to do the expense reimbursement only after the expense has been made.
-In other world, employee will need to pay first and reimburse later.</p>
+<p>Standard Expenses module allow employee to do the expense reimbursement
+only after the expense has been made. In other world, employee will need
+to pay first and reimburse later.</p>
 <p>This module, allow company to advance an amount to the employee.
-Employee can then use that advance amount to purchase product/service first, then back to company and do the clearing.</p>
+Employee can then use that advance amount to purchase product/service
+first, then back to company and do the clearing.</p>
 <p>There can be 3 scenarios for advance and clearing</p>
 <ul class="simple">
-<li>When clearing amount = advance amount, no other operation is required.</li>
-<li>When clearing amount &gt; advance amount, company will pay the extra to employee.</li>
-<li>When clearing amount &lt; advance amount, employee will return the remain to company.</li>
+<li>When clearing amount = advance amount, no other operation is
+required.</li>
+<li>When clearing amount &gt; advance amount, company will pay the extra to
+employee.</li>
+<li>When clearing amount &lt; advance amount, employee will return the
+remain to company.</li>
 </ul>
 <p><strong>Table of contents</strong></p>
 <div class="contents local topic" id="contents">
@@ -397,70 +402,79 @@ Employee can then use that advance amount to purchase product/service first, the
 <div class="section" id="configuration">
 <h1><a class="toc-backref" href="#toc-entry-1">Configuration</a></h1>
 <p>This module will create a new product “Employee Advance” automatically.
-You will need to setup the Expense Account of this product to your Employee Advance account manually.</p>
+You will need to setup the Expense Account of this product to your
+Employee Advance account manually.</p>
 <ul class="simple">
 <li>Open Product window and search for “Employee Advance”</li>
-<li>On Accounting tab, select appropriate employee advance account from your chart of account</li>
+<li>On Accounting tab, select appropriate employee advance account from
+your chart of account</li>
 </ul>
 <p>Note:</p>
 <ul class="simple">
-<li>You will need the “Show Full Accounting Features” to see accounting data</li>
-<li>Employee Advance account code, if not already exists, you can create one. Use type = Current Asset and check Allow Reconciliation.</li>
+<li>You will need the “Show Full Accounting Features” to see accounting
+data</li>
+<li>Employee Advance account code, if not already exists, you can create
+one. Use type = Current Asset and check Allow Reconciliation.</li>
 </ul>
 </div>
 <div class="section" id="usage">
 <h1><a class="toc-backref" href="#toc-entry-2">Usage</a></h1>
-<p>To use this module, you must configure product “Employee Advance” with account type = Current Asset and check Allow Reconciliation.
-After that, you can step following:</p>
+<p>To use this module, you must configure product “Employee Advance” with
+account type = Current Asset and check Allow Reconciliation. After that,
+you can step following:</p>
 <p><strong>Create an Employee Advance</strong></p>
 <ol class="arabic simple">
 <li>Go to Expenses &gt; My Expenses &gt; Advances</li>
 <li>Create sheet and add a line with advance</li>
-<li>As an option, the user can also set the “Clearing Product”. If this is set, on the clear advance step, the clearing product will create a default product line.</li>
+<li>As an option, the user can also set the “Clearing Product”. If this
+is set, on the clear advance step, the clearing product will create a
+default product line.</li>
 <li>Set the unit price to advance amount &gt; Save</li>
-<li>As normal, do Submit to Manager &gt; Approve &gt; Post Journal Entries &gt; Register Payment.</li>
+<li>As normal, do Submit to Manager &gt; Approve &gt; Post Journal Entries &gt;
+Register Payment.</li>
 <li>As this is Advance, you will see a new field “Amount to clear”.</li>
 </ol>
 <p><strong>Clear Advance</strong></p>
 <p>you can do 2 ways,</p>
 <ol class="arabic simple">
-<li><dl class="first docutils">
-<dt>Create clearing from advance document</dt>
-<dd><ol class="first last arabic">
+<li>Create clearing from advance document<ol class="arabic">
 <li>Go to Expenses &gt; My Expenses &gt; Advances</li>
-<li>Search for the Advance you want to clear, or use filter “Advance (not cleared)” to see all uncleared advance.</li>
-<li>Open an Advance which is now in paid status with some Amount to be cleared.</li>
-<li>Click button “Clear Advance”, system will create new Expense Report with reference to the previous step Advance.</li>
+<li>Search for the Advance you want to clear, or use filter “Advance
+(not cleared)” to see all uncleared advance.</li>
+<li>Open an Advance which is now in paid status with some Amount to be
+cleared.</li>
+<li>Click button “Clear Advance”, system will create new Expense
+Report with reference to the previous step Advance.</li>
 <li>Create name clearing and Save (must save first)</li>
 <li>Edit &gt; Add or create Expense line(s) as normal.</li>
 <li>As normal, do Approve &gt; Post Journal Entries</li>
 </ol>
-</dd>
-</dl>
 </li>
-<li><dl class="first docutils">
-<dt>Create clearing from new expense</dt>
-<dd><ol class="first last arabic">
+<li>Create clearing from new expense<ol class="arabic">
 <li>Go to Expenses &gt; My Expenses &gt; Expenses</li>
-<li>Create sheet and reference advance with field “Clear Advance” &gt; Save (must save first)</li>
+<li>Create sheet and reference advance with field “Clear Advance” &gt;
+Save (must save first)</li>
 <li>Edit &gt; Add or create Expense line(s) as normal.</li>
 <li>As normal, do Approve &gt; Post Journal Entries</li>
 </ol>
-</dd>
-</dl>
 </li>
 </ol>
 <p>Note:</p>
 <ul class="simple">
-<li>If the total expense amount less than or equal to the advance amount, the status will be set to Paid right after post journal entries.</li>
-<li>If the total expense amount more than the advance amount, Register Payment will pay the extra amount then set state to Paid.</li>
+<li>If the total expense amount less than or equal to the advance amount,
+the status will be set to Paid right after post journal entries.</li>
+<li>If the total expense amount more than the advance amount, Register
+Payment will pay the extra amount then set state to Paid.</li>
 </ul>
 <p><strong>Return Advance</strong></p>
 <ol class="arabic simple">
 <li>Go to Expenses &gt; My Expenses &gt; Advances</li>
-<li>Search for the Advance you want to clear, or use filter “Advance (not cleared)” to see all uncleared advance.</li>
-<li>Open an Advance which is now in paid status with some Amount to be cleared.</li>
-<li>Click button “Return Advance” will open Register Payment wizard with Amount to clear.</li>
+<li>Search for the Advance you want to clear, or use filter “Advance (not
+cleared)” to see all uncleared advance.</li>
+<li>Open an Advance which is now in paid status with some Amount to be
+cleared.</li>
+<li>Click button “Return Advance” will open Register Payment wizard with
+Amount to clear.</li>
 <li>Click button “Create Payment” to return that amount back</li>
 <li>All returned, Amount to clear is now equal to 0.0</li>
 </ol>
@@ -493,7 +507,9 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 <div class="section" id="maintainers">
 <h2><a class="toc-backref" href="#toc-entry-7">Maintainers</a></h2>
 <p>This module is maintained by the OCA.</p>
-<a class="reference external image-reference" href="https://odoo-community.org"><img alt="Odoo Community Association" src="https://odoo-community.org/logo.png" /></a>
+<a class="reference external image-reference" href="https://odoo-community.org">
+<img alt="Odoo Community Association" src="https://odoo-community.org/logo.png" />
+</a>
 <p>OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.</p>

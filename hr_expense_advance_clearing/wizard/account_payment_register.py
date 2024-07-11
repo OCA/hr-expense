@@ -16,7 +16,8 @@ class AccountPaymentRegister(models.TransientModel):
         return defaults
 
     def _default_return_advance(self, fields_list):
-        """OVERRIDE: lines without check account_internal_type for return advance only"""
+        """OVERRIDE: lines without check account_internal_type
+        for return advance only"""
         res = self._get_default_advance(fields_list)
         if "line_ids" in fields_list:
             lines = (
@@ -74,7 +75,7 @@ class AccountPaymentRegister(models.TransientModel):
         clearings = (
             self.env["hr.expense.sheet"]
             .browse(self.env.context.get("clearing_sheet_ids", []))
-            .filtered(lambda l: l.state == "approve")
+            .filtered(lambda L: L.state == "approve")
         )
         amount_not_clear = sum(clearings.mapped("total_amount"))
         actual_remaining = self.source_amount_currency - amount_not_clear
@@ -83,7 +84,7 @@ class AccountPaymentRegister(models.TransientModel):
         if amount_not_clear:
             more_info = _("\nNote: pending amount clearing is %(symbol)s%(amount)s") % {
                 "symbol": symbol,
-                "amount": "{:,.2f}".format(amount_not_clear),
+                "amount": f"{amount_not_clear:,.2f}",
             }
         if float_compare(self.amount, actual_remaining, 2) == 1:
             raise UserError(
@@ -93,7 +94,7 @@ class AccountPaymentRegister(models.TransientModel):
                 )
                 % {
                     "symbol": symbol,
-                    "amount": "{:,.2f}".format(actual_remaining),
+                    "amount": f"{actual_remaining:,.2f}",
                     "more_info": more_info,
                 }
             )

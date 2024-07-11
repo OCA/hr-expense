@@ -28,17 +28,22 @@ Employee Advance and Clearing
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-Standard Expenses module allow employee to do the expense reimbursement only after the expense has been made.
-In other world, employee will need to pay first and reimburse later.
+Standard Expenses module allow employee to do the expense reimbursement
+only after the expense has been made. In other world, employee will need
+to pay first and reimburse later.
 
 This module, allow company to advance an amount to the employee.
-Employee can then use that advance amount to purchase product/service first, then back to company and do the clearing.
+Employee can then use that advance amount to purchase product/service
+first, then back to company and do the clearing.
 
 There can be 3 scenarios for advance and clearing
 
-* When clearing amount = advance amount, no other operation is required.
-* When clearing amount > advance amount, company will pay the extra to employee.
-* When clearing amount < advance amount, employee will return the remain to company.
+-  When clearing amount = advance amount, no other operation is
+   required.
+-  When clearing amount > advance amount, company will pay the extra to
+   employee.
+-  When clearing amount < advance amount, employee will return the
+   remain to company.
 
 **Table of contents**
 
@@ -49,62 +54,82 @@ Configuration
 =============
 
 This module will create a new product "Employee Advance" automatically.
-You will need to setup the Expense Account of this product to your Employee Advance account manually.
+You will need to setup the Expense Account of this product to your
+Employee Advance account manually.
 
-* Open Product window and search for "Employee Advance"
-* On Accounting tab, select appropriate employee advance account from your chart of account
+-  Open Product window and search for "Employee Advance"
+-  On Accounting tab, select appropriate employee advance account from
+   your chart of account
 
 Note:
 
-* You will need the "Show Full Accounting Features" to see accounting data
-* Employee Advance account code, if not already exists, you can create one. Use type = Current Asset and check Allow Reconciliation.
+-  You will need the "Show Full Accounting Features" to see accounting
+   data
+-  Employee Advance account code, if not already exists, you can create
+   one. Use type = Current Asset and check Allow Reconciliation.
 
 Usage
 =====
 
-To use this module, you must configure product "Employee Advance" with account type = Current Asset and check Allow Reconciliation.
-After that, you can step following:
+To use this module, you must configure product "Employee Advance" with
+account type = Current Asset and check Allow Reconciliation. After that,
+you can step following:
 
 **Create an Employee Advance**
 
-#. Go to Expenses > My Expenses > Advances
-#. Create sheet and add a line with advance
-#. As an option, the user can also set the "Clearing Product". If this is set, on the clear advance step, the clearing product will create a default product line.
-#. Set the unit price to advance amount > Save
-#. As normal, do Submit to Manager > Approve > Post Journal Entries > Register Payment.
-#. As this is Advance, you will see a new field "Amount to clear".
+1. Go to Expenses > My Expenses > Advances
+2. Create sheet and add a line with advance
+3. As an option, the user can also set the "Clearing Product". If this
+   is set, on the clear advance step, the clearing product will create a
+   default product line.
+4. Set the unit price to advance amount > Save
+5. As normal, do Submit to Manager > Approve > Post Journal Entries >
+   Register Payment.
+6. As this is Advance, you will see a new field "Amount to clear".
 
 **Clear Advance**
 
 you can do 2 ways,
 
-#. Create clearing from advance document
-    #. Go to Expenses > My Expenses > Advances
-    #. Search for the Advance you want to clear, or use filter "Advance (not cleared)" to see all uncleared advance.
-    #. Open an Advance which is now in paid status with some Amount to be cleared.
-    #. Click button "Clear Advance", system will create new Expense Report with reference to the previous step Advance.
-    #. Create name clearing and Save (must save first)
-    #. Edit > Add or create Expense line(s) as normal.
-    #. As normal, do Approve > Post Journal Entries
-#. Create clearing from new expense
-    #. Go to Expenses > My Expenses > Expenses
-    #. Create sheet and reference advance with field "Clear Advance" > Save (must save first)
-    #. Edit > Add or create Expense line(s) as normal.
-    #. As normal, do Approve > Post Journal Entries
+1. Create clearing from advance document
+
+   1. Go to Expenses > My Expenses > Advances
+   2. Search for the Advance you want to clear, or use filter "Advance
+      (not cleared)" to see all uncleared advance.
+   3. Open an Advance which is now in paid status with some Amount to be
+      cleared.
+   4. Click button "Clear Advance", system will create new Expense
+      Report with reference to the previous step Advance.
+   5. Create name clearing and Save (must save first)
+   6. Edit > Add or create Expense line(s) as normal.
+   7. As normal, do Approve > Post Journal Entries
+
+2. Create clearing from new expense
+
+   1. Go to Expenses > My Expenses > Expenses
+   2. Create sheet and reference advance with field "Clear Advance" >
+      Save (must save first)
+   3. Edit > Add or create Expense line(s) as normal.
+   4. As normal, do Approve > Post Journal Entries
 
 Note:
 
-* If the total expense amount less than or equal to the advance amount, the status will be set to Paid right after post journal entries.
-* If the total expense amount more than the advance amount, Register Payment will pay the extra amount then set state to Paid.
+-  If the total expense amount less than or equal to the advance amount,
+   the status will be set to Paid right after post journal entries.
+-  If the total expense amount more than the advance amount, Register
+   Payment will pay the extra amount then set state to Paid.
 
 **Return Advance**
 
-#. Go to Expenses > My Expenses > Advances
-#. Search for the Advance you want to clear, or use filter "Advance (not cleared)" to see all uncleared advance.
-#. Open an Advance which is now in paid status with some Amount to be cleared.
-#. Click button "Return Advance" will open Register Payment wizard with Amount to clear.
-#. Click button "Create Payment" to return that amount back
-#. All returned, Amount to clear is now equal to 0.0
+1. Go to Expenses > My Expenses > Advances
+2. Search for the Advance you want to clear, or use filter "Advance (not
+   cleared)" to see all uncleared advance.
+3. Open an Advance which is now in paid status with some Amount to be
+   cleared.
+4. Click button "Return Advance" will open Register Payment wizard with
+   Amount to clear.
+5. Click button "Create Payment" to return that amount back
+6. All returned, Amount to clear is now equal to 0.0
 
 Bug Tracker
 ===========
@@ -120,20 +145,20 @@ Credits
 =======
 
 Authors
-~~~~~~~
+-------
 
 * Ecosoft
 
 Contributors
-~~~~~~~~~~~~
+------------
 
-* Kitti Upariphutthiphong <kittiu@ecosoft.co.th>
-* Tharathip Chaweewongphan <tharathipc@ecosoft.co.th>
-* Saran Lim. <saranl@ecosoft.co.th>
-* Minh Hong <minhhq@arrowhitech.com>
+-  Kitti Upariphutthiphong <kittiu@ecosoft.co.th>
+-  Tharathip Chaweewongphan <tharathipc@ecosoft.co.th>
+-  Saran Lim. <saranl@ecosoft.co.th>
+-  Minh Hong <minhhq@arrowhitech.com>
 
 Maintainers
-~~~~~~~~~~~
+-----------
 
 This module is maintained by the OCA.
 
