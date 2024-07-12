@@ -21,7 +21,7 @@ Available addons
 ----------------
 addon | version | maintainers | summary
 --- | --- | --- | ---
-[hr_expense_advance_clearing](hr_expense_advance_clearing/) | 16.0.1.0.0 | [![kittiu](https://github.com/kittiu.png?size=30px)](https://github.com/kittiu) | Employee Advance and Clearing
+[hr_expense_advance_clearing](hr_expense_advance_clearing/) | 16.0.1.0.1 | [![kittiu](https://github.com/kittiu.png?size=30px)](https://github.com/kittiu) | Employee Advance and Clearing
 [hr_expense_cancel](hr_expense_cancel/) | 16.0.1.0.2 |  | Hr expense cancel
 [hr_expense_invoice](hr_expense_invoice/) | 16.0.2.0.0 |  | Supplier invoices on HR expenses
 [hr_expense_pay_to_vendor](hr_expense_pay_to_vendor/) | 16.0.1.0.0 | [![kittiu](https://github.com/kittiu.png?size=30px)](https://github.com/kittiu) | HR Expense - Pay To Vendor
