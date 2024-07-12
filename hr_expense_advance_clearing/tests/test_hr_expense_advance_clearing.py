@@ -206,7 +206,7 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
         """When clear equal advance, all set"""
         # ------------------ Advance --------------------------
         self.advance.action_submit_sheet()
-        self.advance.approve_expense_sheets()
+        self.advance.action_action_approve_expense_sheets()
         self.advance.action_sheet_move_create()
         self.assertEqual(self.advance.clearing_residual, 1000.0)
         self._register_payment(self.advance.account_move_ids, 1000.0)
@@ -219,7 +219,7 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
         self.clearing_equal.advance_sheet_id = self.advance
         self.assertEqual(self.clearing_equal.advance_sheet_residual, 1000.0)
         self.clearing_equal.action_submit_sheet()
-        self.clearing_equal.approve_expense_sheets()
+        self.clearing_equal.action_approve_expense_sheets()
         self.clearing_equal.action_sheet_move_create()
         # Equal amount, state change to Paid and advance is cleared
         self.assertEqual(self.clearing_equal.state, "done")
@@ -227,7 +227,7 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
         # Clear this with previous advance is done
         self.clearing_more.advance_sheet_id = self.advance
         self.clearing_more.action_submit_sheet()
-        self.clearing_more.approve_expense_sheets()
+        self.clearing_more.action_approve_expense_sheets()
         with self.assertRaises(ValidationError):
             self.clearing_more.action_sheet_move_create()
         # There are 2 clearing in advance
@@ -255,7 +255,7 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
         """When clear more than advance, do pay more"""
         # ------------------ Advance --------------------------
         self.advance.action_submit_sheet()
-        self.advance.approve_expense_sheets()
+        self.advance.action_approve_expense_sheets()
         self.advance.action_sheet_move_create()
         self.assertEqual(self.advance.clearing_residual, 1000.0)
         self._register_payment(self.advance.account_move_ids, 1000.0)
@@ -265,7 +265,7 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
         self.clearing_more.advance_sheet_id = self.advance
         self.assertEqual(self.clearing_more.advance_sheet_residual, 1000.0)
         self.clearing_more.action_submit_sheet()
-        self.clearing_more.approve_expense_sheets()
+        self.clearing_more.action_approve_expense_sheets()
         self.clearing_more.action_sheet_move_create()
         # More amount, state not changed to paid, and has to pay 200 more
         self.assertEqual(self.clearing_more.state, "post")
@@ -277,7 +277,7 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
         """When clear less than advance, do return advance"""
         # ------------------ Advance --------------------------
         self.advance.action_submit_sheet()
-        self.advance.approve_expense_sheets()
+        self.advance.action_approve_expense_sheets()
         self.advance.action_sheet_move_create()
         # Test return advance register payment with move state draft
         with self.assertRaises(UserError):
@@ -293,7 +293,7 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
         self.clearing_less.advance_sheet_id = self.advance
         self.assertEqual(self.clearing_less.advance_sheet_residual, 1000.0)
         self.clearing_less.action_submit_sheet()
-        self.clearing_less.approve_expense_sheets()
+        self.clearing_less.action_approve_expense_sheets()
         register_payment = self.advance.with_context(
             hr_return_advance=True
         ).action_register_payment()
@@ -333,7 +333,7 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
         # ------------------ Advance --------------------------
         self.advance.expense_line_ids.clearing_product_id = self.product
         self.advance.action_submit_sheet()
-        self.advance.approve_expense_sheets()
+        self.advance.action_approve_expense_sheets()
         self.advance.action_sheet_move_create()
         self.assertEqual(self.advance.clearing_residual, 1000.0)
         self._register_payment(self.advance.account_move_ids, 1000.0)
