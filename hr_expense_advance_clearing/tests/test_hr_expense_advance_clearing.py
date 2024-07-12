@@ -104,7 +104,7 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
             expense.employee_id = employee
             if not advance:
                 expense.product_id = product
-            expense.total_amount = amount
+            expense.total_amount_currency = amount
             expense.payment_mode = payment_mode
         expense = expense.save()
         expense.tax_ids = False  # Test no vat
