@@ -194,7 +194,7 @@
                     <field
                         name="advance_sheet_id"
                         invisible="advance == True"
-                        readonly="id != False"
+                        readonly="id != False and state not in ('draft', 'submit', 'approve')"
                         force_save="1"
                     />
                     <field name="clearing_residual" invisible="advance == False" />

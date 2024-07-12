@@ -1,10 +1,12 @@
 # Copyright 2019 Kitti Upariphutthiphong <kittiu@ecosoft.co.th>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import fields
+from odoo import Command, fields
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests import common
 from odoo.tests.common import Form
+
+from odoo.addons.mail.tests.common import mail_new_test_user
 
 
 class TestHrExpenseAdvanceClearing(common.TransactionCase):
@@ -33,10 +35,25 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
                 "price_include": True,
             }
         )
-        employee_home = cls.env["res.partner"].create({"name": "Employee Home Address"})
-        cls.employee = cls.env["hr.employee"].create(
-            {"name": "Employee A", "address_home_id": employee_home.id}
+
+        cls.expense_user_employee = mail_new_test_user(
+            cls.env,
+            name="expense_user_employee",
+            login="expense_user_employee",
+            email="expense_user_employee@example.com",
+            notification_type="email",
+            groups="base.group_user",
+            company_ids=[Command.set(cls.env.companies.ids)],
         )
+
+        cls.employee = cls.env["hr.employee"].create(
+            {
+                "name": "expense_employee",
+                "user_id": cls.expense_user_employee.id,
+                "work_contact_id": cls.expense_user_employee.partner_id.id,
+            }
+        )
+
         advance_account = cls.env["account.account"].create(
             {
                 "code": "154000",

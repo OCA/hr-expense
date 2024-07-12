@@ -18,12 +18,6 @@ class HrExpenseSheet(models.Model):
         string="Clear Advance",
         domain="[('advance', '=', True), ('employee_id', '=', employee_id),"
         " ('clearing_residual', '>', 0.0)]",
-        readonly=True,
-        states={
-            "draft": [("readonly", False)],
-            "submit": [("readonly", False)],
-            "approve": [("readonly", False)],
-        },
         help="Show remaining advance of this employee",
     )
     clearing_sheet_ids = fields.One2many(
@@ -158,9 +152,7 @@ class HrExpenseSheet(models.Model):
             )
             total_amount = 0.0
             total_amount_currency = 0.0
-            partner_id = (
-                expense.employee_id.sudo().address_home_id.commercial_partner_id.id
-            )
+            partner_id = expense.employee_id.user_id.partner_id.id
             # source move line
             move_line_src = expense._get_move_line_src(move_line_name, partner_id)
             move_line_values = [move_line_src]
