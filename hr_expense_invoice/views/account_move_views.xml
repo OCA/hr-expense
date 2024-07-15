@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <record id="view_move_form" model="ir.ui.view">
         <field name="name">account.move.form - Add expense smart-button</field>
@@ -11,10 +12,12 @@
                     icon="fa-file-text-o"
                     name="action_view_expense"
                     groups="account.group_account_invoice"
+                    invisible="not expense_ids"
                     type="object"
-                    attrs="{'invisible': [('expense_ids', '=', [])]}"
                 >
-                    <span>Expense</span>
+                    <span>
+                        Expense
+                    </span>
                 </button>
             </div>
         </field>

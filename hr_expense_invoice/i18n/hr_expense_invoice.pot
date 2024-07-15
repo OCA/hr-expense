@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0\n"
+"Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -15,7 +15,15 @@ msgstr ""
 
 #. module: hr_expense_invoice
 #: model_terms:ir.ui.view,arch_db:hr_expense_invoice.view_move_form
-msgid "<span>Expense</span>"
+msgid ""
+"<span>\n"
+"                        Expense\n"
+"                    </span>"
+msgstr ""
+
+#. module: hr_expense_invoice
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_hr_expense__amount_residual
+msgid "Amount Due"
 msgstr ""
 
 #. module: hr_expense_invoice
