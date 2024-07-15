@@ -12,8 +12,38 @@ class HrExpenseSheet(models.Model):
 
     invoice_count = fields.Integer(compute="_compute_invoice_count")
 
+    def _do_create_moves(self):
+        """Don't let super to create any move:
+        - Paid by company: there's already the invoice.
+        - Paid by employee: we create here a journal entry transferring the AP
+          balance from the invoice partner to the employee.
+        """
+        expense_sheets_with_invoices = self.filtered(
+            lambda sheet: all(expense.invoice_id for expense in sheet.expense_line_ids)
+        )
+        res = super(
+            HrExpenseSheet, self - expense_sheets_with_invoices
+        )._do_create_moves()
+        # Create AP transfer entry for expenses paid by employees
+        for expense in expense_sheets_with_invoices.expense_line_ids:
+            if expense.payment_mode == "own_account":
+                move = self.env["account.move"].create(
+                    expense._prepare_own_account_transfer_move_vals()
+                )
+                move.action_post()
+                # reconcile with the invoice
+                ap_lines = expense.invoice_id.line_ids.filtered(
+                    lambda x: x.display_type == "payment_term"
+                )
+                transfer_line = move.line_ids.filtered(
+                    lambda x: x.partner_id
+                    == self.expense_line_ids.invoice_id.partner_id
+                )
+                (ap_lines + transfer_line).reconcile()
+        return res
+
     def action_sheet_move_create(self):
-        """Perform extra checks and set proper state and payment state according linked
+        """Perform extra checks and set proper payment state according linked
         invoices.
         """
         self._validate_expense_invoice()
@@ -23,7 +53,7 @@ class HrExpenseSheet(models.Model):
         self.filtered(
             lambda x: x.expense_line_ids.invoice_id
             and x.payment_mode == "company_account"
-        )._compute_payment_state()
+        )._compute_from_account_move_ids()
         return res
 
     def set_to_paid(self):
@@ -44,7 +74,7 @@ class HrExpenseSheet(models.Model):
         "expense_line_ids.invoice_id.payment_state",
         "expense_line_ids.amount_residual",
     )
-    def _compute_payment_state(self):
+    def _compute_from_account_move_ids(self):
         """Determine the payment status for lines with expense invoices linked"""
         invoice_sheets = self.filtered(lambda x: x.expense_line_ids.invoice_id)
         invoice_sheets.payment_state = "not_paid"
@@ -69,7 +99,9 @@ class HrExpenseSheet(models.Model):
                 sheet.payment_state = "paid"
             elif lines_with_paid_invoices or lines_with_partial_invoices:
                 sheet.payment_state = "partial"
-        return super(HrExpenseSheet, self - invoice_sheets)._compute_payment_state()
+        return super(
+            HrExpenseSheet, self - invoice_sheets
+        )._compute_from_account_move_ids()
 
     def _validate_expense_invoice(self):
         """Check several criteria that needs to be met for creating the move."""
@@ -82,7 +114,7 @@ class HrExpenseSheet(models.Model):
         # All invoices must confirmed
         if any(invoices.filtered(lambda i: i.state != "posted")):
             raise UserError(_("Vendor bill state must be Posted"))
-        expense_amount = sum(expense_lines.mapped("total_amount"))
+        expense_amount = sum(expense_lines.mapped("total_amount_currency"))
         invoice_amount = sum(invoices.mapped("amount_total"))
         # Expense amount must equal invoice amount
         if float_compare(expense_amount, invoice_amount, precision) != 0:
@@ -112,3 +144,31 @@ class HrExpenseSheet(models.Model):
             action["view_mode"] = "tree,form"
             action["domain"] = [("id", "in", invoice_ids)]
         return action
+
+    @api.depends()
+    def _compute_state(self):
+        """Set proper state according to linked invoices."""
+        sheets_with_invoices = self.filtered(
+            lambda sheet: all(
+                expense.invoice_id and expense.invoice_id.state == "posted"
+                for expense in sheet.expense_line_ids
+            )
+            and sheet.state == sheet.approval_state
+        )
+
+        company_account_sheets = sheets_with_invoices.filtered(
+            lambda sheet: sheet.payment_mode == "company_account"
+        )
+        company_account_sheets.state = "done"
+
+        sheets_with_paid_invoices = (
+            sheets_with_invoices - company_account_sheets
+        ).filtered(
+            lambda sheet: all(
+                expense.invoice_id.payment_state != "not_paid"
+                for expense in sheet.expense_line_ids
+            )
+        )
+        sheets_with_paid_invoices.state = "post"
+
+        return super(HrExpenseSheet, self - sheets_with_invoices)._compute_state()

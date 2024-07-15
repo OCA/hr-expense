@@ -27,55 +27,33 @@ class HrExpense(models.Model):
         comodel_name="account.move",
         inverse_name="source_invoice_expense_id",
     )
+    # This field has been added to reintroduce tracking for the amount due on each
+    # expense, a feature that existed in previous versions. The tracking is necessary
+    # to accurately reflect the payment state of the expense sheet.
+    amount_residual = fields.Monetary(
+        string="Amount Due", compute="_compute_amount_residual", store=True
+    )
 
     def _prepare_invoice_values(self):
         invoice_lines = [
-            (
-                0,
-                0,
+            Command.create(
                 {
                     "product_id": self.product_id.id,
                     "name": self.name,
-                    "price_unit": self.unit_amount or self.total_amount,
+                    "price_unit": self.price_unit or self.total_amount_currency,
                     "quantity": self.quantity,
                     "account_id": self.account_id.id,
                     "analytic_distribution": self.analytic_distribution,
-                    "tax_ids": [(6, 0, self.tax_ids.ids)],
-                },
+                    "tax_ids": [Command.set(self.tax_ids.ids)],
+                }
             )
         ]
         return {
             "name": "/",
-            "ref": self.reference,
             "move_type": "in_invoice",
             "invoice_date": self.date,
             "invoice_line_ids": invoice_lines,
         }
-
-    def action_move_create(self):
-        """Don't let super to create any move:
-        - Paid by company: there's already the invoice.
-        - Paid by employee: we create here a journal entry transferring the AP
-          balance from the invoice partner to the employee.
-        """
-        expenses_with_invoice = self.filtered("invoice_id")
-        res = super(HrExpense, self - expenses_with_invoice).action_move_create()
-        # Create AP transfer entry for expenses paid by employees
-        for expense in expenses_with_invoice:
-            if expense.payment_mode == "own_account":
-                move = self.env["account.move"].create(
-                    expense._prepare_own_account_transfer_move_vals()
-                )
-                move.action_post()
-                # reconcile with the invoice
-                ap_lines = expense.invoice_id.line_ids.filtered(
-                    lambda x: x.display_type == "payment_term"
-                )
-                transfer_line = move.line_ids.filtered(
-                    lambda x: x.partner_id == self.invoice_id.partner_id
-                )
-                (ap_lines + transfer_line).reconcile()
-        return res
 
     def _prepare_own_account_transfer_move_vals(self):
         self.ensure_one()
@@ -88,7 +66,7 @@ class HrExpense(models.Model):
             ],
             limit=1,
         )
-        employee_partner = self.employee_id.sudo().address_home_id.commercial_partner_id
+        employee_partner = self.employee_id.sudo().work_contact_id
         invoice_partner = self.invoice_id.partner_id
         ap_lines = self.invoice_id.line_ids.filtered(
             lambda x: x.display_type == "payment_term"
@@ -101,6 +79,7 @@ class HrExpense(models.Model):
             "date": self.date,
             "ref": self.name,
             "source_invoice_expense_id": self.id,
+            "expense_sheet_id": self.sheet_id.id,
             "line_ids": [
                 Command.create(
                     {
@@ -131,7 +110,7 @@ class HrExpense(models.Model):
                 "invoice_id": invoice.id,
                 "quantity": 1,
                 "tax_ids": False,
-                "unit_amount": invoice.amount_total,
+                "price_unit": invoice.amount_total,
             }
         )
         return True
@@ -153,7 +132,8 @@ class HrExpense(models.Model):
         """
         if self.invoice_id:
             self.quantity = 1
-            self.reference = self.invoice_id.name
+            self.name = self.name.split(" | ")[0].strip()
+            self.name = "{} | {}".format(self.name or "", self.invoice_id.name)
             self.date = self.invoice_id.date
             if self.invoice_id.company_id != self.company_id:
                 # for avoiding to trigger dependent computes
@@ -161,19 +141,19 @@ class HrExpense(models.Model):
 
     # tax_ids put as dependency for assuring this is computed after setting tax_ids
     @api.depends("invoice_id", "tax_ids")
-    def _compute_unit_amount(self):
+    def _compute_price_unit(self):
         with_invoice = self.filtered("invoice_id")
         for record in with_invoice:
-            record.unit_amount = record.invoice_id.amount_total
-        return super(HrExpense, self - with_invoice)._compute_unit_amount()
+            record.price_unit = record.invoice_id.amount_total
+        return super(HrExpense, self - with_invoice)._compute_price_unit()
 
     # tax_ids put as dependency for assuring this is computed after setting tax_ids
     @api.depends("invoice_id", "tax_ids")
-    def _compute_amount(self):
+    def _compute_total_amount_currency(self):
         with_invoice = self.filtered("invoice_id")
         for record in with_invoice:
-            record.total_amount = record.invoice_id.amount_total
-        return super(HrExpense, self - with_invoice)._compute_amount()
+            record.total_amount_currency = record.invoice_id.amount_total
+        return super(HrExpense, self - with_invoice)._compute_total_amount_currency()
 
     @api.depends("invoice_id")
     def _compute_currency_id(self):
@@ -195,8 +175,7 @@ class HrExpense(models.Model):
     )
     def _compute_amount_residual(self):
         """Compute the amount residual for expenses paid by employee with invoices."""
-        applicable_expenses = self.filtered(lambda x: x.transfer_move_ids)
-        for rec in applicable_expenses:
+        for rec in self:
             if not rec.currency_id or rec.currency_id == rec.company_currency_id:
                 residual_field = "amount_residual"
             else:
@@ -205,4 +184,3 @@ class HrExpense(models.Model):
                 lambda x: x.account_type in ("asset_receivable", "liability_payable")
             )
             rec.amount_residual = -sum(payment_term_lines.mapped(residual_field))
-        return super(HrExpense, self - applicable_expenses)._compute_amount_residual()

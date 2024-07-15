@@ -24,7 +24,7 @@ class AccountMove(models.Model):
         DecimalPrecision = self.env["decimal.precision"]
         precision = DecimalPrecision.precision_get("Product Price")
         for move in self.filtered("expense_ids"):
-            expense_amount = sum(move.expense_ids.mapped("total_amount"))
+            expense_amount = sum(move.expense_ids.mapped("total_amount_currency"))
             if float_compare(expense_amount, move.amount_total, precision) != 0:
                 raise ValidationError(
                     _(
