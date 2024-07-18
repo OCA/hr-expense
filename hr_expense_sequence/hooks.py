@@ -2,11 +2,8 @@
 #                       Pedro M. Baeza <pedro.baeza@serviciosbaeza.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import SUPERUSER_ID, api
 
-
-def assign_old_sequences(cr, registry):
-    env = api.Environment(cr, SUPERUSER_ID, {})
+def assign_old_sequences(env):
     expense_obj = env["hr.expense.sheet"]
     sequence_obj = env["ir.sequence"]
     for expense in expense_obj.search([], order="id"):
