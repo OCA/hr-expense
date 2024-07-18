@@ -58,10 +58,10 @@ class HrExpenseSheet(models.Model):
         if advance_lines and len(advance_lines) != len(self.expense_line_ids):
             raise ValidationError(_("Advance must contain only advance expense line"))
 
-    @api.depends("account_move_ids.payment_state")
-    def _compute_payment_state(self):
+    @api.depends("account_move_ids.payment_state", "account_move_ids.amount_residual")
+    def _compute_from_account_move_ids(self):
         """After clear advance. payment state will change to 'paid'"""
-        res = super()._compute_payment_state()
+        res = super()._compute_from_account_move_ids()
         for sheet in self:
             if sheet.advance_sheet_id and sheet.account_move_ids.state == "posted":
                 sheet.payment_state = "paid"
@@ -156,8 +156,8 @@ class HrExpenseSheet(models.Model):
             # source move line
             move_line_src = expense._get_move_line_src(move_line_name, partner_id)
             move_line_values = [move_line_src]
-            total_amount -= expense.total_amount_company
-            total_amount_currency -= expense.total_amount
+            total_amount -= expense.total_amount
+            total_amount_currency -= expense.total_amount_currency
 
             # destination move line
             move_line_dst = expense._get_move_line_dst(
@@ -191,7 +191,7 @@ class HrExpenseSheet(models.Model):
                 payable_move_line["amount_currency"] = -remain_payable
                 payable_move_line[
                     "account_id"
-                ] = expense._get_expense_account_destination()
+                ] = self._get_expense_account_destination()
             else:
                 advance_to_clear -= credit
             # Add destination first (if credit is not zero)
@@ -202,10 +202,10 @@ class HrExpenseSheet(models.Model):
             move_line_vals.extend(move_line_values)
         return move_line_vals
 
-    def _prepare_bill_vals(self):
+    def _prepare_bills_vals(self):
         """create journal entry instead of bills when clearing document"""
         self.ensure_one()
-        res = super()._prepare_bill_vals()
+        res = super()._prepare_bills_vals()
         if self.advance_sheet_id and self.payment_mode == "own_account":
             if (
                 self.advance_sheet_residual <= 0.0

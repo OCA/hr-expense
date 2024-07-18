@@ -176,7 +176,7 @@
                     string="Return Advance"
                     invisible="advance == False or state != 'done' or clearing_residual == 0"
                     context="{'hr_return_advance': True}"
-                    groups="account.group_account_user"
+                    groups="account.group_account_invoice"
                 />
             </field>
             <h1 position="after">

@@ -1,59 +1,67 @@
 # Copyright 2019 Kitti Upariphutthiphong <kittiu@ecosoft.co.th>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+import logging
+
+from freezegun import freeze_time
+
 from odoo import Command, fields
 from odoo.exceptions import UserError, ValidationError
-from odoo.tests import common
+from odoo.tests import tagged
 from odoo.tests.common import Form
 
-from odoo.addons.mail.tests.common import mail_new_test_user
+from odoo.addons.hr_expense.tests.common import TestExpenseCommon
+
+_logger = logging.getLogger(__name__)
 
 
-class TestHrExpenseAdvanceClearing(common.TransactionCase):
+@tagged("post_install", "-at_install")
+class TestHrExpenseAdvanceClearing(TestExpenseCommon):
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        company = cls.env.ref("base.main_company")
-        cls.company_2 = cls.env["res.company"].create({"name": "Company 2"})
-        cls.journal_bank = cls.env["account.journal"].search(
-            [("type", "=", "bank")], limit=1
+    def setUpClass(cls, chart_template_ref=None):
+        super().setUpClass(chart_template_ref=chart_template_ref)
+
+        # Create product type service
+        cls.product_d = cls.env["product.product"].create(
+            {
+                "name": "product_d with type service",
+                "property_account_income_id": cls.copy_account(
+                    cls.company_data["default_account_revenue"]
+                ).id,
+                "property_account_expense_id": cls.copy_account(
+                    cls.company_data["default_account_expense"]
+                ).id,
+                "taxes_id": [Command.set((cls.tax_sale_a + cls.tax_sale_b).ids)],
+                "supplier_taxes_id": [
+                    Command.set((cls.tax_purchase_a + cls.tax_purchase_b).ids)
+                ],
+                "default_code": "product_d",
+                "type": "service",
+            }
         )
-        cls.product = cls.env["product.product"].create(
-            {"name": "Service 1", "type": "service"}
-        )
+
         tax_group = cls.env["account.tax.group"].create(
             {"name": "Tax Group 1", "sequence": 1}
         )
+
         cls.tax = cls.env["account.tax"].create(
             {
                 "name": "Tax 10.0%",
                 "amount": 10.0,
                 "amount_type": "percent",
                 "type_tax_use": "purchase",
-                "company_id": company.id,
+                "company_id": cls.company_data["company"].id,
                 "tax_group_id": tax_group.id,
                 "price_include": True,
             }
         )
 
-        cls.expense_user_employee = mail_new_test_user(
-            cls.env,
-            name="expense_user_employee",
-            login="expense_user_employee",
-            email="expense_user_employee@example.com",
-            notification_type="email",
-            groups="base.group_user",
-            company_ids=[Command.set(cls.env.companies.ids)],
+        # Get advance product
+        cls.product_emp_advance = cls.env.ref(
+            "hr_expense_advance_clearing.product_emp_advance"
         )
 
-        cls.employee = cls.env["hr.employee"].create(
-            {
-                "name": "expense_employee",
-                "user_id": cls.expense_user_employee.id,
-                "work_contact_id": cls.expense_user_employee.partner_id.id,
-            }
-        )
-
+        # Create advance account with type current asset
         advance_account = cls.env["account.account"].create(
             {
                 "code": "154000",
@@ -62,6 +70,8 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
                 "reconcile": True,
             }
         )
+
+        # Create sale account
         cls.account_sales = cls.env["account.account"].create(
             {
                 "code": "X1020",
@@ -69,23 +79,33 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
                 "account_type": "asset_current",
             }
         )
-        cls.emp_advance = cls.env.ref("hr_expense_advance_clearing.product_emp_advance")
-        cls.emp_advance.property_account_expense_id = advance_account
+
+        # Assign advance account to advance product
+        cls.product_emp_advance.property_account_expense_id = advance_account
+
         # Create advance expense 1,000
         cls.advance = cls._create_expense_sheet(
-            cls, "Advance 1,000", cls.employee, cls.emp_advance, 1000.0, advance=True
+            cls,
+            "Advance 1,000",
+            cls.expense_employee,
+            cls.product_emp_advance,
+            1000.0,
+            advance=True,
         )
+
         # Create clearing expense 1,000
         cls.clearing_equal = cls._create_expense_sheet(
-            cls, "Buy service 1,000", cls.employee, cls.product, 1000.0
+            cls, "Buy service 1,000", cls.expense_employee, cls.product_d, 1000.0
         )
+
         # Create clearing expense 1,200
         cls.clearing_more = cls._create_expense_sheet(
-            cls, "Buy service 1,200", cls.employee, cls.product, 1200.0
+            cls, "Buy service 1,200", cls.expense_employee, cls.product_d, 1200.0
         )
+
         # Create clearing expense 800
         cls.clearing_less = cls._create_expense_sheet(
-            cls, "Buy service 800", cls.employee, cls.product, 800.0
+            cls, "Buy service 800", cls.expense_employee, cls.product_d, 800.0
         )
 
     def _create_expense(
@@ -138,24 +158,53 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
             ctx["hr_return_advance"] = hr_return_advance
             PaymentWizard = self.env["account.payment.register"]
             with Form(PaymentWizard.with_context(**ctx)) as f:
-                f.journal_id = self.journal_bank
+                f.journal_id = self.company_data["default_journal_bank"]
                 f.payment_date = fields.Date.today()
                 f.amount = amount
             payment_wizard = f.save()
             payment_wizard.action_create_payments()
 
+    def get_new_payment_with_advance(
+        self, expense_sheet, amount, ctx=False, hr_return_advance=False
+    ):
+        """Helper to create payments"""
+        if not ctx:
+            ctx = {
+                "active_model": "account.move",
+                "active_ids": expense_sheet.account_move_ids.ids,
+            }
+        ctx["hr_return_advance"] = hr_return_advance
+        with freeze_time(self.frozen_today):
+            # if hr_return_advance:
+            #     ctx['active_model'] = 'account.move.line'
+            payment_register = (
+                self.env["account.payment.register"]
+                .with_context(**ctx)
+                .create(
+                    {
+                        "amount": amount,
+                        "journal_id": self.company_data["default_journal_bank"].id,
+                        "payment_method_line_id": self.inbound_payment_method_line.id,
+                    }
+                )
+            )
+            if hr_return_advance:
+                return payment_register.action_create_payments()
+            else:
+                return payment_register._create_payments()
+
     def test_0_test_constraints(self):
         """Test some constraints"""
         # Advance Sheet can't be clearing at the same time.
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(ValidationError), self.cr.savepoint():
             self.advance.advance_sheet_id = self.advance
         # Advance Sheet can't change account is not the equal
         # Account on Advance Expense's product.
         with self.assertRaises(ValidationError):
             expense = self._create_expense(
                 "Advance 1,000",
-                self.employee,
-                self.emp_advance,
+                self.expense_employee,
+                self.product_emp_advance,
                 1.0,
                 advance=True,
             )
@@ -164,22 +213,26 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
         # Advance Sheet should not have > 1 expense lines
         with self.assertRaises(ValidationError):
             expense = self._create_expense(
-                "Buy service 1,000", self.employee, self.product, 1.0
+                "Buy service 1,000", self.expense_employee, self.product_d, 1.0
             )
             self.advance.write({"expense_line_ids": [(4, expense.id)]})
         # Advance Expense's product, must not has tax involved
         with self.assertRaises(ValidationError):
-            self.emp_advance.supplier_taxes_id |= self.tax
+            self.product_emp_advance.supplier_taxes_id |= self.tax
             expense = self._create_expense(
-                "Advance 1,000", self.employee, self.emp_advance, 1.0, advance=True
+                "Advance 1,000",
+                self.expense_employee,
+                self.product_emp_advance,
+                1.0,
+                advance=True,
             )
-        self.emp_advance.supplier_taxes_id = False  # Remove tax bf proceed
+        self.product_emp_advance.supplier_taxes_id = False  # Remove tax bf proceed
         # Advance Expense, must not paid by company
         with self.assertRaises(ValidationError):
             expense = self._create_expense(
                 "Advance 1,000",
-                self.employee,
-                self.emp_advance,
+                self.expense_employee,
+                self.product_emp_advance,
                 1.0,
                 advance=True,
                 payment_mode="company_account",
@@ -188,28 +241,35 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
         with self.assertRaises(ValidationError):
             expense = self._create_expense(
                 "Advance 1,000",
-                self.employee,
-                self.emp_advance,
+                self.expense_employee,
+                self.product_emp_advance,
                 1.0,
                 advance=True,
             )
-            expense.product_id = self.product.id
+            expense.product_id = self.product_d.id
             expense._check_advance()
         # Advance Expense's product must have account configured
         with self.assertRaises(ValidationError):
-            self.emp_advance.property_account_expense_id = False
+            self.product_emp_advance.property_account_expense_id = False
             expense = self._create_expense(
-                "Advance 1,000", self.employee, self.emp_advance, 1.0, advance=True
+                "Advance 1,000",
+                self.expense_employee,
+                self.product_emp_advance,
+                1.0,
+                advance=True,
             )
 
     def test_1_clear_equal_advance(self):
         """When clear equal advance, all set"""
         # ------------------ Advance --------------------------
         self.advance.action_submit_sheet()
-        self.advance.action_action_approve_expense_sheets()
+        self.advance.action_approve_expense_sheets()
         self.advance.action_sheet_move_create()
         self.assertEqual(self.advance.clearing_residual, 1000.0)
-        self._register_payment(self.advance.account_move_ids, 1000.0)
+        self.get_new_payment_with_advance(self.advance, 1000.0)
+        self.assertRecordValues(
+            self.advance, [{"payment_state": "paid", "state": "done"}]
+        )
         self.assertEqual(self.advance.state, "done")
         # ------------------ Clearing --------------------------
         # Clear this with previous advance
@@ -222,7 +282,9 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
         self.clearing_equal.action_approve_expense_sheets()
         self.clearing_equal.action_sheet_move_create()
         # Equal amount, state change to Paid and advance is cleared
-        self.assertEqual(self.clearing_equal.state, "done")
+        self.assertRecordValues(
+            self.clearing_equal, [{"payment_state": "paid", "state": "done"}]
+        )
         self.assertEqual(self.clearing_equal.advance_sheet_residual, 0.0)
         # Clear this with previous advance is done
         self.clearing_more.advance_sheet_id = self.advance
@@ -238,10 +300,10 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
             len(clearing_dict["domain"][0][2]), self.advance.clearing_count
         )
         # Check advance from employee
-        self.assertEqual(self.employee.advance_count, 1)
-        clearing_document = self.employee.action_open_advance_clearing()
+        self.assertEqual(self.expense_employee.advance_count, 1)
+        clearing_document = self.expense_employee.action_open_advance_clearing()
         self.assertEqual(
-            len(clearing_document["domain"][0][2]), self.employee.advance_count
+            len(clearing_document["domain"][0][2]), self.expense_employee.advance_count
         )
         # Check back state move in advance after create clearing
         with self.assertRaises(UserError):
@@ -258,8 +320,10 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
         self.advance.action_approve_expense_sheets()
         self.advance.action_sheet_move_create()
         self.assertEqual(self.advance.clearing_residual, 1000.0)
-        self._register_payment(self.advance.account_move_ids, 1000.0)
-        self.assertEqual(self.advance.state, "done")
+        self.get_new_payment_with_advance(self.advance, 1000.0)
+        self.assertRecordValues(
+            self.advance, [{"payment_state": "paid", "state": "done"}]
+        )
         # ------------------ Clearing --------------------------
         # Clear this with previous advance
         self.clearing_more.advance_sheet_id = self.advance
@@ -268,10 +332,10 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
         self.clearing_more.action_approve_expense_sheets()
         self.clearing_more.action_sheet_move_create()
         # More amount, state not changed to paid, and has to pay 200 more
-        self.assertEqual(self.clearing_more.state, "post")
+        self.assertRecordValues(self.clearing_more, [{"state": "post"}])
         self.assertEqual(self.clearing_more.amount_payable, 200.0)
-        self._register_payment(self.clearing_more.account_move_ids, 200.0)
-        self.assertEqual(self.clearing_more.state, "done")
+        self.get_new_payment_with_advance(self.clearing_more, 200.0)
+        self.assertRecordValues(self.clearing_more, [{"state": "done"}])
 
     def test_3_clear_less_than_advance(self):
         """When clear less than advance, do return advance"""
@@ -279,15 +343,16 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
         self.advance.action_submit_sheet()
         self.advance.action_approve_expense_sheets()
         self.advance.action_sheet_move_create()
+        self.assertEqual(self.advance.clearing_residual, 1000.0)
         # Test return advance register payment with move state draft
         with self.assertRaises(UserError):
             self.advance.account_move_ids.button_draft()
-            self._register_payment(
-                self.advance.account_move_ids, 200.0, hr_return_advance=True
+            self.get_new_payment_with_advance(
+                self.advance, 200.0, hr_return_advance=True
             )
         self.assertEqual(self.advance.clearing_residual, 1000.0)
-        self._register_payment(self.advance.account_move_ids, 1000.0)
-        self.assertEqual(self.advance.state, "done")
+        self.get_new_payment_with_advance(self.advance, 1000.0)
+        self.assertRecordValues(self.advance, [{"state": "done"}])
         # ------------------ Clearing, Return Advance --------------------------
         # Clear this with previous advance
         self.clearing_less.advance_sheet_id = self.advance
@@ -299,16 +364,13 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
         ).action_register_payment()
         # Test return advance register payment without move
         with self.assertRaises(UserError):
-            self._register_payment(
-                self.env["account.move"], 200.0, hr_return_advance=True
+            self.get_new_payment_with_advance(
+                self.env["hr.expense.sheet"], 200.0, hr_return_advance=True
             )
         # Test return advance over residual
         with self.assertRaises(UserError):
-            self._register_payment(
-                self.advance.account_move_ids,
-                300.0,
-                ctx=register_payment["context"],
-                hr_return_advance=True,
+            self.get_new_payment_with_advance(
+                self.advance, 300.0, register_payment["context"], hr_return_advance=True
             )
         self.clearing_less.action_sheet_move_create()
         # Less amount, state set to done. Still remain 200 to be returned
@@ -331,7 +393,7 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
     def test_4_clearing_product_advance(self):
         """When select clearing product on advance"""
         # ------------------ Advance --------------------------
-        self.advance.expense_line_ids.clearing_product_id = self.product
+        self.advance.expense_line_ids.clearing_product_id = self.product_d
         self.advance.action_submit_sheet()
         self.advance.action_approve_expense_sheets()
         self.advance.action_sheet_move_create()
@@ -341,7 +403,7 @@ class TestHrExpenseAdvanceClearing(common.TransactionCase):
         # ------------------ Clearing --------------------------
         with Form(self.env["hr.expense.sheet"]) as sheet:
             sheet.name = "Test Clearing"
-            sheet.employee_id = self.employee
+            sheet.employee_id = self.expense_employee
         ex_sheet = sheet.save()
         ex_sheet.advance_sheet_id = self.advance
         self.assertEqual(len(ex_sheet.expense_line_ids), 0)
