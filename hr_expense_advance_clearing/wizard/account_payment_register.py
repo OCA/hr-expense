@@ -39,8 +39,8 @@ class AccountPaymentRegister(models.TransientModel):
             else:
                 raise UserError(
                     _(
-                        "The register payment wizard should only be called on account.move "
-                        "or account.move.line records."
+                        "The register payment wizard should only be called on "
+                        "account.move or account.move.line records."
                     )
                 )
 
@@ -54,7 +54,7 @@ class AccountPaymentRegister(models.TransientModel):
                     ("type", "in", ("bank", "cash")),
                 ]
             ):
-                # default can be inherited from the list view, 
+                # default can be inherited from the list view,
                 # should be computed instead
                 del res["journal_id"]
 
