@@ -13,10 +13,7 @@ class TestHrExpenseSequence(TransactionCase):
         cls.expense_sheet_model = cls.env["hr.expense.sheet"]
         cls.product = cls.env.ref("product.product_product_4")
 
-        employee_home = cls.env["res.partner"].create({"name": "Employee Home Address"})
-        cls.employee = cls.env["hr.employee"].create(
-            {"name": "Employee", "address_home_id": employee_home.id}
-        )
+        cls.employee = cls.env["hr.employee"].create({"name": "Employee"})
         cls.expense = cls.create_expense(cls, "Expense")
 
     def create_expense(self, name):
@@ -26,7 +23,7 @@ class TestHrExpenseSequence(TransactionCase):
                 "name": name,
                 "employee_id": self.employee.id,
                 "product_id": self.product.id,
-                "unit_amount": self.product.standard_price,
+                "total_amount_currency": self.product.standard_price,
                 "quantity": 1,
             }
         )
