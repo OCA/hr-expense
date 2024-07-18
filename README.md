@@ -27,6 +27,7 @@ addon | version | maintainers | summary
 [hr_expense_pay_to_vendor](hr_expense_pay_to_vendor/) | 16.0.1.0.0 | [![kittiu](https://github.com/kittiu.png?size=30px)](https://github.com/kittiu) | HR Expense - Pay To Vendor
 [hr_expense_payment](hr_expense_payment/) | 16.0.1.0.1 |  | HR Expense Payment
 [hr_expense_sequence](hr_expense_sequence/) | 16.0.1.0.1 |  | HR expense sequence
+[hr_expense_sequence_option](hr_expense_sequence_option/) | 16.0.1.0.0 | [![ps-tubtim](https://github.com/ps-tubtim.png?size=30px)](https://github.com/ps-tubtim) | Manage sequence options for hr.expense.sheet
 [hr_expense_tier_validation](hr_expense_tier_validation/) | 16.0.1.0.1 | [![ps-tubtim](https://github.com/ps-tubtim.png?size=30px)](https://github.com/ps-tubtim) | Expense Tier Validation
 
 [//]: # (end addons)
