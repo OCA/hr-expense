@@ -58,7 +58,7 @@ class TestHrExpenseAdvanceClearing(TestExpenseCommon):
             expense.employee_id = employee
             if not advance:
                 expense.product_id = product
-            expense.total_amount = amount
+            expense.total_amount_currency = amount
             expense.payment_mode = payment_mode
         expense = expense.save()
         expense.tax_ids = False  # Test no vat
@@ -170,10 +170,10 @@ class TestHrExpenseAdvanceClearing(TestExpenseCommon):
         """When clear equal advance, all set"""
         # ------------------ Advance --------------------------
         self.advance.action_submit_sheet()
-        self.advance.approve_expense_sheets()
+        self.advance.action_approve_expense_sheets()
         self.advance.action_sheet_move_create()
         self.assertEqual(self.advance.clearing_residual, 1000.0)
-        self._register_payment(self.advance.account_move_id, 1000.0)
+        self._register_payment(self.advance.account_move_ids, 1000.0)
         self.assertEqual(self.advance.state, "done")
         # ------------------ Clearing --------------------------
         # Clear this with previous advance
@@ -183,7 +183,7 @@ class TestHrExpenseAdvanceClearing(TestExpenseCommon):
         self.clearing_equal.advance_sheet_id = self.advance
         self.assertEqual(self.clearing_equal.advance_sheet_residual, 1000.0)
         self.clearing_equal.action_submit_sheet()
-        self.clearing_equal.approve_expense_sheets()
+        self.clearing_equal.action_approve_expense_sheets()
         self.clearing_equal.action_sheet_move_create()
         # Equal amount, state change to Paid and advance is cleared
         self.assertEqual(self.clearing_equal.state, "done")
@@ -191,7 +191,7 @@ class TestHrExpenseAdvanceClearing(TestExpenseCommon):
         # Clear this with previous advance is done
         self.clearing_more.advance_sheet_id = self.advance
         self.clearing_more.action_submit_sheet()
-        self.clearing_more.approve_expense_sheets()
+        self.clearing_more.action_approve_expense_sheets()
         with self.assertRaises(ValidationError):
             self.clearing_more.action_sheet_move_create()
         # There are 2 clearing in advance
@@ -209,33 +209,33 @@ class TestHrExpenseAdvanceClearing(TestExpenseCommon):
         )
         # Check back state move in advance after create clearing
         with self.assertRaises(UserError):
-            self.advance.account_move_id.button_draft()
+            self.advance.account_move_ids.button_draft()
         with self.assertRaises(UserError):
-            self.advance.account_move_id.button_cancel()
+            self.advance.account_move_ids.button_cancel()
         with self.assertRaises(UserError):
-            self.advance.account_move_id._reverse_moves()
+            self.advance.account_move_ids._reverse_moves()
 
     @mute_logger("odoo.models.unlink")
     def test_2_clear_more_than_advance(self):
         """When clear more than advance, do pay more"""
         # ------------------ Advance --------------------------
         self.advance.action_submit_sheet()
-        self.advance.approve_expense_sheets()
+        self.advance.action_approve_expense_sheets()
         self.advance.action_sheet_move_create()
         self.assertEqual(self.advance.clearing_residual, 1000.0)
-        self._register_payment(self.advance.account_move_id, 1000.0)
+        self._register_payment(self.advance.account_move_ids, 1000.0)
         self.assertEqual(self.advance.state, "done")
         # ------------------ Clearing --------------------------
         # Clear this with previous advance
         self.clearing_more.advance_sheet_id = self.advance
         self.assertEqual(self.clearing_more.advance_sheet_residual, 1000.0)
         self.clearing_more.action_submit_sheet()
-        self.clearing_more.approve_expense_sheets()
+        self.clearing_more.action_approve_expense_sheets()
         self.clearing_more.action_sheet_move_create()
         # More amount, state not changed to paid, and has to pay 200 more
         self.assertEqual(self.clearing_more.state, "post")
         self.assertEqual(self.clearing_more.amount_payable, 200.0)
-        self._register_payment(self.clearing_more.account_move_id, 200.0)
+        self._register_payment(self.clearing_more.account_move_ids, 200.0)
         self.assertEqual(self.clearing_more.state, "done")
 
     @mute_logger("odoo.models.unlink")
@@ -243,23 +243,23 @@ class TestHrExpenseAdvanceClearing(TestExpenseCommon):
         """When clear less than advance, do return advance"""
         # ------------------ Advance --------------------------
         self.advance.action_submit_sheet()
-        self.advance.approve_expense_sheets()
+        self.advance.action_approve_expense_sheets()
         self.advance.action_sheet_move_create()
         # Test return advance register payment with move state draft
         with self.assertRaises(UserError):
-            self.advance.account_move_id.button_draft()
+            self.advance.account_move_ids.button_draft()
             self._register_payment(
-                self.advance.account_move_id, 200.0, hr_return_advance=True
+                self.advance.account_move_ids, 200.0, hr_return_advance=True
             )
         self.assertEqual(self.advance.clearing_residual, 1000.0)
-        self._register_payment(self.advance.account_move_id, 1000.0)
+        self._register_payment(self.advance.account_move_ids, 1000.0)
         self.assertEqual(self.advance.state, "done")
         # ------------------ Clearing, Return Advance --------------------------
         # Clear this with previous advance
         self.clearing_less.advance_sheet_id = self.advance
         self.assertEqual(self.clearing_less.advance_sheet_residual, 1000.0)
         self.clearing_less.action_submit_sheet()
-        self.clearing_less.approve_expense_sheets()
+        self.clearing_less.action_approve_expense_sheets()
         register_payment = self.advance.with_context(
             hr_return_advance=True
         ).action_register_payment()
@@ -271,7 +271,7 @@ class TestHrExpenseAdvanceClearing(TestExpenseCommon):
         # Test return advance over residual
         with self.assertRaises(UserError):
             self._register_payment(
-                self.advance.account_move_id,
+                self.advance.account_move_ids,
                 300.0,
                 ctx=register_payment["context"],
                 hr_return_advance=True,
@@ -282,7 +282,7 @@ class TestHrExpenseAdvanceClearing(TestExpenseCommon):
         self.assertEqual(self.clearing_less.advance_sheet_residual, 200.0)
         # Back to advance and do return advance, clearing residual become 0.0
         self._register_payment(
-            self.advance.account_move_id,
+            self.advance.account_move_ids,
             200.0,
             ctx=register_payment["context"],
             hr_return_advance=True,
@@ -300,10 +300,10 @@ class TestHrExpenseAdvanceClearing(TestExpenseCommon):
         # ------------------ Advance --------------------------
         self.advance.expense_line_ids.clearing_product_id = self.product_a
         self.advance.action_submit_sheet()
-        self.advance.approve_expense_sheets()
+        self.advance.action_approve_expense_sheets()
         self.advance.action_sheet_move_create()
         self.assertEqual(self.advance.clearing_residual, 1000.0)
-        self._register_payment(self.advance.account_move_id, 1000.0)
+        self._register_payment(self.advance.account_move_ids, 1000.0)
         self.assertEqual(self.advance.state, "done")
         # ------------------ Clearing --------------------------
         with Form(self.env["hr.expense.sheet"]) as sheet:
@@ -314,10 +314,10 @@ class TestHrExpenseAdvanceClearing(TestExpenseCommon):
         self.assertEqual(len(ex_sheet.expense_line_ids), 0)
         ex_sheet._onchange_advance_sheet_id()
         self.assertEqual(len(ex_sheet.expense_line_ids), 1)
-        reverse_move = self.advance.account_move_id._reverse_moves(
+        reverse_move = self.advance.account_move_ids._reverse_moves(
             default_values_list=[
-                {"invoice_date": self.advance.account_move_id.date, "ref": False}
+                {"invoice_date": self.advance.account_move_ids.date, "ref": False}
             ],
             cancel=True,
         )
-        self.assertNotEqual(reverse_move, self.advance.account_move_id)
+        self.assertNotEqual(reverse_move, self.advance.account_move_ids)
