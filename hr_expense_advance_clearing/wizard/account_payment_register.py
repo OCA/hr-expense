@@ -83,7 +83,7 @@ class AccountPaymentRegister(models.TransientModel):
         if amount_not_clear:
             more_info = _("\nNote: pending amount clearing is %(symbol)s%(amount)s") % {
                 "symbol": symbol,
-                "amount": "{:,.2f}".format(amount_not_clear),
+                "amount": f"{amount_not_clear:,.2f}",
             }
         if float_compare(self.amount, actual_remaining, 2) == 1:
             raise UserError(
@@ -93,7 +93,7 @@ class AccountPaymentRegister(models.TransientModel):
                 )
                 % {
                     "symbol": symbol,
-                    "amount": "{:,.2f}".format(actual_remaining),
+                    "amount": f"{actual_remaining:,.2f}",
                     "more_info": more_info,
                 }
             )
