@@ -10,7 +10,7 @@
                     name="action_open_advance_clearing"
                     type="object"
                     icon="fa-bars"
-                    attrs="{'invisible': [('advance_count', '=', 0)]}"
+                    invisible="advance_count == 0"
                 >
                     <field name="advance_count" string="Advance" widget="statinfo" />
                 </button>

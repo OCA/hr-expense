@@ -18,12 +18,6 @@ class HrExpenseSheet(models.Model):
         string="Clear Advance",
         domain="[('advance', '=', True), ('employee_id', '=', employee_id),"
         " ('clearing_residual', '>', 0.0)]",
-        readonly=True,
-        states={
-            "draft": [("readonly", False)],
-            "submit": [("readonly", False)],
-            "approve": [("readonly", False)],
-        },
         help="Show remaining advance of this employee",
     )
     clearing_sheet_ids = fields.One2many(
@@ -64,16 +58,16 @@ class HrExpenseSheet(models.Model):
         if advance_lines and len(advance_lines) != len(self.expense_line_ids):
             raise ValidationError(_("Advance must contain only advance expense line"))
 
-    @api.depends("account_move_id.payment_state")
-    def _compute_payment_state(self):
+    @api.depends("account_move_ids.payment_state", "account_move_ids.amount_residual")
+    def _compute_from_account_move_ids(self):
         """After clear advance.
         if amount residual is zero, payment state will change to 'paid'
         """
-        res = super()._compute_payment_state()
+        res = super()._compute_from_account_move_ids()
         for sheet in self:
             if (
                 sheet.advance_sheet_id
-                and sheet.account_move_id.state == "posted"
+                and sheet.account_move_ids.state == "posted"
                 and not sheet.amount_residual
             ):
                 sheet.payment_state = "paid"
@@ -82,20 +76,20 @@ class HrExpenseSheet(models.Model):
     def _get_product_advance(self):
         return self.env.ref("hr_expense_advance_clearing.product_emp_advance", False)
 
-    @api.depends("account_move_id.line_ids.amount_residual")
+    @api.depends("account_move_ids.line_ids.amount_residual")
     def _compute_clearing_residual(self):
         for sheet in self:
             emp_advance = sheet._get_product_advance()
             residual_company = 0.0
             if emp_advance:
-                for line in sheet.sudo().account_move_id.line_ids:
+                for line in sheet.sudo().account_move_ids.line_ids:
                     if line.account_id == emp_advance.property_account_expense_id:
                         residual_company += line.amount_residual
             sheet.clearing_residual = residual_company
 
     def _compute_amount_payable(self):
         for sheet in self:
-            rec_lines = sheet.account_move_id.line_ids.filtered(
+            rec_lines = sheet.account_move_ids.line_ids.filtered(
                 lambda x: x.credit and x.account_id.reconcile and not x.reconciled
             )
             sheet.amount_payable = -sum(rec_lines.mapped("amount_residual"))
@@ -116,8 +110,8 @@ class HrExpenseSheet(models.Model):
                 precision_rounding=sheet.currency_id.rounding,
             )
             move_lines = (
-                sheet.account_move_id.line_ids
-                | sheet.advance_sheet_id.account_move_id.line_ids
+                sheet.account_move_ids.line_ids
+                | sheet.advance_sheet_id.account_move_ids.line_ids
             )
             emp_advance = sheet._get_product_advance()
             account_id = emp_advance.property_account_expense_id.id
@@ -164,14 +158,12 @@ class HrExpenseSheet(models.Model):
             )
             total_amount = 0.0
             total_amount_currency = 0.0
-            partner_id = (
-                expense.employee_id.sudo().address_home_id.commercial_partner_id.id
-            )
+            partner_id = expense.employee_id.sudo().work_contact_id.id
             # source move line
             move_line_src = expense._get_move_line_src(move_line_name, partner_id)
             move_line_values = [move_line_src]
-            total_amount -= expense.total_amount_company
-            total_amount_currency -= expense.total_amount
+            total_amount -= expense.total_amount
+            total_amount_currency -= expense.total_amount_currency
 
             # destination move line
             move_line_dst = expense._get_move_line_dst(
@@ -205,7 +197,7 @@ class HrExpenseSheet(models.Model):
                 payable_move_line["amount_currency"] = -remain_payable
                 payable_move_line[
                     "account_id"
-                ] = expense._get_expense_account_destination()
+                ] = expense.sheet_id._get_expense_account_destination()
             else:
                 advance_to_clear -= credit
             # Add destination first (if credit is not zero)
@@ -216,10 +208,10 @@ class HrExpenseSheet(models.Model):
             move_line_vals.extend(move_line_values)
         return move_line_vals
 
-    def _prepare_bill_vals(self):
+    def _prepare_bills_vals(self):
         """create journal entry instead of bills when clearing document"""
         self.ensure_one()
-        res = super()._prepare_bill_vals()
+        res = super()._prepare_bills_vals()
         if self.advance_sheet_id and self.payment_mode == "own_account":
             if (
                 self.advance_sheet_residual <= 0.0
