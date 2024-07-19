@@ -13,7 +13,7 @@ class AccountMove(models.Model):
         av_moves = self.filtered("line_ids.expense_id.sheet_id.advance")
         emp_advance = self.env.ref("hr_expense_advance_clearing.product_emp_advance")
         reconciled_av_move_lines = av_moves.mapped("line_ids").filtered(
-            lambda l: l.product_id == emp_advance and l.matching_number
+            lambda line: line.product_id == emp_advance and line.matching_number
         )
         if reconciled_av_move_lines:
             raise UserError(

@@ -1,7 +1,7 @@
 # Copyright 2022 Ecosoft Co., Ltd. (https://ecosoft.co.th)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class AccountPayment(models.Model):
@@ -20,3 +20,10 @@ class AccountPayment(models.Model):
             else self
         )
         return super()._synchronize_from_moves(changed_fields)
+
+    @api.model
+    def _get_valid_payment_account_types(self):
+        account_types = super()._get_valid_payment_account_types()
+        if self.env.context.get("hr_return_advance"):
+            account_types.append("asset_current")
+        return account_types

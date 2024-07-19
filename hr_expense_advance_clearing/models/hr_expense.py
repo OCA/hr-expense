@@ -59,13 +59,13 @@ class HrExpense(models.Model):
 
     def _get_move_line_src(self, move_line_name, partner_id):
         self.ensure_one()
-        unit_amount = self.unit_amount or self.total_amount
-        quantity = self.quantity if self.unit_amount else 1
+        price_unit = self.price_unit or self.total_amount
+        quantity = self.quantity if self.price_unit else 1
         taxes = self.tax_ids.with_context(round=True).compute_all(
-            unit_amount, self.currency_id, quantity, self.product_id
+            price_unit, self.currency_id, quantity, self.product_id
         )
-        amount_currency = self.total_amount - self.amount_tax
-        balance = self.total_amount_company - self.amount_tax_company
+        amount_currency = self.total_amount_currency - self.tax_amount_currency
+        balance = self.total_amount - self.tax_amount
         ml_src_dict = {
             "name": move_line_name,
             "quantity": quantity,
