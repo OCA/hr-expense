@@ -21,6 +21,7 @@ Available addons
 ----------------
 addon | version | maintainers | summary
 --- | --- | --- | ---
+[hr_expense_cancel](hr_expense_cancel/) | 17.0.1.0.2 |  | Hr expense cancel
 [hr_expense_payment](hr_expense_payment/) | 17.0.1.0.0 |  | HR Expense Payment
 
 [//]: # (end addons)
