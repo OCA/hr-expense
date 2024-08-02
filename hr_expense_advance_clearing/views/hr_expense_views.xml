@@ -141,11 +141,6 @@
                     placeholder="Optional clearing product is used during clear advance"
                 />
             </field>
-            <field name="analytic_distribution" position="attributes">
-                <attribute name="attrs">
-                    {'invisible': [('advance', '!=', False)]}
-                </attribute>
-            </field>
         </field>
     </record>
     <record id="view_hr_expense_sheet_tree" model="ir.ui.view">
