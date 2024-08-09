@@ -6,6 +6,8 @@ from psycopg2 import sql
 
 @openupgrade.migrate()
 def migrate(env, version):
+    if not openupgrade.column_exists(env.cr, "hr_expense", "old_invoice_id"):
+        return
     openupgrade.logged_query(
         env.cr,
         sql.SQL(
