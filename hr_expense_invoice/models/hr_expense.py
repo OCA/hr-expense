@@ -24,32 +24,32 @@ class HrExpense(models.Model):
         copy=False,
     )
 
-    def action_expense_create_invoice(self):
-        invoice_lines = [
-            (
-                0,
-                0,
-                {
-                    "product_id": self.product_id.id,
-                    "name": self.name,
-                    "price_unit": self.unit_amount,
-                    "quantity": self.quantity,
-                    "account_id": self.account_id.id,
-                    "analytic_account_id": self.analytic_account_id.id,
-                    "tax_ids": [(6, 0, self.tax_ids.ids)],
-                },
-            )
+    def _prepare_invoice_line_values(self):
+        """Prepare the values for the invoice lines based on the expense."""
+        return [
+            {
+                "product_id": self.product_id.id,
+                "name": self.name,
+                "price_unit": self.unit_amount,
+                "quantity": self.quantity,
+                "account_id": self.account_id.id,
+                "analytic_account_id": self.analytic_account_id.id,
+                "tax_ids": [(6, 0, self.tax_ids.ids)],
+            }
         ]
-        invoice = self.env["account.move"].create(
-            [
-                {
-                    "ref": self.reference,
-                    "move_type": "in_invoice",
-                    "invoice_date": self.date,
-                    "invoice_line_ids": invoice_lines,
-                }
-            ]
-        )
+
+    def _prepare_invoice_values(self):
+        invoice_lines = self._prepare_invoice_line_values()
+        return {
+            "name": "/",
+            "ref": self.reference,
+            "move_type": "in_invoice",
+            "invoice_date": self.date,
+            "invoice_line_ids": [(0, 0, line) for line in invoice_lines],
+        }
+
+    def action_expense_create_invoice(self):
+        invoice = self.env["account.move"].create(self._prepare_invoice_values())
         attachments = self.env["ir.attachment"].search(
             [("res_model", "=", self._name), ("res_id", "in", self.ids)]
         )
