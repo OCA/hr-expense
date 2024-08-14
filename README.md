@@ -21,7 +21,7 @@ Available addons
 ----------------
 addon | version | maintainers | summary
 --- | --- | --- | ---
-[hr_expense_advance_clearing](hr_expense_advance_clearing/) | 14.0.1.5.7 | [![kittiu](https://github.com/kittiu.png?size=30px)](https://github.com/kittiu) | Employee Advance and Clearing
+[hr_expense_advance_clearing](hr_expense_advance_clearing/) | 14.0.1.5.8 | [![kittiu](https://github.com/kittiu.png?size=30px)](https://github.com/kittiu) | Employee Advance and Clearing
 [hr_expense_advance_clearing_consolidation](hr_expense_advance_clearing_consolidation/) | 14.0.1.0.0 |  | HR Expense Advance Clearing Consolidation
 [hr_expense_advance_clearing_sequence](hr_expense_advance_clearing_sequence/) | 14.0.1.0.0 |  | HR Expense Advance Clearing Sequence
 [hr_expense_analytic_distribution](hr_expense_analytic_distribution/) | 14.0.1.0.1 |  | HR Expense Analytic Distribution
