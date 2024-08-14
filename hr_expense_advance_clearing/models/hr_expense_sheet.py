@@ -78,8 +78,11 @@ class HrExpenseSheet(models.Model):
         for sheet in self:
             residual_company = 0.0
             if emp_advance:
+                property_account_expense_id = emp_advance.with_company(
+                    sheet.company_id
+                ).property_account_expense_id
                 for line in sheet.sudo().account_move_id.line_ids:
-                    if line.account_id == emp_advance.property_account_expense_id:
+                    if line.account_id == property_account_expense_id:
                         residual_company += line.amount_residual
             sheet.clearing_residual = residual_company
 
