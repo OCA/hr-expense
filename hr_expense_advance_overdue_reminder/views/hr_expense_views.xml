@@ -6,7 +6,8 @@
         <field name="model">hr.expense.sheet</field>
         <field name="inherit_id" ref="hr_expense.hr_expense_sheet_view_search" />
         <field name="arch" type="xml">
-            <xpath expr="//search/filter[@name='approved']" position="after">
+            <xpath expr="//filter[@name='filter_accounting_date']" position="after">
+                <separator />
                 <filter
                     name="advance_overdue"
                     string="To Overdue"

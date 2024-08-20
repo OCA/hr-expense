@@ -77,8 +77,7 @@ class HrExpenseSheet(models.Model):
                             "Post Journal Entries"
                         )
                     )
-                move_date = res[sheet.id].date
-                sheet.clearing_date_due = move_date + relativedelta(
+                sheet.clearing_date_due = res.date + relativedelta(
                     days=reminder.clearing_terms_days or 0.0
                 )
         return res

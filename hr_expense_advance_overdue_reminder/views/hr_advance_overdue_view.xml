@@ -31,79 +31,73 @@
                         <field name="name" readonly="1" class="oe_inline" />
                     </h1>
                     <group name="main">
-                        <group name="information">
+                        <group name="information_left">
                             <field name="employee_id" />
-                            <field name="date" />
-                        </group>
-                        <group name="contact">
                             <field name="employee_email" widget="email" />
+                            <field name="reminder_definition_id" />
+                            <field name="reminder_next_time" />
+                            <field name="reminder_type" />
+                            <field
+                                name="mail_template_id"
+                                attrs="{'invisible': [('reminder_type', '!=', 'mail')]}"
+                            />
+                            <field
+                                name="letter_report"
+                                attrs="{'invisible': [('reminder_type', '!=', 'letter')]}"
+                            />
+                        </group>
+                        <group name="information_right">
+                            <field name="date" />
+                            <field name="create_activity" />
+                            <field
+                                name="activity_type_id"
+                                attrs="{'required': [('create_activity', '=', True)], 'invisible': [('create_activity', '=', False)]}"
+                            />
+                            <field
+                                name="activity_scheduled_date"
+                                attrs="{'required': [('create_activity', '=', True)], 'invisible': [('create_activity', '=', False)]}"
+                            />
+                            <field
+                                name="activity_summary"
+                                attrs="{'invisible': [('create_activity', '=', False)]}"
+                            />
+                            <field
+                                name="activity_user_id"
+                                attrs="{'required': [('create_activity', '=', True)], 'invisible': [('create_activity', '=', False)]}"
+                            />
+                            <field
+                                name="activity_note"
+                                attrs="{'invisible': [('create_activity', '=', False)]}"
+                            />
                         </group>
                     </group>
-                    <group name="expense_advance">
-                        <field
-                            name="expense_sheet_ids"
-                            nolabel="1"
-                            domain="[('employee_id', '=', employee_id), ('advance', '=', True), ('clearing_date_due', '&lt;', datetime.date.today().strftime('%Y-%m-%d')), ('clearing_residual', '&gt;', 0.0), '|', ('reminder_next_time', '=', False), ('reminder_next_time', '&lt;', datetime.date.today().strftime('%Y-%m-%d'))]"
-                        >
-                            <tree create="0" edit="0" width="100%">
-                                <field name="number" />
-                                <field name="employee_id" />
-                                <field name="accounting_date" />
-                                <field name="clearing_date_due" />
-                                <field name="name" string="Order Ref" />
-                                <field name="total_amount" sum="Total" />
-                                <field name="clearing_residual" sum="Total" />
-                                <field
-                                    name="overdue_reminder_counter"
-                                    string="Current Remind Counter"
-                                />
-                                <field
-                                    name="overdue_reminder_last_date"
-                                    string="Last Reminder"
-                                />
-                                <field name="state" invisible="1" />
-                            </tree>
-                        </field>
-                    </group>
-                    <group name="reminder">
-                        <field name="reminder_definition_id" />
-                        <field name="reminder_next_time" />
-                    </group>
-                    <group name="reminder_type">
-                        <field name="reminder_type" />
-                        <field
-                            name="mail_template_id"
-                            attrs="{'invisible': [('reminder_type', '!=', 'mail')]}"
-                        />
-                        <field
-                            name="letter_report"
-                            attrs="{'invisible': [('reminder_type', '!=', 'letter')]}"
-                        />
-                    </group>
-                    <group name="activity_notify" col="4">
-                        <field name="create_activity" />
-                        <field
-                            name="activity_type_id"
-                            attrs="{'required': [('create_activity', '=', True)], 'invisible': [('create_activity', '=', False)]}"
-                        />
-                        <field
-                            name="activity_scheduled_date"
-                            attrs="{'required': [('create_activity', '=', True)], 'invisible': [('create_activity', '=', False)]}"
-                        />
-                        <field
-                            name="activity_summary"
-                            attrs="{'invisible': [('create_activity', '=', False)]}"
-                        />
-                        <field
-                            name="activity_user_id"
-                            attrs="{'required': [('create_activity', '=', True)], 'invisible': [('create_activity', '=', False)]}"
-                        />
-                        <field
-                            name="activity_note"
-                            colspan="4"
-                            attrs="{'invisible': [('create_activity', '=', False)]}"
-                        />
-                    </group>
+                    <notebook>
+                        <page name="av_overdue" string="AV Overdue">
+                            <field
+                                name="expense_sheet_ids"
+                                domain="[('employee_id', '=', employee_id), ('advance', '=', True), ('clearing_date_due', '&lt;', datetime.date.today().strftime('%Y-%m-%d')), ('clearing_residual', '&gt;', 0.0), '|', ('reminder_next_time', '=', False), ('reminder_next_time', '&lt;', datetime.date.today().strftime('%Y-%m-%d'))]"
+                            >
+                                <tree create="0" edit="0">
+                                    <field name="number" />
+                                    <field name="employee_id" />
+                                    <field name="accounting_date" />
+                                    <field name="clearing_date_due" />
+                                    <field name="name" string="Order Ref" />
+                                    <field name="total_amount" sum="Total" />
+                                    <field name="clearing_residual" sum="Total" />
+                                    <field
+                                        name="overdue_reminder_counter"
+                                        string="Current Remind Counter"
+                                    />
+                                    <field
+                                        name="overdue_reminder_last_date"
+                                        string="Last Reminder"
+                                    />
+                                    <field name="state" invisible="1" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers" />

@@ -29,9 +29,7 @@ class TestHrExpenseAdvanceOverdueReminder(TransactionCase):
             {
                 "code": "154000",
                 "name": "Employee Advance",
-                "user_type_id": cls.env.ref(
-                    "account.data_account_type_current_assets"
-                ).id,
+                "account_type": "asset_current",
                 "reconcile": True,
             }
         )
@@ -57,7 +55,7 @@ class TestHrExpenseAdvanceOverdueReminder(TransactionCase):
         ) as expense:
             expense.name = description
             expense.employee_id = employee
-            expense.unit_amount = amount
+            expense.total_amount = amount
             expense.payment_mode = payment_mode
         expense = expense.save()
         expense.tax_ids = False  # Test no vat
@@ -166,11 +164,6 @@ class TestHrExpenseAdvanceOverdueReminder(TransactionCase):
         advance_overdue_reminder.state = "draft"
         with Form(advance_overdue_reminder) as av_overdue:
             av_overdue.reminder_type = "mail"
-        # Check employee address private, not allow send email
-        advance_overdue_reminder.employee_id.address_home_id.type = "private"
-        with self.assertRaises(UserError):
-            advance_overdue_reminder.action_validate()
-        advance_overdue_reminder.employee_id.address_home_id.type = "contact"
         mail_compose = advance_overdue_reminder.action_validate()
         with Form(
             self.mail_compose.with_context(

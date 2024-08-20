@@ -174,8 +174,6 @@ class HrAdvanceOverdueReminder(models.Model):
 
     def validate_mail(self):
         self.ensure_one()
-        if self.employee_id.sudo().address_home_id.type == "private":
-            raise UserError(_("You can not sent email with address private contact."))
         template = self.env.ref(self._get_mail_template(), raise_if_not_found=False)
         compose_form = self.env.ref("mail.email_compose_message_wizard_form", False)
         ctx = dict(
@@ -199,17 +197,18 @@ class HrAdvanceOverdueReminder(models.Model):
             "context": ctx,
         }
 
-    @api.model
-    def create(self, vals):
-        if vals.get("number", "/") == "/":
-            number = (
-                self.env["ir.sequence"].next_by_code(
-                    "advance.overdue.reminder.sequence"
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get("name", "/") == "/":
+                number = (
+                    self.env["ir.sequence"].next_by_code(
+                        "advance.overdue.reminder.sequence"
+                    )
+                    or "/"
                 )
-                or "/"
-            )
-            vals["name"] = number
-        return super().create(vals)
+                vals["name"] = number
+        return super().create(vals_list)
 
     def _update_overdue_advance(self):
         self.ensure_one()
