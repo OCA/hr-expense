@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2024 - TODAY, Kaynnan Lemes <kaynnan.lemes@escodoo.com.br>
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+
+    <record model="ir.ui.view" id="hr_expense_sheet_form_view">
+        <field
+            name="name"
+        >hr.expense.sheet.form (in hr_expense_invoice_payment_term)</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='accounting_date']" position="after">
+                <label for="payment_term_id" string="Due Date" />
+                <div class="d-flex">
+                    <field
+                        name="due_date"
+                        force_save="1"
+                        placeholder="Date"
+                        attrs="{'readonly': [('state', '=', 'post')], 'invisible': [('payment_term_id', '!=', False)]}"
+                    />
+                    <span
+                        class="o_form_label mx-3 oe_edit_only"
+                        attrs="{'invisible': [('payment_term_id', '!=', False)]}"
+                    >
+                        or
+                    </span>
+                    <field
+                        name="payment_term_id"
+                        placeholder="Terms"
+                        attrs="{'readonly': [('state', '=', 'post')]}"
+                    />
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
