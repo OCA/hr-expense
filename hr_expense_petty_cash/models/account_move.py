@@ -24,7 +24,11 @@ class AccountMove(models.Model):
         petty_cash_env = self.env["petty.cash"].sudo()
         for rec in self:
             petty_cash = petty_cash_env.search(
-                [("partner_id", "=", rec.partner_id.id)], limit=1
+                [
+                    ("partner_id", "=", rec.partner_id.id),
+                    ("company_id", "=", rec.company_id.id),
+                ],
+                limit=1,
             )
             if petty_cash and rec.invoice_line_ids:
                 account = petty_cash.account_id
@@ -89,7 +93,7 @@ class AccountMove(models.Model):
         self.ensure_one()
         # Get suggested currency amount
         amount = petty_cash.petty_cash_limit - petty_cash.petty_cash_balance
-        company_currency = self.env.user.company_id.currency_id
+        company_currency = self.company_id.currency_id
         amount_doc_currency = company_currency._convert(
             amount,
             self.currency_id,
@@ -115,9 +119,13 @@ class AccountMove(models.Model):
         if self.is_petty_cash:
             if not self.partner_id:
                 raise ValidationError(_("Please select petty cash holder"))
-            # Selected parenter must be petty cash holder
+            # Selected partner must be petty cash holder
             petty_cash = self.env["petty.cash"].search(
-                [("partner_id", "=", self.partner_id.id)], limit=1
+                [
+                    ("partner_id", "=", self.partner_id.id),
+                    ("company_id", "=", self.company_id.id),
+                ],
+                limit=1,
             )
             if not petty_cash:
                 raise ValidationError(

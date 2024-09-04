@@ -23,6 +23,10 @@
                             <field name="journal_id" />
                         </group>
                         <group name="petty_cash">
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                            />
                             <field name="petty_cash_limit" />
                             <field name="petty_cash_balance" />
                         </group>
@@ -41,6 +45,7 @@
                 <field name="journal_id" />
                 <field name="petty_cash_limit" sum="Limit" />
                 <field name="petty_cash_balance" sum="Balance" />
+                <field name="company_id" groups="base.group_multi_company" />
             </tree>
         </field>
     </record>
@@ -87,6 +92,12 @@
                     domain="[('journal_id','!=',False)]"
                 />
                 <group expand="0" string="Group By">
+                    <filter
+                        name="group_by_company"
+                        string="Company"
+                        context="{'group_by': 'company_id'}"
+                        groups="base.group_multi_company"
+                    />
                     <filter
                         name="partner"
                         string="Petty Cash Holder"

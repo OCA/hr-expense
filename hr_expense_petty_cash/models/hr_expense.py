@@ -14,6 +14,7 @@ class HrExpense(models.Model):
         string="Petty cash holder",
         comodel_name="petty.cash",
         ondelete="restrict",
+        check_company=True,
         readonly=True,
         states={"draft": [("readonly", False)]},
     )
