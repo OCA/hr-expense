@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="hr_expense_view_form" model="ir.ui.view">
+        <field name="name">hr.expense.form</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form" />
+        <field name="arch" type="xml">
+            <field name="price_unit" position="attributes">
+                <attribute name="force_save">1</attribute>
+            </field>
+            <label for="quantity" position="attributes">
+                <attribute name="invisible" add="invoice_id" separator=" or " />
+            </label>
+            <xpath
+                expr='//field[@name="quantity"]/parent::div/parent::div'
+                position="attributes"
+            >
+                <attribute name="invisible" add="invoice_id" separator=" or " />
+            </xpath>
+            <label for="tax_ids" position="attributes">
+                <attribute name="invisible" add="invoice_id" separator=" or " />
+            </label>
+            <xpath expr='//field[@name="tax_ids"]/parent::div' position="attributes">
+                <attribute name="invisible" add="invoice_id" separator=" or " />
+            </xpath>
+            <!-- Force saved to be sure they are stored when selecting the vendor bill in any state -->
+            <field name="quantity" position="attributes">
+                <attribute name="force_save">1</attribute>
+            </field>
+            <field name="date" position="attributes">
+                <attribute name="force_save">1</attribute>
+            </field>
+            <field name="total_amount_currency" position="attributes">
+                <attribute name="force_save">1</attribute>
+                <attribute name="readonly" add="invoice_id" separator=" or " />
+            </field>
+            <xpath
+                expr="//field[@name='total_amount_currency']/../field[@name='currency_id']"
+                position="attributes"
+            >
+                <attribute name="readonly" add="invoice_id" separator=" or " />
+            </xpath>
+            <field name="date" position="attributes">
+                <attribute name="force_save">1</attribute>
+                <attribute
+                    name="readonly"
+                    add="not is_editable or invoice_id"
+                    separator=" or "
+                />
+            </field>
+            <field name="account_id" position="attributes">
+                <attribute name="readonly" add="not is_editable" separator=" or " />
+                <attribute name="invisible" add="invoice_id" separator=" or " />
+            </field>
+            <xpath
+                expr="//field[@name='analytic_distribution']/../field[@name='company_id']"
+                position="attributes"
+            >
+                <attribute name="readonly" add="invoice_id" separator=" or " />
+            </xpath>
+            <xpath expr='//field[@name="product_id"]/parent::div' position="after">
+                <!-- Added double, one as invisible and w/o group, for those without the permission -->
+                <field name="invoice_id" invisible="1" />
+                <field
+                    name="invoice_id"
+                    groups="account.group_account_readonly"
+                    context="{'default_type': 'in_invoice',
+                            'type': 'in_invoice',
+                            'journal_type': 'purchase',
+                            'default_invoice_date': date,
+                            'default_line_ids': [{'product_id': product_id,
+                                                          'name': name,
+                                                          'price_unit': price_unit,
+                                                          'quantity': quantity,
+                                                          'date': date,
+                                                          'account_id': account_id,
+                                                          'tax_ids': tax_ids, }], }"
+                />
+            </xpath>
+            <field name="tax_ids" position="attributes">
+                <attribute name="invisible" add="invoice_id" separator=" or " />
+            </field>
+        </field>
+    </record>
+    <record id="hr_expense_sheet_form_view_inherit_sale_expense" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.form.inherit.sale.expense</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//field[@name='expense_line_ids']/tree/field[@name='name']"
+                position="after"
+            >
+                <field name="invoice_id" groups="account.group_account_invoice" />
+                <field name="quantity" invisible="1" />
+            </xpath>
+            <xpath
+                expr="//field[@name='expense_line_ids']/tree/field[@name='total_amount_currency']"
+                position="after"
+            >
+                <field name="sheet_id_state" invisible="1" />
+                <button
+                    name="action_expense_create_invoice"
+                    groups="account.group_account_invoice"
+                    invisible="invoice_id or sheet_id_state not in ('draft', 'approve')"
+                    string="Create Vendor Bill"
+                    type="object"
+                />
+            </xpath>
+            <div class="oe_button_box" position="inside">
+                <button
+                    class="oe_stat_button"
+                    icon="fa-book"
+                    name="action_view_invoices"
+                    groups="account.group_account_invoice"
+                    invisible="not invoice_count"
+                    type="object"
+                >
+                    <field
+                        name="invoice_count"
+                        groups="account.group_account_invoice"
+                        widget="statinfo"
+                        string="Invoices"
+                    />
+                </button>
+            </div>
+        </field>
+    </record>
+</odoo>

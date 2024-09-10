@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_move_form" model="ir.ui.view">
+        <field name="name">account.move.form - Add expense smart-button</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+            <div class="oe_button_box" position="inside">
+                <field name="expense_ids" invisible="1" />
+                <button
+                    class="oe_stat_button"
+                    icon="fa-file-text-o"
+                    name="action_view_expense"
+                    groups="account.group_account_invoice"
+                    invisible="not expense_ids"
+                    type="object"
+                >
+                    <span>
+                        Expense
+                    </span>
+                </button>
+            </div>
+        </field>
+    </record>
+</odoo>
