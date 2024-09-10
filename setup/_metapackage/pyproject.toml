@@ -1,8 +1,9 @@
 [project]
 name = "odoo-addons-oca-hr-expense"
-version = "17.0.20240730.0"
+version = "17.0.20240910.0"
 dependencies = [
     "odoo-addon-hr_expense_cancel>=17.0dev,<17.1dev",
+    "odoo-addon-hr_expense_invoice>=17.0dev,<17.1dev",
     "odoo-addon-hr_expense_payment>=17.0dev,<17.1dev",
 ]
 classifiers=[
