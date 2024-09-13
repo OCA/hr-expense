@@ -24,7 +24,8 @@ class AccountMove(models.Model):
         # Done here in the write instead of a Python constraint as the computed field
         # amount_total is not yet updated on that moment
         res = super().write(vals)
-        if self.env.context.get("skip_account_move_synchronization"):
+        # Only need to check expenses amount when the invoice amount changes
+        if not ("amount_total" in vals or "tax_totals" in vals):
             return res
         DecimalPrecision = self.env["decimal.precision"]
         precision = DecimalPrecision.precision_get("Product Price")
