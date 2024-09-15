@@ -6,25 +6,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2018-10-10 12:08+0000\n"
-"Last-Translator: Pedro Castro Silva <pedrocs@exo.pt>\n"
+"PO-Revision-Date: 2024-09-15 18:19+0000\n"
+"Last-Translator: Peter Romão <peterromao@yahoo.co.uk>\n"
 "Language-Team: none\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.1.1\n"
+"X-Generator: Weblate 5.6.2\n"
 
 #. module: hr_expense_invoice
 #: model_terms:ir.ui.view,arch_db:hr_expense_invoice.view_move_form
 msgid "<span>Expense</span>"
-msgstr ""
+msgstr "<span>Despesa</span>"
 
 #. module: hr_expense_invoice
 #: model_terms:ir.ui.view,arch_db:hr_expense_invoice.hr_expense_sheet_form_view_inherit_sale_expense
 msgid "Create Vendor Bill"
-msgstr ""
+msgstr "Criar Fatura de Fornecedor"
 
 #. module: hr_expense_invoice
 #: model:ir.model,name:hr_expense_invoice.model_hr_expense
@@ -40,33 +40,31 @@ msgstr "Relatório de Despesas"
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_account_bank_statement_line__expense_ids
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_account_move__expense_ids
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_account_payment__expense_ids
-#, fuzzy
 msgid "Expenses"
-msgstr "Despesa"
+msgstr "Despesas"
 
 #. module: hr_expense_invoice
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_hr_expense_sheet__invoice_count
-#, fuzzy
 msgid "Invoice Count"
-msgstr "Fatura"
+msgstr "Número de Faturas"
 
 #. module: hr_expense_invoice
 #. odoo-python
 #: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
 #: model_terms:ir.ui.view,arch_db:hr_expense_invoice.hr_expense_sheet_form_view_inherit_sale_expense
-#, fuzzy, python-format
+#, python-format
 msgid "Invoices"
-msgstr "Fatura"
+msgstr "Faturas"
 
 #. module: hr_expense_invoice
 #: model:ir.model,name:hr_expense_invoice.model_account_move
 msgid "Journal Entry"
-msgstr ""
+msgstr "Lançamento de Diário"
 
 #. module: hr_expense_invoice
 #: model:ir.model,name:hr_expense_invoice.model_account_move_line
 msgid "Journal Item"
-msgstr ""
+msgstr "Item de Diário"
 
 #. module: hr_expense_invoice
 #: model:ir.model.fields,help:hr_expense_invoice.field_account_bank_statement_line__source_invoice_expense_id
@@ -76,28 +74,29 @@ msgid ""
 "Reference to the expense with a linked invoice that generated thistransfer "
 "journal entry"
 msgstr ""
+"Referência à despesa com fatura vinculada que gerou este lançamento em diário"
 
 #. module: hr_expense_invoice
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_hr_expense__sheet_id_state
 msgid "Sheet state"
-msgstr ""
+msgstr "Estado da folha"
 
 #. module: hr_expense_invoice
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_account_bank_statement_line__source_invoice_expense_id
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_account_move__source_invoice_expense_id
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_account_payment__source_invoice_expense_id
 msgid "Source Invoice Expense"
-msgstr ""
+msgstr "Fatura de Despesa de Origem"
 
 #. module: hr_expense_invoice
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_hr_expense__transfer_move_ids
 msgid "Transfer Move"
-msgstr ""
+msgstr "Movimento de Transferência"
 
 #. module: hr_expense_invoice
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_hr_expense__invoice_id
 msgid "Vendor Bill"
-msgstr ""
+msgstr "Fatura de Fornecedor"
 
 #. module: hr_expense_invoice
 #. odoo-python
@@ -107,6 +106,9 @@ msgid ""
 "Vendor bill amount mismatch!\n"
 "Please make sure amount in vendor bills equal to amount of its expense lines"
 msgstr ""
+"Divergência no valor da fatura\n"
+"Por favor, assegure-se de que o valor nas faturas de fornecedor são iguais "
+"às suas linhas de despesa"
 
 #. module: hr_expense_invoice
 #. odoo-python
@@ -114,7 +116,7 @@ msgstr ""
 #: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
 #, python-format
 msgid "Vendor bill state must be Posted"
-msgstr ""
+msgstr "O estado da fatura de fornecedor tem de ser Publicado"
 
 #. module: hr_expense_invoice
 #. odoo-python
@@ -124,3 +126,5 @@ msgid ""
 "You can't change the total amount, as there's an expense linked to this "
 "invoice."
 msgstr ""
+"Não pode alterar o valor total dado que já existe uma despesa vinculada a "
+"esta fatura."
