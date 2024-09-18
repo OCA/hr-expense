@@ -1,0 +1,20 @@
+<odoo>
+    <record id="hr_expense_form_view_inherit" model="ir.ui.view">
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group//field[@name='total_amount']" position="before">
+                <field name="editable_tax_adjustment" invisible="1" />
+                <field name="tax_amount" invisible="1" />
+                <field name="amount_by_group_txt" invisible="1" />
+                <field
+                    name="amount_by_group"
+                    widget="expense-tax-group-custom-field"
+                    nolabel="1"
+                    colspan="2"
+                    attrs="{'invisible': [('tax_ids', '=', [])]}"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
