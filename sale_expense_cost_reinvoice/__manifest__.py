@@ -4,8 +4,8 @@
 {
     "name": "Sale Expense Auto Re-invoice at cost",
     "summary": "Provide cost on order line when Auto Re-invoice at cost",
-    "version": "15.0.1.0.0",
-    "author": "Camptocamp SA, Odoo Community Association (OCA)",
+    "version": "15.0.1.0.1",
+    "author": "Camptocamp, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/hr-expense",
     "license": "AGPL-3",
     "category": "Human Resources",
