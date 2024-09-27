@@ -28,8 +28,8 @@ Expense Employee Analytic Default
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-This module allows to create Analytic Defaults Rules for employees to be
-applied to expenses.
+This module allows to create Analytic Distribution Models for employees
+to be applied to expenses.
 
 **Table of contents**
 
@@ -41,9 +41,11 @@ Configuration
 
 To configure this module, you need to:
 
-1. Go to an employee (or create a new one) and set a work address
-2. Go to *Invocing > Configuration > Analytic default rules* and create
-   a rule that has as partner the employee's work address.
+1. Enable the “Analytic Accounting” permission on the user
+2. Go to an employee (or create a new one) and set a work address
+3. Go to *Invocing > Configuration > Analytic Accounting \|> Analytic
+   Distribution Models* and create a record that has as partner the
+   employee's work address.
 
 Usage
 =====
@@ -51,10 +53,10 @@ Usage
 To use this module, you need to:
 
 1. Go to *Expenses* and create a new one.
-2. The analytical account and analytical tags will be set according to
-   the rule.
-3. When changing the employee, the analytical account and analytical
-   tags will be updated.
+2. The analytical distribution will be set according to the analytic
+   distribution model.
+3. When changing the employee, the analytical distribution will be
+   updated.
 
 Bug Tracker
 ===========
