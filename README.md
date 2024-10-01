@@ -22,6 +22,7 @@ Available addons
 addon | version | maintainers | summary
 --- | --- | --- | ---
 [hr_expense_cancel](hr_expense_cancel/) | 17.0.1.0.2 |  | Hr expense cancel
+[hr_expense_employee_analytic_default](hr_expense_employee_analytic_default/) | 17.0.1.0.0 | [![victoralmau](https://github.com/victoralmau.png?size=30px)](https://github.com/victoralmau) | Expense Employee Analytic Default
 [hr_expense_invoice](hr_expense_invoice/) | 17.0.1.0.0 |  | Supplier invoices on HR expenses
 [hr_expense_payment](hr_expense_payment/) | 17.0.1.0.0 |  | HR Expense Payment
 
