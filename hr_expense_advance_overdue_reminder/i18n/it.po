@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2024-01-25 16:34+0000\n"
+"PO-Revision-Date: 2024-10-09 11:06+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.17\n"
+"X-Generator: Weblate 5.6.2\n"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:mail.template,body_html:hr_expense_advance_overdue_reminder.email_template_overdue_reminder
@@ -551,7 +551,7 @@ msgstr "Promemoria scadenza"
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.actions.act_window,name:hr_expense_advance_overdue_reminder.action_hr_advance_overdue_reminder
 msgid "Overdue Reminder Action"
-msgstr "Azione per promemoria scadenza"
+msgstr "Azione promemoria scadenza"
 
 #. module: hr_expense_advance_overdue_reminder
 #: model:ir.model.fields,field_description:hr_expense_advance_overdue_reminder.field_hr_expense_sheet__overdue_reminder_ids
