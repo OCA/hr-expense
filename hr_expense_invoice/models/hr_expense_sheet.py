@@ -37,7 +37,7 @@ class HrExpenseSheet(models.Model):
                 )
                 transfer_line = move.line_ids.filtered(
                     lambda x: x.partner_id
-                    == self.expense_line_ids.invoice_id.partner_id
+                    == expense.invoice_id.partner_id
                 )
                 (ap_lines + transfer_line).reconcile()
         return res
