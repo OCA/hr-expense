@@ -72,7 +72,7 @@ class HrExpense(models.Model):
                     lambda x: x.display_type == "payment_term"
                 )
                 transfer_line = move.line_ids.filtered(
-                    lambda x: x.partner_id == self.invoice_id.partner_id
+                    lambda x: x.partner_id == expense.invoice_id.partner_id
                 )
                 (ap_lines + transfer_line).reconcile()
         return res
