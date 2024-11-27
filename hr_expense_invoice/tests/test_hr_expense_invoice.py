@@ -4,7 +4,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 import base64
 
-from odoo import Command, fields
+from odoo import fields
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests import tagged
 from odoo.tests.common import Form
@@ -33,11 +33,6 @@ class TestHrExpenseInvoice(TestExpenseCommon):
         cls.invoice2 = cls.invoice.copy(
             {
                 "invoice_date": fields.Date.today(),
-            }
-        )
-        cls.expense_employee.bank_account_id = Command.create(
-            {
-                "acc_number": "FR20 1242 1242 1242 1242 1242 124",
             }
         )
         cls.expense = cls.env["hr.expense"].create(
