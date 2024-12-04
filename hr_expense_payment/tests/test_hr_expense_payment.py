@@ -13,12 +13,13 @@ from ..hooks import post_init_hook
 @tagged("-at_install", "post_install")
 class TestHrExpensePayment(TestExpenseCommon):
     @classmethod
-    def setUpClass(cls, chart_template_ref=None):
-        super().setUpClass(chart_template_ref=chart_template_ref)
+    def setUpClass(cls):
+        super().setUpClass()
         # Create expense + sheet + approve
         cls.expense = cls.create_expense(cls)
         res = cls.expense.action_submit_expenses()
         cls.expense_sheet = cls.env[res["res_model"]].browse(res["res_id"])
+        cls.expense_sheet.action_submit_sheet()
         cls.expense_sheet.action_approve_expense_sheets()
 
     def _get_payment_wizard(self):
@@ -29,7 +30,7 @@ class TestHrExpensePayment(TestExpenseCommon):
         return register_form.save()
 
     def test_post_init_hook(self):
-        self.expense_sheet.action_sheet_move_create()
+        self.expense_sheet.action_sheet_move_post()
         payment_wizard = self._get_payment_wizard()
         payment_wizard.action_create_payments()
         payment = self.expense_sheet.payment_ids
@@ -44,7 +45,7 @@ class TestHrExpensePayment(TestExpenseCommon):
         self.assertEqual(len(self.expense_sheet.payment_ids), 1)
 
     def test_get_payment_vals(self):
-        self.expense_sheet.action_sheet_move_create()
+        self.expense_sheet.action_sheet_move_post()
         payment_wizard = self._get_payment_wizard()
         self.assertFalse(self.expense_sheet.payment_ids)
         payment_wizard.action_create_payments()
