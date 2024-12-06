@@ -11,8 +11,8 @@ from odoo.addons.hr_expense.tests.common import TestExpenseCommon
 @tagged("-at_install", "post_install")
 class TestHrExpenseCancel(TestExpenseCommon):
     @classmethod
-    def setUpClass(cls, chart_template_ref=None):
-        super().setUpClass(chart_template_ref=chart_template_ref)
+    def setUpClass(cls):
+        super().setUpClass()
         # Create expense + sheet + approve
         cls.expense = cls.create_expense(cls)
         res = cls.expense.action_submit_expenses()
