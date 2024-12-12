@@ -42,6 +42,12 @@ class AccountMove(models.Model):
             "res_id": self.expense_ids[:1].id,
         }
 
+    def action_force_register_payment(self):
+        if not self.source_invoice_expense_id:
+            return super().action_force_register_payment()
+        else:
+            return self.line_ids.action_register_payment()
+
 
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"

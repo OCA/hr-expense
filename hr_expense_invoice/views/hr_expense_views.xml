@@ -88,14 +88,14 @@
         <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
         <field name="arch" type="xml">
             <xpath
-                expr="//field[@name='expense_line_ids']/tree/field[@name='name']"
+                expr="//field[@name='expense_line_ids']/list/field[@name='name']"
                 position="after"
             >
                 <field name="invoice_id" groups="account.group_account_invoice" />
                 <field name="quantity" invisible="1" />
             </xpath>
             <xpath
-                expr="//field[@name='expense_line_ids']/tree/field[@name='total_amount_currency']"
+                expr="//field[@name='expense_line_ids']/list/field[@name='total_amount_currency']"
                 position="after"
             >
                 <field name="sheet_id_state" invisible="1" />

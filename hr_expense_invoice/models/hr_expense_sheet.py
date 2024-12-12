@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import RedirectWarning, UserError
 from odoo.tools import float_compare
 
 
@@ -12,15 +12,18 @@ class HrExpenseSheet(models.Model):
 
     invoice_count = fields.Integer(compute="_compute_invoice_count")
 
+    def get_expense_sheets_with_invoices(self):
+        return self.filtered(
+            lambda sheet: all(expense.invoice_id for expense in sheet.expense_line_ids)
+        )
+
     def _do_create_moves(self):
         """Don't let super to create any move:
         - Paid by company: there's already the invoice.
         - Paid by employee: we create here a journal entry transferring the AP
           balance from the invoice partner to the employee.
         """
-        expense_sheets_with_invoices = self.filtered(
-            lambda sheet: all(expense.invoice_id for expense in sheet.expense_line_ids)
-        )
+        expense_sheets_with_invoices = self.get_expense_sheets_with_invoices()
         res = super(
             HrExpenseSheet, self - expense_sheets_with_invoices
         )._do_create_moves()
@@ -42,18 +45,25 @@ class HrExpenseSheet(models.Model):
                 (ap_lines + transfer_line).reconcile()
         return res
 
-    def action_sheet_move_create(self):
+    def action_sheet_move_post(self):
         """Perform extra checks and set proper payment state according linked
         invoices.
         """
-        self._validate_expense_invoice()
-        res = super().action_sheet_move_create()
-        # The payment state is set in a fixed way in super, but it depends on the
-        # payment state of the invoices when there are some of them linked
-        self.filtered(
-            lambda x: x.expense_line_ids.invoice_id
-            and x.payment_mode == "company_account"
-        )._compute_from_account_move_ids()
+        expense_sheets_with_invoices = self.get_expense_sheets_with_invoices()
+        res = super(
+            HrExpenseSheet, self - expense_sheets_with_invoices
+        ).action_sheet_move_post()
+
+        for expense in expense_sheets_with_invoices:
+            expense._validate_expense_invoice()
+            expense._check_can_create_move()
+            expense._do_create_moves()
+            # The payment state is set in a fixed way in super, but it depends on the
+            # payment state of the invoices when there are some of them linked
+            expense.filtered(
+                lambda x: x.expense_line_ids.invoice_id
+                and x.payment_mode == "company_account"
+            )._compute_from_account_move_ids()
         return res
 
     def set_to_paid(self):
@@ -64,7 +74,7 @@ class HrExpenseSheet(models.Model):
 
     def _compute_invoice_count(self):
         Invoice = self.env["account.move"]
-        can_read = Invoice.check_access_rights("read", raise_exception=False)
+        can_read = Invoice.has_access("read")
         for sheet in self:
             sheet.invoice_count = (
                 can_read and len(sheet.expense_line_ids.mapped("invoice_id")) or 0
@@ -141,7 +151,7 @@ class HrExpenseSheet(models.Model):
             action["view_mode"] = "form"
             action["views"] = [(view.id, "form")]
         else:
-            action["view_mode"] = "tree,form"
+            action["view_mode"] = "list,form"
             action["domain"] = [("id", "in", invoice_ids)]
         return action
 
@@ -172,3 +182,85 @@ class HrExpenseSheet(models.Model):
         sheets_with_paid_invoices.state = "post"
 
         return super(HrExpenseSheet, self - sheets_with_invoices)._compute_state()
+
+    def _do_approve(self):
+        expense_sheets_with_invoices = self.get_expense_sheets_with_invoices()
+        own_account_sheets = self.filtered(
+            lambda sheet: sheet.payment_mode == "own_account"
+        )
+        sheets_to_bypass = expense_sheets_with_invoices + own_account_sheets
+        res = super(HrExpenseSheet, self - sheets_to_bypass)._do_approve()
+        for sheet in sheets_to_bypass.filtered(
+            lambda s: s.state in {"submit", "draft"}
+        ):
+            sheet.write(
+                {
+                    "approval_state": "approve",
+                    "user_id": sheet.user_id.id or self.env.user.id,
+                    "approval_date": fields.Date.context_today(sheet),
+                }
+            )
+            self.activity_update()
+        return res
+
+    def _track_subtype(self, init_values):
+        self.ensure_one()
+        if self.state == "approve":
+            return self.env.ref("hr_expense_invoice.mt_expense_approved_inherited")
+        else:
+            super()._track_subtype(init_values)
+
+    def _check_can_create_move(self):
+        expense_sheets_with_invoices = self.get_expense_sheets_with_invoices()
+        res = super(
+            HrExpenseSheet, self - expense_sheets_with_invoices
+        )._check_can_create_move()
+
+        # We copy this method because the expenses are in 'approve'
+        # state instead of 'submit'
+        if any(not sheet.expense_line_ids for sheet in expense_sheets_with_invoices):
+            raise UserError(
+                _(
+                    "You cannot create accounting entries for an expense \
+                        report without expenses."
+                )
+            )
+
+        if any(sheet.state != "approve" for sheet in expense_sheets_with_invoices):
+            raise UserError(
+                _("You can only generate an accounting entry for approved expense(s).")
+            )
+
+        if any(not sheet.journal_id for sheet in expense_sheets_with_invoices):
+            raise UserError(
+                _(
+                    "Please specify an expense journal in order to generate \
+                        accounting entries."
+                )
+            )
+
+        if False in expense_sheets_with_invoices.mapped("payment_mode"):
+            raise UserError(
+                _(
+                    "Please specify if the expenses for this report were paid by \
+                        the company, or the employee"
+                )
+            )
+
+        missing_email_employees = expense_sheets_with_invoices.filtered(
+            lambda sheet: not sheet.employee_id.work_email
+        ).employee_id
+        if missing_email_employees:
+            action = expense_sheets_with_invoices.env["ir.actions.actions"]._for_xml_id(
+                "hr.open_view_employee_list_my"
+            )
+            action["domain"] = [("id", "in", missing_email_employees.ids)]
+            raise RedirectWarning(
+                _(
+                    "The work email of some employees is missing. Please add it on \
+                         the employee form"
+                ),
+                action,
+                _("Show missing work email employees"),
+            )
+        return res

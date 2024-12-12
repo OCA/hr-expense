@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="mt_expense_approved_inherited" model="mail.message.subtype">
+        <field name="name">Approved</field>
+        <field name="res_model">hr.expense.sheet</field>
+        <field name="default" eval="True" />
+        <field name="description">Expense report approved</field>
+    </record>
+</odoo>
