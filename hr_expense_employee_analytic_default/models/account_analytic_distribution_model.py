@@ -15,6 +15,6 @@ class AccountAnalyticDistributionModel(models.Model):
             employee = self.env["hr.employee"].browse(
                 self.env.context.get("hr_expense_employee_id")
             )
-            if employee.address_id:
-                vals.update(partner_id=employee.address_id.id)
+            if employee.work_contact_id:
+                vals.update(partner_id=employee.work_contact_id.id)
         return super()._get_distribution(vals)

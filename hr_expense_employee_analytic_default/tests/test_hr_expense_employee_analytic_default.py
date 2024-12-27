@@ -10,10 +10,11 @@ class TestHrExpenseEmployeeAnalyticDefault(BaseCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        cls.env.user.groups_id += cls.env.ref("analytic.group_analytic_accounting")
         cls.user1 = new_test_user(cls.env, login="test_user_1")
         cls.user1.action_create_employee()
         cls.work_address = cls.env["res.partner"].create({"name": "Work address"})
-        cls.user1.employee_ids.address_id = cls.work_address
+        cls.user1.employee_ids.work_contact_id = cls.work_address
         cls.user2 = new_test_user(cls.env, login="test_user_2")
         cls.user2.action_create_employee()
         cls.plan = cls.env["account.analytic.plan"].create({"name": "Test plan"})

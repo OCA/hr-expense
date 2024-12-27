@@ -1,7 +1,7 @@
-To use this module, you need to:
+To configure this module, you need to:
 
-1.  Go to *Expenses* and create a new one.
-2.  The analytical distribution will be set according to
-    the analytic distribution model.
-3.  When changing the employee, the analytical distribution will
-    be updated.
+1.  Enable the “Analytic Accounting” permission on the user
+2.  Go to an employee (or create a new one) and set a work address
+3.  Go to *Invocing \> Configuration \> Analytic Accounting |>
+    Analytic Distribution Models* and create a record that has as partner
+    the employee's work address.
