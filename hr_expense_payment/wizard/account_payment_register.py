@@ -19,12 +19,6 @@ class AccountPaymentRegister(models.TransientModel):
         payment_vals = super()._create_payment_vals_from_batch(batch_result)
         expense_sheet_ids = self._context.get("expense_sheet_ids", False)
         if expense_sheet_ids:
-            move_line_ids = self.env["account.move.line"].browse(
-                batch_result["lines"].ids
-            )
-            sheet_ids = self.env["hr.expense.sheet"].browse(expense_sheet_ids)
-            sheet_id = sheet_ids.filtered(
-                lambda x: x.account_move_ids.id == move_line_ids.move_id.id
-            )
-            payment_vals.update(expense_sheet_ids=sheet_id.ids)
+            moves = self.env["account.move"].browse(batch_result["lines"].move_id.ids)
+            payment_vals.update(expense_sheet_ids=moves.mapped("expense_sheet_id").ids)
         return payment_vals

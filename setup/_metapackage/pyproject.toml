@@ -1,0 +1,11 @@
+[project]
+name = "odoo-addons-oca-hr-expense"
+version = "18.0.20250109.0"
+dependencies = [
+    "odoo-addon-hr_expense_payment==18.0.*",
+]
+classifiers=[
+    "Programming Language :: Python",
+    "Framework :: Odoo",
+    "Framework :: Odoo :: 18.0",
+]
