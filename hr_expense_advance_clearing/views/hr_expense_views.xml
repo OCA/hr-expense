@@ -5,7 +5,7 @@
     <record id="action_my_hr_advance_sheet" model="ir.actions.act_window">
         <field name="name">Advances</field>
         <field name="res_model">hr.expense.sheet</field>
-        <field name="view_mode">tree,kanban,form,pivot,graph,activity</field>
+        <field name="view_mode">list,kanban,form,pivot,graph,activity</field>
         <field name="search_view_id" ref="hr_expense.hr_expense_sheet_view_search" />
         <field name="domain">[('state', '!=', 'cancel'), ('advance', '=', True)]</field>
         <field
@@ -23,7 +23,7 @@
     <record id="action_my_hr_expense_sheet" model="ir.actions.act_window">
         <field name="name">Expenses</field>
         <field name="res_model">hr.expense.sheet</field>
-        <field name="view_mode">tree,kanban,form,pivot,graph,activity</field>
+        <field name="view_mode">list,kanban,form,pivot,graph,activity</field>
         <field name="search_view_id" ref="hr_expense.hr_expense_sheet_view_search" />
         <field
             name="domain"
@@ -145,8 +145,8 @@
             </field>
         </field>
     </record>
-    <record id="view_hr_expense_sheet_tree" model="ir.ui.view">
-        <field name="name">hr.expense.sheet.tree</field>
+    <record id="view_hr_expense_sheet_list" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.list</field>
         <field name="model">hr.expense.sheet</field>
         <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_tree" />
         <field name="arch" type="xml">
@@ -163,7 +163,7 @@
         <field name="model">hr.expense.sheet</field>
         <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
         <field name="arch" type="xml">
-            <field name="state" position="before">
+            <xpath expr="//field[@name='state']" position="before">
                 <button
                     name="open_clear_advance"
                     type="object"
@@ -179,8 +179,8 @@
                     context="{'hr_return_advance': True}"
                     groups="account.group_account_user"
                 />
-            </field>
-            <h1 position="after">
+            </xpath>
+            <xpath expr="//h1" position="after">
                 <field
                     name="advance"
                     invisible="not advance"
@@ -188,7 +188,7 @@
                     force_save="1"
                 />
                 <label for="advance" invisible="not advance" />
-            </h1>
+            </xpath>
             <xpath expr="/form/sheet/group/group" position="after">
                 <group>
                     <field name="id" invisible="1" />
@@ -205,22 +205,6 @@
                     />
                 </group>
             </xpath>
-            <xpath
-                expr="//field[@name='expense_line_ids']/tree/field[@name='name']"
-                position="after"
-            >
-                <field name="employee_id" invisible="1" />
-                <field name="payment_mode" invisible="1" />
-                <field name="advance" invisible="1" />
-                <field name="product_id" invisible="1" />
-                <field name="product_uom_id" invisible="1" />
-                <field name="product_uom_category_id" invisible="1" />
-                <field
-                    name="clearing_product_id"
-                    column_invisible="not parent.advance"
-                />
-                <field name="av_line_id" invisible="1" />
-            </xpath>
             <xpath expr="//field[@name='expense_line_ids']" position="attributes">
                 <attribute
                     name="context"
@@ -228,12 +212,6 @@
                 <attribute
                     name="readonly"
                 >not id and advance_sheet_id != False</attribute>
-                <attribute name="force_save">True</attribute>
-            </xpath>
-            <xpath
-                expr="//field[@name='expense_line_ids']/tree/field[@name='price_unit']"
-                position="attributes"
-            >
                 <attribute name="force_save">True</attribute>
             </xpath>
             <xpath expr="//div[@name='button_box']" position="inside">
@@ -245,6 +223,15 @@
                     invisible="not advance"
                 >
                     <field name="clearing_count" widget="statinfo" string="Clearings" />
+                </button>
+                <button
+                    name="action_open_payment_return"
+                    class="oe_stat_button"
+                    icon="fa-file-text-o"
+                    type="object"
+                    invisible="not advance"
+                >
+                    <field name="return_count" widget="statinfo" string="Return" />
                 </button>
             </xpath>
         </field>

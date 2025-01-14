@@ -1,10 +1,11 @@
 # Copyright 2019 Kitti Upariphutthiphong <kittiu@ecosoft.co.th>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+import ast
+
 from odoo import Command, _, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import float_compare, float_is_zero
-from odoo.tools.safe_eval import safe_eval
 
 
 class HrExpenseSheet(models.Model):
@@ -30,6 +31,14 @@ class HrExpenseSheet(models.Model):
     clearing_count = fields.Integer(
         compute="_compute_clearing_count",
     )
+    payment_return_ids = fields.One2many(
+        comodel_name="account.payment",
+        inverse_name="advance_id",
+        string="Payment Return",
+        readonly=True,
+        help="Show reference return advance on advance",
+    )
+    return_count = fields.Integer(compute="_compute_return_count")
     clearing_residual = fields.Monetary(
         string="Amount to clear",
         compute="_compute_clearing_residual",
@@ -85,7 +94,7 @@ class HrExpenseSheet(models.Model):
                 property_account_expense_id = emp_advance.with_company(
                     sheet.company_id
                 ).property_account_expense_id
-                for line in sheet.sudo().account_move_id.line_ids:
+                for line in sheet.sudo().account_move_ids.line_ids:
                     if line.account_id == property_account_expense_id:
                         residual_company += line.amount_residual
             sheet.clearing_residual = residual_company
@@ -97,12 +106,19 @@ class HrExpenseSheet(models.Model):
             )
             sheet.amount_payable = -sum(rec_lines.mapped("amount_residual"))
 
+    @api.depends("clearing_sheet_ids")
     def _compute_clearing_count(self):
         for sheet in self:
             sheet.clearing_count = len(sheet.clearing_sheet_ids)
 
-    def action_sheet_move_create(self):
-        res = super().action_sheet_move_create()
+    @api.depends("payment_return_ids")
+    def _compute_return_count(self):
+        for sheet in self:
+            sheet.return_count = len(sheet.payment_return_ids)
+
+    def action_sheet_move_post(self):
+        """Post journal entries with clearing document"""
+        res = super().action_sheet_move_post()
         for sheet in self:
             if not sheet.advance_sheet_id:
                 continue
@@ -157,18 +173,18 @@ class HrExpenseSheet(models.Model):
         account_advance = emp_advance.property_account_expense_id
         for expense in self.expense_line_ids:
             move_line_name = (
-                expense.employee_id.name + ": " + expense.name.split("\n")[0][:64]
+                f"{expense.employee_id.name}: {expense.name.splitlines()[0][:64]}"
             )
-            total_amount = 0.0
-            total_amount_currency = 0.0
             partner_id = expense.employee_id.sudo().work_contact_id.id
-            # source move line
+
+            total_amount = -expense.total_amount
+            total_amount_currency = -expense.total_amount_currency
+
+            # Source move line
             move_line_src = expense._get_move_line_src(move_line_name, partner_id)
             move_line_values = [move_line_src]
-            total_amount -= expense.total_amount
-            total_amount_currency -= expense.total_amount_currency
 
-            # destination move line
+            # Destination move line
             move_line_dst = expense._get_move_line_dst(
                 move_line_name,
                 partner_id,
@@ -176,6 +192,7 @@ class HrExpenseSheet(models.Model):
                 total_amount_currency,
                 account_advance,
             )
+
             # Check clearing > advance, it will split line
             credit = move_line_dst["credit"]
             # cr payable -> cr advance
@@ -191,18 +208,23 @@ class HrExpenseSheet(models.Model):
                 == 1
             ):
                 remain_payable = credit - advance_to_clear
-                move_line_dst["credit"] = advance_to_clear
-                move_line_dst["amount_currency"] = -advance_to_clear
+                move_line_dst.update(
+                    {"credit": advance_to_clear, "amount_currency": -advance_to_clear}
+                )
                 advance_to_clear = 0.0
                 # extra payable line
+                account_dest = expense.sheet_id._get_expense_account_destination()
                 payable_move_line = move_line_dst.copy()
-                payable_move_line["credit"] = remain_payable
-                payable_move_line["amount_currency"] = -remain_payable
-                payable_move_line["account_id"] = (
-                    expense.sheet_id._get_expense_account_destination()
+                payable_move_line.update(
+                    {
+                        "credit": remain_payable,
+                        "amount_currency": -remain_payable,
+                        "account_id": account_dest,
+                    }
                 )
             else:
-                advance_to_clear -= credit
+                advance_to_clear -= credit  # Reduce remaining advance
+
             # Add destination first (if credit is not zero)
             if not float_is_zero(move_line_dst["credit"], precision_rounding=rounding):
                 move_line_values.append(move_line_dst)
@@ -216,30 +238,36 @@ class HrExpenseSheet(models.Model):
         self.ensure_one()
         res = super()._prepare_bills_vals()
         if self.advance_sheet_id and self.payment_mode == "own_account":
-            if (
-                self.advance_sheet_residual <= 0.0
-            ):  # Advance Sheets with no residual left
+            # Advance Sheets with no residual left
+            if self.advance_sheet_residual <= 0.0:
                 raise ValidationError(
-                    _("Advance: %s has no amount to clear") % (self.name)
+                    self.env._(f"Advance: {self.name} has no amount to clear")
                 )
-            res["move_type"] = "entry"
-            move_line_vals = self._get_move_line_vals()
-            res["line_ids"] = [Command.create(x) for x in move_line_vals]
+            res.update(
+                {
+                    "move_type": "entry",
+                    "line_ids": [
+                        Command.create(vals) for vals in self._get_move_line_vals()
+                    ],
+                }
+            )
         return res
 
     def open_clear_advance(self):
         self.ensure_one()
-        action = self.env.ref(
+        result = self.env["ir.actions.act_window"]._for_xml_id(
             "hr_expense_advance_clearing.action_hr_expense_sheet_advance_clearing"
         )
-        vals = action.sudo().read()[0]
-        context1 = vals.get("context", {})
-        if context1:
-            context1 = safe_eval(context1)
-        context1["default_advance_sheet_id"] = self.id
-        context1["default_employee_id"] = self.employee_id.id
-        vals["context"] = context1
-        return vals
+        # Add default context
+        context = ast.literal_eval(result["context"])
+        context.update(
+            {
+                "default_advance_sheet_id": self.id,
+                "default_employee_id": self.employee_id.id,
+            }
+        )
+        result["context"] = context
+        return result
 
     def get_domain_advance_sheet_expense_line(self):
         return self.advance_sheet_id.expense_line_ids.filtered("clearing_product_id")
@@ -251,8 +279,13 @@ class HrExpenseSheet(models.Model):
 
     @api.onchange("advance_sheet_id")
     def _onchange_advance_sheet_id(self):
-        self.expense_line_ids -= self.expense_line_ids.filtered("av_line_id")
-        self.advance_sheet_id.expense_line_ids.sudo().read()  # prefetch
+        self.expense_line_ids = self.expense_line_ids.filtered(
+            lambda line: not line.av_line_id
+        )
+        if not self.advance_sheet_id:
+            return
+
+        self.advance_sheet_id.expense_line_ids.sudo().read(["id"])
         lines = self.get_domain_advance_sheet_expense_line()
         for line in lines:
             self.expense_line_ids += self.create_clearing_expense_line(line)
@@ -274,13 +307,16 @@ class HrExpenseSheet(models.Model):
         clear_line._compute_account_id()  # Set some vals
         # Prepare the original advance line
         adv_dict = line._convert_to_write(line._cache)
-        # remove no update columns
-        _fields = line._fields
-        del_cols = [k for k in _fields.keys() if _fields[k].type == "one2many"]
-        del_cols += list(self.env["mail.thread"]._fields.keys())
-        del_cols += list(self.env["mail.activity.mixin"]._fields.keys())
-        del_cols += list(clear_line_dict.keys())
-        del_cols = list(set(del_cols))
+
+        # Remove non-updatable fields
+        del_cols = set.union(
+            {
+                k for k, v in line._fields.items() if v.type == "one2many"
+            },  # Remove O2M fields
+            self.env["mail.thread"]._fields.keys(),  # Remove mail.thread fields
+            self.env["mail.activity.mixin"]._fields.keys(),  # Remove activity fields
+            clear_line_dict.keys(),  # Remove already assigned fields
+        )
         adv_dict = {k: v for k, v in adv_dict.items() if k not in del_cols}
         # Assign the known value from original advance line
         clear_line.update(adv_dict)
@@ -301,8 +337,18 @@ class HrExpenseSheet(models.Model):
             "name": _("Clearing Sheets"),
             "type": "ir.actions.act_window",
             "res_model": "hr.expense.sheet",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("id", "in", self.clearing_sheet_ids.ids)],
+        }
+
+    def action_open_payment_return(self):
+        self.ensure_one()
+        return {
+            "name": _("Payment Return"),
+            "type": "ir.actions.act_window",
+            "res_model": "account.payment",
+            "view_mode": "list,form",
+            "domain": [("id", "in", self.payment_return_ids.ids)],
         }
 
     def action_register_payment(self):
