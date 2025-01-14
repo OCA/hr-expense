@@ -17,13 +17,13 @@ Employee Advance and Clearing
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fhr--expense-lightgray.png?logo=github
-    :target: https://github.com/OCA/hr-expense/tree/17.0/hr_expense_advance_clearing
+    :target: https://github.com/OCA/hr-expense/tree/18.0/hr_expense_advance_clearing
     :alt: OCA/hr-expense
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/hr-expense-17-0/hr-expense-17-0-hr_expense_advance_clearing
+    :target: https://translation.odoo-community.org/projects/hr-expense-18-0/hr-expense-18-0-hr_expense_advance_clearing
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runboat-Try%20me-875A7B.png
-    :target: https://runboat.odoo-community.org/builds?repo=OCA/hr-expense&target_branch=17.0
+    :target: https://runboat.odoo-community.org/builds?repo=OCA/hr-expense&target_branch=18.0
     :alt: Try me on Runboat
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
@@ -38,12 +38,11 @@ first, then back to company and do the clearing.
 
 There can be 3 scenarios for advance and clearing
 
--  When clearing amount = advance amount, no other operation is
-   required.
--  When clearing amount > advance amount, company will pay the extra to
-   employee.
--  When clearing amount < advance amount, employee will return the
-   remain to company.
+- When clearing amount = advance amount, no other operation is required.
+- When clearing amount > advance amount, company will pay the extra to
+  employee.
+- When clearing amount < advance amount, employee will return the remain
+  to company.
 
 **Table of contents**
 
@@ -57,16 +56,16 @@ This module will create a new product "Employee Advance" automatically.
 You will need to setup the Expense Account of this product to your
 Employee Advance account manually.
 
--  Open Product window and search for "Employee Advance"
--  On Accounting tab, select appropriate employee advance account from
-   your chart of account
+- Open Product window and search for "Employee Advance"
+- On Accounting tab, select appropriate employee advance account from
+  your chart of account
 
 Note:
 
--  You will need the "Show Full Accounting Features" to see accounting
-   data
--  Employee Advance account code, if not already exists, you can create
-   one. Use type = Current Asset and check Allow Reconciliation.
+- You will need the "Show Full Accounting Features" to see accounting
+  data
+- Employee Advance account code, if not already exists, you can create
+  one. Use type = Current Asset and check Allow Reconciliation.
 
 Usage
 =====
@@ -114,10 +113,10 @@ you can do 2 ways,
 
 Note:
 
--  If the total expense amount less than or equal to the advance amount,
-   the status will be set to Paid right after post journal entries.
--  If the total expense amount more than the advance amount, Register
-   Payment will pay the extra amount then set state to Paid.
+- If the total expense amount less than or equal to the advance amount,
+  the status will be set to Paid right after post journal entries.
+- If the total expense amount more than the advance amount, Register
+  Payment will pay the extra amount then set state to Paid.
 
 **Return Advance**
 
@@ -137,7 +136,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/hr-expense/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/hr-expense/issues/new?body=module:%20hr_expense_advance_clearing%0Aversion:%2017.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/hr-expense/issues/new?body=module:%20hr_expense_advance_clearing%0Aversion:%2018.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -152,9 +151,9 @@ Authors
 Contributors
 ------------
 
--  Kitti Upariphutthiphong <kittiu@ecosoft.co.th>
--  Tharathip Chaweewongphan <tharathipc@ecosoft.co.th>
--  Saran Lim. <saranl@ecosoft.co.th>
+- Kitti Upariphutthiphong <kittiu@ecosoft.co.th>
+- Tharathip Chaweewongphan <tharathipc@ecosoft.co.th>
+- Saran Lim. <saranl@ecosoft.co.th>
 
 Maintainers
 -----------
@@ -177,6 +176,6 @@ Current `maintainer <https://odoo-community.org/page/maintainer-role>`__:
 
 |maintainer-kittiu| 
 
-This module is part of the `OCA/hr-expense <https://github.com/OCA/hr-expense/tree/17.0/hr_expense_advance_clearing>`_ project on GitHub.
+This module is part of the `OCA/hr-expense <https://github.com/OCA/hr-expense/tree/18.0/hr_expense_advance_clearing>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.
