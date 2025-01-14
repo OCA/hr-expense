@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-
     <!-- New menus Advance and Expense under My Reports -->
 
     <record id="action_my_hr_advance_sheet" model="ir.actions.act_window">
@@ -15,7 +14,8 @@
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
             No advance report found. Let's create one!
-            </p><p>
+            </p>
+            <p>
             Once you have created your advance, submit it to your manager who will validate it.
             </p>
         </field>
@@ -32,7 +32,8 @@
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
             No expense report found. Let's create one!
-            </p><p>
+            </p>
+            <p>
             Once you have created your expense, submit it to your manager who will validate it.
             </p>
         </field>
