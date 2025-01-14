@@ -64,14 +64,10 @@ class HrExpense(models.Model):
         taxes = self.tax_ids.with_context(round=True).compute_all(
             price_unit, self.currency_id, quantity, self.product_id
         )
-        amount_currency = self.total_amount_currency - self.tax_amount_currency
-        balance = self.total_amount - self.tax_amount
         ml_src_dict = {
             "name": move_line_name,
             "quantity": quantity,
-            "debit": balance if balance > 0 else 0,
-            "credit": -balance if balance < 0 else 0,
-            "amount_currency": amount_currency,
+            "amount_currency": self.total_amount_currency,
             "account_id": self.account_id.id,
             "product_id": self.product_id.id,
             "product_uom_id": self.product_uom_id.id,
