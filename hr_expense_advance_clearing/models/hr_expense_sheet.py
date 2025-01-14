@@ -198,9 +198,9 @@ class HrExpenseSheet(models.Model):
                 payable_move_line = move_line_dst.copy()
                 payable_move_line["credit"] = remain_payable
                 payable_move_line["amount_currency"] = -remain_payable
-                payable_move_line[
-                    "account_id"
-                ] = expense.sheet_id._get_expense_account_destination()
+                payable_move_line["account_id"] = (
+                    expense.sheet_id._get_expense_account_destination()
+                )
             else:
                 advance_to_clear -= credit
             # Add destination first (if credit is not zero)
