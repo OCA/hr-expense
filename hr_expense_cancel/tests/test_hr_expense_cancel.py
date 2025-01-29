@@ -28,7 +28,7 @@ class TestHrExpenseCancel(TestExpenseCommon):
         return register_form.save()
 
     def test_action_cancel_posted(self):
-        self.expense_sheet.action_sheet_move_create()
+        self.expense_sheet.action_sheet_move_post()
         self.assertFalse(len(self.expense_sheet.payment_ids), 1)
         self.assertTrue(self.expense_sheet.account_move_ids)
 
@@ -50,13 +50,13 @@ class TestHrExpenseCancel(TestExpenseCommon):
     def test_action_cancel_company_account(self):
         self.expense.payment_mode = "company_account"
         self.expense_sheet.journal_id = self.company_data["default_journal_bank"]
-        self.expense_sheet.action_sheet_move_create()
+        self.expense_sheet.action_sheet_move_post()
         self.assertTrue(self.expense_sheet.account_move_ids)
         self.expense_sheet.action_cancel()
         self.assertFalse(self.expense_sheet.account_move_ids)
 
     def test_action_cancel_own_account(self):
-        self.expense_sheet.action_sheet_move_create()
+        self.expense_sheet.action_sheet_move_post()
         payment_wizard = self._get_payment_wizard()
         payment_wizard.action_create_payments()
         self.assertTrue(self.expense_sheet.payment_ids)
