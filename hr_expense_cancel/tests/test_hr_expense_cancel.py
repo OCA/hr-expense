@@ -17,6 +17,7 @@ class TestHrExpenseCancel(TestExpenseCommon):
         cls.expense = cls.create_expense(cls)
         res = cls.expense.action_submit_expenses()
         cls.expense_sheet = cls.env[res["res_model"]].browse(res["res_id"])
+        cls.expense_sheet.action_submit_sheet()
         cls.expense_sheet.action_approve_expense_sheets()
 
     def _get_payment_wizard(self):
