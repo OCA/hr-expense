@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo.exceptions import ValidationError
-from odoo.tests.common import Form, tagged
+from odoo.tests import Form, tagged
 
 from odoo.addons.hr_expense.tests.common import TestExpenseCommon
 
@@ -11,8 +11,8 @@ from odoo.addons.hr_expense.tests.common import TestExpenseCommon
 @tagged("-at_install", "post_install")
 class TestHrExpenseTierValidation(TestExpenseCommon):
     @classmethod
-    def setUpClass(cls, chart_template_ref=None):
-        super().setUpClass(chart_template_ref=chart_template_ref)
+    def setUpClass(cls):
+        super().setUpClass()
         cls.tier_def_obj = cls.env["tier.definition"]
         # Create tier validation
         cls.tier_def_obj.create(
