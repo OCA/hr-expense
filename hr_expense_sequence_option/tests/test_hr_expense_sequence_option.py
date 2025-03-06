@@ -2,11 +2,13 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import Command
-from odoo.tests.common import TransactionCase, tagged
+from odoo.tests.common import tagged
+
+from odoo.addons.base.tests.common import BaseCommon
 
 
 @tagged("post_install", "-at_install")
-class TestHrExpenseSequenceOption(TransactionCase):
+class TestHrExpenseSequenceOption(BaseCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -26,7 +28,7 @@ class TestHrExpenseSequenceOption(TransactionCase):
                         "employee_id": cls.user.employee_id.id,
                         "product_id": cls.product_travel.id,
                         "quantity": 1.0,
-                        "unit_amount": 500.0,
+                        "price_unit": 500.0,
                     }
                 )
             ],
