@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 14.0\n"
+"Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -17,8 +17,8 @@ msgstr ""
 #: model:mail.template,body_html:hr_expense_substate.mail_template_data_hr_expense_substate_verified
 msgid ""
 "<div>\n"
-"    Dear ${object.employee_id.name or 'requester'},<br/>\n"
-"    This email is to inform that your expense report ${object.name} was verified by approver team.\n"
+"    Dear <t t-out=\"object.employee_id.name or 'Requester'\"/>,<br/>\n"
+"    This email is to inform that your expense report <t t-out=\"object.name\"/> was verified by approver team.\n"
 "       <br/><br/>\n"
 "    Thank you,\n"
 "    <br/>\n"
@@ -47,12 +47,6 @@ msgid "Checked"
 msgstr ""
 
 #. module: hr_expense_substate
-#: model:ir.model.fields,field_description:hr_expense_substate.field_base_substate_type__display_name
-#: model:ir.model.fields,field_description:hr_expense_substate.field_hr_expense_sheet__display_name
-msgid "Display Name"
-msgstr ""
-
-#. module: hr_expense_substate
 #: model:target.state.value,name:hr_expense_substate.target_state_value_draft
 msgid "Draft"
 msgstr ""
@@ -66,18 +60,6 @@ msgstr ""
 #. module: hr_expense_substate
 #: model:base.substate.type,name:hr_expense_substate.base_substate_type_hr_expense_sheet
 msgid "Expense Report Substate"
-msgstr ""
-
-#. module: hr_expense_substate
-#: model:ir.model.fields,field_description:hr_expense_substate.field_base_substate_type__id
-#: model:ir.model.fields,field_description:hr_expense_substate.field_hr_expense_sheet__id
-msgid "ID"
-msgstr ""
-
-#. module: hr_expense_substate
-#: model:ir.model.fields,field_description:hr_expense_substate.field_base_substate_type____last_update
-#: model:ir.model.fields,field_description:hr_expense_substate.field_hr_expense_sheet____last_update
-msgid "Last Modified on"
 msgstr ""
 
 #. module: hr_expense_substate
@@ -113,10 +95,11 @@ msgstr ""
 
 #. module: hr_expense_substate
 #: model:base.substate,name:hr_expense_substate.base_substate_verified
+#: model:mail.template,name:hr_expense_substate.mail_template_data_hr_expense_substate_verified
 msgid "Verified"
 msgstr ""
 
 #. module: hr_expense_substate
 #: model:mail.template,subject:hr_expense_substate.mail_template_data_hr_expense_substate_verified
-msgid "Your expense report ${object.name} is verified"
+msgid "Your expense report {{ object.name }} is verified"
 msgstr ""
