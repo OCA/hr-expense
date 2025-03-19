@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="base_substate_type_hr_expense_sheet" model="base.substate.type">
+        <field name="name">Expense Report Substate</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="target_state_field">state</field>
+    </record>
+    <!-- Expense Report related substate to state (draft, approved) -->
+    <record id="target_state_value_draft" model="target.state.value">
+        <field name="name">Draft</field>
+        <field name="base_substate_type_id" ref="base_substate_type_hr_expense_sheet" />
+        <field name="target_state_value">draft</field>
+    </record>
+    <record id="target_state_value_submit" model="target.state.value">
+        <field name="name">Submitted</field>
+        <field name="base_substate_type_id" ref="base_substate_type_hr_expense_sheet" />
+        <field name="target_state_value">submit</field>
+    </record>
+    <record id="target_state_value_approve" model="target.state.value">
+        <field name="name">Approved</field>
+        <field name="base_substate_type_id" ref="base_substate_type_hr_expense_sheet" />
+        <field name="target_state_value">approve</field>
+    </record>
+    <record id="target_state_value_post" model="target.state.value">
+        <field name="name">Posted</field>
+        <field name="base_substate_type_id" ref="base_substate_type_hr_expense_sheet" />
+        <field name="target_state_value">post</field>
+    </record>
+    <record id="target_state_value_done" model="target.state.value">
+        <field name="name">Paid</field>
+        <field name="base_substate_type_id" ref="base_substate_type_hr_expense_sheet" />
+        <field name="target_state_value">done</field>
+    </record>
+    <record id="target_state_value_cancel" model="target.state.value">
+        <field name="name">Refused</field>
+        <field name="base_substate_type_id" ref="base_substate_type_hr_expense_sheet" />
+        <field name="target_state_value">cancel</field>
+    </record>
+</odoo>
