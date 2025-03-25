@@ -52,6 +52,8 @@ class TestReInvoiceManual(TestExpenseCommon):
                 "product_id": cls.product_expense_manual.id,
                 "unit_amount": cls.product_expense_manual.lst_price,
                 "sale_order_id": cls.order.id,
+                "analytic_distribution": {cls.analytic_account_1.id: 100},
+                "total_amount": 1000.0,
             }
         )
 
@@ -87,7 +89,6 @@ class TestReInvoiceManual(TestExpenseCommon):
     def test_expense_manual_reinvoice_without_sale_order(self):
         """Test case without sale order on hr.expense"""
         self.expense.sale_order_id = False
-        self.expense.analytic_account_id = self.order.analytic_account_id
         self.expense_sheet.approve_expense_sheets()
         self.expense_sheet.action_sheet_move_create()
         self.assertFalse(self.order.order_line, "No expense should've been created yet")
@@ -159,3 +160,66 @@ class TestReInvoiceManual(TestExpenseCommon):
         self.assertTrue(self.expense.manual_reinvoice_done)
         self.assertFalse(self.expense.manual_reinvoice_discarded, "Back to false")
         self.assertTrue(self.order.order_line, "The expense should've been reinvoiced")
+
+    def test_analytic_account_ids_computation(self):
+        """Test that analytic_account_ids is correctly computed from analytic_distribution."""
+        self.expense.analytic_distribution = {
+            str(self.analytic_account_1.id): 100,
+        }
+
+        # Trigger computation
+        self.expense._compute_analytic_account_ids()
+
+        # Verify the Many2many field
+        self.assertEqual(
+            len(self.expense.analytic_account_ids),
+            1,
+            "Should have 1 linked analytic account",
+        )
+        self.assertIn(
+            self.analytic_account_1,
+            self.expense.analytic_account_ids,
+            "analytic_account_1 should be in analytic_account_ids",
+        )
+
+    def test_analytic_account_ids_computation_empty(self):
+        """Test that analytic_account_ids is empty when analytic_distribution is empty."""
+        self.expense.analytic_distribution = {}
+
+        # Trigger computation
+        self.expense._compute_analytic_account_ids()
+
+        # Verify the Many2many field
+        self.assertEqual(
+            len(self.expense.analytic_account_ids),
+            0,
+            "Should have 0 linked analytic account",
+        )
+
+    def test_analytic_account_ids_computation_multiple(self):
+        """Test that analytic_account_ids is correctly computed with multiple
+        analytic_distribution."""
+        self.expense.analytic_distribution = {
+            str(self.analytic_account_1.id): 60,
+            str(self.analytic_account_2.id): 40,
+        }
+
+        # Trigger computation
+        self.expense._compute_analytic_account_ids()
+
+        # Verify the Many2many field
+        self.assertEqual(
+            len(self.expense.analytic_account_ids),
+            2,
+            "Should have 2 linked analytic accounts",
+        )
+        self.assertIn(
+            self.analytic_account_1,
+            self.expense.analytic_account_ids,
+            "analytic_account_1 should be in analytic_account_ids",
+        )
+        self.assertIn(
+            self.analytic_account_2,
+            self.expense.analytic_account_ids,
+            "analytic_account_2 should be in analytic_account_ids",
+        )

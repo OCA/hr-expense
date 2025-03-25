@@ -12,6 +12,11 @@ class HrExpense(models.Model):
     analytic_line_ids = fields.One2many(
         "account.analytic.line", "expense_id", readonly=True
     )
+    analytic_account_ids = fields.Many2many(
+        "account.analytic.account",
+        compute="_compute_analytic_account_ids",
+        store=True,
+    )
     manual_reinvoice = fields.Boolean(compute="_compute_manual_reinvoice", store=True)
     manual_reinvoice_done = fields.Boolean(
         compute="_compute_manual_reinvoice", store=True
@@ -35,10 +40,17 @@ class HrExpense(models.Model):
             ]:
                 rec[fname] = fields.first(rec.analytic_line_ids)[fname]
 
-    def _compute_analytic_account_id(self):
-        # OVERRIDE to not recompute account_analytic_id if it's already posted
-        editable = self.filtered("is_editable")
-        return super(HrExpense, editable)._compute_analytic_account_id()
+    @api.depends("analytic_distribution")
+    def _compute_analytic_account_ids(self):
+        for rec in self:
+            account_ids = (
+                [int(acc_id) for acc_id in rec.analytic_distribution.keys()]
+                if rec.analytic_distribution
+                else []
+            )
+            rec.analytic_account_ids = self.env["account.analytic.account"].browse(
+                account_ids
+            )
 
     def action_manual_reinvoice(self):
         if any(not rec.sale_order_id for rec in self):
