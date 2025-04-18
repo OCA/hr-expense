@@ -77,6 +77,7 @@ Contributors
   - Freni Patel <fpatel@opensourceintegrators.com>
 
 - Saran Lim. <saranl@ecosoft.co.th>
+- Panithan K. <panithank@ecosoft.co.th>
 
 Maintainers
 -----------
