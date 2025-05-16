@@ -22,6 +22,7 @@ class HrExpense(models.Model):
             payment_mode = sheet.payment_mode
             vendor_id = sheet.vendor_id.id
             if payment_mode == "company_account" and vendor_id:
+                tax_repartition_line = self.env["account.tax.repartition.line"]
                 for expense_id, vals in move_line_values_by_expense.items():
                     expense = self.env["hr.expense"].browse(expense_id)
                     move_line_name = (
@@ -31,6 +32,14 @@ class HrExpense(models.Model):
                     account_dst = expense._get_expense_account_destination()
                     account_ids = [account_src.id, account_dst]
                     for val in vals:
+                        # For case cash basis
+                        if val.get("tax_repartition_line_id"):
+                            cash_basis = tax_repartition_line.browse(
+                                val["tax_repartition_line_id"]
+                            ).invoice_tax_id.cash_basis_transition_account_id
+                            if cash_basis:
+                                val["account_id"] = cash_basis.id
+                        # Update partner each line
                         val["partner_id"] = vendor_id
                         if val["account_id"] in account_ids:
                             val["name"] = move_line_name
