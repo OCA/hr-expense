@@ -3,7 +3,7 @@
 
 import ast
 
-from odoo import Command, _, api, fields, models
+from odoo import Command, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import float_compare, float_is_zero
 
@@ -62,10 +62,12 @@ class HrExpenseSheet(models.Model):
         advance_lines = self.expense_line_ids.filtered("advance")
         if self.advance_sheet_id and advance_lines:
             raise ValidationError(
-                _("Advance clearing must not contain any advance expense line")
+                self.env._("Advance clearing must not contain any advance expense line")
             )
         if advance_lines and len(advance_lines) != len(self.expense_line_ids):
-            raise ValidationError(_("Advance must contain only advance expense line"))
+            raise ValidationError(
+                self.env._("Advance must contain only advance expense line")
+            )
 
     @api.depends("account_move_ids.payment_state", "account_move_ids.amount_residual")
     def _compute_from_account_move_ids(self):
@@ -334,7 +336,7 @@ class HrExpenseSheet(models.Model):
     def action_open_clearings(self):
         self.ensure_one()
         return {
-            "name": _("Clearing Sheets"),
+            "name": self.env._("Clearing Sheets"),
             "type": "ir.actions.act_window",
             "res_model": "hr.expense.sheet",
             "view_mode": "list,form",
@@ -344,7 +346,7 @@ class HrExpenseSheet(models.Model):
     def action_open_payment_return(self):
         self.ensure_one()
         return {
-            "name": _("Payment Return"),
+            "name": self.env._("Payment Return"),
             "type": "ir.actions.act_window",
             "res_model": "account.payment",
             "view_mode": "list,form",
