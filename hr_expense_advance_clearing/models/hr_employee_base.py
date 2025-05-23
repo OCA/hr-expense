@@ -1,7 +1,7 @@
 # Copyright 2021 Ecosoft Co., Ltd. (http://ecosoft.co.th)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import _, fields, models
+from odoo import fields, models
 
 
 class HrEmployeeBase(models.AbstractModel):
@@ -25,9 +25,9 @@ class HrEmployeeBase(models.AbstractModel):
     def action_open_advance_clearing(self):
         self.ensure_one()
         return {
-            "name": _("Advance Sheet"),
+            "name": self.env._("Advance Sheet"),
             "type": "ir.actions.act_window",
             "res_model": "hr.expense.sheet",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("id", "in", self.advance_sheet_ids.ids)],
         }
