@@ -1,7 +1,7 @@
 # Copyright 2022 Ecosoft Co., Ltd. (https://ecosoft.co.th)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-from odoo import _, models
+from odoo import models
 from odoo.exceptions import UserError
 
 
@@ -17,7 +17,7 @@ class AccountMove(models.Model):
         )
         if reconciled_av_move_lines:
             raise UserError(
-                _(
+                self.env._(
                     "This operation is not allowed as some advance amount was already "
                     "cleared/returned.\nPlease cancel those documents first."
                 )
