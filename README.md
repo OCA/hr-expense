@@ -21,7 +21,7 @@ Available addons
 ----------------
 addon | version | maintainers | summary
 --- | --- | --- | ---
-[hr_expense_advance_clearing](hr_expense_advance_clearing/) | 13.0.1.2.0 | [![kittiu](https://github.com/kittiu.png?size=30px)](https://github.com/kittiu) | Employee Advance and Clearing
+[hr_expense_advance_clearing](hr_expense_advance_clearing/) | 13.0.1.2.0 | <a href='https://github.com/kittiu'><img src='https://github.com/kittiu.png' width='32' height='32' style='border-radius:50%;' alt='kittiu'/></a> | Employee Advance and Clearing
 [hr_expense_advance_clearing_sequence](hr_expense_advance_clearing_sequence/) | 13.0.1.0.0 |  | HR Expense Advance Clearing Sequence
 [hr_expense_cancel](hr_expense_cancel/) | 13.0.1.0.0 |  | Hr expense cancel
 [hr_expense_invoice](hr_expense_invoice/) | 13.0.1.3.3 |  | Supplier invoices on HR expenses
@@ -30,7 +30,7 @@ addon | version | maintainers | summary
 [hr_expense_petty_cash_sequence](hr_expense_petty_cash_sequence/) | 13.0.1.0.0 |  | HR Expense Petty Cash Sequence
 [hr_expense_portal](hr_expense_portal/) | 13.0.1.0.1 |  | Show current expense in a website.
 [hr_expense_sequence](hr_expense_sequence/) | 13.0.1.0.0 |  | HR expense sequence
-[hr_expense_tier_validation](hr_expense_tier_validation/) | 13.0.1.0.0 | [![ps-tubtim](https://github.com/ps-tubtim.png?size=30px)](https://github.com/ps-tubtim) | Expense Tier Validation
+[hr_expense_tier_validation](hr_expense_tier_validation/) | 13.0.1.0.0 | <a href='https://github.com/ps-tubtim'><img src='https://github.com/ps-tubtim.png' width='32' height='32' style='border-radius:50%;' alt='ps-tubtim'/></a> | Expense Tier Validation
 
 [//]: # (end addons)
 
