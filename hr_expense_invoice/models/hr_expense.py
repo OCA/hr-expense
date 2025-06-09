@@ -40,8 +40,10 @@ class HrExpense(models.Model):
                 {
                     "product_id": self.product_id.id,
                     "name": self.name,
-                    "price_unit": self.price_unit or self.total_amount_currency,
-                    "quantity": self.quantity,
+                    # Odoo considers always the amount taxes included, we need to take
+                    # the base amount and quantity = 1
+                    "price_unit": self.untaxed_amount_currency,
+                    "quantity": 1,
                     "account_id": self.account_id.id,
                     "analytic_distribution": self.analytic_distribution,
                     "tax_ids": [Command.set(self.tax_ids.ids)],
