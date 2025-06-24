@@ -2,7 +2,7 @@
 # Copyright 2015-2024 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models, Command
 from odoo.exceptions import UserError
 from odoo.tools import float_compare
 
@@ -112,3 +112,9 @@ class HrExpenseSheet(models.Model):
             action["view_mode"] = "tree,form"
             action["domain"] = [("id", "in", invoice_ids)]
         return action
+
+    def _prepare_bill_vals(self):
+        ret = super(HrExpenseSheet, self)._prepare_bill_vals()
+        ret['line_ids'] = [Command.create(expense._prepare_move_line_vals()) for expense in self.expense_line_ids.filtered(lambda r: not r.invoice_id)]
+        return ret
+
