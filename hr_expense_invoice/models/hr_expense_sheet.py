@@ -120,4 +120,3 @@ class HrExpenseSheet(models.Model):
             for expense in self.expense_line_ids.filtered(lambda r: not r.invoice_id)
         ]
         return ret
-
