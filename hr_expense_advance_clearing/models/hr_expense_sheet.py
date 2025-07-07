@@ -243,7 +243,9 @@ class HrExpenseSheet(models.Model):
             # Advance Sheets with no residual left
             if self.advance_sheet_residual <= 0.0:
                 raise ValidationError(
-                    self.env._(f"Advance: {self.name} has no amount to clear")
+                    self.env._(
+                        "Advance: %(name)s has no amount to clear", name=self.name
+                    )
                 )
             res.update(
                 {
@@ -254,6 +256,18 @@ class HrExpenseSheet(models.Model):
                 }
             )
         return res
+
+    def _check_can_approve(self):
+        """Check advance residual before approval"""
+        for sheet in self.filtered("advance_sheet_id"):
+            if sheet.advance_sheet_residual <= 0.0:
+                raise ValidationError(
+                    self.env._(
+                        "Advance: %(name)s has no amount to clear",
+                        name=sheet.advance_sheet_id.name,
+                    )
+                )
+        return super()._check_can_approve()
 
     def open_clear_advance(self):
         self.ensure_one()
