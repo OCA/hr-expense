@@ -19,7 +19,6 @@ msgstr ""
 #. module: hr_expense_advance_clearing
 #. odoo-python
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
-#, python-format
 msgid ""
 "\n"
 "Note: pending amount clearing is %(symbol)s%(amount)s"
@@ -33,17 +32,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee_public__advance_count
 msgid "# of Advance"
 msgstr "N° di anticipo"
-
-#. module: hr_expense_advance_clearing
-#. odoo-python
-#: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
-#, python-format
-msgid ""
-"A remaining advance return of %(amount)s %(symbol)s with the reference "
-"%(ref)s related to your expense %(name)s has been made."
-msgstr ""
-"È stato fatto un residuo reso anticipo di %(amount)s %(symbol)s con "
-"riferimento %(ref)s relativo alla sua spesa %(name)s."
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_account_payment__advance_id
@@ -75,14 +63,12 @@ msgstr "Residuo anticipo"
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee__advance_sheet_ids
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee_base__advance_sheet_ids
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee_public__advance_sheet_ids
-#, python-format
 msgid "Advance Sheet"
 msgstr "Foglio anticipo"
 
 #. module: hr_expense_advance_clearing
 #. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/hr_expense_sheet.py:0
-#, python-format
 msgid "Advance clearing must not contain any advance expense line"
 msgstr ""
 "La liquidazione anticipo non deve contenere nessuna riga anticipo spesa"
@@ -90,16 +76,14 @@ msgstr ""
 #. module: hr_expense_advance_clearing
 #. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/hr_expense_sheet.py:0
-#, python-format
 msgid "Advance must contain only advance expense line"
 msgstr "L'anticipo deve contenere solo una riga anticipo spesa"
 
 #. module: hr_expense_advance_clearing
 #. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/hr_expense_sheet.py:0
-#, python-format
-msgid "Advance: %s has no amount to clear"
-msgstr "Anticipo: %s non ha un valore da compensare"
+msgid "Advance: %(name)s has no amount to clear"
+msgstr ""
 
 #. module: hr_expense_advance_clearing
 #: model:ir.actions.act_window,name:hr_expense_advance_clearing.action_my_hr_advance_sheet
@@ -151,7 +135,6 @@ msgstr "Foglio liquidazione"
 #. module: hr_expense_advance_clearing
 #. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/hr_expense_sheet.py:0
-#, python-format
 msgid "Clearing Sheets"
 msgstr "Fogli liquidazioni"
 
@@ -182,35 +165,30 @@ msgstr "Anticipo dipendente"
 #. module: hr_expense_advance_clearing
 #. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
-#, python-format
 msgid "Employee advance product has no payable account"
 msgstr "Il prodotto anticipo dipendente non ha un conto pagabile"
 
 #. module: hr_expense_advance_clearing
 #. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
-#, python-format
 msgid "Employee advance, account must be the same payable account"
 msgstr "Anticipo dipendente, il conto deve essere lo stesso conto pagabile"
 
 #. module: hr_expense_advance_clearing
 #. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
-#, python-format
 msgid "Employee advance, all taxes must be removed"
 msgstr "Anticipo dipendente, devono essere rimosse tutte le tasse"
 
 #. module: hr_expense_advance_clearing
 #. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
-#, python-format
 msgid "Employee advance, paid by must be employee"
 msgstr "Anticipo dipendente, \"pagato da\" deve essere un dipendente"
 
 #. module: hr_expense_advance_clearing
 #. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
-#, python-format
 msgid "Employee advance, selected product is not valid"
 msgstr "Anticipo dipendente, il prodotto selezionato non è valido"
 
@@ -301,9 +279,21 @@ msgstr ""
 "riga prodotto predefinito."
 
 #. module: hr_expense_advance_clearing
+#: model:ir.model,name:hr_expense_advance_clearing.model_account_payment_register
+msgid "Pay"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet__amount_payable
 msgid "Payable Amount"
 msgstr "Valore pagabile"
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense_sheet.py:0
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet__payment_return_ids
+msgid "Payment Return"
+msgstr ""
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model,name:hr_expense_advance_clearing.model_account_payment
@@ -316,14 +306,14 @@ msgid "Ref: Advance"
 msgstr "Rif: anticipo"
 
 #. module: hr_expense_advance_clearing
-#: model:ir.model,name:hr_expense_advance_clearing.model_account_payment_register
-msgid "Register Payment"
-msgstr "Registra pagamento"
-
-#. module: hr_expense_advance_clearing
 #: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense_sheet__advance_sheet_residual
 msgid "Remaining amount to clear the selected advance sheet"
 msgstr "Valore residuo per liquidare il foglio anticipo selezionato"
+
+#. module: hr_expense_advance_clearing
+#: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.view_hr_expense_sheet_form
+msgid "Return"
+msgstr ""
 
 #. module: hr_expense_advance_clearing
 #: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.view_account_payment_search
@@ -332,9 +322,19 @@ msgid "Return Advance"
 msgstr "Rimborso anticipo"
 
 #. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet__return_count
+msgid "Return Count"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
 #: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense_sheet__clearing_sheet_ids
 msgid "Show reference clearing on advance"
 msgstr "Visualizza riferimento liquidazione sull'anticipo"
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense_sheet__payment_return_ids
+msgid "Show reference return advance on advance"
+msgstr ""
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense_sheet__advance_sheet_id
@@ -344,7 +344,6 @@ msgstr "Visualizza residuo anticipo di questo dipendente"
 #. module: hr_expense_advance_clearing
 #. odoo-python
 #: code:addons/hr_expense_advance_clearing/models/account_move.py:0
-#, python-format
 msgid ""
 "This operation is not allowed as some advance amount was already cleared/"
 "returned.\n"
@@ -357,40 +356,48 @@ msgstr ""
 #. module: hr_expense_advance_clearing
 #. odoo-python
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
-#, python-format
-msgid "You can only register payment for posted journal entries."
-msgstr ""
-"Si possono registrare pagamenti solo per registrazioni contabili assegnate."
-
-#. module: hr_expense_advance_clearing
-#. odoo-python
-#: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
-#, python-format
-msgid "You can't create payments for entries belonging to different companies."
-msgstr ""
-"Non si possono creare pagamenti per entrate appartenenti a diverse aziende."
-
-#. module: hr_expense_advance_clearing
-#. odoo-python
-#: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
-#, python-format
 msgid ""
-"You can't register a payment because there is nothing left to pay on the "
-"selected journal items."
-msgstr ""
-"Non si può registrare il pagamento perché non c'è niente da pagare nei "
-"movimenti contabili selezionati."
-
-#. module: hr_expense_advance_clearing
-#. odoo-python
-#: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
-#, python-format
-msgid ""
-"You cannot return advance more than actual remaining (%(symbol)s"
-"%(amount)s)%(more_info)s"
+"You cannot return advance more than actual remaining "
+"(%(symbol)s%(amount)s)%(more_info)s"
 msgstr ""
 "Non è possibile restituire un anticipo superiore al rimanente effettivo "
 "(%(symbol)s%(amount)s)%(more_info)s"
+
+#, python-format
+#~ msgid ""
+#~ "A remaining advance return of %(amount)s %(symbol)s with the reference "
+#~ "%(ref)s related to your expense %(name)s has been made."
+#~ msgstr ""
+#~ "È stato fatto un residuo reso anticipo di %(amount)s %(symbol)s con "
+#~ "riferimento %(ref)s relativo alla sua spesa %(name)s."
+
+#, python-format
+#~ msgid "Advance: %s has no amount to clear"
+#~ msgstr "Anticipo: %s non ha un valore da compensare"
+
+#~ msgid "Register Payment"
+#~ msgstr "Registra pagamento"
+
+#, python-format
+#~ msgid "You can only register payment for posted journal entries."
+#~ msgstr ""
+#~ "Si possono registrare pagamenti solo per registrazioni contabili "
+#~ "assegnate."
+
+#, python-format
+#~ msgid ""
+#~ "You can't create payments for entries belonging to different companies."
+#~ msgstr ""
+#~ "Non si possono creare pagamenti per entrate appartenenti a diverse "
+#~ "aziende."
+
+#, python-format
+#~ msgid ""
+#~ "You can't register a payment because there is nothing left to pay on the "
+#~ "selected journal items."
+#~ msgstr ""
+#~ "Non si può registrare il pagamento perché non c'è niente da pagare nei "
+#~ "movimenti contabili selezionati."
 
 #, python-format
 #~ msgid ""
