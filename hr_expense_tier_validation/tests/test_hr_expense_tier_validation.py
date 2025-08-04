@@ -63,7 +63,6 @@ class TestHrExpenseTierValidation(TestExpenseCommon):
             sheet.action_approve_expense_sheets()
         sheet.request_validation()
         self.assertTrue(sheet)
-        sheet.invalidate_model()
         # tier validation but state still submit
         self.assertEqual(sheet.state, "submit")
         # not allow edit expense when under validation

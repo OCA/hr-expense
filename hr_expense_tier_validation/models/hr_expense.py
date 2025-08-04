@@ -40,8 +40,8 @@ class HrExpense(models.Model):
             if (
                 sheet.state == "submit"
                 and sheet.review_ids
-                and not sheet.validated
-                and not sheet.rejected
+                and not sheet.validation_status == "validated"
+                and not sheet.validation_status == "rejected"
                 and not rec._check_allow_write_under_validation(vals)
             ):
                 raise ValidationError(_("The expense report is under validation."))
