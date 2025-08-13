@@ -2,7 +2,7 @@
 # Copyright 2021 Tecnativa - Víctor Martínez
 # Copyright 2024 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import float_compare
 
@@ -27,7 +27,7 @@ class AccountMove(models.Model):
             expense_amount = sum(move.expense_ids.mapped("total_amount_currency"))
             if float_compare(expense_amount, move.amount_total, precision) != 0:
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "You can't change the total amount, as there's an expense "
                         "linked to this invoice."
                     )
