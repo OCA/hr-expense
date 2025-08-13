@@ -4,7 +4,7 @@
 # Copyright 2015-2024 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import Command, _, api, fields, models
+from odoo import Command, api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -123,7 +123,7 @@ class HrExpense(models.Model):
                 and expense.invoice_id
                 and expense.invoice_id.state != "posted"
             ):
-                raise UserError(_("Vendor bill state must be Posted"))
+                raise UserError(self.env._("Vendor bill state must be Posted"))
 
     @api.onchange("invoice_id")
     def _onchange_invoice_id(self):

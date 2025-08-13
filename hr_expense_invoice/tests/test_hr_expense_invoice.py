@@ -8,7 +8,6 @@ from odoo import fields
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests import Form, tagged
 
-from odoo.addons.base.tests.common import DISABLED_MAIL_CONTEXT
 from odoo.addons.hr_expense.tests.common import TestExpenseCommon
 
 
@@ -17,7 +16,7 @@ class TestHrExpenseInvoice(TestExpenseCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.env = cls.env(context=dict(cls.env.context, **DISABLED_MAIL_CONTEXT))
+        cls.env = cls.env(context=dict(cls.env.context, test_hr_expense_invoice=True))
         cls.account_payment_register = cls.env["account.payment.register"]
         cls.payment_obj = cls.env["account.payment"]
         cls.cash_journal = cls.company_data["default_journal_cash"]
@@ -64,6 +63,7 @@ class TestHrExpenseInvoice(TestExpenseCommon):
         payment = self.env[res2["res_model"]].browse(res2["res_id"])
         self.assertEqual(len(payment), 1)
         self.assertEqual(sheet.payment_state, "paid")
+        return payment
 
     def _create_attachment(self, res_model, res_id):
         return self.env["ir.attachment"].create(
@@ -136,15 +136,12 @@ class TestHrExpenseInvoice(TestExpenseCommon):
         self.assertEqual(self.expense.amount_residual, 100)
         self.assertTrue(self.expense.transfer_move_ids)
         # Pay the transferred amount (through a hack using reversal)
-        reverse_move = self.expense.transfer_move_ids._reverse_moves(
-            default_values_list=[{"source_invoice_expense_id": False}]  # , cancel=True
-        )
-        reverse_move.action_post()
+        payment = self._register_payment(sheet)
         self.assertEqual(self.expense.amount_residual, 0)
         self.assertEqual(sheet.payment_state, "paid")
         self.assertEqual(sheet.state, "done")
         # Unreconcile the payment
-        reverse_move.button_draft()
+        payment.action_draft()
         self.assertEqual(self.expense.amount_residual, 100)
         self.assertEqual(sheet.payment_state, "not_paid")
 
@@ -246,3 +243,18 @@ class TestHrExpenseInvoice(TestExpenseCommon):
             sheet._validate_expense_invoice()
         self.expense.total_amount_currency = 100.0
         sheet._validate_expense_invoice()
+
+    def test_5_hr_expense_invoice_no_duplicate_accounting_entries(self):
+        """Test that expenses linked to invoices don't create
+        duplicate accounting entries."""
+        sheet = self._action_submit_expenses(self.expense + self.expense2)
+        self.invoice.action_post()
+        with Form(self.expense) as f:
+            f.invoice_id = self.invoice
+        sheet.action_approve_expense_sheets()
+        sheet.action_sheet_move_post()
+        self.assertEqual(len(sheet.account_move_ids.invoice_line_ids), 1)
+        self.assertEqual(
+            sheet.account_move_ids.invoice_line_ids.price_total,
+            self.expense2.total_amount,
+        )
