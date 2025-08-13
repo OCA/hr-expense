@@ -2,9 +2,9 @@
 # Copyright 2015-2024 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, fields, models
+from odoo import Command, api, fields, models
 from odoo.exceptions import RedirectWarning, UserError
-from odoo.tools import float_compare
+from odoo.tools import config, float_compare
 
 
 class HrExpenseSheet(models.Model):
@@ -30,9 +30,8 @@ class HrExpenseSheet(models.Model):
         # Create AP transfer entry for expenses paid by employees
         for expense in expense_sheets_with_invoices.expense_line_ids:
             if expense.payment_mode == "own_account":
-                move = self.env["account.move"].create(
-                    expense._prepare_own_account_transfer_move_vals()
-                )
+                move_vals = expense._prepare_own_account_transfer_move_vals()
+                move = self.env["account.move"].create(move_vals)
                 move.action_post()
                 # reconcile with the invoice
                 ap_lines = expense.invoice_id.line_ids.filtered(
@@ -113,6 +112,22 @@ class HrExpenseSheet(models.Model):
             HrExpenseSheet, self - invoice_sheets
         )._compute_from_account_move_ids()
 
+    def _prepare_bills_vals(self):
+        res = super()._prepare_bills_vals()
+        test_condition = not config["test_enable"] or self.env.context.get(
+            "test_hr_expense_invoice"
+        )
+        if test_condition:
+            expenses_without_invoice = self.expense_line_ids.filtered(
+                lambda r: not r.invoice_id
+            )
+            res["line_ids"] = [
+                Command.create(expense._prepare_move_lines_vals())
+                for expense in expenses_without_invoice
+            ]
+
+        return res
+
     def _validate_expense_invoice(self):
         """Check several criteria that needs to be met for creating the move."""
         expense_lines = self.mapped("expense_line_ids").filtered("invoice_id")
@@ -123,13 +138,13 @@ class HrExpenseSheet(models.Model):
             return
         # All invoices must confirmed
         if any(invoices.filtered(lambda i: i.state != "posted")):
-            raise UserError(_("Vendor bill state must be Posted"))
+            raise UserError(self.env._("Vendor bill state must be Posted"))
         expense_amount = sum(expense_lines.mapped("total_amount_currency"))
         invoice_amount = sum(invoices.mapped("amount_total"))
         # Expense amount must equal invoice amount
         if float_compare(expense_amount, invoice_amount, precision) != 0:
             raise UserError(
-                _(
+                self.env._(
                     "Vendor bill amount mismatch!\nPlease make sure amount in "
                     "vendor bills equal to amount of its expense lines"
                 )
@@ -138,7 +153,7 @@ class HrExpenseSheet(models.Model):
     def action_view_invoices(self):
         self.ensure_one()
         action = {
-            "name": _("Invoices"),
+            "name": self.env._("Invoices"),
             "type": "ir.actions.act_window",
             "res_model": "account.move",
             "target": "current",
@@ -165,12 +180,10 @@ class HrExpenseSheet(models.Model):
             )
             and sheet.state == sheet.approval_state
         )
-
         company_account_sheets = sheets_with_invoices.filtered(
             lambda sheet: sheet.payment_mode == "company_account"
         )
         company_account_sheets.state = "done"
-
         sheets_with_paid_invoices = (
             sheets_with_invoices - company_account_sheets
         ).filtered(
@@ -180,7 +193,6 @@ class HrExpenseSheet(models.Model):
             )
         )
         sheets_with_paid_invoices.state = "post"
-
         return super(HrExpenseSheet, self - sheets_with_invoices)._compute_state()
 
     def _do_approve(self):
@@ -215,38 +227,35 @@ class HrExpenseSheet(models.Model):
         res = super(
             HrExpenseSheet, self - expense_sheets_with_invoices
         )._check_can_create_move()
-
         # We copy this method because the expenses are in 'approve'
         # state instead of 'submit'
         if any(not sheet.expense_line_ids for sheet in expense_sheets_with_invoices):
             raise UserError(
-                _(
+                self.env._(
                     "You cannot create accounting entries for an expense \
                         report without expenses."
                 )
             )
-
         if any(sheet.state != "approve" for sheet in expense_sheets_with_invoices):
             raise UserError(
-                _("You can only generate an accounting entry for approved expense(s).")
+                self.env._(
+                    "You can only generate an accounting entry for approved expense(s)."
+                )
             )
-
         if any(not sheet.journal_id for sheet in expense_sheets_with_invoices):
             raise UserError(
-                _(
+                self.env._(
                     "Please specify an expense journal in order to generate \
                         accounting entries."
                 )
             )
-
         if False in expense_sheets_with_invoices.mapped("payment_mode"):
             raise UserError(
-                _(
+                self.env._(
                     "Please specify if the expenses for this report were paid by \
                         the company, or the employee"
                 )
             )
-
         missing_email_employees = expense_sheets_with_invoices.filtered(
             lambda sheet: not sheet.employee_id.work_email
         ).employee_id
@@ -256,11 +265,11 @@ class HrExpenseSheet(models.Model):
             )
             action["domain"] = [("id", "in", missing_email_employees.ids)]
             raise RedirectWarning(
-                _(
+                self.env._(
                     "The work email of some employees is missing. Please add it on \
                          the employee form"
                 ),
                 action,
-                _("Show missing work email employees"),
+                self.env._("Show missing work email employees"),
             )
         return res
