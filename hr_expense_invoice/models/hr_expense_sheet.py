@@ -12,9 +12,9 @@ class HrExpenseSheet(models.Model):
 
     invoice_count = fields.Integer(compute="_compute_invoice_count")
 
-    def get_expense_sheets_with_invoices(self):
+    def get_expense_sheets_with_invoices(self, func):
         return self.filtered(
-            lambda sheet: all(expense.invoice_id for expense in sheet.expense_line_ids)
+            lambda sheet: func(expense.invoice_id for expense in sheet.expense_line_ids)
         )
 
     def _do_create_moves(self):
@@ -23,7 +23,7 @@ class HrExpenseSheet(models.Model):
         - Paid by employee: we create here a journal entry transferring the AP
           balance from the invoice partner to the employee.
         """
-        expense_sheets_with_invoices = self.get_expense_sheets_with_invoices()
+        expense_sheets_with_invoices = self.get_expense_sheets_with_invoices(all)
         res = super(
             HrExpenseSheet, self - expense_sheets_with_invoices
         )._do_create_moves()
@@ -48,7 +48,7 @@ class HrExpenseSheet(models.Model):
         """Perform extra checks and set proper payment state according linked
         invoices.
         """
-        expense_sheets_with_invoices = self.get_expense_sheets_with_invoices()
+        expense_sheets_with_invoices = self.get_expense_sheets_with_invoices(all)
         res = super(
             HrExpenseSheet, self - expense_sheets_with_invoices
         ).action_sheet_move_post()
@@ -196,7 +196,7 @@ class HrExpenseSheet(models.Model):
         return super(HrExpenseSheet, self - sheets_with_invoices)._compute_state()
 
     def _do_approve(self):
-        expense_sheets_with_invoices = self.get_expense_sheets_with_invoices()
+        expense_sheets_with_invoices = self.get_expense_sheets_with_invoices(all)
         own_account_sheets = self.filtered(
             lambda sheet: sheet.payment_mode == "own_account"
         )
@@ -223,7 +223,7 @@ class HrExpenseSheet(models.Model):
             super()._track_subtype(init_values)
 
     def _check_can_create_move(self):
-        expense_sheets_with_invoices = self.get_expense_sheets_with_invoices()
+        expense_sheets_with_invoices = self.get_expense_sheets_with_invoices(any)
         res = super(
             HrExpenseSheet, self - expense_sheets_with_invoices
         )._check_can_create_move()
