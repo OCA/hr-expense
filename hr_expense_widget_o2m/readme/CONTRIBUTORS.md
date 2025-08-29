@@ -1,1 +1,3 @@
-- Kitti U. \<<kittiu@ecosoft.co.th>\>
+- Kitti U. <kittiu@ecosoft.co.th>
+- Saran Lim. <saranl@ecosoft.co.th>
+- Theerayut A. <theerayuta@ecosoft.co.th>
