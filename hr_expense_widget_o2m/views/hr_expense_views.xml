@@ -13,8 +13,8 @@
                 <attribute name="widget">one2many</attribute>
             </xpath>
             <xpath expr="//field[@name='expense_line_ids']/tree" position="attributes">
-            <attribute name="editable" />
-        </xpath>
+                <attribute name="editable" />
+            </xpath>
         </field>
     </record>
 
