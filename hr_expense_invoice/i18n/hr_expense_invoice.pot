@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -27,6 +27,11 @@ msgid "Amount Due"
 msgstr ""
 
 #. module: hr_expense_invoice
+#: model:mail.message.subtype,name:hr_expense_invoice.mt_expense_approved_inherited
+msgid "Approved"
+msgstr ""
+
+#. module: hr_expense_invoice
 #: model_terms:ir.ui.view,arch_db:hr_expense_invoice.hr_expense_sheet_form_view_inherit_sale_expense
 msgid "Create Vendor Bill"
 msgstr ""
@@ -42,9 +47,13 @@ msgid "Expense Report"
 msgstr ""
 
 #. module: hr_expense_invoice
+#: model:mail.message.subtype,description:hr_expense_invoice.mt_expense_approved_inherited
+msgid "Expense report approved"
+msgstr ""
+
+#. module: hr_expense_invoice
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_account_bank_statement_line__expense_ids
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_account_move__expense_ids
-#: model:ir.model.fields,field_description:hr_expense_invoice.field_account_payment__expense_ids
 msgid "Expenses"
 msgstr ""
 
@@ -57,7 +66,6 @@ msgstr ""
 #. odoo-python
 #: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
 #: model_terms:ir.ui.view,arch_db:hr_expense_invoice.hr_expense_sheet_form_view_inherit_sale_expense
-#, python-format
 msgid "Invoices"
 msgstr ""
 
@@ -72,9 +80,24 @@ msgid "Journal Item"
 msgstr ""
 
 #. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
+msgid ""
+"Please specify an expense journal in order to generate"
+"                         accounting entries."
+msgstr ""
+
+#. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
+msgid ""
+"Please specify if the expenses for this report were paid by"
+"                         the company, or the employee"
+msgstr ""
+
+#. module: hr_expense_invoice
 #: model:ir.model.fields,help:hr_expense_invoice.field_account_bank_statement_line__source_invoice_expense_id
 #: model:ir.model.fields,help:hr_expense_invoice.field_account_move__source_invoice_expense_id
-#: model:ir.model.fields,help:hr_expense_invoice.field_account_payment__source_invoice_expense_id
 msgid ""
 "Reference to the expense with a linked invoice that generated thistransfer "
 "journal entry"
@@ -86,10 +109,23 @@ msgid "Sheet state"
 msgstr ""
 
 #. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
+msgid "Show missing work email employees"
+msgstr ""
+
+#. module: hr_expense_invoice
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_account_bank_statement_line__source_invoice_expense_id
 #: model:ir.model.fields,field_description:hr_expense_invoice.field_account_move__source_invoice_expense_id
-#: model:ir.model.fields,field_description:hr_expense_invoice.field_account_payment__source_invoice_expense_id
 msgid "Source Invoice Expense"
+msgstr ""
+
+#. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
+msgid ""
+"The work email of some employees is missing. Please add it on"
+"                          the employee form"
 msgstr ""
 
 #. module: hr_expense_invoice
@@ -105,7 +141,6 @@ msgstr ""
 #. module: hr_expense_invoice
 #. odoo-python
 #: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
-#, python-format
 msgid ""
 "Vendor bill amount mismatch!\n"
 "Please make sure amount in vendor bills equal to amount of its expense lines"
@@ -115,15 +150,27 @@ msgstr ""
 #. odoo-python
 #: code:addons/hr_expense_invoice/models/hr_expense.py:0
 #: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
-#, python-format
 msgid "Vendor bill state must be Posted"
 msgstr ""
 
 #. module: hr_expense_invoice
 #. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
+msgid "You can only generate an accounting entry for approved expense(s)."
+msgstr ""
+
+#. module: hr_expense_invoice
+#. odoo-python
 #: code:addons/hr_expense_invoice/models/account_move.py:0
-#, python-format
 msgid ""
 "You can't change the total amount, as there's an expense linked to this "
 "invoice."
+msgstr ""
+
+#. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
+msgid ""
+"You cannot create accounting entries for an expense                         "
+"report without expenses."
 msgstr ""
