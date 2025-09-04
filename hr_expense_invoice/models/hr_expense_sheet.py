@@ -2,9 +2,9 @@
 # Copyright 2015-2024 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, fields, models
+from odoo import Command, _, api, fields, models
 from odoo.exceptions import UserError
-from odoo.tools import float_compare
+from odoo.tools import config, float_compare
 
 
 class HrExpenseSheet(models.Model):
@@ -69,6 +69,21 @@ class HrExpenseSheet(models.Model):
             sheet.invoice_count = (
                 can_read and len(sheet.expense_line_ids.mapped("invoice_id")) or 0
             )
+
+    def _prepare_bills_vals(self):
+        res = super()._prepare_bills_vals()
+        test_condition = not config["test_enable"] or self.env.context.get(
+            "test_hr_expense_invoice"
+        )
+        if test_condition:
+            expenses_without_invoice = self.expense_line_ids.filtered(
+                lambda r: not r.invoice_id
+            )
+            res["line_ids"] = [
+                Command.create(expense._prepare_move_lines_vals())
+                for expense in expenses_without_invoice
+            ]
+        return res
 
     @api.depends(
         "expense_line_ids.invoice_id.payment_state",
