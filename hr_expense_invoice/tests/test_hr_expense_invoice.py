@@ -18,7 +18,11 @@ class TestHrExpenseInvoice(TestExpenseCommon):
     @classmethod
     def setUpClass(cls, chart_template_ref=None):
         super().setUpClass(chart_template_ref=chart_template_ref)
-        cls.env = cls.env(context=dict(cls.env.context, **DISABLED_MAIL_CONTEXT))
+        cls.env = cls.env(
+            context=dict(
+                cls.env.context, **DISABLED_MAIL_CONTEXT, test_hr_expense_invoice=True
+            )
+        )
         cls.account_payment_register = cls.env["account.payment.register"]
         cls.payment_obj = cls.env["account.payment"]
         cls.cash_journal = cls.company_data["default_journal_cash"]
@@ -246,3 +250,21 @@ class TestHrExpenseInvoice(TestExpenseCommon):
             sheet._validate_expense_invoice()
         self.expense.total_amount_currency = 100.0
         sheet._validate_expense_invoice()
+
+    def test_5_hr_expense_invoice_no_duplicate_accounting_entries(self):
+        """Test that expenses linked to invoices don't create
+        duplicate accounting entries."""
+        sheet = self._action_submit_expenses(self.expense + self.expense2)
+
+        with Form(self.expense) as f:
+            f.invoice_id = self.invoice
+        sheet.action_approve_expense_sheets()
+        with self.assertRaises(UserError):
+            sheet.action_sheet_move_create()
+        self.invoice.action_post()
+        sheet.action_sheet_move_create()
+        self.assertEqual(len(sheet.account_move_ids.invoice_line_ids), 1)
+        self.assertEqual(
+            sheet.account_move_ids.invoice_line_ids.price_total,
+            self.expense2.total_amount,
+        )
