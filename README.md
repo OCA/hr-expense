@@ -25,7 +25,7 @@ addon | version | maintainers | summary
 [hr_expense_advance_clearing_sequence](hr_expense_advance_clearing_sequence/) | 17.0.1.0.0 |  | HR Expense Advance Clearing Sequence
 [hr_expense_cancel](hr_expense_cancel/) | 17.0.1.0.3 |  | Hr expense cancel
 [hr_expense_employee_analytic_default](hr_expense_employee_analytic_default/) | 17.0.1.0.0 | <a href='https://github.com/victoralmau'><img src='https://github.com/victoralmau.png' width='32' height='32' style='border-radius:50%;' alt='victoralmau'/></a> | Expense Employee Analytic Default
-[hr_expense_invoice](hr_expense_invoice/) | 17.0.1.0.3 |  | Supplier invoices on HR expenses
+[hr_expense_invoice](hr_expense_invoice/) | 17.0.1.0.4 |  | Supplier invoices on HR expenses
 [hr_expense_journal](hr_expense_journal/) | 17.0.1.0.0 | <a href='https://github.com/dreispt'><img src='https://github.com/dreispt.png' width='32' height='32' style='border-radius:50%;' alt='dreispt'/></a> | Set the Journal for the payment type used to pay the expense
 [hr_expense_payment](hr_expense_payment/) | 17.0.1.0.1 |  | HR Expense Payment
 [hr_expense_sequence](hr_expense_sequence/) | 17.0.1.0.0 |  | HR expense sequence
