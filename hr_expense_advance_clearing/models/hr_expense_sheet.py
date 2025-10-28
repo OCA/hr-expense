@@ -71,7 +71,8 @@ class HrExpenseSheet(models.Model):
             and x.advance_sheet_residual <= 0.0
             and x.state in ["submit", "approve", "post"]
         )
-        if sheets_x:  # Advance Sheets with no residual left
+        if sheets_x and not self.env.context.get("skip_check_clearing_amount", False):
+            # Advance Sheets with no residual left
             raise ValidationError(
                 _("Advance: %s has no amount to clear")
                 % ", ".join(sheets_x.mapped("name"))

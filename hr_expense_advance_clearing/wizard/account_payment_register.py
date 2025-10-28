@@ -96,6 +96,7 @@ class AccountPaymentRegister(models.TransientModel):
             )
 
     def action_create_payments(self):
+        self = self.with_context(skip_check_clearing_amount=True)
         if self._context.get("hr_return_advance", False):
             self._validate_over_return()
             self.expense_post_return_advance()
