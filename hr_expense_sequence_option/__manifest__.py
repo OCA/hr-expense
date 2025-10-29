@@ -10,6 +10,7 @@
     "website": "https://github.com/OCA/hr-expense",
     "category": "Human Resources",
     "depends": ["base_sequence_option", "hr_expense_sequence"],
+    "data": ["data/hr_expense_options.xml"],
     "demo": ["demo/hr_expense_demo_options.xml"],
     "development_status": "Alpha",
     "maintainers": ["ps-tubtim"],

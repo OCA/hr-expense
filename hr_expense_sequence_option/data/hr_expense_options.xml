@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="hr_expense_sequence_option" model="ir.sequence.option">
+        <field name="name">Expense Report</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="use_sequence_option" eval="False" />
+    </record>
+</odoo>
