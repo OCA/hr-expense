@@ -253,8 +253,39 @@ class TestHrExpenseInvoice(TestExpenseCommon):
             f.invoice_id = self.invoice
         sheet.action_approve_expense_sheets()
         sheet.action_sheet_move_post()
-        self.assertEqual(len(sheet.account_move_ids.invoice_line_ids), 1)
+        self.assertEqual(len(sheet.account_move_ids[0].invoice_line_ids), 1)
         self.assertEqual(
-            sheet.account_move_ids.invoice_line_ids.price_total,
+            sheet.account_move_ids[0].invoice_line_ids.price_total,
             self.expense2.total_amount,
         )
+        self.assertEqual(
+            sheet.account_move_ids[1].amount_total,
+            self.expense.total_amount,
+        )
+
+    def test_6_hr_expense_mixed_invoice_same_sheet(self):
+        # We add 3 expenses
+        self.expense.price_unit = 10
+        self.expense2.price_unit = 20
+        self.expense3.price_unit = 30
+        expenses = self.expense + self.expense2 + self.expense3
+        sheet = self._action_submit_expenses(expenses)
+        self.assertIn(self.expense, sheet.expense_line_ids)
+        self.assertIn(self.expense2, sheet.expense_line_ids)
+        self.assertIn(self.expense3, sheet.expense_line_ids)
+        # We add invoices to expenses 1 and 2
+        self.invoice.action_post()
+        self.invoice2.action_post()
+        self.expense.invoice_id = self.invoice.id
+        self.expense2.invoice_id = self.invoice2.id
+        # We approve sheet
+        sheet.action_approve_expense_sheets()
+        self.assertEqual(sheet.state, "approve")
+        self.assertFalse(sheet.account_move_ids)
+        # We post journal entries
+        sheet.action_sheet_move_post()
+        self.assertEqual(sheet.state, "post")
+        self.assertEqual(self.invoice.payment_state, "paid")
+        self.assertEqual(self.invoice2.payment_state, "paid")
+        # 2 ap moves and 1 vendor bill
+        self.assertEqual(len(sheet.account_move_ids), 3)

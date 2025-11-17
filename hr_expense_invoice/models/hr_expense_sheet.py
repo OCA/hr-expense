@@ -17,18 +17,9 @@ class HrExpenseSheet(models.Model):
             lambda sheet: func(expense.invoice_id for expense in sheet.expense_line_ids)
         )
 
-    def _do_create_moves(self):
-        """Don't let super to create any move:
-        - Paid by company: there's already the invoice.
-        - Paid by employee: we create here a journal entry transferring the AP
-          balance from the invoice partner to the employee.
-        """
-        expense_sheets_with_invoices = self.get_expense_sheets_with_invoices(all)
-        res = super(
-            HrExpenseSheet, self - expense_sheets_with_invoices
-        )._do_create_moves()
+    def _do_create_ap_moves(self):
         # Create AP transfer entry for expenses paid by employees
-        for expense in expense_sheets_with_invoices.expense_line_ids:
+        for expense in self.expense_line_ids.filtered("invoice_id"):
             if expense.payment_mode == "own_account":
                 move_vals = expense._prepare_own_account_transfer_move_vals()
                 move = self.env["account.move"].create(move_vals)
@@ -42,21 +33,17 @@ class HrExpenseSheet(models.Model):
                     == partner
                 )
                 (ap_lines + transfer_line).reconcile()
-        return res
 
     def action_sheet_move_post(self):
-        """Perform extra checks and set proper payment state according linked
-        invoices.
-        """
-        expense_sheets_with_invoices = self.get_expense_sheets_with_invoices(all)
-        res = super(
-            HrExpenseSheet, self - expense_sheets_with_invoices
-        ).action_sheet_move_post()
-
-        for expense in expense_sheets_with_invoices:
+        # Handle expense sheets with invoices
+        sheets_all_inovices = self.get_expense_sheets_with_invoices(all)
+        res = super(HrExpenseSheet, self - sheets_all_inovices).action_sheet_move_post()
+        # Use 'any' here because there may be mixed sheets
+        # and we have to create ap moves for those invoices
+        for expense in self.get_expense_sheets_with_invoices(any):
             expense._validate_expense_invoice()
             expense._check_can_create_move()
-            expense._do_create_moves()
+            expense._do_create_ap_moves()
             # The payment state is set in a fixed way in super, but it depends on the
             # payment state of the invoices when there are some of them linked
             expense.filtered(
@@ -121,10 +108,11 @@ class HrExpenseSheet(models.Model):
             expenses_without_invoice = self.expense_line_ids.filtered(
                 lambda r: not r.invoice_id
             )
-            res["line_ids"] = [
-                Command.create(expense._prepare_move_lines_vals())
-                for expense in expenses_without_invoice
-            ]
+            if expenses_without_invoice:
+                res["line_ids"] = [
+                    Command.create(expense._prepare_move_lines_vals())
+                    for expense in expenses_without_invoice
+                ]
 
         return res
 
@@ -227,8 +215,8 @@ class HrExpenseSheet(models.Model):
         res = super(
             HrExpenseSheet, self - expense_sheets_with_invoices
         )._check_can_create_move()
-        # We copy this method because the expenses are in 'approve'
-        # state instead of 'submit'
+        # We copy this method because the expenses are in 'approve' or 'posted'
+        # in case this is the second run, instead of 'submit'
         if any(not sheet.expense_line_ids for sheet in expense_sheets_with_invoices):
             raise UserError(
                 self.env._(
@@ -236,7 +224,10 @@ class HrExpenseSheet(models.Model):
                         report without expenses."
                 )
             )
-        if any(sheet.state != "approve" for sheet in expense_sheets_with_invoices):
+        if any(
+            sheet.state not in ["approve", "post"]
+            for sheet in expense_sheets_with_invoices
+        ):
             raise UserError(
                 self.env._(
                     "You can only generate an accounting entry for approved expense(s)."
