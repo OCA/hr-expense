@@ -1,0 +1,88 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* hr_expense_employee_payment
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-25 10:31+0000\n"
+"PO-Revision-Date: 2025-11-25 11:33+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.5\n"
+
+#. module: hr_expense_employee_payment
+#. odoo-python
+#: code:addons/hr_expense_employee_payment/models/hr_expense_sheet.py:0
+msgid "%(expense_sheet_name)s | Expense conciliation"
+msgstr "%(expense_sheet_name)s | Conciliación de gastos"
+
+#. module: hr_expense_employee_payment
+#: model:ir.model,name:hr_expense_employee_payment.model_hr_expense_sheet
+msgid "Expense Report"
+msgstr "Informe de gastos"
+
+#. module: hr_expense_employee_payment
+#. odoo-python
+#: code:addons/hr_expense_employee_payment/models/hr_expense_sheet.py:0
+msgid ""
+"Expense conciliation entry for '%(expense_sheet_name)s' expense sheet and "
+"taking in consideration '%(vendor_move_names)s' moves."
+msgstr ""
+"Asiento de conciliación para el informe de gastos '%(expense_sheet_name)s' "
+"teniendo en cuenta los movimientos'%(vendor_move_names)s'."
+
+#. module: hr_expense_employee_payment
+#. odoo-python
+#: code:addons/hr_expense_employee_payment/models/hr_expense_sheet.py:0
+msgid ""
+"Only expense sheets in 'To Submit' or 'Submitted' state can be splitted. "
+"Expense Sheet '%s' is in state '%s'."
+msgstr ""
+"Solo los informes de gastos con estados 'A enviar' o 'Enviado' pueden ser "
+"divididos. El Informe de Gastos '%s' está en estado '%s'."
+
+#. module: hr_expense_employee_payment
+#: model:ir.actions.server,name:hr_expense_employee_payment.hr_expense_sheet_split_action
+msgid "Split Expenses"
+msgstr "Dividir Gastos"
+
+#. module: hr_expense_employee_payment
+#. odoo-python
+#: code:addons/hr_expense_employee_payment/models/hr_expense_sheet.py:0
+msgid "Splitted Expense Sheets"
+msgstr "Informes de Gastos divididos"
+
+#. module: hr_expense_employee_payment
+#. odoo-python
+#: code:addons/hr_expense_employee_payment/models/hr_expense_sheet.py:0
+msgid ""
+"This expense sheet has been created by splitting the expense sheet '%s'."
+msgstr ""
+"Este informe de gastos ha sido creado a partir de la división del informe "
+"'%s'."
+
+#. module: hr_expense_employee_payment
+#. odoo-python
+#: code:addons/hr_expense_employee_payment/models/hr_expense_sheet.py:0
+msgid ""
+"You cannot register a payments for Employees and Vendors at the same time"
+msgstr "No puedes registrar pagos a Empleados y a Proveedores al mismo tiempo"
+
+#. module: hr_expense_employee_payment
+#. odoo-python
+#: code:addons/hr_expense_employee_payment/models/hr_expense_sheet.py:0
+msgid ""
+"You have multiple expense journals defined, please set a single expense "
+"journal in the company settings to proceed with the payment for Employees "
+"or pay one by one."
+msgstr ""
+"Tiene definidos varios diarios de gastos, por favor, establezca un único "
+"diario de gastos en la configuración de la compañía para proceder al "
+"pago de los empleados o pague uno por uno."
