@@ -78,7 +78,7 @@ class HrExpenseSheet(models.Model):
         for sheet in self:
             if (
                 sheet.advance_sheet_id
-                and sheet.account_move_ids.state == "posted"
+                and set(sheet.account_move_ids.mapped("state")) == {"posted"}
                 and not sheet.amount_residual
             ):
                 sheet.payment_state = "paid"
