@@ -32,9 +32,13 @@ class HrExpense(models.Model):
 
     @api.depends("currency_id", "tax_ids", "total_amount", "unit_amount", "quantity")
     def _compute_amount_price_tax(self):
-        for expense in self.filtered(lambda l: not l.tax_adjust):
-            price_tax = expense._get_expense_price_tax()
-            expense.price_tax = price_tax
+        for expense in self:
+            if not expense.tax_ids:
+                expense.price_tax = 0.0
+                continue
+
+            if not expense.tax_adjust:
+                expense.price_tax = expense._get_expense_price_tax()
 
     @api.onchange("price_tax", "tax_ids", "total_amount", "unit_amount", "quantity")
     def _onchange_price_tax(self):
