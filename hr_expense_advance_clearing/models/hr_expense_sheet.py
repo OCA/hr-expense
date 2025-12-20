@@ -117,29 +117,36 @@ class HrExpenseSheet(models.Model):
                 sheet.total_amount,
                 precision_rounding=sheet.currency_id.rounding,
             )
-            move_lines = (
-                sheet.account_move_id.line_ids
-                | sheet.advance_sheet_id.account_move_id.line_ids
-            )
-            account_id = emp_advance.property_account_expense_id.id
-            adv_move_lines = (
-                self.env["account.move.line"]
-                .sudo()
-                .search(
-                    [
-                        ("id", "in", move_lines.ids),
-                        ("account_id", "=", account_id),
-                        ("reconciled", "=", False),
-                    ]
-                )
-            )
-            # Reconcile when line more than 1
-            if len(adv_move_lines) > 1:
-                adv_move_lines.with_context(**ctx).reconcile()
+            # Reconcile advance lines for this sheet
+            self._reconcile_sheet_advance(sheet, emp_advance, ctx)
             # Update state on clearing advance when advance residual > total amount
             if sheet.advance_sheet_id and advance_residual != -1:
                 sheet.write({"state": "done"})
         return res
+
+    def _reconcile_sheet_advance(self, sheet, emp_advance, ctx=None):
+        """Reconcile advance of this sheet with the advance_sheet on the advance account."""
+        ctx = dict(ctx or {})
+        move_lines = (
+            sheet.account_move_id.line_ids
+            | sheet.advance_sheet_id.account_move_id.line_ids
+        )
+        account_id = emp_advance.property_account_expense_id.id
+        adv_move_lines = (
+            self.env["account.move.line"]
+            .sudo()
+            .search(
+                [
+                    ("id", "in", move_lines.ids),
+                    ("account_id", "=", account_id),
+                    ("reconciled", "=", False),
+                ]
+            )
+        )
+        # Reconcile when line more than 1
+        if len(adv_move_lines) > 1:
+            return adv_move_lines.with_context(**ctx).reconcile()
+        return False
 
     def open_clear_advance(self):
         self.ensure_one()

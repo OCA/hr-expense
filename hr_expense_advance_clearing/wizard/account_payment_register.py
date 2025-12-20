@@ -130,6 +130,17 @@ class AccountPaymentRegister(models.TransientModel):
     def _get_product_advance(self):
         return self.env.ref("hr_expense_advance_clearing.product_emp_advance")
 
+    def reconcile_return_advance(
+        self, payment, expense_sheet, advance_account, ctx=None
+    ):
+        """Reconcile the return advance and
+        advance move on the advance account."""
+        account_move_lines_to_reconcile = self.env["account.move.line"]
+        for line in payment.move_id.line_ids + expense_sheet.account_move_id.line_ids:
+            if line.account_id == advance_account and not line.reconciled:
+                account_move_lines_to_reconcile |= line
+        return account_move_lines_to_reconcile.with_context(**(ctx or {})).reconcile()
+
     def expense_post_return_advance(self):
         """This is opposite operation of action_create_payments(),
         it return remaining advance from employee back to company
@@ -163,11 +174,6 @@ class AccountPaymentRegister(models.TransientModel):
         }
         expense_sheet.message_post(body=body)
 
-        # Reconcile the return advance and the advance,
-        # i.e. lookup on the advance account on move lines
-        account_move_lines_to_reconcile = self.env["account.move.line"]
-        for line in payment.move_id.line_ids + expense_sheet.account_move_id.line_ids:
-            if line.account_id == advance_account and not line.reconciled:
-                account_move_lines_to_reconcile |= line
-        res = account_move_lines_to_reconcile.with_context(**ctx).reconcile()
-        return res
+        return self.reconcile_return_advance(
+            payment, expense_sheet, advance_account, ctx
+        )
