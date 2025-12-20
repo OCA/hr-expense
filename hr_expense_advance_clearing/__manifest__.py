@@ -3,7 +3,7 @@
 
 {
     "name": "Employee Advance and Clearing",
-    "version": "15.0.1.3.1",
+    "version": "15.0.1.3.2",
     "category": "Human Resources",
     "author": "Ecosoft, Odoo Community Association (OCA)",
     "license": "AGPL-3",
