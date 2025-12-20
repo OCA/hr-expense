@@ -127,6 +127,9 @@ class AccountPaymentRegister(models.TransientModel):
         )
         return payment
 
+    def _get_product_advance(self):
+        return self.env.ref("hr_expense_advance_clearing.product_emp_advance")
+
     def expense_post_return_advance(self):
         """This is opposite operation of action_create_payments(),
         it return remaining advance from employee back to company
@@ -138,7 +141,7 @@ class AccountPaymentRegister(models.TransientModel):
         ctx = self._context.copy()
         ctx.update({"skip_account_move_synchronization": True})
         expense_sheet = move_ids.line_ids.expense_id.sheet_id
-        emp_advance = self.env.ref("hr_expense_advance_clearing.product_emp_advance")
+        emp_advance = self._get_product_advance()
         advance_account = emp_advance.property_account_expense_id
         # Create return advance and post it
         payment = self._create_payment_return_advance(ctx, advance_account)
