@@ -6,117 +6,119 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2026-01-02 09:42+0000\n"
+"Last-Translator: Betül Öğmen <betulo@eska.biz>\n"
 "Language-Team: none\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.10.4\n"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__can_review
 msgid "Can Review"
-msgstr ""
+msgstr "Gözden Geçirebilir"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model,name:hr_expense_tier_validation.model_hr_expense
 msgid "Expense"
-msgstr ""
+msgstr "Masraf"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model,name:hr_expense_tier_validation.model_hr_expense_sheet
 msgid "Expense Report"
-msgstr ""
+msgstr "Masraf Formu"
 
 #. module: hr_expense_tier_validation
 #: model_terms:ir.ui.view,arch_db:hr_expense_tier_validation.hr_expense_sheet_view_search
 msgid "Expense report validated and ready to be approved"
-msgstr ""
+msgstr "Masraf raporu doğrulandı ve onaylanmaya hazır"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__has_comment
 msgid "Has Comment"
-msgstr ""
+msgstr "Yorum Var"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__hide_reviews
 msgid "Hide Reviews"
-msgstr ""
+msgstr "İncelemeleri Gizle"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,help:hr_expense_tier_validation.field_hr_expense_sheet__has_comment
 msgid "If set, Allow the reviewer to leave a comment on the review."
-msgstr ""
+msgstr "Ayarlanırsa, inceleyene incelemede yorum bırakma izni verin."
 
 #. module: hr_expense_tier_validation
 #: model_terms:ir.ui.view,arch_db:hr_expense_tier_validation.hr_expense_sheet_view_search
 msgid "My Expense report to review"
-msgstr ""
+msgstr "İncelenecek Masraf formum"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__need_validation
 msgid "Need Validation"
-msgstr ""
+msgstr "Doğrulama Gerekiyor"
 
 #. module: hr_expense_tier_validation
 #: model_terms:ir.ui.view,arch_db:hr_expense_tier_validation.hr_expense_sheet_view_search
 msgid "Needs my Review"
-msgstr ""
+msgstr "İncelememe ihtiyacı var"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__next_review
 msgid "Next Review"
-msgstr ""
+msgstr "Sonraki İnceleme"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__rejected
 msgid "Rejected"
-msgstr ""
+msgstr "Reddedildi"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__rejected_message
 msgid "Rejected Message"
-msgstr ""
+msgstr "Reddedilme Mesaj"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__reviewer_ids
 msgid "Reviewers"
-msgstr ""
+msgstr "İnceleyenler"
 
 #. module: hr_expense_tier_validation
 #. odoo-python
 #: code:addons/hr_expense_tier_validation/models/hr_expense.py:0
 msgid "The expense report is under validation."
-msgstr ""
+msgstr "Masraf formu onay aşamasındadır."
 
 #. module: hr_expense_tier_validation
 #: model:ir.model,name:hr_expense_tier_validation.model_tier_definition
 msgid "Tier Definition"
-msgstr ""
+msgstr "Seviye Tanımı"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__to_validate_message
 msgid "To Validate Message"
-msgstr ""
+msgstr "Mesajı Doğrulamak İçin"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__validated
 #: model_terms:ir.ui.view,arch_db:hr_expense_tier_validation.hr_expense_sheet_view_search
 msgid "Validated"
-msgstr ""
+msgstr "Doğrulanmış"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__validated_message
 msgid "Validated Message"
-msgstr ""
+msgstr "Doğrulanmış Mesaj"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__validation_status
 msgid "Validation Status"
-msgstr ""
+msgstr "Doğrulama Durumları"
 
 #. module: hr_expense_tier_validation
 #: model:ir.model.fields,field_description:hr_expense_tier_validation.field_hr_expense_sheet__review_ids
 msgid "Validations"
-msgstr ""
+msgstr "Doğrulamalar"
