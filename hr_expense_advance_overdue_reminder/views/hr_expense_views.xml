@@ -61,7 +61,6 @@
                     </group>
                 </page>
             </xpath>
-
         </field>
     </record>
     <record id="view_hr_expense_sheet_tree" model="ir.ui.view">
@@ -103,5 +102,4 @@ if records:
     action = records.action_overdue_reminder()
         </field>
     </record>
-
 </odoo>
