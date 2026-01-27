@@ -3,7 +3,7 @@
 
 {
     "name": "Employee Advance Overdue Reminder",
-    "version": "15.0.1.0.0",
+    "version": "18.0.1.0.0",
     "category": "Human Resources",
     "author": "Ecosoft, Odoo Community Association (OCA)",
     "license": "AGPL-3",
@@ -19,7 +19,6 @@
         "views/reminder_definition_view.xml",
         "views/hr_expense_views.xml",
         "views/hr_advance_overdue_view.xml",
-        "wizard/hr_advance_overdue_reminder_wizard.xml",
     ],
     "installable": True,
     "maintainers": ["Saran440"],

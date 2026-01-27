@@ -29,9 +29,7 @@ class TestHrExpenseAdvanceOverdueReminder(TransactionCase):
             {
                 "code": "154000",
                 "name": "Employee Advance",
-                "user_type_id": cls.env.ref(
-                    "account.data_account_type_current_assets"
-                ).id,
+                "account_type": "asset_current",
                 "reconcile": True,
             }
         )
@@ -57,7 +55,7 @@ class TestHrExpenseAdvanceOverdueReminder(TransactionCase):
         ) as expense:
             expense.name = description
             expense.employee_id = employee
-            expense.unit_amount = amount
+            expense.total_amount = amount
             expense.payment_mode = payment_mode
         expense = expense.save()
         expense.tax_ids = False  # Test no vat
@@ -166,11 +164,6 @@ class TestHrExpenseAdvanceOverdueReminder(TransactionCase):
         advance_overdue_reminder.state = "draft"
         with Form(advance_overdue_reminder) as av_overdue:
             av_overdue.reminder_type = "mail"
-        # Check employee address private, not allow send email
-        advance_overdue_reminder.employee_id.address_home_id.type = "private"
-        with self.assertRaises(UserError):
-            advance_overdue_reminder.action_validate()
-        advance_overdue_reminder.employee_id.address_home_id.type = "contact"
         mail_compose = advance_overdue_reminder.action_validate()
         with Form(
             self.mail_compose.with_context(
@@ -208,3 +201,37 @@ class TestHrExpenseAdvanceOverdueReminder(TransactionCase):
         # Check reminder < today
         self.advance.reminder_next_time = "2000-12-31"
         self.assertTrue(self.advance.is_overdue)
+
+    def test_02_duplicate_warning(self):
+        reminder_config = self.reminder_config.create({"name": "Overdue Reminder"})
+
+        # Create first reminder with the expense sheet and set to done
+        reminder1 = self.env["hr.advance.overdue.reminder"].create(
+            {
+                "employee_id": self.employee.id,
+                "reminder_definition_id": reminder_config.id,
+                "expense_sheet_ids": [(6, 0, self.advance.ids)],
+                "state": "done",
+            }
+        )
+
+        # Create second reminder with the same expense sheet
+        reminder2 = self.env["hr.advance.overdue.reminder"].create(
+            {
+                "employee_id": self.employee.id,
+                "reminder_definition_id": reminder_config.id,
+                "expense_sheet_ids": [(6, 0, self.advance.ids)],
+            }
+        )
+
+        # Check warning is True because reminder1 is done
+        self.assertTrue(reminder2.is_warning_duplicate)
+
+        # Remove expense sheet from reminder2
+        reminder2.expense_sheet_ids = [(5, 0, 0)]
+        self.assertFalse(reminder2.is_warning_duplicate)
+
+        # Set reminder1 back to draft, should not trigger warning
+        reminder1.state = "draft"
+        reminder2.expense_sheet_ids = [(6, 0, self.advance.ids)]
+        self.assertFalse(reminder2.is_warning_duplicate)
