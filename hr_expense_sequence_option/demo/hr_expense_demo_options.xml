@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="seq_hr_expense_option_1" model="ir.sequence">
+        <field name="name">Expense Sheet: Option 1</field>
+        <field name="padding" eval="5" />
+        <field name="prefix">EX-1/</field>
+    </record>
+
+    <record id="hr_expense_sequence_option" model="ir.sequence.option">
+        <field name="name">Expense Report</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="use_sequence_option" eval="False" />
+    </record>
+
+    <record id="hr_expense_sequence_option_line_1" model="ir.sequence.option.line">
+        <field name="base_id" ref="hr_expense_sequence_option" />
+        <field name="name">EX Option 1</field>
+        <field name="filter_domain">[]</field>
+        <field
+            name="sequence_id"
+            ref="hr_expense_sequence_option.seq_hr_expense_option_1"
+        />
+    </record>
+</odoo>
