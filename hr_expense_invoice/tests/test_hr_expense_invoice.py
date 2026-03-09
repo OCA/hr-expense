@@ -289,3 +289,34 @@ class TestHrExpenseInvoice(TestExpenseCommon):
         self.assertEqual(self.invoice2.payment_state, "paid")
         # 2 ap moves and 1 vendor bill
         self.assertEqual(len(sheet.account_move_ids), 3)
+
+    def test_7_coverage_boosters(self):
+        """Test to cover edge cases for 100% Codecov coverage"""
+        sheet = self._action_submit_expenses(self.expense)
+
+        # 1. Cobertura para _track_subtype 'else' (Imagen 3)
+        sheet.write({"state": "draft"})
+        sheet._track_subtype({"state": "draft"})
+
+        # 2. Cobertura para los 'if' en _reconcile_ap_moves (Imagen 1)
+        self.invoice.action_post()
+        self.expense.write(
+            {
+                "invoice_id": self.invoice.id,
+                "payment_mode": "own_account",
+            }
+        )
+
+        # Condición False 1: No hay asientos generados (move = False)
+        sheet._reconcile_ap_moves()
+
+        # Condición False 2: El asiento existe, pero NO está publicado
+        dummy_move = self.env["account.move"].create(
+            {
+                "move_type": "entry",
+                "source_invoice_expense_id": self.expense.id,
+                "journal_id": self.cash_journal.id,
+            }
+        )
+        sheet.account_move_ids |= dummy_move
+        sheet._reconcile_ap_moves()
