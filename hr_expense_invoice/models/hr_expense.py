@@ -1,11 +1,12 @@
 # Copyright 2017 Tecnativa - Vicent Cubells
 # Copyright 2020 Tecnativa - David Vidal
-# Copyright 2021 Tecnativa - Víctor Martínez
+# Copyright 2021-2026 Tecnativa - Víctor Martínez
 # Copyright 2015-2024 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import Command, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools import float_compare, float_is_zero
 
 
 class HrExpense(models.Model):
@@ -57,6 +58,34 @@ class HrExpense(models.Model):
             "invoice_line_ids": invoice_lines,
         }
 
+    def _adjust_invoice_tax_amount(self, invoice):
+        """If the tax amount does not match due to rounding, we will adjust
+        it manually, similar to how it is done in the interface using the pencil icon.
+        Example: Expense 10 (8.7 + 1.30). The invoice generated should also
+        include 1.30 in taxes.
+        """
+        tax_amount = self.tax_amount_currency
+        if float_is_zero(tax_amount, precision_rounding=self.currency_id.rounding):
+            return
+        if (
+            float_compare(
+                invoice.amount_tax,
+                tax_amount,
+                precision_rounding=self.currency_id.rounding,
+            )
+            != 0
+        ):
+            tax_totals = invoice.tax_totals
+            tax_totals["tax_amount_currency"] = tax_amount
+            tax_totals["tax_amount"] = tax_amount
+            subtotals = tax_totals["subtotals"]
+            subtotals[0]["tax_amount_currency"] = tax_amount
+            subtotals[0]["tax_amount"] = tax_amount
+            subtotals[0]["tax_groups"][0]["tax_amount_currency"] = tax_amount
+            subtotals[0]["tax_groups"][0]["tax_amount"] = tax_amount
+            tax_totals["subtotals"] = subtotals
+            invoice.tax_totals = tax_totals
+
     def _prepare_own_account_transfer_move_vals(self):
         self.ensure_one()
         self = self.with_company(self.company_id)
@@ -102,6 +131,7 @@ class HrExpense(models.Model):
 
     def action_expense_create_invoice(self):
         invoice = self.env["account.move"].create(self._prepare_invoice_values())
+        self._adjust_invoice_tax_amount(invoice)
         attachments = self.env["ir.attachment"].search(
             [("res_model", "=", self._name), ("res_id", "in", self.ids)]
         )

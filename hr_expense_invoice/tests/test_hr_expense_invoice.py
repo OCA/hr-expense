@@ -1,12 +1,13 @@
 # Copyright 2017 Tecnativa - Vicent Cubells
 # Copyright 2021 Tecnativa - Pedro M. Baeza
-# Copyright 2021-2023 Tecnativa - Víctor Martínez
+# Copyright 2021-2026 Tecnativa - Víctor Martínez
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 import base64
 
 from odoo import fields
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests import Form, tagged
+from odoo.tools import mute_logger
 
 from odoo.addons.hr_expense.tests.common import TestExpenseCommon
 
@@ -289,3 +290,18 @@ class TestHrExpenseInvoice(TestExpenseCommon):
         self.assertEqual(self.invoice2.payment_state, "paid")
         # 2 ap moves and 1 vendor bill
         self.assertEqual(len(sheet.account_move_ids), 3)
+
+    @mute_logger("odoo.models.unlink")
+    def test_7_hr_expense_invoice_tax_amount(self):
+        expense = self.create_expense({"total_amount_currency": 10})
+        self.assertEqual(expense.untaxed_amount_currency, 8.7)
+        self.assertEqual(expense.tax_amount_currency, 1.30)
+        sheet = self._action_submit_expenses(expense)
+        self.assertEqual(sheet.total_amount, 10)
+        sheet.action_submit_sheet()
+        sheet.action_approve_expense_sheets()
+        expense.action_expense_create_invoice()
+        self.assertTrue(expense.invoice_id)
+        self.assertEqual(expense.invoice_id.amount_untaxed, 8.7)
+        self.assertEqual(expense.invoice_id.amount_total, 10)
+        self.assertEqual(sheet.total_amount, 10)
