@@ -10,10 +10,10 @@ class HrExpenseSheet(models.Model):
 
     _has_cancel_reason = "optional"  # ["no", "optional", "required"]
 
-    def action_unpost(self):
+    def action_unpost_confirm(self):
         if not self.filtered("cancel_confirm"):
             return self.open_cancel_confirm_wizard()
-        return super().action_unpost()
+        self.action_unpost()
 
     def action_sheet_move_create(self):
         """Clear reason cancel when post journal entries on expense"""

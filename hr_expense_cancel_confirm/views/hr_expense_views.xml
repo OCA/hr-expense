@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Ecosoft Co., Ltd. (https://ecosoft.co.th) -->
+<!-- License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="view_hr_expense_sheet_form" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.form.inherit</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_unpost']" position="attributes">
+                <attribute name="attrs">{'invisible': 1}</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_unpost']" position="after">
+                <button
+                    name="action_unpost_confirm"
+                    type="object"
+                    data-hotkey="c"
+                    attrs="{'invisible': [('state', '!=', 'post')]}"
+                    string="Cancel"
+                    groups="account.group_account_readonly,account.group_account_invoice"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

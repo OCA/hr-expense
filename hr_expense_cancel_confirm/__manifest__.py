@@ -11,6 +11,7 @@
     "depends": ["base_cancel_confirm", "hr_expense"],
     "data": [
         "data/config_parameter.xml",
+        "views/hr_expense_views.xml",
     ],
     "installable": True,
     "maintainers": ["Saran440"],
