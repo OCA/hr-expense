@@ -25,6 +25,18 @@ class HrExpense(models.Model):
         )
         return account_dest
 
+    def _prepare_payments_vals(self):
+        payment_vals = super()._prepare_payments_vals()
+        if self.payment_mode == "company_account" and self.vendor_id:
+            payment_vals["partner_id"] = self.vendor_id.id
+            for command in payment_vals["line_ids"]:
+                line_vals = command[2]
+                line_vals["partner_id"] = self.vendor_id.id
+                if not line_vals.get("tax_base_amount"):
+                    expense_name = line_vals["name"].split(":", 1)[-1].strip()
+                    line_vals["name"] = f"{self.vendor_id.name}: {expense_name}"
+        return payment_vals
+
 
 class HrExpenseSheet(models.Model):
     _inherit = "hr.expense.sheet"
@@ -50,25 +62,3 @@ class HrExpenseSheet(models.Model):
                         _("Expenses must be paying to the same vendor.")
                     )
         return res
-
-    def action_sheet_move_create(self):
-        # For expense paid by copany to vendor, only set state to post
-        res = super().action_sheet_move_create()
-        to_post = self.filtered(
-            lambda l: l.payment_mode == "company_account" and l.vendor_id
-        )
-        to_post.write({"state": "post"})
-        return res
-
-    def _prepare_payment_vals(self):
-        self.ensure_one()
-        payment_vals = super()._prepare_payment_vals()
-        if self.payment_mode == "company_account" and self.vendor_id:
-            for line in payment_vals["line_ids"]:
-                line[2]["partner_id"] = self.vendor_id.id
-                # Overwrite name without taxes
-                if line[2].get("tax_base_amount", False):
-                    continue
-                expense_name = line[2]["name"].split(":")[1].strip()
-                line[2]["name"] = f"{self.vendor_id.name}: {expense_name}"
-        return payment_vals
