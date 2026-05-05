@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t
+        t-name="hr_expense_trip.ListButtons"
+        t-inherit="hr_expense.ListButtons"
+        t-inherit-mode="extension"
+    >
+        <xpath expr="." position="inside">
+            <button
+                t-if="displayCreateTrip()"
+                class="d-none d-md-block btn btn-secondary"
+                t-on-click="() => this.onClick('action_create_trip')"
+            >
+                Create Trip
+            </button>
+        </xpath>
+    </t>
+</templates>
