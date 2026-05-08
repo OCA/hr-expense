@@ -1,0 +1,47 @@
+<odoo>
+    <record id="view_hr_expense_sheet_form_inherit_payment_term" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.form.inherit.payment.term</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='accounting_date']" position="after">
+                <div
+                    class="o_td_label"
+                    groups="account.group_account_invoice,account.group_account_readonly"
+                    attrs="{'invisible': [('state', 'not in', ['approve', 'post', 'done'])]}"
+                >
+                    <label
+                        for="invoice_date_due"
+                        attrs="{'invisible': [('payment_term_id', '!=', False)]}"
+                    />
+                    <label
+                        for="payment_term_id"
+                        attrs="{'invisible': [('payment_term_id', '=', False)]}"
+                    />
+                </div>
+                <div
+                    class="d-flex"
+                    groups="account.group_account_invoice,account.group_account_readonly"
+                    attrs="{'invisible': [('state', 'not in', ['approve', 'post', 'done'])]}"
+                >
+                    <field
+                        name="invoice_date_due"
+                        placeholder="Date"
+                        attrs="{'invisible': [('payment_term_id', '!=', False)], 'readonly': [('state', 'in', ['post', 'done'])]}"
+                    />
+                    <span
+                        class="o_form_label mx-3 oe_edit_only"
+                        attrs="{'invisible': ['|',('payment_term_id', '!=', False), ('state', 'in', ['post', 'done'])]}"
+                    > or </span>
+                    <field
+                        name="payment_term_id"
+                        context="{'default_company_id': company_id}"
+                        options="{'no_open': True, 'no_create': True}"
+                        placeholder="Terms"
+                        attrs="{'readonly': [('state', 'in', ['post', 'done'])]}"
+                    />
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
