@@ -7,7 +7,8 @@
             <field name="payment_mode" position="after">
                 <field
                     name="vendor_id"
-                    attrs="{'invisible': [('payment_mode', '!=', 'company_account')], 'readonly': True}"
+                    invisible="payment_mode != 'company_account'"
+                    readonly="1"
                 />
             </field>
         </field>
@@ -19,16 +20,13 @@
         <field name="inherit_id" ref="hr_expense.hr_expense_view_form" />
         <field name="arch" type="xml">
             <field name="payment_mode" position="after">
-                <div
-                    name="to_vendor"
-                    attrs="{'invisible': [('payment_mode', '!=', 'company_account')]}"
-                >
+                <div name="to_vendor" invisible="payment_mode != 'company_account'">
                     <label for="vendor_id" />
                     <field
                         name="vendor_id"
                         style="width: 70%"
                         class="oe_inline"
-                        attrs="{'readonly': [('state', 'in', ['approved', 'done'])]}"
+                        readonly="state in ['approved', 'done']"
                     />
                 </div>
             </field>

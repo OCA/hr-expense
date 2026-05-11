@@ -2,10 +2,10 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo.exceptions import UserError
-from odoo.tests.common import Form, TransactionCase
+from odoo.tests.common import BaseCommon, Form
 
 
-class TestHrExpensePayToVendor(TransactionCase):
+class TestHrExpensePayToVendor(BaseCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
