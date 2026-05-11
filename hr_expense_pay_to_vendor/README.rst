@@ -17,24 +17,28 @@ HR Expense - Pay To Vendor
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fhr--expense-lightgray.png?logo=github
-    :target: https://github.com/OCA/hr-expense/tree/16.0/hr_expense_pay_to_vendor
+    :target: https://github.com/OCA/hr-expense/tree/17.0/hr_expense_pay_to_vendor
     :alt: OCA/hr-expense
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/hr-expense-16-0/hr-expense-16-0-hr_expense_pay_to_vendor
+    :target: https://translation.odoo-community.org/projects/hr-expense-17-0/hr-expense-17-0-hr_expense_pay_to_vendor
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runboat-Try%20me-875A7B.png
-    :target: https://runboat.odoo-community.org/builds?repo=OCA/hr-expense&target_branch=16.0
+    :target: https://runboat.odoo-community.org/builds?repo=OCA/hr-expense&target_branch=17.0
     :alt: Try me on Runboat
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-This module allow expense "Pay to Vendor" as option when user select, Paid By Company.
+This module allow expense "Pay to Vendor" as option when user select,
+Paid By Company.
 
-**Pay to Vendor** is suitable for cases when user wanted to buy something, i.e., Plane Ticket,
-but do not want to pay money him/herself and use expense as the way to make payment order to accounting department.
+**Pay to Vendor** is suitable for cases when user wanted to buy
+something, i.e., Plane Ticket, but do not want to pay money him/herself
+and use expense as the way to make payment order to accounting
+department.
 
-When expense has posted journal entry, the AR will be set to Vendor (and not the Employee).
-Then, register the payment will be clearing the AR to Bank.
+When expense has posted journal entry, the AR will be set to Vendor (and
+not the Employee). Then, register the payment will be clearing the AR to
+Bank.
 
 **Table of contents**
 
@@ -46,15 +50,18 @@ Usage
 
 To use this module, you need to:
 
-#. Go to *Expenses -> My Expenses -> Expenses to Submit* and create a new
-   *Expense* with *Company* as Paid By, and a Vendor as Pay to Vendor
-#. Click on *Submit to Manager* button
-#. Click on *Approve* button
-#. Click on *Post Journal Entries* button, the Receivable will be on Vendor
-#. Click on *Register Payment* button, fill in the data of the wizard and
-   click on *Validate* button
+1. Go to *Expenses -> My Expenses -> Expenses to Submit* and create a
+   new *Expense* with *Company* as Paid By, and a Vendor as Pay to
+   Vendor
+2. Click on *Submit to Manager* button
+3. Click on *Approve* button
+4. Click on *Post Journal Entries* button, the Receivable will be on
+   Vendor
+5. Click on *Register Payment* button, fill in the data of the wizard
+   and click on *Validate* button
 
-You can now check that the partner in journal entries are on Vendor, and not on Employee.
+You can now check that the partner in journal entries are on Vendor, and
+not on Employee.
 
 Bug Tracker
 ===========
@@ -62,7 +69,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/hr-expense/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/hr-expense/issues/new?body=module:%20hr_expense_pay_to_vendor%0Aversion:%2016.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/hr-expense/issues/new?body=module:%20hr_expense_pay_to_vendor%0Aversion:%2017.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -70,17 +77,17 @@ Credits
 =======
 
 Authors
-~~~~~~~
+-------
 
 * Ecosoft
 
 Contributors
-~~~~~~~~~~~~
+------------
 
-* Kitti U. <kittiu@ecosoft.co.th>
+-  Kitti U. <kittiu@ecosoft.co.th>
 
 Maintainers
-~~~~~~~~~~~
+-----------
 
 This module is maintained by the OCA.
 
@@ -100,6 +107,6 @@ Current `maintainer <https://odoo-community.org/page/maintainer-role>`__:
 
 |maintainer-kittiu| 
 
-This module is part of the `OCA/hr-expense <https://github.com/OCA/hr-expense/tree/16.0/hr_expense_pay_to_vendor>`_ project on GitHub.
+This module is part of the `OCA/hr-expense <https://github.com/OCA/hr-expense/tree/17.0/hr_expense_pay_to_vendor>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.
