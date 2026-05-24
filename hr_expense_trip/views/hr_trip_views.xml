@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="hr_trip_view_list" model="ir.ui.view">
+        <field name="name">hr.trip.view.list</field>
+        <field name="model">hr.trip</field>
+        <field name="arch" type="xml">
+            <list string="Trips">
+                <field name="name" />
+                <field name="start_date" />
+                <field name="end_date" />
+                <field name="reason" />
+                <field name="state" />
+            </list>
+        </field>
+    </record>
+
+    <record id="hr_trip_view_form" model="ir.ui.view">
+        <field name="name">hr.trip.view.form</field>
+        <field name="model">hr.trip</field>
+        <field name="arch" type="xml">
+            <form string="Trip">
+                <header>
+                    <button
+                        name="action_request_approval"
+                        type="object"
+                        string="Request Approval"
+                        class="btn-primary"
+                        invisible="state != 'draft'"
+                    />
+                    <button
+                        name="action_approve"
+                        type="object"
+                        string="Approve"
+                        class="btn-primary"
+                        invisible="state != 'request'"
+                        groups="hr_expense.group_hr_expense_manager"
+                    />
+                    <button
+                        name="action_done"
+                        type="object"
+                        string="Mark as Done"
+                        class="btn-primary"
+                        invisible="state != 'collect_receipts'"
+                    />
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,request,receipts,done"
+                    />
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Trip Name" nolabel="1" />
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="reason" widget="text" string="Trip Reason" />
+                    </group>
+                    <group>
+                        <group>
+                            <field
+                                name="start_date"
+                                widget="daterange"
+                                options="{'end_date_field': 'end_date'}"
+                            />
+                            <field
+                                name="employee_id"
+                                groups="hr_expense.group_hr_expense_manager"
+                            />
+                        </group>
+                        <group>
+                            <field name="partner_id" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Expenses" name="expenses">
+                            <field
+                                name="expense_ids"
+                                mode="list"
+                                widget="expense_lines_widget"
+                                options="{'reload_on_button': True}"
+                                context="{'default_employee_id': employee_id, 'default_trip_id': id, 'form_view_ref' : 'hr_expense.hr_expense_view_form_without_header'}"
+                                force_save="1"
+                            >
+                                <list editable="bottom">
+                                    <field name="name" />
+                                    <field
+                                        name="date"
+                                        decoration-success="date &lt; trip_start_date"
+                                        decoration-warning="date &gt; trip_end_date"
+                                    />
+                                    <field
+                                        name="trip_start_date"
+                                        column_invisible="1"
+                                    />
+                                    <field name="trip_end_date" column_invisible="1" />
+                                    <field name="total_amount" />
+                                    <field name="state" />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter />
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_trip_view_search" model="ir.ui.view">
+        <field name="name">hr.trip.view.search</field>
+        <field name="model">hr.trip</field>
+        <field name="arch" type="xml">
+            <search string="Trips">
+                <field name="name" />
+                <field name="start_date" />
+                <field name="end_date" />
+                <filter
+                    string="My Trips"
+                    name="my_trips"
+                    domain="[('employee_id.user_id', '=', uid)]"
+                />
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hr_trip_my" model="ir.actions.act_window">
+        <field name="name">My Trips</field>
+        <field name="res_model">hr.trip</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hr_trip_view_search" />
+        <field name="context">{'search_default_my_trips': 1}</field>
+        <field name="help" type="html">
+            <p
+                class="o_view_nocontent_smiling_face"
+            >No trips found. Let's create one!</p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_hr_trip_my"
+        name="My Trips"
+        parent="hr_expense.menu_hr_expense_my_expenses"
+        action="action_hr_trip_my"
+        sequence="20"
+    />
+</odoo>
