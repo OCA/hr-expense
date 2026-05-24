@@ -32,8 +32,8 @@ Expense Tier Validation
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-This module extends the functionality of Expense Reports to support a
-tier validation process.
+This module extends the functionality of Expenses to support a tier
+validation process.
 
 **Table of contents**
 
@@ -60,7 +60,7 @@ Usage
 
 To use this module, you need to:
 
-1. Create a Expense Report triggering at least one "Tier Definition".
+1. Create an Expense triggering at least one "Tier Definition".
 2. Click on *Request Validation* button.
 3. Under the tab *Reviews* have a look to pending reviews and their
    statuses.
@@ -68,11 +68,11 @@ To use this module, you need to:
 
 Additional features:
 
-- You can filter the Expense Reports requesting your review through the
-  filter *Needs my Review*.
-- User with rights to confirm the Expense Report (validate all tiers
-  that would be generated) can directly do the operation, this is, there
-  is no need for her/him to request a validation.
+- You can filter the Expenses requesting your review through the filter
+  *Needs my Review*.
+- User with rights to confirm the Expense (validate all tiers that would
+  be generated) can directly do the operation, this is, there is no need
+  for her/him to request a validation.
 
 Bug Tracker
 ===========
@@ -97,6 +97,7 @@ Contributors
 
 - Pimolnat Suntian <pimolnats@ecosoft.co.th>
 - Saran Lim. <saranl@ecosoft.co.th>
+- Don Kendall <dnplkndll@users.noreply.github.com>
 
 Maintainers
 -----------
