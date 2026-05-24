@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    Copyright 2026 Akretion
+    @author Guillaume MASSON <guillaume.masson@akretion.com>
+    License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
+-->
+<odoo>
+    <record id="view_hr_expense_tax_line_tree" model="ir.ui.view">
+        <field name="name">hr.expense.tax.line.tree</field>
+        <field name="model">hr.expense.tax.line</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle" />
+                <field name="tax_ids" widget="many2many_tags" />
+                <field name="base_amount_currency" />
+                <field name="tax_amount_currency" />
+                <field name="total_amount_currency" />
+                <field name="currency_id" column_invisible="True" />
+            </list>
+        </field>
+    </record>
+
+    <record id="hr_expense_view_form_tax_distribution" model="ir.ui.view">
+        <field name="name">hr.expense.form.tax.distribution</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tax_ids']" position="before">
+                <field name="has_tax_distribution" invisible="1" />
+            </xpath>
+            <xpath expr="//field[@name='tax_ids']/../../.." position="after">
+                <group string="Tax Distribution" invisible="not has_tax_distribution">
+                    <field
+                        name="tax_line_ids"
+                        nolabel="1"
+                        colspan="2"
+                        readonly="not is_editable"
+                        context="{'default_expense_id': id}"
+                    >
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle" />
+                            <field name="tax_ids" widget="many2many_tags" />
+                            <field name="base_amount_currency" />
+                            <field name="tax_amount_currency" />
+                            <field name="total_amount_currency" />
+                            <field name="currency_id" column_invisible="True" />
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
