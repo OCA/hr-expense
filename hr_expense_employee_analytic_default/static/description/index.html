@@ -396,10 +396,12 @@ to be applied to expenses.</p>
 <p>To configure this module, you need to:</p>
 <ol class="arabic simple">
 <li>Enable the “Analytic Accounting” permission on the user</li>
-<li>Go to an employee (or create a new one) and set a work address</li>
-<li>Go to <em>Invocing &gt; Configuration &gt; Analytic Accounting |&gt; Analytic
+<li>Go to an employee (or create a new one) and set a work address. The
+lookup falls back to the employee’s work contact partner
+(<tt class="docutils literal">work_contact_id</tt>) when no work address is set.</li>
+<li>Go to <em>Invoicing &gt; Configuration &gt; Analytic Accounting &gt; Analytic
 Distribution Models</em> and create a record that has as partner the
-employee’s work address.</li>
+employee’s work address (or work contact, depending on which is set).</li>
 </ol>
 </div>
 <div class="section" id="usage">
