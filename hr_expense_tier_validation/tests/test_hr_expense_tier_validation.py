@@ -17,7 +17,7 @@ class TestHrExpenseTierValidation(TestExpenseCommon):
         # Create tier validation
         cls.tier_def_obj.create(
             {
-                "model_id": cls.env.ref("hr_expense.model_hr_expense_sheet").id,
+                "model_id": cls.env.ref("hr_expense.model_hr_expense").id,
                 "review_type": "individual",
                 "reviewer_id": cls.expense_user_manager.id,
             }
@@ -39,7 +39,7 @@ class TestHrExpenseTierValidation(TestExpenseCommon):
 
     def test_get_tier_validation_model_names(self):
         self.assertIn(
-            "hr.expense.sheet", self.tier_def_obj._get_tier_validation_model_names()
+            "hr.expense", self.tier_def_obj._get_tier_validation_model_names()
         )
 
     def test_edit_value_expense(self):
@@ -48,36 +48,30 @@ class TestHrExpenseTierValidation(TestExpenseCommon):
             self.expense_employee,
             self.product_a,
         )
-        sheet_dict = expense.action_submit_expenses()
+        self.assertEqual(expense.state, "draft")
+        expense.action_submit()
+        self.assertEqual(expense.state, "submitted")
 
-        with Form(self.env["hr.expense.sheet"]) as sheet:
-            sheet.name = (sheet_dict["name"],)
-            sheet.employee_id = self.expense_employee
-        sheet = sheet.save()
-        sheet.expense_line_ids = [(6, 0, expense.id)]
-        self.assertEqual(sheet.state, "draft")
-        sheet.action_submit_sheet()
-        self.assertEqual(sheet.state, "submit")
         # Must request validation before approve
         with self.assertRaises(ValidationError):
-            sheet.action_approve_expense_sheets()
-        sheet.request_validation()
-        self.assertTrue(sheet)
-        sheet.invalidate_model()
-        # tier validation but state still submit
-        self.assertEqual(sheet.state, "submit")
+            expense.action_approve()
+
+        expense.request_validation()
+        self.assertTrue(expense)
+        expense.invalidate_model()
+
+        # tier validation but state still submitted
+        self.assertEqual(expense.state, "submitted")
+
         # not allow edit expense when under validation
+        # Use ORM write directly: in 19.0 `name` is view-readonly on submitted
+        # expenses, so a Form()-based test fails at the view layer before
+        # reaching the model-level guard.
         with self.assertRaises(ValidationError):
-            sheet.review_ids = [(6, 0, self.expense_user_manager.ids)]
-        with self.assertRaises(ValidationError):
-            with Form(expense) as exp:
-                exp.name = "Change name"
+            expense.write({"name": "Change name"})
+
         # test change field exception in tier, it should allow edit
         self.env["ir.config_parameter"].sudo().set_param(
             "hr_expense.tier_exceptions", "['name']"
         )
-        with Form(expense) as exp:
-            exp.name = "Change name"
-
-        message = expense._message_subscribe(self.partner_a.ids)
-        self.assertTrue(message, True)
+        expense.write({"name": "Change name"})

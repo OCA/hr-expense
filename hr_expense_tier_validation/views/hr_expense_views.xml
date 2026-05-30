@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    Copyright 2019 Ecosoft Co., Ltd. (http://ecosoft.co.th)
+    License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+-->
+<odoo>
+    <record id="hr_expense_view_search" model="ir.ui.view">
+        <field name="name">hr.expense.view.search - hr_expense_tier_validation</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_search" />
+        <field name="arch" type="xml">
+            <filter name="my_team_expenses" position="after">
+                <separator />
+                <filter
+                    name="needs_review"
+                    string="Needs my Review"
+                    domain="[('reviewer_ids', 'in', uid), ('state', '=', 'submitted')]"
+                    help="Expenses to review"
+                />
+                <filter
+                    name="tier_validated"
+                    string="Validated"
+                    domain="[('validation_status', '=', 'validated')]"
+                    help="Expenses validated and ready to be approved"
+                />
+            </filter>
+        </field>
+    </record>
+</odoo>

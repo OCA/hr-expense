@@ -3,12 +3,19 @@
 
 import ast
 
-from odoo import _, api, models
+from odoo import api, models
 from odoo.exceptions import ValidationError
 
 
 class HrExpense(models.Model):
-    _inherit = "hr.expense"
+    _name = "hr.expense"
+    _inherit = ["hr.expense", "tier.validation"]
+
+    _state_field = "approval_state"
+    _state_from = ["submitted"]
+    _state_to = ["approved"]
+
+    _tier_validation_manual_config = False
 
     @api.model
     def _get_under_validation_exceptions(self):
@@ -36,13 +43,11 @@ class HrExpense(models.Model):
 
     def write(self, vals):
         for rec in self:
-            sheet = rec.sheet_id
             if (
-                sheet.state == "submit"
-                and sheet.review_ids
-                and not sheet.validated
-                and not sheet.rejected
+                rec.approval_state == "submitted"
+                and rec.review_ids
+                and rec.validation_status not in ("validated", "rejected")
                 and not rec._check_allow_write_under_validation(vals)
             ):
-                raise ValidationError(_("The expense report is under validation."))
+                raise ValidationError(self.env._("The expense is under validation."))
         return super().write(vals)
