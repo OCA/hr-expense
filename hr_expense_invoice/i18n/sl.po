@@ -1,0 +1,195 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* hr_expense_invoice
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2026-06-02 21:46+0000\n"
+"Last-Translator: Matjaz Mozetic <matjaz@luxim.si>\n"
+"Language-Team: none\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || "
+"n%100==4 ? 2 : 3;\n"
+"X-Generator: Weblate 5.15.2\n"
+
+#. module: hr_expense_invoice
+#: model_terms:ir.ui.view,arch_db:hr_expense_invoice.view_move_form
+msgid ""
+"<span>\n"
+"                        Expense\n"
+"                    </span>"
+msgstr ""
+"<span>\n"
+"                        Izdatek\n"
+"                    </span>"
+
+#. module: hr_expense_invoice
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_hr_expense__amount_residual
+msgid "Amount Due"
+msgstr "Znesek za plačilo"
+
+#. module: hr_expense_invoice
+#: model:mail.message.subtype,name:hr_expense_invoice.mt_expense_approved_inherited
+msgid "Approved"
+msgstr "Odobreno"
+
+#. module: hr_expense_invoice
+#: model_terms:ir.ui.view,arch_db:hr_expense_invoice.hr_expense_sheet_form_view_inherit_sale_expense
+msgid "Create Vendor Bill"
+msgstr "Ustvari prejeti račun"
+
+#. module: hr_expense_invoice
+#: model:ir.model,name:hr_expense_invoice.model_hr_expense
+msgid "Expense"
+msgstr "Izdatek"
+
+#. module: hr_expense_invoice
+#: model:ir.model,name:hr_expense_invoice.model_hr_expense_sheet
+msgid "Expense Report"
+msgstr "Poročilo o stroških"
+
+#. module: hr_expense_invoice
+#: model:mail.message.subtype,description:hr_expense_invoice.mt_expense_approved_inherited
+msgid "Expense report approved"
+msgstr "Poročilo o stroških odobreno"
+
+#. module: hr_expense_invoice
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_account_bank_statement_line__expense_ids
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_account_move__expense_ids
+msgid "Expenses"
+msgstr "Stroški"
+
+#. module: hr_expense_invoice
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_hr_expense_sheet__invoice_count
+msgid "Invoice Count"
+msgstr "Št. računov"
+
+#. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
+#: model_terms:ir.ui.view,arch_db:hr_expense_invoice.hr_expense_sheet_form_view_inherit_sale_expense
+msgid "Invoices"
+msgstr "Računi"
+
+#. module: hr_expense_invoice
+#: model:ir.model,name:hr_expense_invoice.model_account_move
+msgid "Journal Entry"
+msgstr "Temeljnica"
+
+#. module: hr_expense_invoice
+#: model:ir.model,name:hr_expense_invoice.model_account_move_line
+msgid "Journal Item"
+msgstr "Postavka"
+
+#. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
+msgid ""
+"Please specify an expense journal in order to generate"
+"                         accounting entries."
+msgstr ""
+"Prosimo, navedite dnevnik izdatkov za ustvarjanje računovodskih vknjižb."
+
+#. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
+msgid ""
+"Please specify if the expenses for this report were paid by"
+"                         the company, or the employee"
+msgstr ""
+"Prosimo, navedite, ali je stroške za to poročilo krilo podjetje ali zaposleni"
+
+#. module: hr_expense_invoice
+#: model:ir.model.fields,help:hr_expense_invoice.field_account_bank_statement_line__source_invoice_expense_id
+#: model:ir.model.fields,help:hr_expense_invoice.field_account_move__source_invoice_expense_id
+msgid ""
+"Reference to the expense with a linked invoice that generated thistransfer "
+"journal entry"
+msgstr ""
+"Sklic na strošek s povezanim računom, na podlagi katerega je bila ustvarjena "
+"ta prenosna temeljnica"
+
+#. module: hr_expense_invoice
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_hr_expense__sheet_id_state
+msgid "Sheet state"
+msgstr "Stanje poročila"
+
+#. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
+msgid "Show missing work email employees"
+msgstr "Prikaži zaposlene, ki nimajo službenega e-poštnega naslova"
+
+#. module: hr_expense_invoice
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_account_bank_statement_line__source_invoice_expense_id
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_account_move__source_invoice_expense_id
+msgid "Source Invoice Expense"
+msgstr "Izvorni strošek računa"
+
+#. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
+msgid ""
+"The work email of some employees is missing. Please add it on"
+"                          the employee form"
+msgstr ""
+"Manjka službeni e-poštni naslov nekaterih zaposlenih. Prosimo, dodajte ga na "
+"obrazcu zaposlenega"
+
+#. module: hr_expense_invoice
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_hr_expense__transfer_move_ids
+msgid "Transfer Move"
+msgstr "Prenosna temeljnica"
+
+#. module: hr_expense_invoice
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_hr_expense__invoice_id
+msgid "Vendor Bill"
+msgstr "Prejeti račun"
+
+#. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
+msgid ""
+"Vendor bill amount mismatch!\n"
+"Please make sure amount in vendor bills equal to amount of its expense lines"
+msgstr ""
+"Znesek na prejetem računu se ne ujema!\n"
+"Preverite, ali se znesek na prejetih računih ujema z zneskom v posameznih "
+"stroškovnih postavkah"
+
+#. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense.py:0
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
+msgid "Vendor bill state must be Posted"
+msgstr "Prejeti račun mora biti v stanju 'knjiženo'"
+
+#. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
+msgid "You can only generate an accounting entry for approved expense(s)."
+msgstr "Računovodski vnos lahko ustvarite le za odobrene stroške."
+
+#. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/account_move.py:0
+msgid ""
+"You can't change the total amount, as there's an expense linked to this "
+"invoice."
+msgstr ""
+"Skupnega zneska ni mogoče spremeniti, saj je s tem računom povezan izdatek."
+
+#. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
+msgid ""
+"You cannot create accounting entries for an expense                         "
+"report without expenses."
+msgstr ""
+"Za poročilo o stroških ni mogoče ustvariti računovodskih vnosov, če v njem "
+"stroškov ni."
