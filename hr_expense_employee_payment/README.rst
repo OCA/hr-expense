@@ -1,3 +1,7 @@
+.. image:: https://odoo-community.org/readme-banner-image
+   :target: https://odoo-community.org/get-involved?utm_source=readme
+   :alt: Odoo Community Association
+
 =============================
 Hr Expense - Employee Payment
 =============================
@@ -13,23 +17,23 @@ Hr Expense - Employee Payment
 .. |badge1| image:: https://img.shields.io/badge/maturity-Alpha-red.png
     :target: https://odoo-community.org/page/development-status
     :alt: Alpha
-.. |badge2| image:: https://img.shields.io/badge/licence-LGPL--3-blue.png
+.. |badge2| image:: https://img.shields.io/badge/license-LGPL--3-blue.png
     :target: http://www.gnu.org/licenses/lgpl-3.0-standalone.html
     :alt: License: LGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fhr--expense-lightgray.png?logo=github
-    :target: https://github.com/OCA/hr-expense/tree/18.0/hr_expense_employee_payment
+    :target: https://github.com/OCA/hr-expense/tree/19.0/hr_expense_employee_payment
     :alt: OCA/hr-expense
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/hr-expense-18-0/hr-expense-18-0-hr_expense_employee_payment
+    :target: https://translation.odoo-community.org/projects/hr-expense-19-0/hr-expense-19-0-hr_expense_employee_payment
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runboat-Try%20me-875A7B.png
-    :target: https://runboat.odoo-community.org/builds?repo=OCA/hr-expense&target_branch=18.0
+    :target: https://runboat.odoo-community.org/builds?repo=OCA/hr-expense&target_branch=19.0
     :alt: Try me on Runboat
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-This module extends the expense functionality so that expenses sheets
-paid by employees, which are actual Vendor Bills, can be paid to the
+This module extends the expense functionality so that expenses paid by
+employees, which are actual **Vendor Bills**, can be paid to the
 employee.
 
 To do this, an intermediate journal entry is created that transfers the
@@ -56,10 +60,6 @@ supplier invoices are recorded in expenses.
 It will be useful for you if the legislation in your country doesn't
 allow to create vendor bills to the employees.
 
-Each expense sheet is required to have only one expense because Odoo
-does not allow creating more than one invoice for an expense sheet. The
-*Split Expenses* action is provided to facilitate this operation.
-
 Configuration
 =============
 
@@ -78,20 +78,24 @@ Usage
 
 To use this module, you need to:
 
-1.  Go to Expenses and create a new one that is paid by Employee
-2.  Create report and Submit to Manager
-3.  Change Journal to Vendor Bills
-4.  Approve this Expense Sheet
-5.  Go to the Journal Entry clicking on the Smart Button
-6.  Modify the Vendor Bill like a normal Vendor Bill (partner, bill ref,
+1.  Go to Expenses > Configuration > Settings and set *Employee Expense
+    Journal* and *Employee Expense Intermediate Journal*
+2.  Go to Expenses and create a new one that is paid by Employee (to
+    reimburse)
+3.  Submit to Manager
+4.  Click on Post Journal Entries
+5.  Select a Journal to register the real Vendor Bill on the Wizard
+6.  Click on Reset to Draft
+7.  Modify the Vendor Bill like a normal Vendor Bill (partner, bill ref,
     journal, etc)
-7.  Confirm the invoice, or go to the Expense Sheet and Post Journal
-    Entries
-8.  Click on Pay and fill the payment for the Employee. Partial payments
+8.  Confirm the Bill
+9.  Click on Pay and fill the payment for the Employee. Partial payments
     are allowed
-9.  On the Journal Entries Smart Button, you could see a new one
-    intermediate entry
-10. Finish the payment process if you partially pay by clicking again on
+10. If you make a partial payment or cancel the payment over the Bill,
+    you can continue the Payment on the Expense
+11. On the Expense, you could see a new one intermediate entry on the
+    Smart Button
+12. Finish the payment process if you partially pay by clicking again on
     Pay
 
 Bug Tracker
@@ -100,7 +104,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/hr-expense/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/hr-expense/issues/new?body=module:%20hr_expense_employee_payment%0Aversion:%2018.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/hr-expense/issues/new?body=module:%20hr_expense_employee_payment%0Aversion:%2019.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -117,13 +121,6 @@ Contributors
 
 - Eduardo de Miguel (`Moduon <https://www.moduon.team/>`__)
 - Rafael Blasco (`Moduon <https://www.moduon.team/>`__)
-
-Other credits
--------------
-
-The development of this module has been financially supported by:
-
-- Cámara de Comercio Alemana para España
 
 Maintainers
 -----------
@@ -149,6 +146,6 @@ Current `maintainers <https://odoo-community.org/page/maintainer-role>`__:
 
 |maintainer-Shide| |maintainer-rafaelbn| 
 
-This module is part of the `OCA/hr-expense <https://github.com/OCA/hr-expense/tree/18.0/hr_expense_employee_payment>`_ project on GitHub.
+This module is part of the `OCA/hr-expense <https://github.com/OCA/hr-expense/tree/19.0/hr_expense_employee_payment>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.

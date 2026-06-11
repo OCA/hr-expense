@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0\n"
+"Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-25 10:31+0000\n"
-"PO-Revision-Date: 2025-11-25 11:33+0100\n"
+"POT-Creation-Date: 2026-06-10 09:58+0000\n"
+"PO-Revision-Date: 2026-06-10 12:05+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -15,74 +15,100 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.9\n"
 
 #. module: hr_expense_employee_payment
 #. odoo-python
-#: code:addons/hr_expense_employee_payment/models/hr_expense_sheet.py:0
-msgid "%(expense_sheet_name)s | Expense conciliation"
-msgstr "%(expense_sheet_name)s | Conciliación de gastos"
+#: code:addons/hr_expense_employee_payment/models/hr_expense.py:0
+msgid "%(expense_name)s | Expense conciliation"
+msgstr "%(expense_name)s | Conciliación de gastos"
 
 #. module: hr_expense_employee_payment
-#: model:ir.model,name:hr_expense_employee_payment.model_hr_expense_sheet
-msgid "Expense Report"
-msgstr "Informe de gastos"
-
-#. module: hr_expense_employee_payment
-#. odoo-python
-#: code:addons/hr_expense_employee_payment/models/hr_expense_sheet.py:0
+#: model_terms:ir.ui.view,arch_db:hr_expense_employee_payment.res_config_settings_view_form
 msgid ""
-"Expense conciliation entry for '%(expense_sheet_name)s' expense sheet and "
-"taking in consideration '%(vendor_move_names)s' moves."
+"Accounting journal for intermediate entries to allow pay real Bills to "
+"employees. This journal must allow the creation of moves of type 'entry'."
 msgstr ""
-"Asiento de conciliación para el informe de gastos '%(expense_sheet_name)s' "
-"teniendo en cuenta los movimientos'%(vendor_move_names)s'."
+"Diario para los asientos intermedios que permiten pagar facturas reales "
+"a los empleados. Este diario debe permitir la creación de movimientos de "
+"tipo 'entry'."
+
+#. module: hr_expense_employee_payment
+#: model:ir.model,name:hr_expense_employee_payment.model_res_company
+msgid "Companies"
+msgstr "Compañías"
+
+#. module: hr_expense_employee_payment
+#: model:ir.model.fields,field_description:hr_expense_employee_payment.field_hr_expense__conciliation_move_id
+msgid "Conciliation Entry"
+msgstr "Asiento de conciliación"
+
+#. module: hr_expense_employee_payment
+#: model:ir.model,name:hr_expense_employee_payment.model_res_config_settings
+msgid "Config Settings"
+msgstr "Ajustes de configuración"
+
+#. module: hr_expense_employee_payment
+#: model:ir.model.fields,field_description:hr_expense_employee_payment.field_hr_expense__display_name
+#: model:ir.model.fields,field_description:hr_expense_employee_payment.field_res_company__display_name
+#: model:ir.model.fields,field_description:hr_expense_employee_payment.field_res_config_settings__display_name
+msgid "Display Name"
+msgstr "Nombre para mostrar"
+
+#. module: hr_expense_employee_payment
+#: model_terms:ir.ui.view,arch_db:hr_expense_employee_payment.res_config_settings_view_form
+msgid "Employee Expense Intermediate Journal"
+msgstr "Diario Intermedio de Gastos del Empleado"
+
+#. module: hr_expense_employee_payment
+#: model:ir.model,name:hr_expense_employee_payment.model_hr_expense
+msgid "Expense"
+msgstr "Gasto"
 
 #. module: hr_expense_employee_payment
 #. odoo-python
-#: code:addons/hr_expense_employee_payment/models/hr_expense_sheet.py:0
+#: code:addons/hr_expense_employee_payment/models/hr_expense.py:0
 msgid ""
-"Only expense sheets in 'To Submit' or 'Submitted' state can be splitted. "
-"Expense Sheet '%s' is in state '%s'."
+"Expense conciliation entry for '%(expense_name)s' expense and taking in "
+"consideration '%(vendor_move_names)s' moves."
 msgstr ""
-"Solo los informes de gastos con estados 'A enviar' o 'Enviado' pueden ser "
-"divididos. El Informe de Gastos '%s' está en estado '%s'."
+"Asiento de conciliación para los gastos '%(expense_name)s' teniendo en "
+"cuenta los movimientos '%(vendor_move_names)s'."
 
 #. module: hr_expense_employee_payment
-#: model:ir.actions.server,name:hr_expense_employee_payment.hr_expense_sheet_split_action
-msgid "Split Expenses"
-msgstr "Dividir Gastos"
-
-#. module: hr_expense_employee_payment
-#. odoo-python
-#: code:addons/hr_expense_employee_payment/models/hr_expense_sheet.py:0
-msgid "Splitted Expense Sheets"
-msgstr "Informes de Gastos divididos"
-
-#. module: hr_expense_employee_payment
-#. odoo-python
-#: code:addons/hr_expense_employee_payment/models/hr_expense_sheet.py:0
-msgid ""
-"This expense sheet has been created by splitting the expense sheet '%s'."
+#: model:ir.model.fields,field_description:hr_expense_employee_payment.field_hr_expense__id
+#: model:ir.model.fields,field_description:hr_expense_employee_payment.field_res_company__id
+#: model:ir.model.fields,field_description:hr_expense_employee_payment.field_res_config_settings__id
+msgid "ID"
 msgstr ""
-"Este informe de gastos ha sido creado a partir de la división del informe "
-"'%s'."
 
 #. module: hr_expense_employee_payment
-#. odoo-python
-#: code:addons/hr_expense_employee_payment/models/hr_expense_sheet.py:0
-msgid ""
-"You cannot register a payments for Employees and Vendors at the same time"
-msgstr "No puedes registrar pagos a Empleados y a Proveedores al mismo tiempo"
+#: model:ir.model.fields,field_description:hr_expense_employee_payment.field_res_company__expense_intermediate_journal_id
+#: model:ir.model.fields,field_description:hr_expense_employee_payment.field_res_config_settings__expense_intermediate_journal_id
+msgid "Intermediate Expense Journal"
+msgstr "Diario Intermedio de Gastos"
 
 #. module: hr_expense_employee_payment
-#. odoo-python
-#: code:addons/hr_expense_employee_payment/models/hr_expense_sheet.py:0
+#: model:ir.model.fields,help:hr_expense_employee_payment.field_hr_expense__conciliation_move_id
 msgid ""
-"You have multiple expense journals defined, please set a single expense "
-"journal in the company settings to proceed with the payment for Employees "
-"or pay one by one."
+"Intermediate entry created to reconcile with the vendor bill and payment "
+"later."
 msgstr ""
-"Tiene definidos varios diarios de gastos, por favor, establezca un único "
-"diario de gastos en la configuración de la compañía para proceder al "
-"pago de los empleados o pague uno por uno."
+"Asiento intermedio creado para conciliar la factura del Vendedor y el "
+"pago a posteriori."
+
+#. module: hr_expense_employee_payment
+#: model:ir.model.fields,help:hr_expense_employee_payment.field_res_company__expense_intermediate_journal_id
+#: model:ir.model.fields,help:hr_expense_employee_payment.field_res_config_settings__expense_intermediate_journal_id
+msgid ""
+"Journal used to record intermediate entries for employee expenses.\n"
+"If not set, Expense Journal will be used instead."
+msgstr ""
+"Diario utilizado para guardar los asientos intermedios para los gastos e "
+"empleados.\n"
+"Si no está establecido, se utilizará el diario de gastos."
+
+#. module: hr_expense_employee_payment
+#: model_terms:ir.ui.view,arch_db:hr_expense_employee_payment.res_config_settings_view_form
+msgid "Same as Employee Expense Journal"
+msgstr "Igual que el Diario de Gastos del Empleado"
