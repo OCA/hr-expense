@@ -10,6 +10,8 @@ class MailComposeMessage(models.TransientModel):
     def _action_send_mail(self, **kwargs):
         for wizard in self:
             if wizard.model == "hr.advance.overdue.reminder":
-                overdue = self.env[wizard.model].sudo().browse(wizard.res_id)
+                overdue = (
+                    self.env[wizard.model].sudo().browse(wizard._evaluate_res_ids())
+                )
                 overdue._update_overdue_advance()
         return super()._action_send_mail(**kwargs)

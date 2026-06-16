@@ -33,8 +33,6 @@ class HrExpenseSheet(models.Model):
     )
     clearing_date_due = fields.Date(
         string="Clearing Due Date",
-        readonly=True,
-        states={"draft": [("readonly", False)]},
         tracking=True,
     )
 
@@ -46,10 +44,10 @@ class HrExpenseSheet(models.Model):
 
     @api.depends("state", "clearing_date_due")
     def _compute_overdue(self):
-        date = self._context.get("manual_date", fields.Date.context_today(self))
+        date = self.env.context.get("manual_date", fields.Date.context_today(self))
         for sheet in self:
             sheet.is_overdue = False
-            # Check if the sheet is an advance, has a clearing date due, and is not yet cleared
+            # Check advance, has a clearing date due, and is not yet cleared
             if (
                 sheet.advance
                 and sheet.clearing_date_due
@@ -62,25 +60,21 @@ class HrExpenseSheet(models.Model):
     @api.depends("overdue_reminder_ids")
     def _compute_overdue_reminder(self):
         for sheet in self:
-            reminder = sheet.overdue_reminder_ids.filtered(lambda l: l.state == "done")
+            reminder = sheet.overdue_reminder_ids.filtered(lambda r: r.state == "done")
             sheet.overdue_reminder_counter = len(reminder)
 
-    def action_sheet_move_create(self):
-        res = super().action_sheet_move_create()
+    def action_sheet_move_post(self):
+        res = super().action_sheet_move_post()
         reminder = self.env["reminder.definition"].search([], limit=1)
-        for sheet in self.filtered("advance"):
-            if not sheet.clearing_date_due:
-                if not reminder:
-                    raise UserError(
-                        _(
-                            "Please configured reminder definition before "
-                            "Post Journal Entries"
-                        )
+        # Only default the clearing due date when a reminder is configured.
+        # Without it there is nothing to remind, so do not block posting.
+        if reminder:
+            for sheet in self.filtered("advance"):
+                if not sheet.clearing_date_due:
+                    move_date = sheet.account_move_ids[:1].date
+                    sheet.clearing_date_due = move_date + relativedelta(
+                        days=reminder.clearing_terms_days or 0.0
                     )
-                move_date = res[sheet.id].date
-                sheet.clearing_date_due = move_date + relativedelta(
-                    days=reminder.clearing_terms_days or 0.0
-                )
         return res
 
     def action_overdue_reminder(self):
@@ -95,8 +89,8 @@ class HrExpenseSheet(models.Model):
             "res_model": "hr.advance.overdue.reminder.wizard",
             "target": "new",
             "context": {
-                "active_model": self._context.get("active_model", False),
-                "active_ids": self._context.get("active_ids", False),
+                "active_model": self.env.context.get("active_model", False),
+                "active_ids": self.env.context.get("active_ids", False),
                 "default_employee_ids": employee_ids,
                 "default_reminder_definition_id": reminder.id,
             },

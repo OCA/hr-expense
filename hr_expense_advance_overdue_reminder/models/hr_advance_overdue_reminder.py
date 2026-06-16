@@ -19,16 +19,12 @@ class HrAdvanceOverdueReminder(models.Model):
         column1="overdue_reminder_id",
         column2="expense_sheet_id",
         string="Overdue Expense Advance Sheet",
-        readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     name = fields.Char(required=True, default="/", readonly=True, copy=False)
     employee_id = fields.Many2one(
         comodel_name="hr.employee",
         required=True,
         tracking=True,
-        readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     employee_email = fields.Char(
         related="employee_id.private_email",
@@ -39,52 +35,15 @@ class HrAdvanceOverdueReminder(models.Model):
     reminder_definition_id = fields.Many2one(
         comodel_name="reminder.definition",
         required=True,
-        readonly=True,
-        states={"draft": [("readonly", False)]},
     )
-    reminder_type = fields.Selection(
-        readonly=True,
-        states={"draft": [("readonly", False)]},
-    )
-    reminder_next_time = fields.Date(
-        readonly=True,
-        states={"draft": [("readonly", False)]},
-    )
-    mail_template_id = fields.Many2one(
-        readonly=True,
-        states={"draft": [("readonly", False)]},
-    )
-    letter_report = fields.Many2one(
-        readonly=True,
-        states={"draft": [("readonly", False)]},
-    )
-    create_activity = fields.Boolean(
-        readonly=True,
-        states={"draft": [("readonly", False)]},
-    )
-    activity_type_id = fields.Many2one(
-        readonly=True,
-        states={"draft": [("readonly", False)]},
-    )
-    activity_summary = fields.Char(
-        readonly=True,
-        states={"draft": [("readonly", False)]},
-    )
-    activity_scheduled_date = fields.Date(
-        string="Scheduled Date",
-        readonly=True,
-        states={"draft": [("readonly", False)]},
-    )
-    activity_note = fields.Html(
-        readonly=True,
-        states={"draft": [("readonly", False)]},
-    )
+    reminder_next_time = fields.Date()
+    activity_scheduled_date = fields.Date(string="Scheduled Date")
     activity_user_id = fields.Many2one(
         comodel_name="res.users",
         string="Assigned to",
         compute="_compute_activity_user",
         store=True,
-        states={"draft": [("readonly", False)]},
+        readonly=False,
         tracking=True,
     )
     company_id = fields.Many2one(
@@ -106,10 +65,6 @@ class HrAdvanceOverdueReminder(models.Model):
             rec.activity_user_id = False
             if rec.create_activity:
                 rec.activity_user_id = rec.employee_id.user_id.id
-
-    @api.model
-    def _reminder_type_selection(self):
-        return [("mail", _("E-mail")), ("letter", _("Letter"))]
 
     @api.onchange("reminder_definition_id")
     def onchange_reminder_definition(self):
@@ -149,7 +104,7 @@ class HrAdvanceOverdueReminder(models.Model):
 
     def _get_report_base_filename(self):
         self.ensure_one()
-        fname = "overdue_letter-%s" % self.employee_id.name.replace(" ", "_")
+        fname = "overdue_letter-{}".format(self.employee_id.name.replace(" ", "_"))
         return fname
 
     def _prepare_mail_activity(self):
@@ -174,13 +129,13 @@ class HrAdvanceOverdueReminder(models.Model):
 
     def validate_mail(self):
         self.ensure_one()
-        if self.employee_id.sudo().address_home_id.type == "private":
-            raise UserError(_("You can not sent email with address private contact."))
+        if not self.employee_id.sudo().work_contact_id:
+            raise UserError(_("You can not send email without a contact."))
         template = self.env.ref(self._get_mail_template(), raise_if_not_found=False)
         compose_form = self.env.ref("mail.email_compose_message_wizard_form", False)
         ctx = dict(
             default_model="hr.advance.overdue.reminder",
-            default_res_id=self.id,
+            default_res_ids=self.ids,
             default_use_template=bool(template),
             default_template_id=template.id,
             default_composition_mode="comment",
@@ -199,17 +154,17 @@ class HrAdvanceOverdueReminder(models.Model):
             "context": ctx,
         }
 
-    @api.model
-    def create(self, vals):
-        if vals.get("number", "/") == "/":
-            number = (
-                self.env["ir.sequence"].next_by_code(
-                    "advance.overdue.reminder.sequence"
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get("name", "/") == "/":
+                vals["name"] = (
+                    self.env["ir.sequence"].next_by_code(
+                        "advance.overdue.reminder.sequence"
+                    )
+                    or "/"
                 )
-                or "/"
-            )
-            vals["name"] = number
-        return super().create(vals)
+        return super().create(vals_list)
 
     def _update_overdue_advance(self):
         self.ensure_one()

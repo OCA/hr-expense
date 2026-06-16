@@ -9,7 +9,7 @@
         <field
             name="email_from"
         >{{ (object.create_uid.email or object.company_id.email) }}</field>
-        <field name="partner_to">{{ object.employee_id.address_home_id.id }}</field>
+        <field name="partner_to">{{ object.employee_id.work_contact_id.id }}</field>
         <field
             name="subject"
         >{{ object.company_id.name }} - Overdue advance reminder {{ object.name or 'n/a' }}</field>
@@ -48,7 +48,7 @@
                                 <t t-out="sheet.name" />
                             </td>
                             <td style="padding: 5px; border: 1px solid black;">
-                                <t t-out="sheet.account_move_id.date" />
+                                <t t-out="sheet.account_move_ids[:1].date" />
                             </td>
                             <td style="padding: 5px; border: 1px solid black;">
                                 <t t-out="sheet.clearing_date_due" />

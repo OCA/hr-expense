@@ -4,11 +4,11 @@
         <field name="name">reminder.definition.tree</field>
         <field name="model">reminder.definition</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" />
                 <field name="company_id" groups="base.group_multi_company" />
                 <field name="active" widget="boolean_toggle" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="reminder_definition_view_form" model="ir.ui.view">
@@ -22,7 +22,7 @@
                         name="web_ribbon"
                         text="Archived"
                         bg_color="bg-danger"
-                        attrs="{'invisible': [('active', '=', True)]}"
+                        invisible="active"
                     />
                     <div class="oe_title">
                         <span class="oe_edit_only">Name</span>
@@ -54,26 +54,26 @@
                             <field name="reminder_type" />
                             <field
                                 name="mail_template_id"
-                                attrs="{'required': [('reminder_type', '=', 'mail')],
-                                'invisible': [('reminder_type', '!=', 'mail')]}"
+                                required="reminder_type == 'mail'"
+                                invisible="reminder_type != 'mail'"
                             />
                             <field
                                 name="letter_report"
-                                attrs="{'required': [('reminder_type', '=', 'letter')],
-                                'invisible': [('reminder_type', '!=', 'letter')]}"
+                                required="reminder_type == 'letter'"
+                                invisible="reminder_type != 'letter'"
                             />
                             <field name="create_activity" />
                             <field
                                 name="activity_type_id"
-                                attrs="{'invisible': [('create_activity', '=', False)]}"
+                                invisible="not create_activity"
                             />
                             <field
                                 name="activity_summary"
-                                attrs="{'invisible': [('create_activity', '=', False)]}"
+                                invisible="not create_activity"
                             />
                             <field
                                 name="activity_note"
-                                attrs="{'invisible': [('create_activity', '=', False)]}"
+                                invisible="not create_activity"
                             />
                         </group>
                     </group>
@@ -84,7 +84,7 @@
     <record id="reminder_definition_action" model="ir.actions.act_window">
         <field name="name">Reminder Definition</field>
         <field name="res_model">reminder.definition</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="context">{'active_test': False}</field>
     </record>
     <menuitem

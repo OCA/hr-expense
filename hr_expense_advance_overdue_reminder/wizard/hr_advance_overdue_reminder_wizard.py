@@ -74,7 +74,7 @@ class HrAdvanceOverdueReminderWizard(models.TransientModel):
 
     def _prepare_reminder(self, date):
         ExpenseSheet = self.env["hr.expense.sheet"]
-        active_ids = self._context.get("active_ids", False)
+        active_ids = self.env.context.get("active_ids", False)
         vals = []
         for employee in self.employee_ids:
             expense_sheets = ExpenseSheet.search(
@@ -91,6 +91,7 @@ class HrAdvanceOverdueReminderWizard(models.TransientModel):
                     "user_id": self.env.user.id,
                     "expense_sheet_ids": [(6, 0, expense_sheets.ids)],
                     "company_id": self.company_id.id,
+                    "reminder_definition_id": self.reminder_definition_id.id,
                     "reminder_type": self.reminder_type,
                     "reminder_next_time": self.reminder_next_time,
                     "mail_template_id": self.mail_template_id.id,
@@ -109,7 +110,7 @@ class HrAdvanceOverdueReminderWizard(models.TransientModel):
     def run(self):
         self.ensure_one()
         AdvanceOverdue = self.env["hr.advance.overdue.reminder"].sudo()
-        today = self._context.get("manual_date", fields.Date.context_today(self))
+        today = self.env.context.get("manual_date", fields.Date.context_today(self))
         # Unlink data is not send yet
         existing_actions = AdvanceOverdue.search(
             [

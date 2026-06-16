@@ -15,26 +15,22 @@
                         />
                         <field name="reminder_definition_id" />
                     </group>
-                    <group
-                        attrs="{'invisible': [('reminder_definition_id', '=', False)]}"
-                    >
+                    <group invisible="not reminder_definition_id">
                         <label for="reminder_number" />
                         <div name="reminder_number">
                             <field name="reminder_number" class="oe_inline" /> days
                         </div>
                         <field name="reminder_next_time" />
                     </group>
-                    <group
-                        attrs="{'invisible': [('reminder_definition_id', '=', False)]}"
-                    >
+                    <group invisible="not reminder_definition_id">
                         <field name="reminder_type" />
                         <field
                             name="mail_template_id"
-                            attrs="{'invisible': [('reminder_type', '!=', 'mail')]}"
+                            invisible="reminder_type != 'mail'"
                         />
                         <field
                             name="letter_report"
-                            attrs="{'invisible': [('reminder_type', '!=', 'letter')]}"
+                            invisible="reminder_type != 'letter'"
                         />
                     </group>
                 </group>
@@ -42,7 +38,7 @@
                     <group colspan="4">
                         <field name="create_activity" />
                     </group>
-                    <group attrs="{'invisible': [('create_activity', '=', False)]}">
+                    <group invisible="not create_activity">
                         <field name="activity_type_id" />
                         <field name="activity_summary" />
                         <field name="activity_note" />
