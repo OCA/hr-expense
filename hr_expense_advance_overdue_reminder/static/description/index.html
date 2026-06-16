@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -9,10 +8,11 @@
 
 /*
 :Author: David Goodger (goodger@python.org)
-:Id: $Id: html4css1.css 8954 2022-01-20 10:10:25Z milde $
+:Id: $Id: html4css1.css 9511 2024-01-13 09:50:07Z milde $
 :Copyright: This stylesheet has been placed in the public domain.
 
 Default cascading style sheet for the HTML output of Docutils.
+Despite the name, some widely supported CSS2 features are used.
 
 See https://docutils.sourceforge.io/docs/howto/html-stylesheets.html for how to
 customize this style sheet.
@@ -275,7 +275,7 @@ pre.literal-block, pre.doctest-block, pre.math, pre.code {
   margin-left: 2em ;
   margin-right: 2em }
 
-pre.code .ln { color: grey; } /* line numbers */
+pre.code .ln { color: gray; } /* line numbers */
 pre.code, code { background-color: #eeeeee }
 pre.code .comment, code .comment { color: #5C6576 }
 pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
@@ -301,7 +301,7 @@ span.option {
 span.pre {
   white-space: pre }
 
-span.problematic {
+span.problematic, pre.problematic {
   color: red }
 
 span.section-subtitle {
@@ -369,15 +369,19 @@ ul.auto-toc {
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !! source digest: sha256:c96c66abf06db30bcb2a9dd927d308f497b92cb708514c425342b2255185dcd5
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/hr-expense/tree/15.0/hr_expense_advance_overdue_reminder"><img alt="OCA/hr-expense" src="https://img.shields.io/badge/github-OCA%2Fhr--expense-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/hr-expense-15-0/hr-expense-15-0-hr_expense_advance_overdue_reminder"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/hr-expense&amp;target_branch=15.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
-<p>This module allow company to send overdue advance reminders to the employee.
-it sends a reminder for an expense advance when it has past it’s <em>Due Date</em>
-An overdue reminder for a employee always include all the overdue advance an amount of that employee.</p>
-<p>The module supports a clever expense reimbursement reminder counter mechanism:</p>
+<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/hr-expense/tree/18.0/hr_expense_advance_overdue_reminder"><img alt="OCA/hr-expense" src="https://img.shields.io/badge/github-OCA%2Fhr--expense-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/hr-expense-18-0/hr-expense-18-0-hr_expense_advance_overdue_reminder"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/hr-expense&amp;target_branch=18.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
+<p>This module allow company to send overdue advance reminders to the
+employee. it sends a reminder for an expense advance when it has past
+it’s <em>Due Date</em> An overdue reminder for a employee always include all
+the overdue advance an amount of that employee.</p>
+<p>The module supports a clever expense reimbursement reminder counter
+mechanism:</p>
 <ul class="simple">
 <li>the reminder counter is a property of an expense advance,</li>
-<li>the reminder counter of each overdue expense advance is incremented every time when you sending a reminder by email / letter.</li>
-<li>in an email template, you can configure at <em>Settings &gt; Technical &gt; Email &gt; Email Templates &gt; Name ‘Advance: Overdue Reminder’</em></li>
+<li>the reminder counter of each overdue expense advance is incremented
+every time when you sending a reminder by email / letter.</li>
+<li>in an email template, you can configure at <em>Settings &gt; Technical &gt;
+Email &gt; Email Templates &gt; Name ‘Advance: Overdue Reminder’</em></li>
 </ul>
 <p><strong>Table of contents</strong></p>
 <div class="contents local topic" id="contents">
@@ -399,7 +403,10 @@ An overdue reminder for a employee always include all the overdue advance an amo
 <ol class="arabic simple">
 <li>Go to <em>Expenses &gt; Configuration &gt; Reminder Definition</em>.</li>
 <li>Set reminder definition.</li>
-<li>Specify the time period for the set due date clearing advance. This field is Terms Due Date has default 30 days and it will compute due date by today + Terms Due Date, when you Post Journal Entries on expense sheet.</li>
+<li>Specify the time period for the set due date clearing advance. This
+field is Terms Due Date has default 30 days and it will compute due
+date by today + Terms Due Date, when you Post Journal Entries on
+expense sheet.</li>
 <li>Specify other fields (if any)</li>
 </ol>
 </div>
@@ -409,7 +416,8 @@ An overdue reminder for a employee always include all the overdue advance an amo
 <ol class="arabic simple">
 <li>Create an advance document and submit it to manager for approval.</li>
 <li>Once approved, post the journal entries.</li>
-<li>If the due date is not manually selected, it will be auto-generated from the reminder settings.</li>
+<li>If the due date is not manually selected, it will be auto-generated
+from the reminder settings.</li>
 <li>Register Payment.</li>
 </ol>
 <p><strong>To check for overdue and uncleared advances:</strong></p>
@@ -417,14 +425,17 @@ An overdue reminder for a employee always include all the overdue advance an amo
 <li>Go to Expenses &gt; Expense Reports &gt; Reports to Overdue.</li>
 <li>Select an advance that needs a reminder.</li>
 <li>Click on Action &gt; Overdue Reminder.</li>
-<li>Verify the information and click the “Start” button to create an overdue reminder.</li>
+<li>Verify the information and click the “Start” button to create an
+overdue reminder.</li>
 <li>It will generate a reminder only for the selected document.</li>
 </ol>
 <p><strong>To send a reminder to an employee:</strong></p>
 <ol class="arabic simple">
 <li>Go to Expenses &gt; Employee Overdue &gt; Overdue Reminder</li>
-<li>Select the document for which you need to send a reminder to the employee.</li>
-<li>Verify the information and Send or print the reminder to the employee.</li>
+<li>Select the document for which you need to send a reminder to the
+employee.</li>
+<li>Verify the information and Send or print the reminder to the
+employee.</li>
 </ol>
 </div>
 <div class="section" id="bug-tracker">
@@ -432,7 +443,7 @@ An overdue reminder for a employee always include all the overdue advance an amo
 <p>Bugs are tracked on <a class="reference external" href="https://github.com/OCA/hr-expense/issues">GitHub Issues</a>.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-<a class="reference external" href="https://github.com/OCA/hr-expense/issues/new?body=module:%20hr_expense_advance_overdue_reminder%0Aversion:%2015.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
+<a class="reference external" href="https://github.com/OCA/hr-expense/issues/new?body=module:%20hr_expense_advance_overdue_reminder%0Aversion:%2018.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
 <p>Do not contact contributors directly about support or help with technical issues.</p>
 </div>
 <div class="section" id="credits">
@@ -456,13 +467,15 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 <div class="section" id="maintainers">
 <h2><a class="toc-backref" href="#toc-entry-7">Maintainers</a></h2>
 <p>This module is maintained by the OCA.</p>
-<a class="reference external image-reference" href="https://odoo-community.org"><img alt="Odoo Community Association" src="https://odoo-community.org/logo.png" /></a>
+<a class="reference external image-reference" href="https://odoo-community.org">
+<img alt="Odoo Community Association" src="https://odoo-community.org/logo.png" />
+</a>
 <p>OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.</p>
 <p>Current <a class="reference external" href="https://odoo-community.org/page/maintainer-role">maintainer</a>:</p>
 <p><a class="reference external image-reference" href="https://github.com/Saran440"><img alt="Saran440" src="https://github.com/Saran440.png?size=40px" /></a></p>
-<p>This module is part of the <a class="reference external" href="https://github.com/OCA/hr-expense/tree/15.0/hr_expense_advance_overdue_reminder">OCA/hr-expense</a> project on GitHub.</p>
+<p>This module is part of the <a class="reference external" href="https://github.com/OCA/hr-expense/tree/18.0/hr_expense_advance_overdue_reminder">OCA/hr-expense</a> project on GitHub.</p>
 <p>You are welcome to contribute. To learn how please visit <a class="reference external" href="https://odoo-community.org/page/Contribute">https://odoo-community.org/page/Contribute</a>.</p>
 </div>
 </div>
