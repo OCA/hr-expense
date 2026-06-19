@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <template id='report_expense_sheet' inherit_id="hr_expense.report_expense_sheet">
+    <template id="report_expense" inherit_id="hr_expense.report_expense">
         <xpath expr="//h2" position="inside">
             <span t-field="o.number" />
         </xpath>
