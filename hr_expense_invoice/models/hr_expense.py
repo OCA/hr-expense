@@ -2,16 +2,16 @@
 # Copyright 2020 Tecnativa - David Vidal
 # Copyright 2021 Tecnativa - Víctor Martínez
 # Copyright 2015-2024 Tecnativa - Pedro M. Baeza
-# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
+# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
 from odoo import Command, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools import float_compare
 
 
 class HrExpense(models.Model):
     _inherit = "hr.expense"
 
-    sheet_id_state = fields.Selection(related="sheet_id.state", string="Sheet state")
     invoice_id = fields.Many2one(
         comodel_name="account.move",
         string="Vendor Bill",
@@ -19,19 +19,14 @@ class HrExpense(models.Model):
             ("move_type", "=", "in_invoice"),
             ("state", "=", "posted"),
             ("payment_state", "=", "not_paid"),
-            ("expense_ids", "=", False),
+            # Exclude bills already linked to another expense.
+            ("invoice_expense_ids", "=", False),
         ],
         copy=False,
     )
     transfer_move_ids = fields.One2many(
         comodel_name="account.move",
         inverse_name="source_invoice_expense_id",
-    )
-    # This field has been added to reintroduce tracking for the amount due on each
-    # expense, a feature that existed in previous versions. The tracking is necessary
-    # to accurately reflect the payment state of the expense sheet.
-    amount_residual = fields.Monetary(
-        string="Amount Due", compute="_compute_amount_residual", store=True
     )
 
     def _prepare_invoice_values(self):
@@ -40,8 +35,6 @@ class HrExpense(models.Model):
                 {
                     "product_id": self.product_id.id,
                     "name": self.name,
-                    # Odoo considers always the amount taxes included, we need to take
-                    # the base amount and quantity = 1
                     "price_unit": self.untaxed_amount_currency,
                     "quantity": 1,
                     "account_id": self.account_id.id,
@@ -55,49 +48,6 @@ class HrExpense(models.Model):
             "move_type": "in_invoice",
             "invoice_date": self.date,
             "invoice_line_ids": invoice_lines,
-        }
-
-    def _prepare_own_account_transfer_move_vals(self):
-        self.ensure_one()
-        self = self.with_company(self.company_id)
-        # TODO: Allow to select a specific journal
-        journal = self.env["account.journal"].search(
-            [
-                ("company_id", "=", self.company_id.id),
-                ("type", "=", "general"),
-            ],
-            limit=1,
-        )
-        employee_partner = self.employee_id.sudo().work_contact_id
-        invoice_partner = self.invoice_id.partner_id
-        ap_lines = self.invoice_id.line_ids.filtered(
-            lambda x: x.display_type == "payment_term"
-        )
-        amount_invoice = sum(ap_lines.mapped("credit"))
-        return {
-            "journal_id": journal.id,
-            "move_type": "entry",
-            "name": "/",
-            "date": self.date,
-            "ref": self.name,
-            "source_invoice_expense_id": self.id,
-            "expense_sheet_id": self.sheet_id.id,
-            "line_ids": [
-                Command.create(
-                    {
-                        "account_id": ap_lines.account_id[:1].id,
-                        "partner_id": invoice_partner.id,
-                        "debit": amount_invoice,
-                    }
-                ),
-                Command.create(
-                    {
-                        "account_id": employee_partner.property_account_payable_id.id,
-                        "partner_id": employee_partner.id,
-                        "credit": amount_invoice,
-                    }
-                ),
-            ],
         }
 
     def action_expense_create_invoice(self):
@@ -119,9 +69,11 @@ class HrExpense(models.Model):
 
     @api.constrains("invoice_id")
     def _check_invoice_id(self):
-        for expense in self:  # Only non binding expense
+        # Allow draft bills while the expense is draft; posting is gated by
+        # _validate_expense_invoice() at action_post time.
+        for expense in self:
             if (
-                not expense.sheet_id
+                expense.state != "draft"
                 and expense.invoice_id
                 and expense.invoice_id.state != "posted"
             ):
@@ -129,19 +81,14 @@ class HrExpense(models.Model):
 
     @api.onchange("invoice_id")
     def _onchange_invoice_id(self):
-        """Assure quantity is 1 if an invoice is set for having proper totals, and
-        the rest of the fields that are not computed writable, avoiding to ud
-        """
         if self.invoice_id:
             self.quantity = 1
-            self.name = self.name.split(" | ")[0].strip()
-            self.name = "{} | {}".format(self.name or "", self.invoice_id.name)
+            self.name = (self.name or "").split(" | ")[0].strip()
+            self.name = f"{self.name} | {self.invoice_id.name}"
             self.date = self.invoice_id.date
             if self.invoice_id.company_id != self.company_id:
-                # for avoiding to trigger dependent computes
                 self.company_id = self.invoice_id.company_id.id
 
-    # tax_ids put as dependency for assuring this is computed after setting tax_ids
     @api.depends("invoice_id", "tax_ids")
     def _compute_price_unit(self):
         with_invoice = self.filtered("invoice_id")
@@ -149,7 +96,6 @@ class HrExpense(models.Model):
             record.price_unit = record.invoice_id.amount_total
         return super(HrExpense, self - with_invoice)._compute_price_unit()
 
-    # tax_ids put as dependency for assuring this is computed after setting tax_ids
     @api.depends("invoice_id", "tax_ids")
     def _compute_total_amount_currency(self):
         with_invoice = self.filtered("invoice_id")
@@ -171,13 +117,113 @@ class HrExpense(models.Model):
             record.tax_ids = [(5,)]
         return super(HrExpense, self - with_invoice)._compute_tax_ids()
 
+    def action_post(self):
+        """Route bill-linked expenses through the transfer-entry flow instead
+        of core's auto-generated receipt; let the rest fall through to super."""
+        bill_linked = self.filtered("invoice_id")
+        regular = self - bill_linked
+        bill_linked._validate_expense_invoice()
+        res = super(HrExpense, regular).action_post() if regular else None
+        own_account_bill_linked = bill_linked.filtered(
+            lambda e: e.payment_mode == "own_account"
+        )
+        for expense in own_account_bill_linked:
+            move_vals = expense._prepare_own_account_transfer_move_vals()
+            move = self.env["account.move"].create(move_vals)
+            move.action_post()
+            expense._reconcile_ap_move(move)
+        # Company-paid bill-linked: the bill is already the company's debt, so
+        # no transfer entry is needed; just mark the expense approved.
+        company_bill_linked = bill_linked - own_account_bill_linked
+        if company_bill_linked:
+            company_bill_linked.sudo().write({"approval_state": "approved"})
+        return res
+
+    def _validate_expense_invoice(self):
+        """Validate that linked bills are posted and amounts match."""
+        if not self:
+            return
+        DecimalPrecision = self.env["decimal.precision"]
+        precision = DecimalPrecision.precision_get("Product Price")
+        for expense in self:
+            invoice = expense.invoice_id
+            if invoice.state != "posted":
+                raise UserError(self.env._("Vendor bill state must be Posted"))
+            if (
+                float_compare(
+                    expense.total_amount_currency, invoice.amount_total, precision
+                )
+                != 0
+            ):
+                raise UserError(
+                    self.env._(
+                        "Vendor bill amount mismatch!\nPlease make sure the "
+                        "vendor bill total equals the expense total."
+                    )
+                )
+
+    def _prepare_own_account_transfer_move_vals(self):
+        self.ensure_one()
+        rec = self.with_company(self.company_id)
+        journal = self.env["account.journal"].search(
+            [
+                ("company_id", "=", rec.company_id.id),
+                ("type", "=", "general"),
+            ],
+            limit=1,
+        )
+        employee_partner = rec.employee_id.sudo().work_contact_id
+        invoice_partner = rec.invoice_id.partner_id
+        ap_lines = rec.invoice_id.line_ids.filtered(
+            lambda x: x.display_type == "payment_term"
+        )
+        amount_invoice = sum(ap_lines.mapped("credit"))
+        return {
+            "journal_id": journal.id,
+            "move_type": "entry",
+            "name": "/",
+            "date": rec.date,
+            "ref": rec.name,
+            "source_invoice_expense_id": rec.id,
+            "line_ids": [
+                Command.create(
+                    {
+                        "account_id": ap_lines.account_id[:1].id,
+                        "partner_id": invoice_partner.id,
+                        "debit": amount_invoice,
+                    }
+                ),
+                Command.create(
+                    {
+                        "account_id": employee_partner.property_account_payable_id.id,
+                        "partner_id": employee_partner.id,
+                        "credit": amount_invoice,
+                    }
+                ),
+            ],
+        }
+
+    def _reconcile_ap_move(self, move):
+        """Reconcile the transfer entry with the bill so paying the bill
+        clears the employee's portion."""
+        self.ensure_one()
+        invoice = self.invoice_id
+        ap_lines = invoice.line_ids.filtered(lambda x: x.display_type == "payment_term")
+        transfer_line = move.line_ids.filtered(
+            lambda x: x.partner_id == invoice.partner_id
+        )
+        if ap_lines and transfer_line:
+            (ap_lines + transfer_line).reconcile()
+
     @api.depends(
         "transfer_move_ids.line_ids.amount_residual",
         "transfer_move_ids.line_ids.amount_residual_currency",
     )
     def _compute_amount_residual(self):
-        """Compute the amount residual for expenses paid by employee with invoices."""
-        for rec in self:
+        """For bill-linked expenses, derive the residual from the transfer
+        entry's open balance instead of the receipt's."""
+        with_invoice = self.filtered("invoice_id")
+        for rec in with_invoice:
             if not rec.currency_id or rec.currency_id == rec.company_currency_id:
                 residual_field = "amount_residual"
             else:
@@ -186,3 +232,4 @@ class HrExpense(models.Model):
                 lambda x: x.account_type in ("asset_receivable", "liability_payable")
             )
             rec.amount_residual = -sum(payment_term_lines.mapped(residual_field))
+        return super(HrExpense, self - with_invoice)._compute_amount_residual()
