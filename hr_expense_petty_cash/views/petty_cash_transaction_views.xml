@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_petty_cash_transaction_list" model="ir.ui.view">
+        <field name="name">petty.cash.transaction.list</field>
+        <field name="model">petty.cash.transaction</field>
+        <field name="arch" type="xml">
+            <list string="Transactions" default_order="id desc">
+                <field name="date" />
+                <field
+                    name="source"
+                    widget="badge"
+                    decoration-success="source == 'refill'"
+                    decoration-info="source == 'expense'"
+                />
+                <field name="move_id" />
+                <field name="sheet_id" />
+                <field name="expense_id" />
+                <field name="debit" sum="Total In" optional="show" />
+                <field name="credit" sum="Total Out" optional="show" />
+                <field name="amount" optional="hide" />
+                <field name="balance" />
+                <field
+                    name="company_id"
+                    groups="base.group_multi_company"
+                    column_invisible="True"
+                />
+            </list>
+        </field>
+    </record>
+    <record id="view_petty_cash_transaction_search" model="ir.ui.view">
+        <field name="name">petty.cash.transaction.search</field>
+        <field name="model">petty.cash.transaction</field>
+        <field name="arch" type="xml">
+            <search string="Transactions">
+                <field name="name" />
+                <field name="move_id" />
+                <field name="sheet_id" />
+                <field name="partner_id" />
+                <filter
+                    string="Refill"
+                    name="refill"
+                    domain="[('source', '=', 'refill')]"
+                />
+                <filter
+                    string="Expense"
+                    name="expense"
+                    domain="[('source', '=', 'expense')]"
+                />
+                <group expand="0" string="Group By">
+                    <filter
+                        name="group_by_source"
+                        string="Source"
+                        context="{'group_by': 'source'}"
+                    />
+                    <filter
+                        name="group_by_date"
+                        string="Date"
+                        context="{'group_by': 'date'}"
+                    />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_petty_cash_transaction" model="ir.actions.act_window">
+        <field name="name">Petty Cash Transactions</field>
+        <field name="res_model">petty.cash.transaction</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="view_petty_cash_transaction_search" />
+        <field name="view_id" ref="view_petty_cash_transaction_list" />
+    </record>
+</odoo>
