@@ -1,10 +1,7 @@
-This module should be used when a supplier invoice is paid by an
-employee. It allows to set a supplier invoice for each expense line,
-adding the corresponding journal items to transfer the debt to the
-employee.
-
-There are 2 ways to reference expense to invoice.
-
-1.  On expense, directly select one invoice.
-2.  On expense report, use button "Create Vendor Bill" to create one
-    invoice for multiple expenses.
+This module lets you link an existing posted vendor bill to an employee
+expense, so the bill stays the accounting document for that expense instead
+of an auto-generated receipt. Use it when an employee paid a supplier
+invoice and you want the original bill to remain the source of truth. When
+the expense is posted, the module books an entry that transfers the debt
+from the bill's vendor to the employee, and the expense is settled once the
+bill is paid.
