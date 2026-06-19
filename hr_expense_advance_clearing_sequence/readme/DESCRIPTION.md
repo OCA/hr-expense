@@ -1,4 +1,4 @@
-This module adds the possibility to define a sequence for the expense
-report's reference that Employee advance. This reference is then set as
-default when you create a new expense report, using the defined
-sequence.
+This module gives advance (clearing) expenses their own numbering sequence,
+separate from regular employee expenses. When you create an advance expense,
+its reference number is drawn from a dedicated sequence (prefixed *AV* by
+default) instead of the generic expense sequence.
