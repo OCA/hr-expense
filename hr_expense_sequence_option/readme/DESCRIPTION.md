@@ -1,2 +1,3 @@
-This module extends module ir_sequence_option and allow you to provide
-optional sequences for hr.expense.sheet documents.
+This module lets you assign optional sequences to employee expenses. It
+extends `base_sequence_option`, so you can define alternative numbering rules
+for `hr.expense` records and pick which one applies based on a domain.
