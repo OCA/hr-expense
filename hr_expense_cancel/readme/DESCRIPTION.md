@@ -1,3 +1,5 @@
-This module allows you to cancel and correct expenses. It adds a cancel
-button on the expense sheet that undo reconciliations and delete
-payments and journal entries.
+This module lets you reset a posted employee expense back to draft. It
+draft-cancels the linked payments and unreconciles their journal lines
+before core reverses the expense's move. Reconciliations created by
+related modules (such as bills from `hr_expense_invoice`) are cancelled
+in step.
