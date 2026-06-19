@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="seq_hr_expense_option_1" model="ir.sequence">
-        <field name="name">Expense Sheet: Option 1</field>
+        <field name="name">Expense: Option 1</field>
         <field name="padding" eval="5" />
         <field name="prefix">EX-1/</field>
     </record>
 
     <record id="hr_expense_sequence_option" model="ir.sequence.option">
-        <field name="name">Expense Report</field>
-        <field name="model">hr.expense.sheet</field>
+        <field name="name">Expense</field>
+        <field name="model">hr.expense</field>
         <field name="use_sequence_option" eval="False" />
     </record>
 
