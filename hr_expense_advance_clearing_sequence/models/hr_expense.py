@@ -4,17 +4,17 @@
 from odoo import api, models
 
 
-class HrExpenseSheet(models.Model):
-    _inherit = "hr.expense.sheet"
+class HrExpense(models.Model):
+    _inherit = "hr.expense"
 
     @api.model_create_multi
     def create(self, vals_list):
-        default_advance = self.env.context.get("default_advance")
+        default_type = self.env.context.get("default_expense_type")
         for vals in vals_list:
-            if vals.get("advance") or default_advance:
-                number = (
+            expense_type = vals.get("expense_type", default_type)
+            if expense_type == "advance" and vals.get("number", "/") == "/":
+                vals["number"] = (
                     self.env["ir.sequence"].next_by_code("hr.expense.sheet.advance")
                     or "/"
                 )
-                vals["number"] = number
-        return super().create(vals)
+        return super().create(vals_list)
