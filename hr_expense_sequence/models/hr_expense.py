@@ -1,12 +1,12 @@
 # Copyright 2014 Serv. Tecnol. Avanzados (http://www.serviciosbaeza.com)
 #                       Pedro M. Baeza <pedro.baeza@serviciosbaeza.com>
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import api, fields, models
 
 
-class HrExpenseSheet(models.Model):
-    _inherit = "hr.expense.sheet"
+class HrExpense(models.Model):
+    _inherit = "hr.expense"
     _rec_name = "number"
 
     number = fields.Char(required=True, default="/", readonly=True, copy=False)
