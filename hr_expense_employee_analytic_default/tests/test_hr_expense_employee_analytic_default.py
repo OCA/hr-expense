@@ -1,5 +1,5 @@
 # Copyright 2024 Tecnativa - Víctor Martínez
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
 from odoo.tests import Form, new_test_user
 
@@ -12,8 +12,7 @@ class TestHrExpenseEmployeeAnalyticDefault(BaseCommon):
         super().setUpClass()
         cls.user1 = new_test_user(cls.env, login="test_user_1")
         cls.user1.action_create_employee()
-        cls.work_address = cls.env["res.partner"].create({"name": "Work address"})
-        cls.user1.employee_ids.address_id = cls.work_address
+        cls.user1.employee_ids.address_id = cls.user1.partner_id
         cls.user2 = new_test_user(cls.env, login="test_user_2")
         cls.user2.action_create_employee()
         cls.plan = cls.env["account.analytic.plan"].create({"name": "Test plan"})
@@ -32,7 +31,7 @@ class TestHrExpenseEmployeeAnalyticDefault(BaseCommon):
         cls.distribution = cls.env["account.analytic.distribution.model"].create(
             {
                 "product_id": cls.product.id,
-                "partner_id": cls.work_address.id,
+                "partner_id": cls.user1.partner_id.id,
                 "analytic_distribution": {str(cls.analytic_account.id): 100.0},
             }
         )
