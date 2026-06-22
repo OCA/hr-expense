@@ -63,6 +63,17 @@ class HrExpense(models.Model):
         if self.advance:
             self.product_id = self._get_product_advance()
 
+    def _get_advance_analytic_distribution(self):
+        self.ensure_one()
+        if not self.sheet_id.advance_sheet_id:
+            return False
+        move_advance = self.sheet_id.advance_sheet_id.account_move_ids
+        move_analytic = move_advance.mapped("line_ids.analytic_distribution")
+        analytics = [a for a in move_analytic if a]
+        if len(set(str(a) for a in analytics)) == 1:
+            return analytics[0]
+        return False
+
     def _get_move_line_src(self, move_line_name, partner_id):
         self.ensure_one()
         price_unit = self.price_unit or self.total_amount
@@ -99,6 +110,7 @@ class HrExpense(models.Model):
             or self.sheet_id.accounting_date
             or fields.Date.context_today(self)
         )
+        analytic_distribution = self._get_advance_analytic_distribution()
         ml_dst_dict = {
             "name": move_line_name,
             "debit": total_amount > 0 and total_amount,
@@ -106,6 +118,7 @@ class HrExpense(models.Model):
             "account_id": account_advance.id,
             "date_maturity": account_date,
             "amount_currency": total_amount_currency,
+            "analytic_distribution": analytic_distribution,
             "currency_id": self.currency_id.id,
             "expense_id": self.id,
             "partner_id": partner_id,
