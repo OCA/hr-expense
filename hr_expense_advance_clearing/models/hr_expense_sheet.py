@@ -38,7 +38,7 @@ class HrExpenseSheet(models.Model):
         readonly=True,
         help="Show reference return advance on advance",
     )
-    return_count = fields.Integer(compute="_compute_return_count")
+    return_count = fields.Integer(compute="_compute_return_count", compute_sudo=True)
     clearing_residual = fields.Monetary(
         string="Amount to clear",
         compute="_compute_clearing_residual",
