@@ -315,3 +315,61 @@ class TestHrExpenseAdvanceClearing(TestExpenseCommon):
             cancel=True,
         )
         self.assertNotEqual(reverse_move, self.advance.account_move_ids)
+
+    @mute_logger("odoo.models.unlink")
+    def test_5_clearing_move_reset_draft_tax_excluded(self):
+        """Resetting a clearing entry with a tax-excluded tax to draft must not
+        add auto lines."""
+        # ------------------ Advance --------------------------
+        self.advance.action_submit_sheet()
+        self.advance.action_approve_expense_sheets()
+        self.advance.action_sheet_move_post()
+        self.assertEqual(self.advance.clearing_residual, 1000.0)
+        self._register_payment(self.advance.account_move_ids, 1000.0)
+        self.assertEqual(self.advance.state, "done")
+        # ------------------ Clearing, Return Advance --------------------------
+        # Clear this with previous advance
+        self.clearing_less.advance_sheet_id = self.advance
+        self.clearing_less.expense_line_ids.tax_ids = self.tax_purchase_a
+        self.clearing_less.action_submit_sheet()
+        self.clearing_less.action_approve_expense_sheets()
+        self.clearing_less.action_sheet_move_post()
+
+        clearing_move = self.clearing_less.account_move_ids
+        self.assertEqual(clearing_move.state, "posted")
+        lines_before = clearing_move.line_ids
+        clearing_move.button_draft()
+        lines_after = clearing_move.line_ids
+        self.assertEqual(len(lines_after), len(lines_before))
+        self.assertAlmostEqual(sum(lines_after.mapped("balance")), 0.0)
+
+    @mute_logger("odoo.models.unlink")
+    def test_6_clearing_move_reset_draft_tax_included(self):
+        """Resetting a clearing entry with a tax-excluded tax to draft must not
+        add auto lines."""
+        # ------------------ Advance --------------------------
+        self.advance.action_submit_sheet()
+        self.advance.action_approve_expense_sheets()
+        self.advance.action_sheet_move_post()
+        self.assertEqual(self.advance.clearing_residual, 1000.0)
+        self._register_payment(self.advance.account_move_ids, 1000.0)
+        self.assertEqual(self.advance.state, "done")
+        # ------------------ Clearing, Return Advance --------------------------
+        # Clear this with previous advance
+        self.clearing_less.advance_sheet_id = self.advance
+
+        tax_included = self.tax_purchase_a.copy(
+            {"name": "test: tax purchase include", "price_include": True}
+        )
+        self.clearing_less.expense_line_ids.tax_ids = tax_included
+        self.clearing_less.action_submit_sheet()
+        self.clearing_less.action_approve_expense_sheets()
+        self.clearing_less.action_sheet_move_post()
+
+        clearing_move = self.clearing_less.account_move_ids
+        self.assertEqual(clearing_move.state, "posted")
+        lines_before = clearing_move.line_ids
+        clearing_move.button_draft()
+        lines_after = clearing_move.line_ids
+        self.assertEqual(len(lines_after), len(lines_before))
+        self.assertAlmostEqual(sum(lines_after.mapped("balance")), 0.0)
