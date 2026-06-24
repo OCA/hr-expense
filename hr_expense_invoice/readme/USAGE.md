@@ -1,16 +1,11 @@
-**Reference one invoice to an expense**
-
-- Create an expense sheet.
-- Add an expense line to sheet with an invoice_id selected or create one
-  new.
-- Process expense sheet.
-- On paying expense sheet, you are reconciling supplier invoice too.
-
-**Create one invoice to multiple expenses**
-
-- Create an expense sheet with one or multiple expense lines
-- After approved, click button "Create Vendor Bill"
-- Select multiple expense to create an invoice, and process it.
-- New invoice will be create and link to the selected expense lines.
-- Validate newly create invoice.
-- On paying expense sheet, you are reconciling supplier invoice(s) too.
+- Create an expense paid by an employee.
+- Select a Vendor Bill or create a new one with "Create Vendor Bill" button.
+- Clic on Post Journal Entries button.
+- At this point:
+  - A new Transfer Entry has been created to transfer the debt from the Vendor to the Employee.
+  - Vendor Bill has been reconciled with the Transfer Entry.
+- Go to the Transfer move by clicking on the "Transfer Moves" button.
+- Pay this Entry clicking on the Gears > Pay.
+- You will see:
+  - Vendor Bill has been reconciled with the Transfer Entry Vendor line.
+  - Transfer Entry Employee line has been paid.

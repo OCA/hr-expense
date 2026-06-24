@@ -1,3 +1,3 @@
-- Multiple payment terms for a supplier invoice are not handled
-  correctly.
-- Partial reconcile supplier invoices are also not correctly handled.
+- Multiple payment terms for a vendor bills are not handled correctly.
+- Partial reconcile vendor bill are also not correctly handled.
+- Since Odoo 19 only supports isolated expenses and clear vendor bill/receipt creation, invoice_id field on expense should be migrated to account_move_id field and deeply refactor the module.

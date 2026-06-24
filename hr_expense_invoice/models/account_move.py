@@ -1,6 +1,7 @@
 # Copyright 2019 Ecosoft <saranl@ecosoft.co.th>
 # Copyright 2021 Tecnativa - Víctor Martínez
 # Copyright 2024 Tecnativa - Pedro M. Baeza
+# Copyright 2026 Moduon - Eduardo de Miguel
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
@@ -10,7 +11,7 @@ from odoo.tools import float_compare
 class AccountMove(models.Model):
     _inherit = "account.move"
 
-    expense_ids = fields.One2many(
+    invoice_expense_ids = fields.One2many(
         comodel_name="hr.expense", inverse_name="invoice_id", string="Expenses"
     )
     source_invoice_expense_id = fields.Many2one(
@@ -23,8 +24,10 @@ class AccountMove(models.Model):
     def _check_expense_ids(self):
         DecimalPrecision = self.env["decimal.precision"]
         precision = DecimalPrecision.precision_get("Product Price")
-        for move in self.filtered("expense_ids"):
-            expense_amount = sum(move.expense_ids.mapped("total_amount_currency"))
+        for move in self.filtered("invoice_expense_ids"):
+            expense_amount = sum(
+                move.invoice_expense_ids.mapped("total_amount_currency")
+            )
             if float_compare(expense_amount, move.amount_total, precision) != 0:
                 raise ValidationError(
                     self.env._(
@@ -33,20 +36,39 @@ class AccountMove(models.Model):
                     )
                 )
 
-    def action_view_expense(self):
+    def action_force_register_payment(self):
+        if self.source_invoice_expense_id:
+            return self.line_ids.action_register_payment()
+        return super().action_force_register_payment()
+
+    def _compute_nb_expenses(self):
+        res = super()._compute_nb_expenses()
+        for move in self.filtered("invoice_expense_ids"):
+            move.nb_expenses = len(move.invoice_expense_ids)
+        return res
+
+    def action_open_expense(self):
         self.ensure_one()
+        if not self.invoice_expense_ids:
+            return super().action_open_expense()
+        linked_expenses = self.invoice_expense_ids
+        if len(linked_expenses) > 1:
+            return {
+                "name": self.env._("Expenses"),
+                "type": "ir.actions.act_window",
+                "view_mode": "list,form",
+                "views": [(False, "list"), (False, "form")],
+                "res_model": "hr.expense",
+                "domain": [("id", "in", linked_expenses.ids)],
+            }
         return {
+            "name": linked_expenses.name,
             "type": "ir.actions.act_window",
             "view_mode": "form",
+            "views": [(False, "form")],
             "res_model": "hr.expense",
-            "res_id": self.expense_ids[:1].id,
+            "res_id": linked_expenses.id,
         }
-
-    def action_force_register_payment(self):
-        if not self.source_invoice_expense_id:
-            return super().action_force_register_payment()
-        else:
-            return self.line_ids.action_register_payment()
 
 
 class AccountMoveLine(models.Model):
@@ -56,21 +78,3 @@ class AccountMoveLine(models.Model):
     def _check_payable_receivable(self):
         _self = self.filtered("expense_id")
         return super(AccountMoveLine, (self - _self))._check_payable_receivable()
-
-    def reconcile(self):
-        """Mark expenses paid by employee having invoice when reconciling them."""
-        expenses = self.move_id.source_invoice_expense_id
-        not_paid_expenses = expenses.filtered(lambda x: x.state != "done")
-        res = super().reconcile()
-        not_paid_expense_sheets = not_paid_expenses.sheet_id.filtered(
-            lambda x: x.state != "done"
-        )
-        paid_expenses = not_paid_expenses.filtered(
-            lambda expense: expense.currency_id.is_zero(expense.amount_residual)
-        )
-        paid_expenses.write({"state": "done"})
-        paid_sheets = not_paid_expense_sheets.filtered(
-            lambda x: all(expense.state == "done" for expense in x.expense_line_ids)
-        )
-        paid_sheets.set_to_paid()
-        return res

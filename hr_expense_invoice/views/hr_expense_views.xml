@@ -61,69 +61,68 @@
             <xpath expr='//field[@name="product_id"]/parent::div' position="after">
                 <!-- Added double, one as invisible and w/o group, for those without the permission -->
                 <field name="invoice_id" invisible="1" />
-                <field
-                    name="invoice_id"
+                <label
+                    for="invoice_id"
+                    invisible="not invoice_id and state not in ('draft', 'submitted', 'approved')"
                     groups="account.group_account_readonly"
-                    context="{'default_type': 'in_invoice',
-                            'type': 'in_invoice',
-                            'journal_type': 'purchase',
-                            'default_invoice_date': date,
-                            'default_line_ids': [{'product_id': product_id,
-                                                          'name': name,
-                                                          'price_unit': price_unit,
-                                                          'quantity': quantity,
-                                                          'date': date,
-                                                          'account_id': account_id,
-                                                          'tax_ids': tax_ids, }], }"
                 />
+                <div
+                    class="o_row"
+                    invisible="not invoice_id and state not in ('draft', 'submitted', 'approved')"
+                    groups="account.group_account_readonly"
+                >
+                    <field
+                        name="invoice_id"
+                        readonly="state not in ('draft', 'submitted', 'approved')"
+                        invisible="not invoice_id and state not in ('draft', 'submitted', 'approved')"
+                        context="{'default_type': 'in_invoice',
+                                'type': 'in_invoice',
+                                'journal_type': 'purchase',
+                                'default_invoice_date': date,
+                                'default_line_ids': [{'product_id': product_id,
+                                                              'name': name,
+                                                              'price_unit': price_unit,
+                                                              'quantity': quantity,
+                                                              'date': date,
+                                                              'account_id': account_id,
+                                                              'tax_ids': tax_ids, }], }"
+                    />
+                    <button
+                        name="action_expense_create_invoice"
+                        groups="account.group_account_invoice"
+                        invisible="invoice_id or state not in ('draft', 'submitted', 'approved')"
+                        string="Create Vendor Bill"
+                        class="btn-primary"
+                        icon="fa-plus"
+                        type="object"
+                    />
+                </div>
             </xpath>
             <field name="tax_ids" position="attributes">
                 <attribute name="invisible" add="invoice_id" separator=" or " />
             </field>
-        </field>
-    </record>
-    <record id="hr_expense_sheet_form_view_inherit_sale_expense" model="ir.ui.view">
-        <field name="name">hr.expense.sheet.form.inherit.sale.expense</field>
-        <field name="model">hr.expense.sheet</field>
-        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
-        <field name="arch" type="xml">
-            <xpath
-                expr="//field[@name='expense_line_ids']/list/field[@name='name']"
-                position="after"
-            >
-                <field name="invoice_id" groups="account.group_account_invoice" />
-                <field name="quantity" invisible="1" />
-            </xpath>
-            <xpath
-                expr="//field[@name='expense_line_ids']/list/field[@name='total_amount_currency']"
-                position="after"
-            >
-                <field name="sheet_id_state" invisible="1" />
-                <button
-                    name="action_expense_create_invoice"
-                    groups="account.group_account_invoice"
-                    invisible="invoice_id or sheet_id_state not in ('draft', 'approve')"
-                    string="Create Vendor Bill"
-                    type="object"
-                />
-            </xpath>
-            <div class="oe_button_box" position="inside">
+            <xpath expr="//div[@name='button_box']" position="inside">
                 <button
                     class="oe_stat_button"
                     icon="fa-book"
-                    name="action_view_invoices"
+                    name="action_view_invoice"
                     groups="account.group_account_invoice"
-                    invisible="not invoice_count"
+                    invisible="not invoice_id"
                     type="object"
                 >
-                    <field
-                        name="invoice_count"
-                        groups="account.group_account_invoice"
-                        widget="statinfo"
-                        string="Invoices"
-                    />
+                    <span>Invoice</span>
                 </button>
-            </div>
+                <button
+                    class="oe_stat_button"
+                    icon="fa-exchange"
+                    name="action_view_transfer_moves"
+                    groups="account.group_account_invoice,base.group_no_one"
+                    invisible="not transfer_move_ids"
+                    type="object"
+                >
+                    <span>Transfer Moves</span>
+                </button>
+            </xpath>
         </field>
     </record>
 </odoo>

@@ -21,27 +21,22 @@ Supplier invoices on HR expenses
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fhr--expense-lightgray.png?logo=github
-    :target: https://github.com/OCA/hr-expense/tree/18.0/hr_expense_invoice
+    :target: https://github.com/OCA/hr-expense/tree/19.0/hr_expense_invoice
     :alt: OCA/hr-expense
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/hr-expense-18-0/hr-expense-18-0-hr_expense_invoice
+    :target: https://translation.odoo-community.org/projects/hr-expense-19-0/hr-expense-19-0-hr_expense_invoice
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runboat-Try%20me-875A7B.png
-    :target: https://runboat.odoo-community.org/builds?repo=OCA/hr-expense&target_branch=18.0
+    :target: https://runboat.odoo-community.org/builds?repo=OCA/hr-expense&target_branch=19.0
     :alt: Try me on Runboat
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-This module should be used when a supplier invoice is paid by an
-employee. It allows to set a supplier invoice for each expense line,
-adding the corresponding journal items to transfer the debt to the
-employee.
+This module should be used when a vendor bill is paid by an employee. It
+allows to register a vendor bill, adding the corresponding journal items
+to transfer the debt to the employee.
 
-There are 2 ways to reference expense to invoice.
-
-1. On expense, directly select one invoice.
-2. On expense report, use button "Create Vendor Bill" to create one
-   invoice for multiple expenses.
+You can set the vendor bill in the Expense or create a new one.
 
 **Table of contents**
 
@@ -51,29 +46,31 @@ There are 2 ways to reference expense to invoice.
 Usage
 =====
 
-**Reference one invoice to an expense**
+- Create an expense paid by an employee.
+- Select a Vendor Bill or create a new one with "Create Vendor Bill"
+  button.
+- Clic on Post Journal Entries button.
+- At this point:
 
-- Create an expense sheet.
-- Add an expense line to sheet with an invoice_id selected or create one
-  new.
-- Process expense sheet.
-- On paying expense sheet, you are reconciling supplier invoice too.
+  - A new Transfer Entry has been created to transfer the debt from the
+    Vendor to the Employee.
+  - Vendor Bill has been reconciled with the Transfer Entry.
 
-**Create one invoice to multiple expenses**
+- Go to the Transfer move by clicking on the "Transfer Moves" button.
+- Pay this Entry clicking on the Gears > Pay.
+- You will see:
 
-- Create an expense sheet with one or multiple expense lines
-- After approved, click button "Create Vendor Bill"
-- Select multiple expense to create an invoice, and process it.
-- New invoice will be create and link to the selected expense lines.
-- Validate newly create invoice.
-- On paying expense sheet, you are reconciling supplier invoice(s) too.
+  - Vendor Bill has been reconciled with the Transfer Entry Vendor line.
+  - Transfer Entry Employee line has been paid.
 
 Known issues / Roadmap
 ======================
 
-- Multiple payment terms for a supplier invoice are not handled
-  correctly.
-- Partial reconcile supplier invoices are also not correctly handled.
+- Multiple payment terms for a vendor bills are not handled correctly.
+- Partial reconcile vendor bill are also not correctly handled.
+- Since Odoo 19 only supports isolated expenses and clear vendor
+  bill/receipt creation, invoice_id field on expense should be migrated
+  to account_move_id field and deeply refactor the module.
 
 Bug Tracker
 ===========
@@ -81,7 +78,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/hr-expense/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/hr-expense/issues/new?body=module:%20hr_expense_invoice%0Aversion:%2018.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/hr-expense/issues/new?body=module:%20hr_expense_invoice%0Aversion:%2019.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -105,6 +102,7 @@ Contributors
 - Kitti Upariphutthiphong <kittiu@ecosoft.co.th>
 - Rattapong Chokmasermkul <rattapongc@ecosoft.co.th>
 - Saran Lim. <saranl@ecosoft.co.th>
+- Eduardo de Miguel (``Moduon <https://www.moduon.team/>``\ \_\_)
 
 Maintainers
 -----------
@@ -119,6 +117,6 @@ OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.
 
-This module is part of the `OCA/hr-expense <https://github.com/OCA/hr-expense/tree/18.0/hr_expense_invoice>`_ project on GitHub.
+This module is part of the `OCA/hr-expense <https://github.com/OCA/hr-expense/tree/19.0/hr_expense_invoice>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.
