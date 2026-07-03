@@ -56,6 +56,20 @@ class HrExpenseSheet(models.Model):
         compute="_compute_amount_payable",
         help="Final regiter payment amount even after advance clearing",
     )
+    clearing_journal_id = fields.Many2one(
+        comodel_name="account.journal",
+        check_company=True,
+        domain="[('type', '=', 'general')]",
+        compute="_compute_clearing_journal_id",
+        store=True,
+        readonly=False,
+        help="Miscellaneous journal used to post the clearing journal entry.",
+    )
+
+    @api.depends("company_id", "advance_sheet_id")
+    def _compute_clearing_journal_id(self):
+        for sheet in self:
+            sheet.clearing_journal_id = sheet.company_id.clearing_journal_id
 
     @api.constrains("advance_sheet_id", "expense_line_ids")
     def _check_advance_expense(self):
@@ -250,6 +264,7 @@ class HrExpenseSheet(models.Model):
             res.update(
                 {
                     "move_type": "entry",
+                    "journal_id": self.clearing_journal_id.id,
                     "line_ids": [
                         Command.create(vals) for vals in self._get_move_line_vals()
                     ],

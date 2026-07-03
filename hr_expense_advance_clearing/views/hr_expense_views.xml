@@ -203,6 +203,13 @@
                         name="advance_sheet_residual"
                         invisible="not advance_sheet_id"
                     />
+                    <field
+                        name="clearing_journal_id"
+                        groups="account.group_account_invoice,account.group_account_readonly"
+                        invisible="not advance_sheet_id"
+                        required="advance_sheet_id"
+                        readonly="state not in ['draft', 'submit', 'approve']"
+                    />
                 </group>
             </xpath>
             <xpath expr="//field[@name='expense_line_ids']" position="attributes">
