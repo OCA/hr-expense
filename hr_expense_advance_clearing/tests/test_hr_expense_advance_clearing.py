@@ -20,6 +20,17 @@ class TestHrExpenseAdvanceClearing(TestExpenseCommon):
         cls.emp_advance = cls.env.ref("hr_expense_advance_clearing.product_emp_advance")
         cls.emp_advance.property_account_expense_id = advance_account
         cls.product_a.standard_price = 0
+        # Create journal clearing
+        cls.other_misc = cls.env["account.journal"].create(
+            {
+                "name": "Clearing Other",
+                "code": "CLRO",
+                "type": "general",
+                "company_id": cls.company_data["company"].id,
+            }
+        )
+        # Configure a clearing journal on the company.
+        cls.company_data["company"].clearing_journal_id = cls.other_misc
         # Create advance expense 1,000
         cls.advance = cls._create_expense_sheet(
             cls,
@@ -187,6 +198,10 @@ class TestHrExpenseAdvanceClearing(TestExpenseCommon):
         self.clearing_equal.action_sheet_move_post()
         # Equal amount, state change to Paid and advance is cleared
         self.assertEqual(self.clearing_equal.state, "done")
+        # Fallback: no company clearing journal configured, move uses a general journal
+        clearing_move = self.clearing_equal.account_move_ids
+        self.assertEqual(clearing_move.move_type, "entry")
+        self.assertEqual(clearing_move.journal_id.type, "general")
         self.assertEqual(self.clearing_equal.advance_sheet_residual, 0.0)
         # Clear this with previous advance is done
         self.clearing_more.advance_sheet_id = self.advance
@@ -229,12 +244,17 @@ class TestHrExpenseAdvanceClearing(TestExpenseCommon):
         # Clear this with previous advance
         self.clearing_more.advance_sheet_id = self.advance
         self.assertEqual(self.clearing_more.advance_sheet_residual, 1000.0)
+        self.clearing_more.clearing_journal_id = self.other_misc
         self.clearing_more.action_submit_sheet()
         self.clearing_more.action_approve_expense_sheets()
         self.clearing_more.action_sheet_move_post()
         # More amount, state not changed to paid, and has to pay 200 more
         self.assertEqual(self.clearing_more.state, "post")
         self.assertEqual(self.clearing_more.amount_payable, 200.0)
+        # Verify clearing move used the overridden journal
+        clearing_move = self.clearing_more.account_move_ids
+        self.assertEqual(clearing_move.journal_id, self.other_misc)
+        self.assertEqual(clearing_move.move_type, "entry")
         self._register_payment(self.clearing_more.account_move_ids, 200.0)
         self.assertEqual(self.clearing_more.state, "done")
 
