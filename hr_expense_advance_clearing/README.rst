@@ -1,7 +1,3 @@
-.. image:: https://odoo-community.org/readme-banner-image
-   :target: https://odoo-community.org/get-involved?utm_source=readme
-   :alt: Odoo Community Association
-
 =============================
 Employee Advance and Clearing
 =============================
@@ -17,7 +13,7 @@ Employee Advance and Clearing
 .. |badge1| image:: https://img.shields.io/badge/maturity-Beta-yellow.png
     :target: https://odoo-community.org/page/development-status
     :alt: Beta
-.. |badge2| image:: https://img.shields.io/badge/license-AGPL--3-blue.png
+.. |badge2| image:: https://img.shields.io/badge/licence-AGPL--3-blue.png
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fhr--expense-lightgray.png?logo=github
@@ -70,6 +66,19 @@ Note:
   data
 - Employee Advance account code, if not already exists, you can create
   one. Use type = Current Asset and check Allow Reconciliation.
+
+**Clearing Journal**
+
+Clearing entries are posted as journal entries (move_type 'entry'),
+which only allow Miscellaneous (general) journals. By default Odoo picks
+the first general journal it finds. To control it:
+
+1. Go to Settings > Expenses > Accounting.
+2. Set the "Default Clearing Journal" to the Miscellaneous journal that
+   should receive the clearing entries.
+
+The clearing journal can also be set per clearing report on the report's
+"Clearing Journal" field, which defaults to the company setting above.
 
 Usage
 =====
@@ -175,10 +184,13 @@ promote its widespread use.
 .. |maintainer-kittiu| image:: https://github.com/kittiu.png?size=40px
     :target: https://github.com/kittiu
     :alt: kittiu
+.. |maintainer-Saran440| image:: https://github.com/Saran440.png?size=40px
+    :target: https://github.com/Saran440
+    :alt: Saran440
 
-Current `maintainer <https://odoo-community.org/page/maintainer-role>`__:
+Current `maintainers <https://odoo-community.org/page/maintainer-role>`__:
 
-|maintainer-kittiu| 
+|maintainer-kittiu| |maintainer-Saran440| 
 
 This module is part of the `OCA/hr-expense <https://github.com/OCA/hr-expense/tree/18.0/hr_expense_advance_clearing>`_ project on GitHub.
 
