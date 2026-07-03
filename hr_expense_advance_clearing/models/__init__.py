@@ -5,3 +5,5 @@ from . import hr_expense_sheet
 from . import hr_employee_base
 from . import account_move
 from . import account_payment
+from . import res_company
+from . import res_config_settings
