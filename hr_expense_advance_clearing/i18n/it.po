@@ -123,6 +123,11 @@ msgid "Clearing Count"
 msgstr "Conteggio liquidazione"
 
 #. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_sheet__clearing_journal_id
+msgid "Clearing Journal"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__clearing_product_id
 msgid "Clearing Product"
 msgstr "Prodotto liquidazione"
@@ -144,6 +149,16 @@ msgid "Clearings"
 msgstr "Liquidazioni"
 
 #. module: hr_expense_advance_clearing
+#: model:ir.model,name:hr_expense_advance_clearing.model_res_company
+msgid "Companies"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model,name:hr_expense_advance_clearing.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
 #: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_employee__advance_count
 #: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_employee_base__advance_count
 #: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_employee_public__advance_count
@@ -154,6 +169,27 @@ msgstr "Conteggio foglio anticipo nella nota spese"
 #: model_terms:ir.actions.act_window,help:hr_expense_advance_clearing.action_hr_expense_sheet_advance_clearing
 msgid "Create a new expense report"
 msgstr "Crea una nuova nota spese"
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_res_company__clearing_journal_id
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_res_config_settings__clearing_journal_id
+msgid "Default Clearing Journal"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.res_config_settings_view_form
+msgid ""
+"Default Miscellaneous journal used to post the advance clearing journal "
+"entry."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_res_company__clearing_journal_id
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_res_config_settings__clearing_journal_id
+msgid ""
+"Default Miscellaneous journal used when posting the advance clearing journal "
+"entry."
+msgstr ""
 
 #. module: hr_expense_advance_clearing
 #: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__advance
@@ -224,6 +260,11 @@ msgstr ""
 #: model:ir.model,name:hr_expense_advance_clearing.model_account_move
 msgid "Journal Entry"
 msgstr "Registrazione contabile"
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense_sheet__clearing_journal_id
+msgid "Miscellaneous journal used to post the clearing journal entry."
+msgstr ""
 
 #. module: hr_expense_advance_clearing
 #: model_terms:ir.actions.act_window,help:hr_expense_advance_clearing.action_my_hr_advance_sheet
@@ -357,11 +398,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
 msgid ""
-"You cannot return advance more than actual remaining "
-"(%(symbol)s%(amount)s)%(more_info)s"
+"You cannot return advance more than actual remaining (%(symbol)s%(amount)s)%"
+"(more_info)s"
 msgstr ""
-"Non è possibile restituire un anticipo superiore al rimanente effettivo "
-"(%(symbol)s%(amount)s)%(more_info)s"
+"Non è possibile restituire un anticipo superiore al rimanente effettivo (%"
+"(symbol)s%(amount)s)%(more_info)s"
 
 #, python-format
 #~ msgid ""
