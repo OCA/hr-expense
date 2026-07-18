@@ -21,6 +21,29 @@ class AccountPayment(models.Model):
         )
         return super()._synchronize_from_moves(changed_fields)
 
+    def action_post(self):
+        res = super().action_post()
+        for payment in self.filtered("move_id"):
+            clearing_moves = payment.invoice_ids.filtered(
+                lambda move: move.state == "posted"
+                and move.move_type == "entry"
+                and move.expense_sheet_id.advance_sheet_id
+            )
+            if not clearing_moves:
+                continue
+
+            lines = (clearing_moves + payment.move_id).line_ids.filtered(
+                lambda line: line.account_id.reconcile
+                and not line.reconciled
+                and line.account_id.account_type
+                in ("asset_receivable", "liability_payable")
+            )
+            for account in lines.account_id:
+                account_lines = lines.filtered_domain([("account_id", "=", account.id)])
+                if len(account_lines) > 1:
+                    account_lines.reconcile()
+        return res
+
     @api.model
     def _get_valid_payment_account_types(self):
         account_types = super()._get_valid_payment_account_types()

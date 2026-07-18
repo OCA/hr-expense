@@ -393,3 +393,46 @@ class TestHrExpenseAdvanceClearing(TestExpenseCommon):
         lines_after = clearing_move.line_ids
         self.assertEqual(len(lines_after), len(lines_before))
         self.assertAlmostEqual(sum(lines_after.mapped("balance")), 0.0)
+
+    @mute_logger("odoo.models.unlink")
+    def test_7_reconcile_clearing_payment_after_reset_to_draft(self):
+        """A reposted excess-clearing payment must be reconciled again."""
+        # Pay an advance of 1,000.
+        self.advance.action_submit_sheet()
+        self.advance.action_approve_expense_sheets()
+        self.advance.action_sheet_move_post()
+        self._register_payment(self.advance.account_move_ids, 1000.0)
+
+        # Clear 1,200 and pay the remaining 200.
+        self.clearing_more.advance_sheet_id = self.advance
+        self.clearing_more.action_submit_sheet()
+        self.clearing_more.action_approve_expense_sheets()
+        self.clearing_more.action_sheet_move_post()
+        clearing_move = self.clearing_more.account_move_ids
+        payments_before = self.env["account.payment"].search([])
+        register_payment = clearing_move.action_force_register_payment()
+        self._register_payment(clearing_move, 200.0, ctx=register_payment["context"])
+        payment = self.env["account.payment"].search([]) - payments_before
+        self.assertEqual(len(payment), 1)
+        # _finalize_clearing_payments() marks the confirmed payment as paid.
+        self.assertEqual(payment.state, "paid")
+
+        payable_lines = (clearing_move + payment.move_id).line_ids.filtered(
+            lambda line: line.account_id.account_type == "liability_payable"
+        )
+        self.assertTrue(payable_lines)
+        self.assertTrue(all(payable_lines.mapped("reconciled")))
+
+        # Resetting the payment removes its reconciliation. Posting it again
+        # must reconcile it back to the excess-clearing journal entry.
+        payment.action_draft()
+        self.assertEqual(payment.state, "draft")
+        self.assertFalse(any(payable_lines.mapped("reconciled")))
+        # _finalize_clearing_payments() must not force a draft payment to paid.
+        self.env["account.payment.register"]._finalize_clearing_payments(payment)
+        self.assertEqual(payment.state, "draft")
+
+        payment.action_post()
+        self.assertNotEqual(payment.state, "draft")
+        self.assertTrue(all(payable_lines.mapped("reconciled")))
+        self.assertEqual(clearing_move.amount_residual, 0.0)
