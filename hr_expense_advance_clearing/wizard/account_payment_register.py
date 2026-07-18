@@ -10,6 +10,13 @@ from odoo.tools import float_compare
 class AccountPaymentRegister(models.TransientModel):
     _inherit = "account.payment.register"
 
+    def _finalize_clearing_payments(self, payments):
+        """Mark confirmed clearing payments as paid and preserve drafts."""
+        for payment in payments.filtered(
+            lambda payment: payment.state in ("in_process", "paid")
+        ):
+            payment.write({"move_id": payment.move_id.id, "state": "paid"})
+
     def _validate_over_return(self):
         """Actual remaining = amount to clear - clear pending
         and it is not legit to return more than remaining"""
@@ -61,6 +68,5 @@ class AccountPaymentRegister(models.TransientModel):
         """Update the payment state when the clearing amount exceeds the advance."""
         payments = super()._create_payments()
         if self.env.context.get("expense_clearing"):
-            for payment in payments:
-                payment.write({"move_id": payment.move_id.id, "state": "paid"})
+            self._finalize_clearing_payments(payments)
         return payments
