@@ -1,4 +1,9 @@
-This module links each employee expense to the payment(s) that settled it.
-When you Register Payment on a posted employee-paid expense, the resulting
-payment back-links to the source expense, and vice versa. A post-install
-hook backfills the link for payments made before the module was installed.
+This module links each employee-paid expense to the payment(s) that settled
+it, in both directions: `hr.expense.payment_ids` and
+`account.payment.reconciled_expense_ids`.
+
+Both fields are computed from core's move-level link data — reconciled
+payments, partials included, and payments matched by the payment register —
+so nothing is stored that could go stale. Core's own
+`account.payment.expense_ids` covers company-paid expenses; these fields
+cover the employee-reimbursement direction.
