@@ -8,18 +8,18 @@ class HrExpense(models.Model):
     _inherit = "hr.expense"
 
     def _prepare_payments_vals(self):
-        """Use the expense report number as reference of the payment entries.
+        """Prefix the payment entries reference with the expense report number.
 
         Expenses paid by the company generate one journal entry (and its
-        payment) per expense line, so the report number is the only value
-        allowing to trace them back to the expense report when reconciling.
+        payment) per expense line: the number ties them back to the expense
+        report when reconciling, while the reference they already carried keeps
+        them apart from each other.
         """
         move_vals, payment_vals = super()._prepare_payments_vals()
-        number = self.sheet_id.number
-        if number and number != "/":
-            move_vals["ref"] = number
-            # `account.payment.memo` has an inverse writing back on
-            # `account.move.ref`, and the payment is created right after the
-            # move, so the memo has to be set as well to not lose the number.
-            payment_vals["memo"] = number
+        reference = self.sheet_id._prefix_with_number(move_vals.get("ref"))
+        move_vals["ref"] = reference
+        # `account.payment.memo` has an inverse writing back on
+        # `account.move.ref`, and the payment is created right after the move,
+        # so the memo has to be set as well to not lose the number.
+        payment_vals["memo"] = reference
         return move_vals, payment_vals

@@ -23,24 +23,27 @@ class TestHrExpenseSequenceAccountMove(TestExpenseCommon):
         return sheet.account_move_ids
 
     def test_own_account_bill_gets_the_report_number(self):
-        """The vendor bill of a report paid by the employee is referenced by
+        """The vendor bill of a report paid by the employee is prefixed with
         the report number, down to its payable journal item."""
         sheet = self.create_expense_report({"name": "Paid by employee"})
+        expected = f"{sheet.number} - Paid by employee"
         moves = self._post(sheet)
         self.assertEqual(len(moves), 1)
         self.assertEqual(moves.state, "posted")
-        self.assertEqual(moves.ref, sheet.number)
-        self.assertEqual(moves.payment_reference, sheet.number)
+        self.assertEqual(moves.ref, expected)
+        # Both fields must stay equal: core concatenates them into the payable
+        # line label when they differ
+        self.assertEqual(moves.payment_reference, expected)
         # `account.move.line.ref` is what the reconciliation widget searches on
-        self.assertEqual(set(moves.line_ids.mapped("ref")), {sheet.number})
+        self.assertEqual(set(moves.line_ids.mapped("ref")), {expected})
         payable_line = moves.line_ids.filtered(
             lambda line: line.display_type == "payment_term"
         )
-        self.assertEqual(payable_line.name, sheet.number)
+        self.assertEqual(payable_line.name, expected)
 
-    def test_company_account_payments_get_the_report_number(self):
-        """Every payment entry of a report paid by the company is referenced by
-        the report number."""
+    def test_company_account_payments_keep_their_own_reference(self):
+        """Each payment entry of a report paid by the company keeps the
+        reference of its expense line, prefixed with the report number."""
         sheet = self.create_expense_report(
             {
                 "name": "Paid by company",
@@ -60,15 +63,20 @@ class TestHrExpenseSequenceAccountMove(TestExpenseCommon):
                 ],
             }
         )
+        expected = {
+            f"{sheet.number} - Expense line 1",
+            f"{sheet.number} - Expense line 2",
+        }
         moves = self._post(sheet)
-        # One journal entry (and payment) per expense line
+        # One journal entry (and payment) per expense line, each still telling
+        # which expense it belongs to
         self.assertEqual(len(moves), 2)
         self.assertEqual(set(moves.mapped("state")), {"posted"})
         # The memo inverse writes back on the move reference, so it must have
-        # been set to the number as well
-        self.assertEqual(set(moves.origin_payment_id.mapped("memo")), {sheet.number})
-        self.assertEqual(set(moves.mapped("ref")), {sheet.number})
-        self.assertEqual(set(moves.line_ids.mapped("ref")), {sheet.number})
+        # been prefixed as well
+        self.assertEqual(set(moves.origin_payment_id.mapped("memo")), expected)
+        self.assertEqual(set(moves.mapped("ref")), expected)
+        self.assertEqual(set(moves.line_ids.mapped("ref")), expected)
 
     def test_manual_number_is_propagated(self):
         """A number forced at creation is propagated as well."""
@@ -76,7 +84,7 @@ class TestHrExpenseSequenceAccountMove(TestExpenseCommon):
             {"name": "Manual number", "number": "EX-MANUAL-1"}
         )
         moves = self._post(sheet)
-        self.assertEqual(moves.ref, "EX-MANUAL-1")
+        self.assertEqual(moves.ref, "EX-MANUAL-1 - Manual number")
 
     def test_no_number_keeps_the_standard_reference(self):
         """Without a number, the standard reference is left untouched."""
@@ -86,3 +94,11 @@ class TestHrExpenseSequenceAccountMove(TestExpenseCommon):
         sheet.number = "/"
         moves = self._post(sheet)
         self.assertEqual(moves.ref, sheet.name)
+
+    def test_number_alone_when_there_is_nothing_to_prefix(self):
+        """An empty standard reference leaves the number on its own, with no
+        dangling separator."""
+        sheet = self.create_expense_report({"name": "To be emptied"})
+        sheet.name = ""
+        moves = self._post(sheet)
+        self.assertEqual(moves.ref, sheet.number)
