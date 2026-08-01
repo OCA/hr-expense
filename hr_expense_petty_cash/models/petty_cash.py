@@ -31,6 +31,10 @@ class PettyCash(models.Model):
         string="Balance",
         compute="_compute_petty_cash_balance",
     )
+    transaction_count = fields.Integer(
+        string="Transactions",
+        compute="_compute_transaction_count",
+    )
     journal_id = fields.Many2one(
         comodel_name="account.journal",
         check_company=True,
@@ -62,3 +66,19 @@ class PettyCash(models.Model):
             )
             balance = sum(line.debit - line.credit for line in aml)
             rec.petty_cash_balance = balance
+
+    def _compute_transaction_count(self):
+        transaction_env = self.env["petty.cash.transaction"]
+        for rec in self:
+            rec.transaction_count = transaction_env.search_count(
+                [("petty_cash_id", "=", rec.id)]
+            )
+
+    def action_open_transactions(self):
+        self.ensure_one()
+        action = self.env["ir.actions.act_window"]._for_xml_id(
+            "hr_expense_petty_cash.action_petty_cash_transaction"
+        )
+        action["domain"] = [("petty_cash_id", "=", self.id)]
+        action["context"] = {"default_petty_cash_id": self.id}
+        return action

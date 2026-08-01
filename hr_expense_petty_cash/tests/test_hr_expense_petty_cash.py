@@ -20,6 +20,7 @@ class TestHrExpensePettyCash(BaseCommon):
         cls.move_obj = cls.env["account.move"]
         cls.sheet_obj = cls.env["hr.expense.sheet"]
         cls.exp_obj = cls.env["hr.expense"]
+        cls.pc_transaction_obj = cls.env["petty.cash.transaction"]
 
         # Demo data
         cls.employee_1 = cls.env.ref("hr.employee_admin")
@@ -250,6 +251,19 @@ class TestHrExpensePettyCash(BaseCommon):
         invoice.action_post()
         self.petty_cash_holder._compute_petty_cash_balance()
         self.assertEqual(self.petty_cash_holder.petty_cash_balance, 1000.0)
+        self.assertEqual(self.petty_cash_holder.transaction_count, 1)
+        transactions = self.pc_transaction_obj.search(
+            [("petty_cash_id", "=", self.petty_cash_holder.id)]
+        )
+        self.assertEqual(len(transactions), 1)
+        refill = transactions[0]
+        self.assertEqual(refill.source, "refill")
+        self.assertEqual(refill.debit, 1000.0)
+        self.assertEqual(refill.credit, 0.0)
+        self.assertEqual(refill.balance, 1000.0)
+        self.assertTrue(refill.move_id)
+        self.assertFalse(refill.sheet_id)
+
         # Create expense
         expense_own = self._create_expense(400.0, self.employee_1, "own_account")
         expense_petty_cash = self._create_expense(
@@ -305,12 +319,25 @@ class TestHrExpensePettyCash(BaseCommon):
             self.assertEqual(sheet.state, "post")
         self.assertTrue(sheet.account_move_ids.id)
         self.assertEqual(self.petty_cash_holder.petty_cash_balance, 600.0)
+        # Check transactions after expense
+        self.assertEqual(self.petty_cash_holder.transaction_count, 2)
+        transactions = self.pc_transaction_obj.search(
+            [("petty_cash_id", "=", self.petty_cash_holder.id)]
+        )
+        self.assertEqual(len(transactions), 2)
 
         # Check action
         action = sheet.action_open_account_moves()
         self.assertEqual(len(sheet.account_move_ids), 1)
         self.assertEqual(action["res_model"], "account.move")
         self.assertEqual(action["res_id"], sheet.account_move_ids.id)
+
+        action = self.petty_cash_holder.action_open_transactions()
+        self.assertEqual(action["res_model"], "petty.cash.transaction")
+        self.assertEqual(
+            action["domain"],
+            [("petty_cash_id", "=", self.petty_cash_holder.id)],
+        )
 
     def test_03_create_expense_petty_cash_with_journal(self):
         self.petty_cash_holder.journal_id = self.petty_cash_journal_id
