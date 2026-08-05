@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <!-- ++++++++++++++ Expense sheet for Admin ++++++++++++++-->
+    <record id="travel_ny_sheet" model="hr.expense.sheet">
+        <field name="name">Commercial Travel at New York</field>
+        <field name="employee_id" ref="hr.employee_admin" />
+        <field name="state">approved</field>
+    </record>
+    <record id="hr_expense.travel_by_air_expense" model="hr.expense">
+        <field name="sheet_id" ref="travel_ny_sheet" />
+    </record>
+    <record id="hr_expense.hotel_bill_expense" model="hr.expense">
+        <field name="sheet_id" ref="travel_ny_sheet" />
+    </record>
+    <record id="hr_expense.lunch_customer_bill_expense" model="hr.expense">
+        <field name="sheet_id" ref="travel_ny_sheet" />
+    </record>
+    <record id="hr_expense.lunch_bill_expense" model="hr.expense">
+        <field name="sheet_id" ref="travel_ny_sheet" />
+    </record>
+    <!-- ++++++++++++++ Expense sheet for Demo ++++++++++++++-->
+    <record id="customer_meeting_sheet" model="hr.expense.sheet">
+        <field name="name">Customer meeting</field>
+        <field name="employee_id" ref="hr.employee_qdp" />
+        <field name="state">submitted</field>
+    </record>
+    <record id="hr_expense.travel_demo_by_car_expense" model="hr.expense">
+        <field name="sheet_id" ref="customer_meeting_sheet" />
+    </record>
+    <record id="hr_expense.lunch_demo_customer_bill_expense" model="hr.expense">
+        <field name="sheet_id" ref="customer_meeting_sheet" />
+    </record>
+    <!-- ++++++++++++++ Expense sheet for Keith Byrd ++++++++++++++-->
+    <record id="team_building_sheet" model="hr.expense.sheet">
+        <field name="name">Team Building</field>
+        <field name="employee_id" ref="hr.employee_fme" />
+        <field name="state">submitted</field>
+    </record>
+    <!-- ++++++++++++++ Expense for Keith Byrd ++++++++++++++-->
+    <record id="hr_expense.pizzas_bill_expense" model="hr.expense">
+        <field name="sheet_id" ref="team_building_sheet" />
+    </record>
+    <record id="hr_expense.drinks_bill_expense" model="hr.expense">
+        <field name="sheet_id" ref="team_building_sheet" />
+    </record>
+    <record id="hr_expense.paintball_bill_expense" model="hr.expense">
+        <field name="sheet_id" ref="team_building_sheet" />
+    </record>
+    <!-- ++++++++++++++ Expense sheet for Ronnie Hart ++++++++++++++-->
+    <record id="office_furniture_sheet" model="hr.expense.sheet">
+        <field name="name">Office furniture</field>
+        <field name="employee_id" ref="hr.employee_al" />
+        <field name="state">submitted</field>
+    </record>
+    <record id="hr_expense.chair_bill_expense" model="hr.expense">
+        <field name="sheet_id" ref="office_furniture_sheet" />
+    </record>
+    <record id="hr_expense.lamp_bill_expense" model="hr.expense">
+        <field name="sheet_id" ref="office_furniture_sheet" />
+    </record>
+</odoo>

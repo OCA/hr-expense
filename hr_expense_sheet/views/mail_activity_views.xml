@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record
+        id="hr_expense.mail_activity_type_action_config_hr_expense"
+        model="ir.actions.act_window"
+    >
+        <field
+            name="domain"
+        >['|', ('res_model', '=', False), ('res_model', '=', 'hr.expense.sheet')]</field>
+        <field name="context">{'default_res_model': 'hr.expense.sheet'}</field>
+    </record>
+</odoo>
