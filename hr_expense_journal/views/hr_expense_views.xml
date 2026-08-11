@@ -1,0 +1,38 @@
+<odoo>
+    <record id="hr_expense_form_view_inherit" model="ir.ui.view">
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet//div[@id='payment_mode']" position="after">
+                <field name="selectable_payment_method_line_ids" invisible="1" />
+                <field
+                    name="payment_method_line_id"
+                    context="{'show_payment_journal_id': 1}"
+                    options="{'no_open': True, 'no_create': True}"
+                    invisible="payment_mode != 'company_account'"
+                    domain="[
+                        ('id', 'in', selectable_payment_method_line_ids),
+                        ('journal_type', '=', 'bank')
+                    ]"
+                />
+            </xpath>
+        </field>
+    </record>
+    <record id="hr_expense_sheet_view_inherit" model="ir.ui.view">
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='employee_details']" position="inside">
+                <field name="payment_method_line_id" invisible="1" />
+            </xpath>
+            <field name="expense_line_ids" position="attributes">
+                <!-- Can add only Expenses matching the payment mode and payment journal -->
+                <attribute name="domain">
+                    [('state', '=', 'draft'), ('employee_id', '=', employee_id), ('company_id', '=', company_id),
+                    ('payment_mode', '=?', payment_mode),
+                    '|', ('payment_method_line_id', '=', payment_method_line_id), ('payment_method_line_id', '=', False)]
+                </attribute>
+            </field>
+        </field>
+    </record>
+</odoo>
