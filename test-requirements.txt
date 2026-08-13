@@ -1,0 +1,5 @@
+# DO NOT MERGE — temporary pins until upstream deps land.
+# - OCA/hr-expense#353: hr_expense_sequence 19.0 MIG (A2 dep)
+# - OCA/hr-expense#358: hr_expense_advance_clearing 19.0 MIG (D2 dep)
+odoo-addon-hr_expense_sequence @ git+https://github.com/OCA/hr-expense.git@refs/pull/353/head#subdirectory=hr_expense_sequence
+odoo-addon-hr_expense_advance_clearing @ git+https://github.com/OCA/hr-expense.git@refs/pull/358/head#subdirectory=hr_expense_advance_clearing
