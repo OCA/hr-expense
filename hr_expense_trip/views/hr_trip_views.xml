@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="hr_trip_view_list" model="ir.ui.view">
+        <field name="name">hr.trip.view.list</field>
+        <field name="model">hr.trip</field>
+        <field name="arch" type="xml">
+            <list string="Trips">
+                <field name="name" />
+                <field name="code" />
+                <field name="start_date" />
+                <field name="end_date" />
+                <field name="employee_id" />
+                <field name="state" />
+            </list>
+        </field>
+    </record>
+
+    <record id="hr_trip_view_form" model="ir.ui.view">
+        <field name="name">hr.trip.view.form</field>
+        <field name="model">hr.trip</field>
+        <field name="arch" type="xml">
+            <form string="Trip">
+                <header>
+                    <button
+                        name="action_request_approval"
+                        type="object"
+                        string="Request Approval"
+                        class="btn-primary"
+                        invisible="state != 'draft'"
+                    />
+                    <button
+                        name="action_approve"
+                        type="object"
+                        string="Approve"
+                        class="btn-primary"
+                        invisible="state != 'request'"
+                        groups="hr_expense.group_hr_expense_team_approver"
+                    />
+                    <button
+                        name="action_done"
+                        type="object"
+                        string="Mark as Done"
+                        class="btn-primary"
+                        invisible="state != 'receipts'"
+                    />
+                    <button
+                        name="action_add_more_receipts"
+                        type="object"
+                        string="Add More Receipts"
+                        class="btn-secondary"
+                        invisible="state != 'done'"
+                    />
+                    <button
+                        name="action_post"
+                        type="object"
+                        string="Create Journal Entry"
+                        class="btn-primary"
+                        invisible="not can_create_bill"
+                    />
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,request,receipts,done"
+                    />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            name="action_open_account_move"
+                            class="oe_stat_button"
+                            icon="fa-bars"
+                            type="object"
+                            invisible="not account_move_ids"
+                            groups="account.group_account_invoice"
+                        >
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Journal Entry</span>
+                            </div>
+                        </button>
+                    </div>
+                    <field name="can_edit_trip_info" invisible="1" />
+                    <field name="can_create_bill" invisible="1" />
+                    <field name="message_main_attachment_id" invisible="1" />
+                    <div class="oe_title">
+                        <h1>
+                            <field readonly="True" nolabel="1" name="code" />
+                        </h1>
+                    </div>
+                    <group>
+                        <field
+                            name="name"
+                            widget="text"
+                            placeholder="Trip Reason"
+                            readonly="state in ['receipts', 'done'] and not can_edit_trip_info"
+                        />
+                    </group>
+                    <group>
+                        <group>
+                            <field
+                                name="start_date"
+                                widget="daterange"
+                                options="{'end_date_field': 'end_date'}"
+                                readonly="state in ['receipts', 'done'] and not can_edit_trip_info"
+                            />
+                            <field
+                                name="employee_id"
+                                groups="hr_expense.group_hr_expense_manager"
+                                readonly="state in ['receipts', 'done'] and not can_edit_trip_info"
+                            />
+                        </group>
+                        <group>
+                            <field
+                                name="partner_id"
+                                readonly="state in ['receipts', 'done'] and not can_edit_trip_info"
+                            />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Expenses" name="expenses">
+                            <field
+                                name="expense_ids"
+                                mode="list"
+                                widget="expense_lines_widget"
+                                options="{'reload_on_button': True}"
+                                context="{'default_employee_id': employee_id, 'default_trip_id': id, 'form_view_ref' : 'hr_expense.hr_expense_view_form'}"
+                                force_save="1"
+                                readonly="state == 'done'"
+                            >
+                                <list>
+                                    <field
+                                        name="date"
+                                        decoration-success="date &lt; trip_start_date"
+                                        decoration-warning="date &gt; trip_end_date"
+                                    />
+                                    <field
+                                        name="trip_start_date"
+                                        column_invisible="1"
+                                    />
+                                    <field name="trip_end_date" column_invisible="1" />
+                                    <field name="name" />
+                                    <field name="state" />
+                                    <field name="total_amount" />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="o_attachment_preview o_center_attachment" />
+                <chatter />
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_trip_view_search" model="ir.ui.view">
+        <field name="name">hr.trip.view.search</field>
+        <field name="model">hr.trip</field>
+        <field name="arch" type="xml">
+            <search string="Trips">
+                <!-- Search -->
+                <field
+                    name="name"
+                    filter_domain="['|',('name', 'ilike', self),('code', 'ilike', self)]"
+                    string="Trip"
+                />
+                <field
+                    name="employee_id"
+                    filter_domain="[('employee_id.name', 'ilike', self)]"
+                />
+                <field name="start_date" />
+                <field name="end_date" />
+
+                <!-- Filters -->
+                <filter
+                    string="Open Trips"
+                    name="open_trips"
+                    domain="[('state', '!=', 'done')]"
+                />
+                <filter
+                    string="My Trips"
+                    name="my_trips"
+                    domain="[('employee_id.user_id', '=', uid)]"
+                />
+                <filter
+                    string="Trips to Process"
+                    name="trips_to_process"
+                    domain="[('state', 'in', ['request', 'receipts'])]"
+                />
+
+                <!-- Group bys -->
+                <group name="group_filters">
+                    <filter
+                        string="Employee"
+                        name="employee"
+                        domain="[]"
+                        context="{'group_by': 'employee_id'}"
+                    />
+                    <filter
+                        string="Status"
+                        name="status"
+                        domain="[]"
+                        context="{'group_by': 'state'}"
+                    />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hr_trip_my" model="ir.actions.act_window">
+        <field name="name">My Trips</field>
+        <field name="res_model">hr.trip</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">trips</field>
+        <field name="search_view_id" ref="hr_trip_view_search" />
+        <field name="context">{'search_default_my_trips': 1}</field>
+        <field name="help" type="html">
+            <p
+                class="o_view_nocontent_smiling_face"
+            >No trips found. Let's create one!</p>
+        </field>
+    </record>
+
+    <record id="action_hr_trip_to_process" model="ir.actions.act_window">
+        <field name="name">Trip to Process</field>
+        <field name="res_model">hr.trip</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hr_trip_view_search" />
+        <field name="context">{'search_default_trips_to_process': 1}</field>
+    </record>
+
+    <menuitem
+        id="menu_hr_trip_my"
+        name="My Trips"
+        parent="hr_expense.menu_hr_expense_my_expenses"
+        action="action_hr_trip_my"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_hr_trip_to_process"
+        name="Trip to Process"
+        parent="hr_expense.menu_hr_expense_my_expenses"
+        action="action_hr_trip_to_process"
+        sequence="21"
+        groups="hr_expense.group_hr_expense_team_approver"
+    />
+</odoo>

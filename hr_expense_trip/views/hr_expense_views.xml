@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="hr_expense_view_form_trip" model="ir.ui.view">
+        <field name="name">hr.expense.view.form.trip</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form" />
+        <field name="arch" type="xml">
+            <field name="employee_id" position="after">
+                <field
+                    name="trip_id"
+                    context="{'search_default_open_trips': 1, 'default_employee_id': employee_id}"
+                />
+            </field>
+
+            <xpath
+                expr="//button[@name='action_submit' and hasclass('o_expense_submit_highlight')]"
+                position="attributes"
+            >
+                <attribute
+                    name="invisible"
+                    add="context.get('default_trip_id')"
+                    separator=" or "
+                />
+            </xpath>
+            <xpath
+                expr="//button[@name='action_submit' and hasclass('o_expense_submit')]"
+                position="attributes"
+            >
+                <attribute
+                    name="invisible"
+                    add="context.get('default_trip_id')"
+                    separator=" or "
+                />
+            </xpath>
+            <xpath
+                expr="//form/header/button[@name='action_post' and hasclass('o_expense_post')]"
+                position="attributes"
+            >
+                <attribute
+                    name="invisible"
+                    add="context.get('default_trip_id') or trip_id"
+                    separator=" or "
+                />
+            </xpath>
+            <xpath
+                expr="//form/header/button[@name='action_post' and hasclass('o_expense_post_highlight')]"
+                position="attributes"
+            >
+                <attribute
+                    name="invisible"
+                    add="context.get('default_trip_id') or trip_id"
+                    separator=" or "
+                />
+            </xpath>
+            <xpath
+                expr="//button[@name='action_reset' and @groups='account.group_account_invoice']"
+                position="attributes"
+            >
+                <attribute
+                    name="invisible"
+                    add="context.get('default_trip_id')"
+                    separator=" or "
+                />
+            </xpath>
+            <xpath
+                expr="//button[@name='action_reset' and @groups='!account.group_account_invoice']"
+                position="attributes"
+            >
+                <attribute
+                    name="invisible"
+                    add="context.get('default_trip_id')"
+                    separator=" or "
+                />
+            </xpath>
+            <xpath
+                expr="//button[@name='action_split_wizard' and hasclass('o_expense_split_user')]"
+                position="attributes"
+            >
+                <attribute
+                    name="invisible"
+                    add="context.get('default_trip_id')"
+                    separator=" or "
+                />
+            </xpath>
+            <xpath
+                expr="//button[@name='action_split_wizard' and hasclass('o_expense_split_manager')]"
+                position="attributes"
+            >
+                <attribute
+                    name="invisible"
+                    add="context.get('default_trip_id')"
+                    separator=" or "
+                />
+            </xpath>
+
+            <xpath
+                expr="//button[@name='action_refuse' and hasclass('o_expense_refuse')]"
+                position="attributes"
+            >
+                <attribute
+                    name="invisible"
+                    add="context.get('default_trip_id')"
+                    separator=" or "
+                />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_expense_view_tree_trip" model="ir.ui.view">
+        <field name="name">hr.expense.view.tree.trip</field>
+        <field name="model">hr.expense</field>
+        <field
+            name="inherit_id"
+            ref="hr_expense.hr_expense_view_expenses_analysis_tree"
+        />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="trip_id" optional="show" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_expense_view_search_trip" model="ir.ui.view">
+        <field name="name">hr.expense.view.search.trip</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='to_pay']" position="after">
+                <filter name="trip" string="Trip" domain="[('trip_id', '!=', False)]" />
+            </xpath>
+
+            <xpath expr="//group" position="inside">
+                <filter name="trip" string="Trip" context="{'group_by': 'trip_id'}" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="seq_hr_trip" model="ir.sequence">
+        <field name="name">HR Trip</field>
+        <field name="code">hr.trip</field>
+        <field name="prefix">TP-%(range_year)s-</field>
+        <field name="padding">4</field>
+        <field name="use_date_range">True</field>
+    </record>
+</odoo>
