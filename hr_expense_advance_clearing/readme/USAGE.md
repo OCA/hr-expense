@@ -4,38 +4,25 @@ you can step following:
 
 **Create an Employee Advance**
 
-1.  Go to Expenses \> My Expenses \> Advances
-2.  Create sheet and add a line with advance
+1.  Go to Expenses \> My Expenses
+2.  Create an expense and set "Expense Type" to Advance
 3.  As an option, the user can also set the "Clearing Product". If this
-    is set, on the clear advance step, the clearing product will create
-    a default product line.
+    is set, on the clear advance step, the clearing product will be used
+    as the default product.
 4.  Set the unit price to advance amount \> Save
 5.  As normal, do Submit to Manager \> Approve \> Post Journal Entries
     \> Register Payment.
-6.  As this is Advance, you will see a new field "Amount to clear".
+6.  As this is Advance, you will see a new field "Amount to Clear".
 
 **Clear Advance**
 
-you can do 2 ways,
+1.  Go to Expenses \> My Expenses
+2.  Create an expense and reference the advance with field "Clearing
+    Advance" \> Save
+3.  Add or create Expense line(s) as normal.
+4.  As normal, do Approve \> Post Journal Entries
 
-1.  Create clearing from advance document  
-    1.  Go to Expenses \> My Expenses \> Advances
-    2.  Search for the Advance you want to clear, or use filter "Advance
-        (not cleared)" to see all uncleared advance.
-    3.  Open an Advance which is now in paid status with some Amount to
-        be cleared.
-    4.  Click button "Clear Advance", system will create new Expense
-        Report with reference to the previous step Advance.
-    5.  Create name clearing and Save (must save first)
-    6.  Edit \> Add or create Expense line(s) as normal.
-    7.  As normal, do Approve \> Post Journal Entries
-
-2.  Create clearing from new expense  
-    1.  Go to Expenses \> My Expenses \> Expenses
-    2.  Create sheet and reference advance with field "Clear Advance" \>
-        Save (must save first)
-    3.  Edit \> Add or create Expense line(s) as normal.
-    4.  As normal, do Approve \> Post Journal Entries
+Use filter "Advance (not cleared)" to see all uncleared advance.
 
 Note:
 
@@ -46,7 +33,7 @@ Note:
 
 **Return Advance**
 
-1.  Go to Expenses \> My Expenses \> Advances
+1.  Go to Expenses \> My Expenses
 2.  Search for the Advance you want to clear, or use filter "Advance
     (not cleared)" to see all uncleared advance.
 3.  Open an Advance which is now in paid status with some Amount to be

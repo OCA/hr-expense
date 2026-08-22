@@ -23,6 +23,3 @@ first general journal it finds. To control it:
 2.  Set the "Default Clearing Journal" to the Miscellaneous journal that
     should receive the clearing entries.
 
-The clearing journal can also be set per clearing report on the report's
-"Clearing Journal" field, which defaults to the company setting above.
-
