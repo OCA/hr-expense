@@ -2,7 +2,7 @@
 # @author Guillaume MASSON <guillaume.masson@akretion.com>
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -26,7 +26,6 @@ class HrExpenseTaxLine(models.Model):
 
     expense_id = fields.Many2one(
         comodel_name="hr.expense",
-        string="Expense",
         required=True,
         ondelete="cascade",
         index=True,
@@ -101,5 +100,7 @@ class HrExpenseTaxLine(models.Model):
         for line in self:
             if line.base_amount_currency < 0:
                 raise ValidationError(
-                    _("The base amount on a tax distribution line cannot be negative.")
+                    line.env._(
+                        "The base amount on a tax distribution line cannot be negative."
+                    )
                 )
