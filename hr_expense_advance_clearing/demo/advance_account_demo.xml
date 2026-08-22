@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="demo_account_employee_advance" model="account.account">
+        <field name="name">Employee Advance (demo)</field>
+        <field name="code">100999</field>
+        <field name="account_type">asset_current</field>
+        <field name="reconcile" eval="True" />
+    </record>
+
+    <record id="product_emp_advance" model="product.product">
+        <field name="property_account_expense_id" ref="demo_account_employee_advance" />
+    </record>
+</odoo>

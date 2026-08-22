@@ -18,6 +18,7 @@
         "views/hr_employee_public_views.xml",
         "views/res_config_settings_views.xml",
     ],
+    "demo": ["demo/advance_account_demo.xml"],
     "installable": True,
     "maintainers": ["kittiu", "Saran440"],
 }
