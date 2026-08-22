@@ -30,9 +30,9 @@
                 <field name="has_tax_distribution" invisible="1" />
             </xpath>
 
-            <!-- After the existing tax_ids + tax_amount_currency row,
-                 insert the distribution lines (visible only when relevant). -->
-            <xpath expr="//field[@name='tax_ids']/.." position="after">
+            <!-- Full width: inside the <group> two-column grid this would
+                 leave an unpaired cell and shift every label/field below. -->
+            <xpath expr="//field[@name='description']/.." position="before">
                 <div
                     invisible="not has_tax_distribution"
                     class="o_expense_tax_distribution mt-2"

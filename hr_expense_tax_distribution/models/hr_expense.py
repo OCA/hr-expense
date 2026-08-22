@@ -2,7 +2,7 @@
 # @author Guillaume MASSON <guillaume.masson@akretion.com>
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import Command, _, api, fields, models
+from odoo import Command, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -19,13 +19,12 @@ class HrExpense(models.Model):
         compute="_compute_has_tax_distribution",
         store=True,
     )
-    # Disable precompute on these three fields: our _compute overrides depend
-    # on hr.expense.tax.line.tax_amount_currency which is not precomputable
-    # itself (it lives on a new model).  Keeping precompute=True would trigger
-    # an Odoo UserWarning at startup and silently break the precompute chain.
+    # Disable precompute on these fields because they depend on the One2many
+    # relation tax_line_ids, which cannot be precomputed.
     tax_amount_currency = fields.Monetary(precompute=False)
     untaxed_amount_currency = fields.Monetary(precompute=False)
     tax_amount = fields.Monetary(precompute=False)
+    untaxed_amount = fields.Monetary(precompute=False)
 
     # -------------------------------------------------------------------------
     # Compute
@@ -42,39 +41,16 @@ class HrExpense(models.Model):
 
     @api.onchange("tax_ids")
     def _onchange_tax_ids_generate_distribution_lines(self):
-        """Maintain tax distribution lines in sync with tax_ids.
-
-        Rules:
-        - If tax_ids has 0 or 1 tax: clear all distribution lines (single-tax
-          expenses use the standard Odoo flow; no distribution needed).
-        - If tax_ids has 2+ taxes: one line per tax is maintained.
-          Existing lines whose tax is still present are preserved (base amounts
-          are kept).  Lines for removed taxes are deleted.  Lines for newly
-          added taxes are created with base_amount_currency = 0.
-        """
+        """Keep one distribution line per tax; clear them for single-tax expenses."""
         if len(self.tax_ids) <= 1:
             self.tax_line_ids = [Command.clear()]
             return
         self.tax_line_ids = self._sync_tax_distribution_lines(self.tax_ids)
 
     def _sync_tax_distribution_lines(self, taxes):
-        """Return a list of ORM Commands to sync tax distribution lines with
-        the given ``taxes`` recordset.
-
-        Lines covering a single tax still present in ``taxes`` are preserved
-        via Command.link() so their base_amount_currency is kept.  Lines for
-        taxes that have been removed are dropped.  A new Command.create() is
-        added for each tax not yet covered by a single-tax line.
-
-        The caller is responsible for assigning the result to ``tax_line_ids``
-        (onchange) or passing it to write() / create() (tests, other callers).
-        This design allows downstream modules to override this method and add
-        extra fields (e.g. an account_id) to the created lines.
-
-        Uses self._origin.tax_line_ids so that ids are always real DB integers,
-        even when called from inside an onchange where self is a virtual record.
-        On a new (unsaved) expense, _origin.tax_line_ids is an empty recordset,
-        which is the correct starting point.
+        """Return ORM Commands syncing the distribution lines with ``taxes``:
+        keep existing single-tax lines, drop removed ones, create the new ones.
+        Split out so downstream modules can add extra fields on created lines.
         """
         self.ensure_one()
         # _origin gives us real DB records (ids are plain ints).
@@ -117,9 +93,7 @@ class HrExpense(models.Model):
         "tax_line_ids.total_amount_currency",
     )
     def _compute_tax_amount_currency(self):
-        """When distribution lines exist *and* have non-zero amounts, derive
-        tax_amount_currency and untaxed_amount_currency from their sum.
-        Falls back to super() otherwise (standard Odoo behavior)."""
+        """Derive amounts from the distribution lines when set, else super()."""
         dist_expenses = self.filtered(
             lambda he: he.has_tax_distribution
             and any(dl.base_amount_currency for dl in he.tax_line_ids)
@@ -138,8 +112,7 @@ class HrExpense(models.Model):
         "tax_line_ids.tax_amount_currency",
     )
     def _compute_tax_amount(self):
-        """When distribution lines exist *and* have non-zero amounts, derive
-        tax_amount (company currency) from the distribution line sums."""
+        """Derive tax_amount (company currency) from the distribution lines when set."""
         dist_expenses = self.filtered(
             lambda he: he.has_tax_distribution
             and any(dl.base_amount_currency for dl in he.tax_line_ids)
@@ -162,11 +135,10 @@ class HrExpense(models.Model):
         return super(HrExpense, self - dist_expenses)._compute_tax_amount()
 
     def _check_tax_distribution_total(self):
-        """Validate that distribution line totals match the expense total.
+        """Validate that the distribution line totals match the expense total.
 
-        Called explicitly from action_submit_expenses instead of via
-        @api.constrains, to avoid false positives during onchange when lines
-        are being built incrementally (some lines may still be at zero).
+        Called from action_submit rather than via @api.constrains so onchange
+        does not fail while lines are still being filled in.
         """
         for expense in self:
             if not expense.tax_line_ids:
@@ -178,7 +150,7 @@ class HrExpense(models.Model):
                 for tl in expense.tax_line_ids
             ):
                 raise ValidationError(
-                    _(
+                    expense.env._(
                         'Expense "%(name)s" has tax distribution lines with a '
                         "zero base amount. Please fill in all base amounts before "
                         "submitting.",
@@ -192,7 +164,7 @@ class HrExpense(models.Model):
             # Use the currency rounding to allow for floating-point drift
             if not expense.currency_id.is_zero(diff):
                 raise ValidationError(
-                    _(
+                    expense.env._(
                         "The sum of tax distribution line totals (%(distributed)s) "
                         "does not match the expense total amount (%(total)s) on "
                         'expense "%(name)s". '
@@ -203,30 +175,21 @@ class HrExpense(models.Model):
                     )
                 )
 
-    def action_submit_expenses(self):
+    def action_submit(self):
         """Validate tax distribution totals before submission."""
         self._check_tax_distribution_total()
-        return super().action_submit_expenses()
+        return super().action_submit()
 
     # -------------------------------------------------------------------------
     # Accounting entry generation
     # -------------------------------------------------------------------------
 
     def _get_tax_distribution_move_lines_vals(self):
-        """Build account.move.line value dicts for one expense when tax
-        distribution lines are defined.
+        """One account.move.line vals dict per distribution line.
 
-        Reusable by both the 'own_account' (vendor bill) and 'company_account'
-        (direct payment) flows.  The caller is responsible for appending the
-        balancing destination line.
-
-        ``price_unit`` is set to ``total_amount_currency / quantity`` (TTC) so
-        that Odoo's invoice recompute extracts the base amount and the tax
-        amount correctly, mirroring the behaviour of the standard
-        ``_prepare_move_lines_vals`` which passes ``self.price_unit`` (also TTC
-        for expenses).  ``quantity`` is taken from the parent expense when the
-        product has a cost (``product_has_cost`` is True), falling back to 1.0
-        otherwise.
+        own_account only: that move is an ``in_receipt``, so price_unit (TTC)
+        drives the tax recompute. ``_prepare_payments_vals`` posts an ``entry``
+        and computes the amounts itself.
         """
         self.ensure_one()
         move_lines = []
@@ -259,26 +222,88 @@ class HrExpense(models.Model):
         return move_lines
 
     def _prepare_payments_vals(self):
-        """Override for the 'company_account' flow."""
+        """Override for the 'company_account' flow.
+
+        The move is an ``entry``: lines take ``balance`` verbatim and
+        ``tax_ids`` is never expanded, so mirror core's tax computation with
+        one base line per distribution line.
+        """
         if not self.has_tax_distribution:
             return super()._prepare_payments_vals()
 
         self.ensure_one()
-        journal = self.sheet_id.journal_id
-        payment_method_line = self.sheet_id.payment_method_line_id
+        journal = self.journal_id
+        payment_method_line = self.payment_method_line_id
         if not payment_method_line:
             raise ValidationError(
-                _(
+                self.env._(
                     "You need to add a manual payment method on the journal (%s)",
                     journal.name,
                 )
             )
 
-        move_lines = self._get_tax_distribution_move_lines_vals()
+        AccountTax = self.env["account.tax"]
+        rate = (
+            abs(self.total_amount_currency / self.total_amount)
+            if self.total_amount
+            else 0.0
+        )
+        account_src = self._get_base_account()
+        # price_unit is tax-included: the wrapper passes special_mode='total_included'.
+        base_lines = [
+            self._prepare_base_line_for_taxes_computation(
+                price_unit=dist_line.total_amount_currency,
+                quantity=1.0,
+                account_id=account_src,
+                rate=rate,
+                tax_ids=dist_line.tax_ids,
+            )
+            for dist_line in self.tax_line_ids
+        ]
+        AccountTax._add_tax_details_in_base_lines(base_lines, self.company_id)
+        AccountTax._round_base_lines_tax_details(base_lines, self.company_id)
+        AccountTax._add_accounting_data_in_base_lines_tax_details(
+            base_lines, self.company_id, include_caba_tags=True
+        )
+        tax_results = AccountTax._prepare_tax_lines(base_lines, self.company_id)
+
+        move_lines = []
+        base_move_lines = []
+        for base_line, to_update in tax_results["base_lines_to_update"]:
+            base_move_line = {
+                "name": self._get_move_line_name(),
+                "account_id": base_line["account_id"].id,
+                "product_id": base_line["product_id"].id,
+                "analytic_distribution": base_line["analytic_distribution"],
+                "expense_id": self.id,
+                "tax_ids": [Command.set(base_line["tax_ids"].ids)],
+                "tax_tag_ids": to_update["tax_tag_ids"],
+                "amount_currency": to_update["amount_currency"],
+                "balance": to_update["balance"],
+                "currency_id": base_line["currency_id"].id,
+                "partner_id": self.vendor_id.id,
+            }
+            move_lines.append(base_move_line)
+            base_move_lines.append(base_move_line)
+
+        total_tax_line_balance = 0.0
+        for tax_line in tax_results["tax_lines_to_add"]:
+            total_tax_line_balance += tax_line["balance"]
+            move_lines.append(tax_line)
+
+        # Core has one base line; with several, absorb the residue into the last.
+        if base_move_lines:
+            expected_base_balance = self.total_amount - total_tax_line_balance
+            residue = expected_base_balance - sum(
+                line["balance"] for line in base_move_lines
+            )
+            base_move_lines[-1]["balance"] += residue
+
+        # Outstanding payment line.
         move_lines.append(
             {
                 "name": self._get_move_line_name(),
-                "account_id": self.sheet_id._get_expense_account_destination(),
+                "account_id": self._get_expense_account_destination(),
                 "balance": -self.total_amount,
                 "amount_currency": self.currency_id.round(-self.total_amount_currency),
                 "currency_id": self.currency_id.id,
@@ -299,7 +324,7 @@ class HrExpense(models.Model):
             "company_id": self.company_id.id,
         }
         move_vals = {
-            **self.sheet_id._prepare_move_vals(),
+            **self._prepare_move_vals(),
             "ref": self.name,
             "date": self.date,
             "journal_id": journal.id,
@@ -322,51 +347,56 @@ class HrExpense(models.Model):
         }
         return move_vals, payment_vals
 
-
-class HrExpenseSheet(models.Model):
-    _inherit = "hr.expense.sheet"
-
-    def _prepare_bills_vals(self):
+    def _prepare_receipts_vals(self):
         """Override for the 'own_account' flow."""
-        if not any(exp.has_tax_distribution for exp in self.expense_line_ids):
-            return super()._prepare_bills_vals()
+        if not any(exp.has_tax_distribution for exp in self):
+            return super()._prepare_receipts_vals()
 
-        move_vals = self._prepare_move_vals()
-        if self.employee_id.sudo().bank_account_id:
-            move_vals["partner_bank_id"] = self.employee_id.sudo().bank_account_id.id
-
-        all_line_vals = []
-        for expense in self.expense_line_ids:
-            if expense.has_tax_distribution:
-                # Multi-line build from distribution lines
-                exp_lines = expense._get_tax_distribution_move_lines_vals()
-                all_line_vals.extend(exp_lines)
-            else:
-                # Standard single-line build
-                all_line_vals.append(expense._prepare_move_lines_vals())
-
-        attachment_ids = [
-            Command.create(
-                attachment.copy_data(
-                    {
-                        "res_model": "account.move",
-                        "res_id": False,
-                        "raw": attachment.raw,
-                    }
-                )[0]
+        return_vals = []
+        for employee_sudo, expenses_sudo in self.sudo().grouped("employee_id").items():
+            attachments_data = [
+                Command.create(
+                    attachment.copy_data(
+                        {
+                            "res_model": "account.move",
+                            "res_id": False,
+                            "raw": attachment.raw,
+                        }
+                    )[0]
+                )
+                for attachment in expenses_sudo.attachment_ids
+            ]
+            multiple_expenses_name = self.env._(
+                "Expenses of %(employee)s", employee=employee_sudo.name
             )
-            for attachment in self.expense_line_ids.attachment_ids
-        ]
+            move_ref = (
+                expenses_sudo.name
+                if len(expenses_sudo) == 1
+                else multiple_expenses_name
+            )
 
-        return {
-            **move_vals,
-            "journal_id": self.journal_id.id,
-            "ref": self.name,
-            "move_type": "in_invoice",
-            "partner_id": self.employee_id.sudo().work_contact_id.id,
-            "commercial_partner_id": self.employee_id.user_partner_id.id,
-            "currency_id": self.currency_id.id,
-            "company_id": self.company_id.id,
-            "line_ids": [Command.create(line) for line in all_line_vals],
-            "attachment_ids": attachment_ids,
-        }
+            line_ids = []
+            for expense_sudo in expenses_sudo:
+                if expense_sudo.has_tax_distribution:
+                    vals = expense_sudo._get_tax_distribution_move_lines_vals()
+                    line_ids.extend([Command.create(line) for line in vals])
+                else:
+                    line_ids.append(
+                        Command.create(expense_sudo._prepare_move_lines_vals())
+                    )
+
+            return_vals.append(
+                {
+                    **expenses_sudo._prepare_move_vals(),
+                    "ref": move_ref,
+                    "move_type": "in_receipt",
+                    "partner_id": employee_sudo.work_contact_id.id,
+                    "commercial_partner_id": employee_sudo.user_partner_id.id,
+                    "currency_id": expenses_sudo.company_currency_id.id,
+                    "company_id": expenses_sudo.company_id.id,
+                    "line_ids": line_ids,
+                    "partner_bank_id": employee_sudo.primary_bank_account_id.id,
+                    "attachment_ids": attachments_data,
+                }
+            )
+        return return_vals

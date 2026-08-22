@@ -25,10 +25,10 @@ lines as needed — one per applicable tax rate. Each line holds:
   automatically.
 
 A validation constraint ensures that the sum of the distribution line
-totals equals the expense total before the expense report can be
+totals equals the expense total before the expense can be
 submitted.
 
-When the expense report is posted, the accounting entry is built from
+When the expense is posted, the accounting entry is built from
 the distribution lines instead of the single `tax_ids` / total pair,
 producing a correct and auditable VAT breakdown for each applicable
 rate.

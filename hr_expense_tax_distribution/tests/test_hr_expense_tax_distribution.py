@@ -45,7 +45,13 @@ class TestHrExpenseTaxDistribution(TransactionCase):
         cls.tax_eco = _make_tax("Eco-tax 2%", 2.0)
 
         # Employee
-        cls.employee = cls.env["hr.employee"].create({"name": "Test Employee"})
+        cls.partner = cls.env["res.partner"].create({"name": "Test Employee Partner"})
+        cls.employee = cls.env["hr.employee"].create(
+            {
+                "name": "Test Employee",
+                "work_contact_id": cls.partner.id,
+            }
+        )
 
         # Product (generic expense)
         cls.product = cls.env["product.product"].search(
@@ -439,14 +445,10 @@ class TestHrExpenseTaxDistribution(TransactionCase):
             expense,
             [(self.tax_5, 50.0), (self.tax_10, 20.0), (self.tax_20, 10.0)],
         )
-        sheet_act = expense.action_submit_expenses()
-        sheet = self.env[sheet_act["res_model"]].browse(sheet_act["res_id"])
-        sheet.action_submit_sheet()
-        sheet.action_approve_expense_sheets()
-        sheet.action_sheet_move_post()
-        move = self.env["account.move"].search(
-            [("expense_sheet_id", "=", sheet.id)], limit=1
-        )
+        expense.action_submit()
+        expense.action_approve()
+        expense._post_without_wizard()
+        move = expense.account_move_id
         self.assertTrue(move)
         # Collect product lines (display_type = 'product') and tax lines
         product_lines = move.line_ids.filtered(lambda ml: ml.display_type == "product")
@@ -461,3 +463,98 @@ class TestHrExpenseTaxDistribution(TransactionCase):
         self.assertAlmostEqual(move.amount_untaxed, 80.0, places=2)
         # Tax sum: 2.75 + 2.00 + 2.00 = 6.75
         self.assertAlmostEqual(move.amount_tax, 6.75, places=2)
+
+    # ------------------------------------------------------------------
+    # 8. company_account flow: the payment journal entry must balance
+    # ------------------------------------------------------------------
+
+    def _cash_journal(self):
+        """A cash journal carrying a manual outbound payment method line."""
+        journal = self.env["account.journal"].search(
+            [("type", "=", "cash"), ("company_id", "=", self.company.id)], limit=1
+        )
+        if not journal:
+            journal = self.env["account.journal"].create(
+                {
+                    "name": "Cash Test",
+                    "type": "cash",
+                    "code": "CSHT",
+                    "company_id": self.company.id,
+                }
+            )
+        return journal
+
+    def _company_account_expense(self):
+        expense = self._make_expense(
+            86.75,
+            tax_ids=self.tax_5 | self.tax_10 | self.tax_20,
+            product=self.product,
+        )
+        self._make_dist_lines(
+            expense,
+            [(self.tax_5, 50.0), (self.tax_10, 20.0), (self.tax_20, 10.0)],
+        )
+        journal = self._cash_journal()
+        payment_method_line = journal.outbound_payment_method_line_ids[:1]
+        self.assertTrue(
+            payment_method_line, "Cash journal has no outbound payment method line"
+        )
+        expense.write(
+            {
+                "payment_mode": "company_account",
+                "journal_id": journal.id,
+                "payment_method_line_id": payment_method_line.id,
+            }
+        )
+        return expense
+
+    def test_company_account_cash_move_balances(self):
+        """A company-paid expense posts a journal entry, not an invoice.
+
+        Regression: the base lines were built with price_unit/quantity and no
+        balance, which an ``entry`` move never expands, so the entry was short
+        by the whole untaxed amount and posting raised an unbalanced-entry
+        error. See OCA/hr-expense#351.
+        """
+        expense = self._company_account_expense()
+        move_vals, payment_vals = expense._prepare_payments_vals()
+
+        lines = [cmd[2] for cmd in move_vals["line_ids"]]
+        # Every line must carry an explicit balance -- an entry ignores price_unit.
+        for line in lines:
+            self.assertIn("balance", line, f"line without balance: {line.get('name')}")
+        self.assertAlmostEqual(
+            sum(line["balance"] for line in lines),
+            0.0,
+            places=2,
+            msg="the payment journal entry must balance",
+        )
+        self.assertAlmostEqual(payment_vals["amount"], 86.75, places=2)
+
+    def test_company_account_cash_tax_lines(self):
+        """One tax line per distribution line, with the right amounts."""
+        expense = self._company_account_expense()
+        move_vals, _payment_vals = expense._prepare_payments_vals()
+        lines = [cmd[2] for cmd in move_vals["line_ids"]]
+
+        tax_lines = [line for line in lines if line.get("tax_repartition_line_id")]
+        self.assertEqual(len(tax_lines), 3, "One tax line per distribution entry")
+        self.assertAlmostEqual(
+            sum(line["balance"] for line in tax_lines),
+            6.75,
+            places=2,
+            msg="2.75 + 2.00 + 2.00",
+        )
+        # Tax lines carry tax_ids too; only base lines lack a repartition line.
+        base_lines = [
+            line
+            for line in lines
+            if line.get("tax_ids") and not line.get("tax_repartition_line_id")
+        ]
+        self.assertEqual(len(base_lines), 3, "One base line per distribution entry")
+        self.assertAlmostEqual(
+            sum(line["balance"] for line in base_lines),
+            80.0,
+            places=2,
+            msg="50 + 20 + 10",
+        )

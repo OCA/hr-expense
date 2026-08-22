@@ -9,7 +9,7 @@
         "by defining per-tax base amounts. Produces correct tax lines in the "
         "accounting entry when multiple VAT rates apply to the same receipt."
     ),
-    "version": "18.0.1.0.0",
+    "version": "19.0.1.0.0",
     "category": "Human Resources/Expenses",
     "website": "https://github.com/OCA/hr-expense",
     "author": "Akretion, Odoo Community Association (OCA)",
