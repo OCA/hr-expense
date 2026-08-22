@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_expense_tax_line_employee,hr.expense.tax.line employee,model_hr_expense_tax_line,hr_expense.group_hr_expense_user,1,1,1,1
+access_hr_expense_tax_line_manager,hr.expense.tax.line manager,model_hr_expense_tax_line,hr_expense.group_hr_expense_team_approver,1,1,1,1
