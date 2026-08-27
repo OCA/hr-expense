@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="hr_expense_post_wizard_view" model="ir.ui.view">
+        <field name="model">hr.expense.post.wizard</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_post_wizard_view" />
+        <field name="arch" type="xml">
+            <field name="employee_journal_id" position="attributes">
+                <attribute name="invisible">not without_invoice</attribute>
+            </field>
+            <field name="employee_journal_id" position="after">
+                <field
+                    name="general_journal_id"
+                    invisible="not with_invoice"
+                    string="General Journal"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -129,13 +129,3 @@ msgid ""
 msgstr ""
 "Non si può cambiare il valore totale, perché c'è una spesa collegata a "
 "questa fattura."
-
-#~ msgid "Expense Report State"
-#~ msgstr "Stato nota spese"
-
-#~ msgid "Register Payment"
-#~ msgstr "Registra pagamento"
-
-#, python-format
-#~ msgid "Register payment on expense's invoice is not allowed"
-#~ msgstr "Non è consentito registrare il pagamento sulla fattura delle spese"
