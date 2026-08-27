@@ -128,13 +128,3 @@ msgid ""
 msgstr ""
 "No puede modificar el importe total, ya que hay un gasto vinculado a esta "
 "factura."
-
-#~ msgid "Expense Report State"
-#~ msgstr "Estado del Informe de Gastos"
-
-#~ msgid "Register Payment"
-#~ msgstr "Registrar Pago"
-
-#, python-format
-#~ msgid "Register payment on expense's invoice is not allowed"
-#~ msgstr "No se permite registrar el pago en la factura del gasto"

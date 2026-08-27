@@ -6,19 +6,15 @@
         <field name="inherit_id" ref="account.view_move_form" />
         <field name="arch" type="xml">
             <div class="oe_button_box" position="inside">
-                <field name="expense_ids" invisible="1" />
                 <button
                     class="oe_stat_button"
                     icon="fa-file-text-o"
-                    name="action_view_expense"
+                    name="action_open_expense_invoice"
                     groups="account.group_account_invoice"
-                    invisible="not expense_ids"
+                    invisible="not invoice_expense_ids"
                     type="object"
-                >
-                    <span>
-                        Expense
-                    </span>
-                </button>
+                    string="Expense"
+                />
             </div>
         </field>
     </record>
