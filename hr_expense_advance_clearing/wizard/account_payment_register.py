@@ -1,72 +1,46 @@
 # Copyright 2020 Ecosoft Co., Ltd (https://ecosoft.co.th/)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html)
 
-
-from odoo import _, models
+from odoo import api, models
 from odoo.exceptions import UserError
-from odoo.tools import float_compare
+from odoo.tools.misc import format_amount
 
 
 class AccountPaymentRegister(models.TransientModel):
     _inherit = "account.payment.register"
 
-    def _finalize_clearing_payments(self, payments):
-        """Mark confirmed clearing payments as paid and preserve drafts."""
-        for payment in payments.filtered(
-            lambda payment: payment.state in ("in_process", "paid")
-        ):
-            payment.write({"move_id": payment.move_id.id, "state": "paid"})
-
-    def _validate_over_return(self):
-        """Actual remaining = amount to clear - clear pending
-        and it is not legit to return more than remaining"""
-        clearings = (
-            self.env["hr.expense.sheet"]
-            .browse(self.env.context.get("clearing_sheet_ids", []))
-            .filtered(lambda sheet: sheet.state == "approve")
-        )
-        amount_not_clear = sum(clearings.mapped("total_amount"))
-        actual_remaining = self.source_amount_currency - amount_not_clear
-        more_info = ""
-        symbol = self.source_currency_id.symbol
-        if amount_not_clear:
-            more_info = _("\nNote: pending amount clearing is %(symbol)s%(amount)s") % {
-                "symbol": symbol,
-                "amount": f"{amount_not_clear:,.2f}",
-            }
-        if float_compare(self.amount, actual_remaining, 2) == 1:
-            raise UserError(
-                _(
-                    "You cannot return advance more than actual remaining "
-                    "(%(symbol)s%(amount)s)%(more_info)s"
-                )
-                % {
-                    "symbol": symbol,
-                    "amount": f"{actual_remaining:,.2f}",
-                    "more_info": more_info,
-                }
-            )
+    @api.model
+    def _get_line_batch_key(self, line):
+        batch_key = super()._get_line_batch_key(line)
+        if self.env.context.get("hr_return_advance"):
+            batch_key["partner_type"] = "customer"
+        return batch_key
 
     def _init_payments(self, to_process, edit_mode=False):
         if self.env.context.get("hr_return_advance"):
-            self._validate_over_return()
-            active_ids = self.env.context.get("active_ids", [])
-            if self.env.context.get("active_model") == "account.move":
-                lines = self.env["account.move"].browse(active_ids).line_ids
-            elif self.env.context.get("active_model") == "account.move.line":
-                lines = self.env["account.move.line"].browse(active_ids)
-
-            expense_sheet = lines.expense_id.sheet_id
-            for x in to_process:
-                x["create_vals"]["partner_type"] = "customer"
-                x["create_vals"]["advance_id"] = expense_sheet.id
-
-        payments = super()._init_payments(to_process, edit_mode)
-        return payments
+            advance = self.env["hr.expense"].browse(
+                self.env.context.get("hr_return_advance_id")
+            )
+            if not advance.exists():
+                raise UserError(self.env._("No employee advance was found to return."))
+            for payment_vals in to_process:
+                payment_vals["create_vals"]["advance_id"] = advance.id
+        return super()._init_payments(to_process, edit_mode=edit_mode)
 
     def _create_payments(self):
-        """Update the payment state when the clearing amount exceeds the advance."""
-        payments = super()._create_payments()
-        if self.env.context.get("expense_clearing"):
-            self._finalize_clearing_payments(payments)
-        return payments
+        if self.env.context.get("hr_return_advance"):
+            self.ensure_one()
+            maximum_amount = self._get_total_amounts_to_pay(self.batches)["full_amount"]
+            if self.currency_id.compare_amounts(self.amount, maximum_amount) > 0:
+                raise UserError(
+                    self.env._(
+                        "You cannot return more than "
+                        "the remaining advance (%(amount)s).",
+                        amount=format_amount(
+                            self.env,
+                            maximum_amount,
+                            self.currency_id,
+                        ),
+                    )
+                )
+        return super()._create_payments()

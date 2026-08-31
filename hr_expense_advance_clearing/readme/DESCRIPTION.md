@@ -1,12 +1,8 @@
-Standard Expenses module allow employee to do the expense reimbursement
-only after the expense has been made. In other world, employee will need
-to pay first and reimburse later.
+The standard Expenses application reimburses employees after they have
+paid an expense. This module also allows companies to give employees an
+advance and clear it against their expenses later.
 
-This module, allow company to advance an amount to the employee.
-Employee can then use that advance amount to purchase product/service
-first, then back to company and do the clearing.
-
-There can be 3 scenarios for advance and clearing
+There are 3 advance clearing scenarios:
 
 - When clearing amount = advance amount, no other operation is required.
 - When clearing amount \> advance amount, company will pay the extra to
