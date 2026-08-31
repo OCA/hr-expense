@@ -37,11 +37,13 @@ employee. It allows to set a supplier invoice for each expense line,
 adding the corresponding journal items to transfer the debt to the
 employee.
 
-There are 2 ways to reference expense to invoice.
+There are 3 ways to reference an expense to a vendor bill.
 
-1. On expense, directly select one invoice.
-2. On expense report, use button "Create Vendor Bill" to create one
-   invoice for multiple expenses.
+1. On the expense, select an existing posted vendor bill.
+2. On the expense, select a vendor. The module creates the vendor bill
+   on approval (same as "Create Vendor Bill", with the partner
+   pre-filled) and follows the same accounting path.
+3. On the expense report, use the button "Create Vendor Bill".
 
 **Table of contents**
 
@@ -58,6 +60,15 @@ Usage
   new.
 - Process expense sheet.
 - On paying expense sheet, you are reconciling supplier invoice too.
+
+**Select a vendor and auto-create the vendor bill**
+
+- Create an expense paid by the employee and set the **Vendor**.
+- Submit and approve the expense report. A draft vendor bill is created
+  and linked to the line.
+- Post the expense report. The vendor bill is posted and the payable is
+  transferred to the employee. The company still owes the employee until
+  you register that reimbursement.
 
 **Create one invoice to multiple expenses**
 
