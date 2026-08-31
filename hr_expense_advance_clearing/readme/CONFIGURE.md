@@ -1,28 +1,22 @@
-This module will create a new product "Employee Advance" automatically.
-You will need to setup the Expense Account of this product to your
-Employee Advance account manually.
+This module creates the "Employee Advance" product automatically. Configure
+its Expense Account with the employee advance account:
 
-- Open Product window and search for "Employee Advance"
-- On Accounting tab, select appropriate employee advance account from
-  your chart of account
+- Open Products and search for "Employee Advance".
+- On the Accounting tab, select the employee advance account.
 
 Note:
 
-- You will need the "Show Full Accounting Features" to see accounting
-  data
-- Employee Advance account code, if not already exists, you can create
-  one. Use type = Current Asset and check Allow Reconciliation.
+- You need "Show Full Accounting Features" to access the accounting fields.
+- If the Employee Advance account does not exist, create it with type Current
+  Asset and enable Allow Reconciliation.
 
 **Clearing Journal**
 
-Clearing entries are posted as journal entries (move_type 'entry'), which
-only allow Miscellaneous (general) journals. By default Odoo picks the
-first general journal it finds. To control it:
+Clearing expenses are posted as miscellaneous journal entries. Configure the
+default journal as follows:
 
-1.  Go to Settings \> Expenses \> Accounting.
-2.  Set the "Default Clearing Journal" to the Miscellaneous journal that
-    should receive the clearing entries.
+1. Go to Settings \> Expenses \> Accounting.
+2. Set Default Clearing Journal to a Miscellaneous journal.
 
-The clearing journal can also be set per clearing report on the report's
-"Clearing Journal" field, which defaults to the company setting above.
-
+The journal defaults from this setting and can be changed in the Post Expenses
+wizard for each posting.
