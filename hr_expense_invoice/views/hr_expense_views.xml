@@ -58,15 +58,24 @@
             >
                 <attribute name="readonly" add="invoice_id" separator=" or " />
             </xpath>
+            <xpath expr="//field[@name='vendor_id']" position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
             <xpath expr='//field[@name="product_id"]/parent::div' position="after">
                 <!-- Added double, one as invisible and w/o group, for those without the permission -->
                 <field name="invoice_id" invisible="1" />
                 <field
                     name="invoice_id"
                     groups="account.group_account_readonly"
+                    domain="[('move_type', '=', 'in_invoice'),
+                            ('state', '=', 'posted'),
+                            ('payment_state', '=', 'not_paid'),
+                            ('expense_ids', '=', False),
+                            ('partner_id', '=?', vendor_id)]"
                     context="{'default_type': 'in_invoice',
                             'type': 'in_invoice',
                             'journal_type': 'purchase',
+                            'default_partner_id': vendor_id,
                             'default_invoice_date': date,
                             'default_line_ids': [{'product_id': product_id,
                                                           'name': name,
@@ -87,6 +96,13 @@
         <field name="model">hr.expense.sheet</field>
         <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
         <field name="arch" type="xml">
+            <xpath
+                expr="//field[@name='expense_line_ids']/list/field[@name='vendor_id']"
+                position="attributes"
+            >
+                <attribute name="column_invisible">0</attribute>
+                <attribute name="optional">show</attribute>
+            </xpath>
             <xpath
                 expr="//field[@name='expense_line_ids']/list/field[@name='name']"
                 position="after"

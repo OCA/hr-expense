@@ -1,5 +1,6 @@
 # Copyright 2015-2021 Tecnativa - Pedro M. Baeza
 # Copyright 2017 Tecnativa - Vicent Cubells
+# Copyright 2026 Gray Matter Logic
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 {

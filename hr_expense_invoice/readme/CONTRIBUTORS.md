@@ -5,3 +5,5 @@
 - Kitti Upariphutthiphong \<<kittiu@ecosoft.co.th>\>
 - Rattapong Chokmasermkul \<<rattapongc@ecosoft.co.th>\>
 - Saran Lim. \<<saranl@ecosoft.co.th>\>
+- [Gray Matter Logic](https://www.graymatterlogic.com):
+  - Maxime Chambreuil \<<maxime.chambreuil@graymatterlogic.com>\>
