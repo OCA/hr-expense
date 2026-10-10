@@ -25,3 +25,5 @@ repo_website: https://github.com/OCA/hr-expense
 use_pyproject_toml: true
 use_ruff: true
 
+
+#copier updated
