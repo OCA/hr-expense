@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    Copyright 2021 Camptocamp SA (https://www.camptocamp.com).
+    @author Iván Todorovich <ivan.todorovich@camptocamp.com>
+    License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
+-->
+<odoo>
+
+    <record id="product_product_view_form_inherit_sale_expense" model="ir.ui.view">
+        <field name="model">product.product</field>
+        <field
+            name="inherit_id"
+            ref="sale_expense.product_product_view_form_inherit_sale_expense"
+        />
+        <field name="arch" type="xml">
+            <field name="expense_policy" position="after">
+                <field
+                    name="expense_mode"
+                    widget="radio"
+                    attrs="{'invisible': [('expense_policy', 'in', (False, 'no'))]}"
+                />
+            </field>
+        </field>
+    </record>
+
+</odoo>
