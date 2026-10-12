@@ -1,7 +1,13 @@
 # Copyright 2021 Ecosoft <http://ecosoft.co.th>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+import logging
+
 from odoo import api, models
+
+from odoo.addons.base_exception.exceptions import BaseExceptionError
+
+_logger = logging.getLogger(__name__)
 
 
 class HRExpenseSheet(models.Model):
@@ -12,7 +18,13 @@ class HRExpenseSheet(models.Model):
     @api.model
     def test_all_draft_expenses(self):
         expense_set = self.search([("state", "=", "draft")])
-        expense_set.detect_exceptions()
+        try:
+            expense_set.detect_exceptions()
+        except BaseExceptionError:
+            # The exceptions are already stored in their own transaction.
+            # Nothing else to roll back here, so the scheduled job must not
+            # fail.
+            _logger.info("Exceptions detected on draft expense sheets")
         return True
 
     @api.model
@@ -36,9 +48,13 @@ class HRExpenseSheet(models.Model):
         if self.state == "submit":
             self.ignore_exception = False
 
+    def _must_popup_exception(self):
+        return True
+
     def action_submit_sheet(self):
-        if self.detect_exceptions() and not self.ignore_exception:
-            return self._popup_exceptions()
+        # base_exception raises BaseExceptionError when exceptions block the
+        # sheet, so the submission is rolled back and the popup is shown.
+        self.detect_exceptions()
         return super().action_submit_sheet()
 
     def action_reset_expense_sheets(self):
