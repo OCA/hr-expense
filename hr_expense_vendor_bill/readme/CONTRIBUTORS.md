@@ -1,0 +1,5 @@
+- [Gray Matter Logic](https://www.graymatterlogic.com):
+  - Diego Vega \<<dcamacho@opensourceintegrators.com>\>
+  - Samuel Macias Oropeza \<<smacias@opensourceintegrators.com>\>
+  - Hector del Reguero \<<hector.delreguero@graymatterlogic.com>\>
+  - Maxime Chambreuil \<<maxime.chambreuil@graymatterlogic.com>\>

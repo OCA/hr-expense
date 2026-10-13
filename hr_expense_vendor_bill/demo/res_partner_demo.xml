@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="expense_vendor_demo" model="res.partner">
+        <field name="name">Demo Expense Vendor</field>
+        <field name="supplier_rank">1</field>
+    </record>
+</odoo>
