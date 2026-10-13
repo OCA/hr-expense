@@ -4,7 +4,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 import base64
 
-from odoo import fields
+from odoo import Command, fields
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests import Form, tagged
 
@@ -320,3 +320,95 @@ class TestHrExpenseInvoice(TestExpenseCommon):
         )
         sheet.account_move_ids |= dummy_move
         sheet._reconcile_ap_moves()
+
+    def test_8_hr_expense_invoice_tax_rounding_single_tax(self):
+        """Regression test: creating a vendor bill from an expense must not
+        introduce a decimal discrepancy versus the expense's own amount,
+        even when the tax rate doesn't divide the amount evenly."""
+        tax = self.env["account.tax"].create(
+            {
+                "name": "Test rounding 21%",
+                "amount": 21,
+                "type_tax_use": "purchase",
+                "company_id": self.env.company.id,
+            }
+        )
+        self.expense.tax_ids = [Command.set(tax.ids)]
+        self.expense.total_amount_currency = 10.0
+        sheet = self._action_submit_expenses(self.expense)
+        self.assertAlmostEqual(self.expense.untaxed_amount_currency, 8.26)
+        self.assertAlmostEqual(self.expense.tax_amount_currency, 1.74)
+        self.expense.action_expense_create_invoice()
+        invoice = self.expense.invoice_id
+        self.assertTrue(invoice)
+        self.assertAlmostEqual(invoice.amount_untaxed, 8.26)
+        self.assertAlmostEqual(invoice.amount_tax, 1.74)
+        self.assertAlmostEqual(invoice.amount_total, 10.0)
+        invoice.partner_id = self.partner_a
+        invoice.action_post()
+        self.assertEqual(invoice.state, "posted")
+        sheet.action_approve_expense_sheets()
+        sheet.action_sheet_move_post()
+
+    def test_9_hr_expense_invoice_tax_rounding_multi_tax_groups(self):
+        """Same regression, but with two taxes in two different tax groups,
+        which is the case that a naive fix (forcing one aggregate tax
+        amount onto a single tax group) silently corrupts."""
+        group_x = self.env["account.tax.group"].create(
+            {
+                "name": "Test Group X",
+                "country_id": self.env.company.account_fiscal_country_id.id,
+            }
+        )
+        group_y = self.env["account.tax.group"].create(
+            {
+                "name": "Test Group Y",
+                "country_id": self.env.company.account_fiscal_country_id.id,
+            }
+        )
+        tax_a = self.env["account.tax"].create(
+            {
+                "name": "Test rounding 13%",
+                "amount": 13,
+                "type_tax_use": "purchase",
+                "company_id": self.env.company.id,
+                "tax_group_id": group_x.id,
+            }
+        )
+        tax_b = self.env["account.tax"].create(
+            {
+                "name": "Test rounding 8%",
+                "amount": 8,
+                "type_tax_use": "purchase",
+                "company_id": self.env.company.id,
+                "tax_group_id": group_y.id,
+            }
+        )
+        self.expense.tax_ids = [Command.set((tax_a + tax_b).ids)]
+        self.expense.total_amount_currency = 10.0
+        sheet = self._action_submit_expenses(self.expense)
+        expense_untaxed = self.expense.untaxed_amount_currency
+        expense_tax = self.expense.tax_amount_currency
+        self.assertAlmostEqual(expense_untaxed + expense_tax, 10.0)
+        self.expense.action_expense_create_invoice()
+        invoice = self.expense.invoice_id
+        self.assertTrue(invoice)
+        self.assertAlmostEqual(invoice.amount_untaxed, expense_untaxed)
+        self.assertAlmostEqual(invoice.amount_tax, expense_tax)
+        self.assertAlmostEqual(invoice.amount_total, 10.0)
+        # Both tax groups must be present and each carry its own share,
+        # not one group absorbing the whole correction.
+        tax_totals = invoice.tax_totals
+        group_amounts = {
+            tg["id"]: tg["tax_amount_currency"]
+            for subtotal in tax_totals["subtotals"]
+            for tg in subtotal["tax_groups"]
+        }
+        self.assertIn(group_x.id, group_amounts)
+        self.assertIn(group_y.id, group_amounts)
+        self.assertAlmostEqual(sum(group_amounts.values()), invoice.amount_tax)
+        invoice.partner_id = self.partner_a
+        invoice.action_post()
+        self.assertEqual(invoice.state, "posted")
+        sheet.action_approve_expense_sheets()
+        sheet.action_sheet_move_post()

@@ -6,6 +6,7 @@
 
 from odoo import Command, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools import float_compare
 
 
 class HrExpense(models.Model):
@@ -100,8 +101,65 @@ class HrExpense(models.Model):
             ],
         }
 
+    def _adjust_invoice_tax_amount(self, invoice):
+        """Fix the vendor bill's tax to match the expense: re-taxing the
+        expense's already-rounded untaxed base can round to a different
+        cent than the expense's own tax-included split.
+        """
+        self.ensure_one()
+        precision = invoice.currency_id.rounding
+        if (
+            not self.tax_ids
+            or float_compare(
+                invoice.amount_tax,
+                self.tax_amount_currency,
+                precision_rounding=precision,
+            )
+            == 0
+        ):
+            return  # No tax, or already matching: nothing to correct.
+        # Redo the expense's own tax-included split to get the correct
+        # amount per tax (not just the aggregate).
+        tax_res = self.tax_ids.with_context(force_price_include=True).compute_all(
+            self.total_amount_currency, currency=invoice.currency_id, quantity=1
+        )
+        target_by_group = {}
+        for tax_vals in tax_res["taxes"]:
+            tax = self.env["account.tax"].browse(tax_vals["id"])
+            group_id = tax.tax_group_id.id
+            # Sum per tax group: tax_totals is keyed by group, and several
+            # taxes (e.g. 2+ taxes on one expense) can share one group.
+            target_by_group[group_id] = (
+                target_by_group.get(group_id, 0.0) + tax_vals["amount"]
+            )
+        tax_totals = invoice.tax_totals
+        changed = False
+        for subtotal in tax_totals["subtotals"]:
+            for tax_group in subtotal["tax_groups"]:
+                target = target_by_group.get(tax_group["id"])
+                if target is None:
+                    continue
+                if (
+                    float_compare(
+                        tax_group["tax_amount_currency"],
+                        target,
+                        precision_rounding=precision,
+                    )
+                    != 0
+                ):
+                    # Fix this group only, so N taxes across N tax groups
+                    # are each corrected independently, not lumped together.
+                    tax_group["tax_amount_currency"] = target
+                    tax_group["tax_amount"] = target
+                    changed = True
+        if changed:
+            # tax_totals' inverse is the same one the UI's manual tax-edit
+            # (pencil icon) uses, so the journal entry stays balanced.
+            invoice.tax_totals = tax_totals
+
     def action_expense_create_invoice(self):
         invoice = self.env["account.move"].create(self._prepare_invoice_values())
+        self._adjust_invoice_tax_amount(invoice)
         attachments = self.env["ir.attachment"].search(
             [("res_model", "=", self._name), ("res_id", "in", self.ids)]
         )
