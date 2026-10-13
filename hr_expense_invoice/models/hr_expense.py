@@ -2,6 +2,7 @@
 # Copyright 2020 Tecnativa - David Vidal
 # Copyright 2021 Tecnativa - Víctor Martínez
 # Copyright 2015-2024 Tecnativa - Pedro M. Baeza
+# Copyright 2026 Gray Matter Logic
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import Command, api, fields, models
@@ -15,12 +16,13 @@ class HrExpense(models.Model):
     invoice_id = fields.Many2one(
         comodel_name="account.move",
         string="Vendor Bill",
-        domain=[
-            ("move_type", "=", "in_invoice"),
-            ("state", "=", "posted"),
-            ("payment_state", "=", "not_paid"),
-            ("expense_ids", "=", False),
-        ],
+        domain=(
+            "[('move_type', '=', 'in_invoice'),"
+            " ('state', '=', 'posted'),"
+            " ('payment_state', '=', 'not_paid'),"
+            " ('expense_ids', '=', False),"
+            " ('partner_id', '=?', vendor_id)]"
+        ),
         copy=False,
     )
     transfer_move_ids = fields.One2many(
@@ -35,6 +37,7 @@ class HrExpense(models.Model):
     )
 
     def _prepare_invoice_values(self):
+        self.ensure_one()
         invoice_lines = [
             Command.create(
                 {
@@ -50,12 +53,17 @@ class HrExpense(models.Model):
                 }
             )
         ]
-        return {
+        values = {
             "name": "/",
             "move_type": "in_invoice",
             "invoice_date": self.date,
+            "company_id": self.company_id.id,
+            "currency_id": self.currency_id.id,
             "invoice_line_ids": invoice_lines,
         }
+        if self.vendor_id:
+            values["partner_id"] = self.vendor_id.id
+        return values
 
     def _prepare_own_account_transfer_move_vals(self):
         self.ensure_one()
@@ -101,6 +109,7 @@ class HrExpense(models.Model):
         }
 
     def action_expense_create_invoice(self):
+        self.ensure_one()
         invoice = self.env["account.move"].create(self._prepare_invoice_values())
         attachments = self.env["ir.attachment"].search(
             [("res_model", "=", self._name), ("res_id", "in", self.ids)]
@@ -117,6 +126,28 @@ class HrExpense(models.Model):
         )
         return True
 
+    def _sync_vendor_from_invoice(self):
+        """Keep vendor_id aligned with the linked vendor bill partner."""
+        if self.env.context.get("skip_vendor_invoice_sync"):
+            return
+        for expense in self.filtered(lambda rec: rec.invoice_id.partner_id):
+            if expense.vendor_id != expense.invoice_id.partner_id:
+                expense.with_context(skip_vendor_invoice_sync=True).write(
+                    {"vendor_id": expense.invoice_id.partner_id.id}
+                )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        expenses = super().create(vals_list)
+        expenses._sync_vendor_from_invoice()
+        return expenses
+
+    def write(self, vals):
+        res = super().write(vals)
+        if vals.get("invoice_id"):
+            self._sync_vendor_from_invoice()
+        return res
+
     @api.constrains("invoice_id")
     def _check_invoice_id(self):
         for expense in self:  # Only non binding expense
@@ -126,6 +157,22 @@ class HrExpense(models.Model):
                 and expense.invoice_id.state != "posted"
             ):
                 raise UserError(self.env._("Vendor bill state must be Posted"))
+
+    @api.constrains("invoice_id", "vendor_id")
+    def _check_vendor_matches_invoice(self):
+        for expense in self:
+            partner = expense.invoice_id.partner_id
+            if (
+                expense.invoice_id
+                and expense.vendor_id
+                and partner
+                and partner != expense.vendor_id
+            ):
+                raise UserError(
+                    self.env._(
+                        "The vendor and the vendor bill partner must be the same."
+                    )
+                )
 
     @api.onchange("invoice_id")
     def _onchange_invoice_id(self):
@@ -137,9 +184,22 @@ class HrExpense(models.Model):
             self.name = self.name.split(" | ")[0].strip()
             self.name = "{} | {}".format(self.name or "", self.invoice_id.name)
             self.date = self.invoice_id.date
+            if self.invoice_id.partner_id:
+                self.vendor_id = self.invoice_id.partner_id
             if self.invoice_id.company_id != self.company_id:
                 # for avoiding to trigger dependent computes
                 self.company_id = self.invoice_id.company_id.id
+
+    @api.onchange("vendor_id")
+    def _onchange_vendor_id(self):
+        """Selecting a different vendor drops a mismatched linked bill."""
+        if (
+            self.invoice_id
+            and self.vendor_id
+            and self.invoice_id.partner_id
+            and self.invoice_id.partner_id != self.vendor_id
+        ):
+            self.invoice_id = False
 
     # tax_ids put as dependency for assuring this is computed after setting tax_ids
     @api.depends("invoice_id", "tax_ids")
