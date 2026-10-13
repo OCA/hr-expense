@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field
+            name="name"
+        >res.config.settings.view.form.inherit.hr.expense.intermediate</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="hr_expense.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='expense_journal_id']/.." position="after">
+                <setting
+                    string="Employee Expense Intermediate Journal"
+                    company_dependent="1"
+                    help="Accounting journal for intermediate entries to allow pay real Bills to employees. This journal must allow the creation of moves of type 'entry'."
+                >
+                    <field
+                        name="expense_intermediate_journal_id"
+                        placeholder="Same as Employee Expense Journal"
+                    />
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>
