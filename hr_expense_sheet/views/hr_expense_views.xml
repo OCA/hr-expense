@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="hr_expense_view_form" model="ir.ui.view">
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="(//button[@name='action_submit'])[1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="(//button[@name='action_submit'])[1]" position="before">
+                <button
+                    name="action_submit_expenses"
+                    string="Create Report"
+                    type="object"
+                    class="oe_highlight o_expense_submit"
+                    invisible="nb_attachment &lt;= 0 or sheet_id"
+                    data-hotkey="v"
+                />
+                <button
+                    name="action_view_sheet"
+                    type="object"
+                    string="View Report"
+                    class="oe_highlight"
+                    invisible="not sheet_id or nb_attachment &lt; 1"
+                    data-hotkey="w"
+                />
+            </xpath>
+            <xpath expr="(//button[@name='action_approve'])[1]" position="attributes">
+                <attribute name="invisible" add="sheet_id" separator=" or " />
+            </xpath>
+            <xpath expr="(//button[@name='action_post'])[1]" position="attributes">
+                <attribute name="invisible" add="sheet_id" separator=" or " />
+            </xpath>
+            <xpath expr="(//button[@name='action_submit'])[2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="(//button[@name='action_approve'])[2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="(//button[@name='action_post'])[2]" position="attributes">
+                <attribute name="invisible" add="sheet_id" separator=" or " />
+            </xpath>
+            <button name="action_refuse" position="attributes">
+                <attribute name="invisible" add="sheet_id" separator=" or " />
+            </button>
+            <xpath expr="(//button[@name='action_reset'])[1]" position="attributes">
+                <attribute name="invisible" add="sheet_id" separator=" or " />
+            </xpath>
+            <xpath expr="(//button[@name='action_reset'])[2]" position="attributes">
+                <attribute name="invisible" add="sheet_id" separator=" or " />
+            </xpath>
+            <field name="manager_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <xpath expr="(//button[@name='action_split_wizard'])[1]" position="before">
+                <button
+                    name="action_submit_expenses"
+                    string="Create Report"
+                    type="object"
+                    class="o_expense_submit"
+                    invisible="nb_attachment &gt;= 1 or sheet_id"
+                    data-hotkey="v"
+                />
+                <button
+                    name="action_view_sheet"
+                    type="object"
+                    string="View Report"
+                    class="oe_highlight"
+                    invisible="not sheet_id or nb_attachment &gt;= 1"
+                    data-hotkey="w"
+                />
+            </xpath>
+            <xpath
+                expr="(//button[@name='action_split_wizard'])[1]"
+                position="attributes"
+            >
+                <attribute name="invisible" add="sheet_id" separator=" or " />
+            </xpath>
+            <xpath
+                expr="(//button[@name='action_split_wizard'])[2]"
+                position="attributes"
+            >
+                <attribute name="invisible" add="sheet_id" separator=" or " />
+            </xpath>
+        </field>
+    </record>
+    <record id="hr_expense_view_expenses_analysis_tree" model="ir.ui.view">
+        <field name="model">hr.expense</field>
+        <field
+            name="inherit_id"
+            ref="hr_expense.hr_expense_view_expenses_analysis_tree"
+        />
+        <field name="arch" type="xml">
+            <field name="employee_id" position="after">
+                <field name="sheet_id" optional="hide" />
+            </field>
+        </field>
+    </record>
+    <record id="view_hr_expense_clean_tree" model="ir.ui.view">
+        <field name="name">hr.expense.list.without.dashboard</field>
+        <field name="model">hr.expense</field>
+        <field
+            name="inherit_id"
+            ref="hr_expense.hr_expense_view_expenses_analysis_tree"
+        />
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="js_class" />
+            </xpath>
+        </field>
+    </record>
+    <record id="hr_expense_view_search" model="ir.ui.view">
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_search" />
+        <field name="arch" type="xml">
+            <filter name="draft" position="before">
+                <filter
+                    string="To Report"
+                    name="no_report"
+                    domain="[('sheet_id', '=', False)]"
+                />
+                <filter
+                    string="Refused"
+                    name="refused"
+                    domain="[('state', '=', 'refused')]"
+                    help="Refused Expenses"
+                />
+                <separator />
+            </filter>
+            <filter name="employee" position="after">
+                <filter
+                    string="Sheet"
+                    name="sheet"
+                    domain="[]"
+                    context="{'group_by': 'sheet_id'}"
+                />
+            </filter>
+        </field>
+    </record>
+    <record id="hr_expense.menu_hr_expense_expenses_to_process" model="ir.ui.menu">
+        <field name="action" eval="False" />
+    </record>
+</odoo>
