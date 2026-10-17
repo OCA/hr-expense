@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="mail_act_trip_approval" model="mail.activity.type">
+        <field name="name">Trip Approval</field>
+        <field name="summary">Trip Approval Request</field>
+        <field name="icon">fa-plane</field>
+        <field name="res_model">hr.trip</field>
+    </record>
+</odoo>

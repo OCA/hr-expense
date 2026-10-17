@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="action_report_hr_trip" model="ir.actions.report">
+        <field name="name">Trip Report</field>
+        <field name="model">hr.trip</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_expense_trip.report_hr_trip</field>
+        <field name="report_file">hr_expense_trip.report_hr_trip</field>
+        <field name="binding_model_id" ref="model_hr_trip" />
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_hr_trip_document">
+        <t t-foreach="docs" t-as="trip">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2 t-field="trip.code" />
+                    <t t-if="trip.name">
+                        <p t-field="trip.name" />
+                    </t>
+                    <div class="row mt16 mb16">
+                        <div class="col-6">
+                            <p t-if="trip.employee_id" class="m-0">
+                                <strong>Employee:</strong>
+                                <span t-field="trip.employee_id">Mitchell Admin</span>
+                            </p>
+                            <p t-if="trip.partner_id" class="m-0">
+                                <strong>Customer:</strong>
+                                <span t-field="trip.partner_id">John Doe</span>
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p t-if="trip.start_date" class="m-0">
+                                <strong>Start Date:</strong>
+                                <span t-field="trip.start_date">John Doe</span>
+                            </p>
+                            <p t-if="trip.end_date" class="m-0">
+                                <strong>End Date:</strong>
+                                <span t-field="trip.end_date">John Doe</span>
+                            </p>
+                        </div>
+                    </div>
+                    <t t-if="trip.expense_ids">
+                        <h4>Expenses</h4>
+                        <table class="table table-sm">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="trip.expense_ids" t-as="expense">
+                                    <tr>
+                                        <td>
+                                            <span t-field="expense.date" />
+                                        </td>
+                                        <td>
+                                            <span t-field="expense.name" />
+                                        </td>
+                                        <td class="text-end">
+                                            <span
+                                                t-field="expense.total_amount"
+                                                t-options="{'widget': 'monetary', 'display_currency': expense.currency_id}"
+                                            />
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_hr_trip">
+        <t t-call="web.html_container">
+            <t
+                t-call="hr_expense_trip.report_hr_trip_document"
+                t-lang="docs[0].employee_id.user_id.lang or ''"
+            />
+        </t>
+    </template>
+</odoo>
