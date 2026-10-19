@@ -11,6 +11,14 @@ class HrExpenseSheet(models.Model):
     _inherit = "hr.expense.sheet"
 
     invoice_count = fields.Integer(compute="_compute_invoice_count")
+    # The core field is related to the amount residual of the sheet journal entry,
+    # which doesn't exist for expenses with a linked invoice paid by the employee:
+    # there the debt is in the transfer journal entries of each expense.
+    amount_residual = fields.Monetary(
+        related=False,
+        compute="_compute_amount_residual",
+        store=True,
+    )
 
     def action_sheet_move_create(self):
         """Perform extra checks and set proper state and payment state according linked
@@ -31,6 +39,56 @@ class HrExpenseSheet(models.Model):
         if self.env.context.get("use_hr_expense_invoice"):
             return True
         return super().set_to_paid()
+
+    @api.depends(
+        "account_move_id.amount_residual",
+        "expense_line_ids.amount_residual",
+        "expense_line_ids.transfer_move_ids",
+    )
+    def _compute_amount_residual(self):
+        """Add the amount owed to the employee for expenses with linked invoice."""
+        for sheet in self:
+            residual = sheet.account_move_id.amount_residual
+            if sheet.payment_mode == "own_account":
+                residual += sum(
+                    sheet.expense_line_ids.filtered("transfer_move_ids").mapped(
+                        "amount_residual"
+                    )
+                )
+            sheet.amount_residual = residual
+
+    def _get_transfer_payable_lines(self):
+        """Open employee payable lines of the transfer entries of the expenses
+        paid by the employee that have a linked invoice.
+        """
+        self.ensure_one()
+        return (
+            self.expense_line_ids.transfer_move_ids.sudo()
+            .line_ids.filtered(
+                lambda x: x.account_type == "liability_payable"
+                and x.partner_id.commercial_partner_id
+                == self.employee_id.sudo().address_home_id.commercial_partner_id
+                and not x.reconciled
+            )
+            .sudo(False)
+        )
+
+    def action_register_payment(self):
+        """Pay the employee for the expenses with linked invoice, as the sheet has no
+        journal entry of its own for them: the debt is in the transfer entries.
+        """
+        self.ensure_one()
+        transfer_lines = self._get_transfer_payable_lines()
+        if self.payment_mode != "own_account" or not transfer_lines:
+            return super().action_register_payment()
+        res = super().action_register_payment()
+        lines = transfer_lines | self.account_move_id.line_ids.filtered(
+            lambda x: x.account_type == "liability_payable" and not x.reconciled
+        )
+        res["context"] = dict(
+            res["context"], active_model="account.move.line", active_ids=lines.ids
+        )
+        return res
 
     def _compute_invoice_count(self):
         Invoice = self.env["account.move"]

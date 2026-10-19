@@ -147,6 +147,28 @@ class TestHrExpenseInvoice(TestExpenseCommon):
         self.assertEqual(self.expense.amount_residual, 100)
         self.assertEqual(sheet.payment_state, "not_paid")
 
+    def test_1_hr_test_invoice_register_payment_from_sheet(self):
+        """The employee can be reimbursed from the sheet for expenses with invoice."""
+        self.expense.unit_amount = 100
+        sheet = self._action_submit_expenses(self.expense)
+        self.invoice.action_post()
+        with Form(self.expense) as f:
+            f.invoice_id = self.invoice
+        sheet.approve_expense_sheets()
+        sheet.action_sheet_move_create()
+        self.assertEqual(sheet.state, "post")
+        self.assertEqual(sheet.payment_state, "not_paid")
+        self.assertEqual(self.expense.amount_residual, 100)
+        # The amount owed to the employee is shown in the sheet
+        self.assertEqual(sheet.amount_residual, 100)
+        # Pay the employee from the sheet
+        self._register_payment(sheet)
+        self.assertEqual(self.expense.amount_residual, 0)
+        self.assertEqual(sheet.amount_residual, 0)
+        self.assertEqual(sheet.payment_state, "paid")
+        self.assertEqual(sheet.state, "done")
+        self.assertEqual(self.invoice.payment_state, "paid")
+
     def test_1_hr_test_invoice_paid_by_company(self):
         # We add an expense
         self.expense.unit_amount = 100
