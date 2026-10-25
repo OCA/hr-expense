@@ -12,6 +12,21 @@
                         bg_color="bg-danger"
                         invisible="active"
                     />
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            class="oe_stat_button"
+                            icon="fa-list-ul"
+                            name="action_open_transactions"
+                            type="object"
+                        >
+                            <div class="o_form_field o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="transaction_count" />
+                                </span>
+                                <span class="o_stat_text">Transactions</span>
+                            </div>
+                        </button>
+                    </div>
                     <group>
                         <field name="active" invisible="1" />
                         <group name="data">

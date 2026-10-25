@@ -16,6 +16,7 @@
         "views/hr_expense_sheet_views.xml",
         "views/hr_expense_views.xml",
         "views/petty_cash_views.xml",
+        "views/petty_cash_transaction_views.xml",
     ],
     "installable": True,
 }
