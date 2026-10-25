@@ -1,0 +1,19 @@
+<odoo>
+    <record id="view_hr_expense_sheet_form_sync" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.form.sync</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_sheet_move_post']" position="before">
+                <button
+                    name="action_sync_account_moves"
+                    string="Sync Accounting Entries"
+                    type="object"
+                    class="btn-secondary"
+                    invisible="state != 'approve' or not account_move_ids"
+                    groups="hr_expense.group_hr_expense_user"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
