@@ -13,7 +13,36 @@ class AccountMove(models.Model):
 
     def action_post(self):
         self._check_petty_cash_amount()
-        return super().action_post()
+        res = super().action_post()
+        # Posting a petty cash clearing entry pays the expense sheet directly,
+        # there is no payment to register for it.
+        petty_cash_sheets = (
+            self.sudo()
+            .mapped("expense_sheet_id")
+            .filtered(lambda sheet: sheet.payment_mode == "petty_cash")
+        )
+        if petty_cash_sheets:
+            petty_cash_sheets.write(
+                {"state": "done", "amount_residual": 0.0, "payment_state": "paid"}
+            )
+        return res
+
+    def button_draft(self):
+        if self.env.context.get("skip_invoice_sync"):
+            return super().button_draft()
+        # Petty cash clearing entries keep an explicit balance + explicit tax
+        # lines. The tax recompute done by the sync when resetting to draft
+        # would otherwise strip the tax twice and create a spurious
+        # "Automatic Balancing Line".
+        petty_cash_moves = self.filtered(
+            lambda m: m.move_type == "entry"
+            and m.expense_sheet_id
+            and m.expense_sheet_id.payment_mode == "petty_cash"
+        )
+        if not petty_cash_moves:
+            return super().button_draft()
+        (self - petty_cash_moves).button_draft()
+        return petty_cash_moves.with_context(skip_invoice_sync=True).button_draft()
 
     def _prepare_product_base_line_for_taxes_computation(self, product_line):
         results = super()._prepare_product_base_line_for_taxes_computation(product_line)

@@ -139,11 +139,3 @@ class HrExpenseSheet(models.Model):
                 }
             )
         return res
-
-    def action_sheet_move_post(self):
-        res = super().action_sheet_move_post()
-        paid_petty_cash = self.filtered(lambda m: m.payment_mode == "petty_cash")
-        paid_petty_cash.write(
-            {"state": "done", "amount_residual": 0.0, "payment_state": "paid"}
-        )
-        return res
