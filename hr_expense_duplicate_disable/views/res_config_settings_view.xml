@@ -1,0 +1,23 @@
+<odoo>
+    <record id="res_config_settings_view" model="ir.ui.view">
+        <field
+            name="name"
+        >res.config.settings.view.form.inherit.hr.expense.duplicate</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="60" />
+        <field name="inherit_id" ref="hr_expense.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//app[@name='hr_expense']//block[@name='expenses_setting_container']"
+                position="inside"
+            >
+                <setting
+                    string="Duplicate Detection"
+                    help="Enable this to skip duplicate expense warnings. Useful when importing large batches of expenses."
+                >
+                    <field name="hr_expense_disable_duplicate_detection" />
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>
