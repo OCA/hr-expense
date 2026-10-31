@@ -250,7 +250,7 @@ class HrExpenseSheet(models.Model):
         if self.state == "approve":
             return self.env.ref("hr_expense_invoice.mt_expense_approved_inherited")
         else:
-            super()._track_subtype(init_values)
+            return super()._track_subtype(init_values)
 
     def _check_can_create_move(self):
         expense_sheets_with_invoices = self.get_expense_sheets_with_invoices(all)
