@@ -13,11 +13,30 @@ class AccountMove(models.Model):
 
     def action_post(self):
         self._check_petty_cash_amount()
-        return super().action_post()
+        res = super().action_post()
+        # Posting a petty cash clearing entry pays the expense sheet directly,
+        # there is no payment to register for it.
+        petty_cash_sheets = (
+            self.sudo()
+            .mapped("expense_sheet_id")
+            .filtered(lambda sheet: sheet.payment_mode == "petty_cash")
+        )
+        if petty_cash_sheets:
+            petty_cash_sheets.write(
+                {"state": "done", "amount_residual": 0.0, "payment_state": "paid"}
+            )
+        return res
 
     def _prepare_product_base_line_for_taxes_computation(self, product_line):
         results = super()._prepare_product_base_line_for_taxes_computation(product_line)
-        if product_line.expense_id.payment_mode == "petty_cash":
+        # The petty cash base line is created with the tax-included amount.
+        # Once the tax lines exist, the base line holds the untaxed amount, so
+        # it must not be stripped from the tax again on any later recompute
+        # (reset to draft, edit account / analytic, ...).
+        if (
+            product_line.expense_id.payment_mode == "petty_cash"
+            and not product_line.move_id.line_ids.filtered("tax_repartition_line_id")
+        ):
             results["special_mode"] = "total_included"
         return results
 

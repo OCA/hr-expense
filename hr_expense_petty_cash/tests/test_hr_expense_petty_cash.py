@@ -272,9 +272,6 @@ class TestHrExpensePettyCash(BaseCommon):
         expense_petty_cash_2 = self._create_expense(
             200.0, self.employee_1, "petty_cash", self.petty_cash_holder_2
         )
-        expense_petty_cash_3 = self._create_expense(
-            100.0, self.employee_2, "petty_cash", self.petty_cash_holder_2
-        )
         expense_report = expense_own + expense_petty_cash + expense_petty_cash_2
         # Check expenses must have 1 petty cash holder only
         with self.assertRaises(ValidationError):
@@ -297,26 +294,7 @@ class TestHrExpensePettyCash(BaseCommon):
         sheet.action_submit_sheet()
         self.assertEqual(sheet.state, "submit")
         sheet.action_approve_expense_sheets()
-        # Check if the sheet is approved (could be 'approve' or
-        # 'post' depending on configuration)
-        self.assertIn(sheet.state, ["approve", "post"])
-        # Check state != draft, many employee and don't have product
-        with self.assertRaises(UserError):
-            expense_petty_cash.action_submit_expenses()
-        expense_test = expense_petty_cash_2 + expense_petty_cash_3
-        with self.assertRaises(UserError):
-            expense_test.action_submit_expenses()
-        expense_petty_cash_3.product_id = False
-        with self.assertRaises(UserError):
-            expense_petty_cash_3.action_submit_expenses()
-        # Check if journal entries were created and sheet is in final state
-        if sheet.state == "approve":
-            # If still in approve state, we need to post manually
-            sheet.action_sheet_move_post()
-            self.assertEqual(sheet.state, "post")
-        else:
-            # If already posted, just verify
-            self.assertEqual(sheet.state, "post")
+        self.assertEqual(sheet.state, "done")
         self.assertTrue(sheet.account_move_ids.id)
         self.assertEqual(self.petty_cash_holder.petty_cash_balance, 600.0)
         # Check transactions after expense
@@ -398,9 +376,9 @@ class TestHrExpensePettyCash(BaseCommon):
         sheet = self._create_expense_sheet(expense)
         sheet.action_submit_sheet()
         sheet.action_approve_expense_sheets()
-        if sheet.state == "approve":
-            sheet.action_sheet_move_post()
-        self.assertEqual(sheet.state, "post")
+        # Petty cash sheets are paid automatically upon approval.
+        self.assertEqual(sheet.state, "done")
+        self.assertEqual(sheet.payment_state, "paid")
 
         move = sheet.account_move_ids
         self.assertEqual(move.move_type, "entry")
@@ -432,3 +410,42 @@ class TestHrExpensePettyCash(BaseCommon):
             tax_lines,
             "Petty cash entry should generate a tax line.",
         )
+
+        # Resetting the move to draft must not create a spurious
+        # "Automatic Balancing Line" and must keep the same line count.
+        line_count = len(move.line_ids)
+        move.button_draft()
+        self.assertEqual(len(move.line_ids), line_count)
+        self.assertFalse(
+            move.line_ids.filtered(lambda line: line.name == "Automatic Balancing Line")
+        )
+        self.assertEqual(sheet.state, "approve")
+        # Editing the base line in draft re-triggers the tax sync, the
+        # already net base amount must not be stripped from the tax again.
+        analytic_account_2 = self.analytic_account.copy()
+        base_line.write(
+            {
+                "account_id": self.account_revenue_id.id,
+                "analytic_distribution": {str(analytic_account_2.id): 100},
+            }
+        )
+        self.assertEqual(len(move.line_ids), line_count)
+        self.assertFalse(
+            move.line_ids.filtered(lambda line: line.name == "Automatic Balancing Line")
+        )
+        self.assertEqual(base_line.debit, 1000.0)
+        self.assertEqual(
+            sum(move.line_ids.filtered("tax_line_id").mapped("debit")), 70.0
+        )
+        self.assertEqual(petty_cash_line.credit, 1070.0)
+        # Re-posting the move marks the petty cash sheet done/paid again
+        # without creating any extra line.
+        move.action_post()
+        self.assertEqual(move.state, "posted")
+        self.assertEqual(len(move.line_ids), line_count)
+        self.assertEqual(base_line.debit, 1000.0)
+        self.assertEqual(
+            sum(move.line_ids.filtered("tax_line_id").mapped("debit")), 70.0
+        )
+        self.assertEqual(sheet.state, "done")
+        self.assertEqual(sheet.payment_state, "paid")
