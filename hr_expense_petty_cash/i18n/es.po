@@ -17,14 +17,30 @@ msgstr ""
 "X-Generator: Weblate 4.17\n"
 
 #. module: hr_expense_petty_cash
+#. odoo-python
+#: code:addons/hr_expense_petty_cash/models/hr_expense.py:0
+msgid "%(date_from)s - %(date_to)s"
+msgstr ""
+
+#. module: hr_expense_petty_cash
+#. odoo-python
 #: code:addons/hr_expense_petty_cash/models/account_move.py:0
-#, python-format
 msgid "%s is not a petty cash holder"
 msgstr "%s no es titular de una caja menor"
 
 #. module: hr_expense_petty_cash
+#: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_form
+msgid "<span class=\"o_stat_text\">Transactions</span>"
+msgstr ""
+
+#. module: hr_expense_petty_cash
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash_transaction__account_id
+msgid "Account"
+msgstr ""
+
+#. module: hr_expense_petty_cash
+#. odoo-python
 #: code:addons/hr_expense_petty_cash/models/account_move.py:0
-#, python-format
 msgid "Account on invoice line should be {name}."
 msgstr "La cuenta en la línea de factura debe ser {name}."
 
@@ -34,6 +50,11 @@ msgid "Active"
 msgstr "Activo"
 
 #. module: hr_expense_petty_cash
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash_transaction__amount
+msgid "Amount"
+msgstr ""
+
+#. module: hr_expense_petty_cash
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_form
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_search
 msgid "Archived"
@@ -41,9 +62,17 @@ msgstr "Archivado"
 
 #. module: hr_expense_petty_cash
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash__petty_cash_balance
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash_transaction__balance
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_list
 msgid "Balance"
 msgstr "Saldo"
+
+#. module: hr_expense_petty_cash
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash__company_id
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash_transaction__company_id
+#: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_search
+msgid "Company"
+msgstr ""
 
 #. module: hr_expense_petty_cash
 #: model_terms:ir.actions.act_window,help:hr_expense_petty_cash.action_petty_cash
@@ -61,27 +90,55 @@ msgid "Created on"
 msgstr "Creado el"
 
 #. module: hr_expense_petty_cash
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash_transaction__credit
+msgid "Credit"
+msgstr ""
+
+#. module: hr_expense_petty_cash
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash_transaction__date
+#: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_transaction_search
+msgid "Date"
+msgstr ""
+
+#. module: hr_expense_petty_cash
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash_transaction__debit
+msgid "Debit"
+msgstr ""
+
+#. module: hr_expense_petty_cash
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash__display_name
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash_transaction__display_name
 msgid "Display Name"
 msgstr "Mostrar Nombre"
 
 #. module: hr_expense_petty_cash
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash_transaction__move_id
+msgid "Document"
+msgstr ""
+
+#. module: hr_expense_petty_cash
 #: model:ir.model,name:hr_expense_petty_cash.model_hr_expense
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash_transaction__expense_id
+#: model:ir.model.fields.selection,name:hr_expense_petty_cash.selection__petty_cash_transaction__source__expense
+#: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_transaction_search
 msgid "Expense"
 msgstr "Gasto"
 
 #. module: hr_expense_petty_cash
 #: model:ir.model,name:hr_expense_petty_cash.model_hr_expense_sheet
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash_transaction__sheet_id
 msgid "Expense Report"
 msgstr "Informe de Gastos"
 
 #. module: hr_expense_petty_cash
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_search
+#: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_transaction_search
 msgid "Group By"
 msgstr "Agrupar Por"
 
 #. module: hr_expense_petty_cash
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash__id
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash_transaction__id
 msgid "ID"
 msgstr "ID(identificación)"
 
@@ -97,9 +154,10 @@ msgid "Journal Entry"
 msgstr "Entrada Diaria"
 
 #. module: hr_expense_petty_cash
-#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash____last_update
-msgid "Last Modified on"
-msgstr "Última Modificación el"
+#. odoo-python
+#: code:addons/hr_expense_petty_cash/models/hr_expense_sheet.py:0
+msgid "Journal entries"
+msgstr ""
 
 #. module: hr_expense_petty_cash
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash__write_uid
@@ -122,15 +180,21 @@ msgid "Max Limit"
 msgstr "Límite Máximo"
 
 #. module: hr_expense_petty_cash
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash_transaction__name
+msgid "Name"
+msgstr ""
+
+#. module: hr_expense_petty_cash
+#. odoo-python
 #: code:addons/hr_expense_petty_cash/models/hr_expense_sheet.py:0
-#, python-format
 msgid ""
 "Not enough money in petty cash holder.\n"
-"You are requesting {amount_company}{symbol}, but the balance is {balance}{symbol}."
+"You are requesting {amount_company}{symbol}, but the balance is {balance}"
+"{symbol}."
 msgstr ""
 "No hay suficiente dinero en la caja para gastos menores.\n"
-"Está solicitando {amount_company}{symbol}, pero el saldo es "
-"{balance}{symbol}."
+"Está solicitando {amount_company}{symbol}, pero el saldo es {balance}"
+"{symbol}."
 
 #. module: hr_expense_petty_cash
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_hr_expense__payment_mode
@@ -138,11 +202,15 @@ msgid "Paid By"
 msgstr "Pagado Por"
 
 #. module: hr_expense_petty_cash
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash_transaction__partner_id
+msgid "Partner"
+msgstr ""
+
+#. module: hr_expense_petty_cash
 #: model:ir.actions.act_window,name:hr_expense_petty_cash.action_petty_cash
 #: model:ir.model,name:hr_expense_petty_cash.model_petty_cash
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_account_bank_statement_line__is_petty_cash
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_account_move__is_petty_cash
-#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_account_payment__is_petty_cash
 #: model:ir.model.fields.selection,name:hr_expense_petty_cash.selection__hr_expense__payment_mode__petty_cash
 #: model:ir.ui.menu,name:hr_expense_petty_cash.menu_petty_cash
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.hr_expense_sheet_view_search_inherit
@@ -160,6 +228,7 @@ msgstr "Cuenta de Caja Menor"
 
 #. module: hr_expense_petty_cash
 #: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash__partner_id
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash_transaction__petty_cash_id
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.hr_expense_sheet_view_search_inherit
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.hr_expense_view_search_inherit
 #: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_search
@@ -172,8 +241,18 @@ msgid "Petty Cash Holder must be unique!"
 msgstr "¡El titular de la caja Menor debe ser único!"
 
 #. module: hr_expense_petty_cash
+#: model:ir.model,name:hr_expense_petty_cash.model_petty_cash_transaction
+msgid "Petty Cash Transaction"
+msgstr ""
+
+#. module: hr_expense_petty_cash
+#: model:ir.actions.act_window,name:hr_expense_petty_cash.action_petty_cash_transaction
+msgid "Petty Cash Transactions"
+msgstr ""
+
+#. module: hr_expense_petty_cash
+#. odoo-python
 #: code:addons/hr_expense_petty_cash/models/account_move.py:0
-#, python-format
 msgid ""
 "Petty Cash balance is {balance} {symbol}.\n"
 "Max amount to add is {max_amount} {symbol}."
@@ -188,46 +267,90 @@ msgid "Petty cash holder"
 msgstr "Tenedor de caja menor"
 
 #. module: hr_expense_petty_cash
+#. odoo-python
 #: code:addons/hr_expense_petty_cash/models/account_move.py:0
-#, python-format
 msgid "Please check Petty Cash on {name}."
 msgstr "Por favor, compruebe la caja menor en {name}."
 
 #. module: hr_expense_petty_cash
+#. odoo-python
 #: code:addons/hr_expense_petty_cash/models/account_move.py:0
-#, python-format
 msgid "Please select petty cash holder"
 msgstr "Por favor, seleccione el titular de la caja menor"
 
 #. module: hr_expense_petty_cash
+#: model:ir.model.fields.selection,name:hr_expense_petty_cash.selection__petty_cash_transaction__source__refill
+#: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_transaction_search
+msgid "Refill"
+msgstr ""
+
+#. module: hr_expense_petty_cash
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash_transaction__source
+#: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_transaction_search
+msgid "Source"
+msgstr ""
+
+#. module: hr_expense_petty_cash
+#: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_transaction_list
+msgid "Total In"
+msgstr ""
+
+#. module: hr_expense_petty_cash
+#: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_transaction_list
+msgid "Total Out"
+msgstr ""
+
+#. module: hr_expense_petty_cash
+#: model:ir.model.fields,field_description:hr_expense_petty_cash.field_petty_cash__transaction_count
+#: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_transaction_list
+#: model_terms:ir.ui.view,arch_db:hr_expense_petty_cash.view_petty_cash_transaction_search
+msgid "Transactions"
+msgstr ""
+
+#. module: hr_expense_petty_cash
+#. odoo-python
 #: code:addons/hr_expense_petty_cash/models/hr_expense.py:0
-#, python-format
 msgid "You can not create report without category."
 msgstr "No puede crear un informe sin categoría."
 
 #. module: hr_expense_petty_cash
+#. odoo-python
 #: code:addons/hr_expense_petty_cash/models/hr_expense.py:0
 #: code:addons/hr_expense_petty_cash/models/hr_expense_sheet.py:0
-#, python-format
 msgid "You cannot create report from many petty cash holders."
 msgstr ""
 "No se puede crear un informe a partir de muchos titulares de caja pequeña."
 
 #. module: hr_expense_petty_cash
+#. odoo-python
 #: code:addons/hr_expense_petty_cash/models/hr_expense.py:0
-#, python-format
+msgid "You cannot report expenses for different companies in the same report."
+msgstr ""
+
+#. module: hr_expense_petty_cash
+#. odoo-python
+#: code:addons/hr_expense_petty_cash/models/hr_expense.py:0
 msgid "You cannot report expenses for different employees in the same report."
 msgstr ""
 "No se pueden declarar gastos de diferentes empleados en el mismo informe."
 
 #. module: hr_expense_petty_cash
+#. odoo-python
 #: code:addons/hr_expense_petty_cash/models/hr_expense.py:0
-#, python-format
+msgid "You cannot report the expenses without amount!"
+msgstr ""
+
+#. module: hr_expense_petty_cash
+#. odoo-python
+#: code:addons/hr_expense_petty_cash/models/hr_expense.py:0
 msgid "You cannot report twice the same line!"
 msgstr "¡No se puede informar dos veces de la misma línea!"
 
 #. module: hr_expense_petty_cash
+#. odoo-python
 #: code:addons/hr_expense_petty_cash/models/account_move.py:0
-#, python-format
 msgid "{name} with petty cash checked must contain only 1 line."
 msgstr "{name} con caja chica comprobada debe contener sólo 1 línea."
+
+#~ msgid "Last Modified on"
+#~ msgstr "Última Modificación el"
