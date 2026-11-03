@@ -1,5 +1,6 @@
 # Copyright 2017 Tecnativa - Vicent Cubells
 # Copyright 2015-2024 Tecnativa - Pedro M. Baeza
+# Copyright 2026 Gray Matter Logic
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import Command, api, fields, models
@@ -16,6 +17,32 @@ class HrExpenseSheet(models.Model):
         return self.filtered(
             lambda sheet: func(expense.invoice_id for expense in sheet.expense_line_ids)
         )
+
+    def _ensure_invoices_from_vendors(self):
+        """Create a vendor bill when the user only selected a vendor."""
+        for expense in self.expense_line_ids.filtered(
+            lambda exp: exp.vendor_id and not exp.invoice_id
+        ):
+            expense.action_expense_create_invoice()
+
+    def _post_draft_expense_invoices(self):
+        """Post never-posted bills created from a vendor before posting the sheet.
+
+        Bills the user reset to draft are left alone so the existing posted-state
+        validation still applies.
+        """
+        invoices = self.mapped("expense_line_ids.invoice_id").filtered(
+            lambda invoice: invoice.state == "draft" and not invoice.posted_before
+        )
+        if invoices.filtered(lambda invoice: not invoice.partner_id):
+            raise UserError(
+                self.env._(
+                    "Please set a vendor on the expense or a partner on the "
+                    "vendor bill before posting the expense report."
+                )
+            )
+        if invoices:
+            invoices.action_post()
 
     def _do_create_ap_moves(self):
         # Create AP transfer entry for expenses paid by employees
@@ -69,6 +96,8 @@ class HrExpenseSheet(models.Model):
         return all_generated_moves
 
     def action_sheet_move_post(self):
+        self._ensure_invoices_from_vendors()
+        self._post_draft_expense_invoices()
         sheets_with_invoices = self.get_expense_sheets_with_invoices(any)
         sheets_all_invoices = self.get_expense_sheets_with_invoices(all)
         for sheet in sheets_with_invoices:
@@ -226,6 +255,7 @@ class HrExpenseSheet(models.Model):
         return super(HrExpenseSheet, self - sheets_with_invoices)._compute_state()
 
     def _do_approve(self):
+        self._ensure_invoices_from_vendors()
         expense_sheets_with_invoices = self.get_expense_sheets_with_invoices(all)
         own_account_sheets = self.filtered(
             lambda sheet: sheet.payment_mode == "own_account"
