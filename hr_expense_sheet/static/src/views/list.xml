@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t
+        t-name="hr_expense_sheet.ListButtons"
+        t-inherit="web.ListView.Buttons"
+        t-inherit-mode="primary"
+    >
+        <xpath expr="." position="inside">
+            <button
+                t-if="displaySubmit()"
+                class="d-none d-md-block btn btn-secondary"
+                t-on-click="() => this.onClick('action_submit')"
+            >
+                Submit
+            </button>
+            <button
+                t-if="displayApprove()"
+                class="d-none d-md-block btn btn-secondary"
+                t-on-click="() => this.onClick('action_approve')"
+            >
+                Approve
+            </button>
+        </xpath>
+    </t>
+    <t t-inherit="hr_expense.ListButtons" t-inherit-mode="extension">
+        <button t-if="displaySubmit()" position="before">
+            <button
+                t-if="displayCreateReport()"
+                class="btn btn-secondary"
+                t-on-click="() => this.action_show_expenses_to_submit()"
+            >
+                Create Report
+            </button>
+        </button>
+    </t>
+</templates>
