@@ -6,8 +6,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-13 09:01+0000\n"
-"PO-Revision-Date: 2026-08-13 09:01+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -85,11 +83,6 @@ msgid "Activity Type Icon"
 msgstr ""
 
 #. module: hr_expense_sheet
-#: model:ir.actions.act_window,name:hr_expense_sheet.action_hr_expense_sheet_all_all
-msgid "All Expense Reports"
-msgstr ""
-
-#. module: hr_expense_sheet
 #: model:ir.actions.act_window,name:hr_expense_sheet.action_hr_expense_sheet_all
 msgid "All Reports"
 msgstr ""
@@ -124,6 +117,8 @@ msgid "Approval State"
 msgstr ""
 
 #. module: hr_expense_sheet
+#. odoo-javascript
+#: code:addons/hr_expense_sheet/static/src/views/list.xml:0
 #: model_terms:ir.ui.view,arch_db:hr_expense_sheet.view_hr_expense_sheet_form
 msgid "Approve"
 msgstr ""
@@ -143,11 +138,6 @@ msgstr ""
 #. module: hr_expense_sheet
 #: model:ir.model.fields,field_description:hr_expense_sheet.field_hr_expense_sheet__message_attachment_count
 msgid "Attachment Count"
-msgstr ""
-
-#. module: hr_expense_sheet
-#: model_terms:ir.ui.view,arch_db:hr_expense_sheet.report_expense_sheet_img
-msgid "Attachment Name"
 msgstr ""
 
 #. module: hr_expense_sheet
@@ -191,12 +181,6 @@ msgstr ""
 #: code:addons/hr_expense_sheet/static/src/views/list.xml:0
 #: model_terms:ir.ui.view,arch_db:hr_expense_sheet.hr_expense_view_form
 msgid "Create Report"
-msgstr ""
-
-#. module: hr_expense_sheet
-#: model_terms:ir.actions.act_window,help:hr_expense_sheet.action_hr_expense_account
-#: model_terms:ir.actions.act_window,help:hr_expense_sheet.action_hr_expense_sheet_all_all
-msgid "Create a new expense report"
 msgstr ""
 
 #. module: hr_expense_sheet
@@ -257,14 +241,10 @@ msgid "Draft"
 msgstr ""
 
 #. module: hr_expense_sheet
+#: model:ir.model.fields,field_description:hr_expense_sheet.field_hr_expense__employee_id
 #: model:ir.model.fields,field_description:hr_expense_sheet.field_hr_expense_sheet__employee_id
 #: model_terms:ir.ui.view,arch_db:hr_expense_sheet.hr_expense_sheet_view_search
 msgid "Employee"
-msgstr ""
-
-#. module: hr_expense_sheet
-#: model:ir.actions.act_window,name:hr_expense_sheet.action_hr_expense_account
-msgid "Employee Expenses"
 msgstr ""
 
 #. module: hr_expense_sheet
@@ -309,17 +289,11 @@ msgid "Expense Report Date"
 msgstr ""
 
 #. module: hr_expense_sheet
-#: model:ir.actions.report,name:hr_expense_sheet.action_report_expense_sheet_img
-msgid "Expense Report Image"
-msgstr ""
-
-#. module: hr_expense_sheet
 #: model:ir.model.fields,field_description:hr_expense_sheet.field_hr_expense_sheet__name
 msgid "Expense Report Summary"
 msgstr ""
 
 #. module: hr_expense_sheet
-#: model:ir.ui.menu,name:hr_expense_sheet.menu_hr_expense_report
 #: model_terms:ir.ui.view,arch_db:hr_expense_sheet.hr_department_view_kanban
 #: model_terms:ir.ui.view,arch_db:hr_expense_sheet.view_hr_expense_sheet_form
 #: model_terms:ir.ui.view,arch_db:hr_expense_sheet.view_hr_expense_sheet_tree
@@ -341,6 +315,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_expense_sheet.field_account_move__expense_sheet_id
 #: model:ir.model.fields,field_description:hr_expense_sheet.field_account_payment__expense_sheet_id
 msgid "Expense Sheet"
+msgstr ""
+
+#. module: hr_expense_sheet
+#: model:ir.ui.menu,name:hr_expense_sheet.menu_hr_expense_report
+msgid "Expense Sheets to process"
 msgstr ""
 
 #. module: hr_expense_sheet
@@ -370,6 +349,8 @@ msgid ""
 msgstr ""
 
 #. module: hr_expense_sheet
+#. odoo-python
+#: code:addons/hr_expense_sheet/models/hr_expense_sheet.py:0
 #: model_terms:ir.ui.view,arch_db:hr_expense_sheet.hr_department_view_kanban
 #: model_terms:ir.ui.view,arch_db:hr_expense_sheet.hr_expense_sheet_view_activity
 #: model_terms:ir.ui.view,arch_db:hr_expense_sheet.view_hr_expense_sheet_form
@@ -477,12 +458,12 @@ msgstr ""
 
 #. module: hr_expense_sheet
 #: model:ir.model.fields,help:hr_expense_sheet.field_hr_expense_sheet__message_has_error
-#: model:ir.model.fields,help:hr_expense_sheet.field_hr_expense_sheet__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr ""
 
 #. module: hr_expense_sheet
 #: model:ir.model.fields.selection,name:hr_expense_sheet.selection__hr_expense_sheet__state__in_payment
+#: model_terms:ir.ui.view,arch_db:hr_expense_sheet.view_hr_expense_sheet_form
 msgid "In Payment"
 msgstr ""
 
@@ -673,8 +654,6 @@ msgid "Number of messages with delivery error"
 msgstr ""
 
 #. module: hr_expense_sheet
-#: model_terms:ir.actions.act_window,help:hr_expense_sheet.action_hr_expense_account
-#: model_terms:ir.actions.act_window,help:hr_expense_sheet.action_hr_expense_sheet_all_all
 #: model_terms:ir.actions.act_window,help:hr_expense_sheet.action_hr_expense_sheet_my_all
 msgid ""
 "Once you have created your expense, submitted it to your manager who will "
@@ -684,6 +663,7 @@ msgstr ""
 #. module: hr_expense_sheet
 #: model:ir.model.fields.selection,name:hr_expense_sheet.selection__hr_expense_sheet__state__paid
 #: model:mail.message.subtype,name:hr_expense_sheet.mt_expense_paid
+#: model_terms:ir.ui.view,arch_db:hr_expense_sheet.view_hr_expense_sheet_form
 msgid "Paid"
 msgstr ""
 
@@ -693,8 +673,18 @@ msgid "Paid By"
 msgstr ""
 
 #. module: hr_expense_sheet
+#: model_terms:ir.ui.view,arch_db:hr_expense_sheet.view_hr_expense_sheet_form
+msgid "Partial"
+msgstr ""
+
+#. module: hr_expense_sheet
 #: model:ir.model.fields,field_description:hr_expense_sheet.field_hr_expense_sheet__payment_method_line_id
 msgid "Payment Method"
+msgstr ""
+
+#. module: hr_expense_sheet
+#: model:ir.model.fields,field_description:hr_expense_sheet.field_hr_expense_sheet__payment_state
+msgid "Payment Status"
 msgstr ""
 
 #. module: hr_expense_sheet
@@ -726,7 +716,13 @@ msgstr ""
 #: model:ir.model.fields.selection,name:hr_expense_sheet.selection__hr_expense_sheet__approval_state__refused
 #: model:ir.model.fields.selection,name:hr_expense_sheet.selection__hr_expense_sheet__state__refused
 #: model:mail.message.subtype,name:hr_expense_sheet.mt_expense_refused
+#: model_terms:ir.ui.view,arch_db:hr_expense_sheet.hr_expense_view_search
 msgid "Refused"
+msgstr ""
+
+#. module: hr_expense_sheet
+#: model_terms:ir.ui.view,arch_db:hr_expense_sheet.hr_expense_view_search
+msgid "Refused Expenses"
 msgstr ""
 
 #. module: hr_expense_sheet
@@ -750,13 +746,13 @@ msgid "Responsible User"
 msgstr ""
 
 #. module: hr_expense_sheet
-#: model:ir.model.fields,field_description:hr_expense_sheet.field_hr_expense_sheet__message_has_sms_error
-msgid "SMS Delivery error"
+#: model:ir.model.fields,field_description:hr_expense_sheet.field_hr_expense_sheet__selectable_payment_method_line_ids
+msgid "Selectable Payment Method Line"
 msgstr ""
 
 #. module: hr_expense_sheet
-#: model:ir.model.fields,field_description:hr_expense_sheet.field_hr_expense_sheet__selectable_payment_method_line_ids
-msgid "Selectable Payment Method Line"
+#: model_terms:ir.ui.view,arch_db:hr_expense_sheet.hr_expense_view_search
+msgid "Sheet"
 msgstr ""
 
 #. module: hr_expense_sheet
@@ -788,6 +784,12 @@ msgid ""
 "Overdue: Due date is already passed\n"
 "Today: Activity date is today\n"
 "Planned: Future activities."
+msgstr ""
+
+#. module: hr_expense_sheet
+#. odoo-javascript
+#: code:addons/hr_expense_sheet/static/src/views/list.xml:0
+msgid "Submit"
 msgstr ""
 
 #. module: hr_expense_sheet
@@ -872,6 +874,11 @@ msgstr ""
 msgid ""
 "This expense report is empty. You cannot submit or approve an empty expense "
 "report."
+msgstr ""
+
+#. module: hr_expense_sheet
+#: model_terms:ir.ui.view,arch_db:hr_expense_sheet.hr_expense_view_search
+msgid "To Report"
 msgstr ""
 
 #. module: hr_expense_sheet
