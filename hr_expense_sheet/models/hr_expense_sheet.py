@@ -824,14 +824,21 @@ class HrExpenseSheet(models.Model):
         self.activity_update()
 
     def _do_create_moves(self):
-        res = self.expense_line_ids.action_post()
+        # Post in the sheet company. Otherwise a Mexican company in the context
+        # hides the expense account and the receipt wizard fails with empty hands.
+        sheets = self
+        if len(self.company_id) == 1:
+            sheets = self.with_company(self.company_id)
+        res = sheets.expense_line_ids.action_post()
         if res:
             vals = (
                 {"accounting_date": self.accounting_date}
                 if self.accounting_date
                 else {}
             )
-            wizard_model = self.env[res["res_model"]].with_context(**res["context"])
+            wizard_model = sheets.env[res["res_model"]].with_context(**res["context"])
+            if len(self.company_id) == 1:
+                wizard_model = wizard_model.with_company(self.company_id)
             wizard = wizard_model.create(vals)
             wizard.action_post_entry()
 
