@@ -845,6 +845,29 @@ class HrExpenseSheet(models.Model):
                 if account:
                     expense.account_id = account
 
+    def _get_purchase_journal(self):
+        """Purchase journal for an employee-paid expense.
+
+        The posting wizard looks one up without sudo and can miss it. The
+        receipt then inserts with a null journal.
+        """
+        self.ensure_one()
+        company = self.company_id or self.env.company
+        journal = (self.employee_journal_id or self.journal_id).sudo()
+        if journal.type == "purchase":
+            return journal
+        return (
+            self.env["account.journal"]
+            .sudo()
+            .search(
+                [
+                    *self.env["account.journal"]._check_company_domain(company),
+                    ("type", "=", "purchase"),
+                ],
+                limit=1,
+            )
+        )
+
     def _do_create_moves(self):
         # Post in the sheet company. Otherwise a Mexican company in the context
         # hides the expense account and the receipt wizard fails with empty hands.
@@ -859,11 +882,18 @@ class HrExpenseSheet(models.Model):
                 if self.accounting_date
                 else {}
             )
+            if len(self.company_id) == 1:
+                journal = self[:1]._get_purchase_journal()
+                if journal:
+                    vals["company_id"] = self.company_id.id
+                    vals["employee_journal_id"] = journal.id
             wizard_model = sheets.env[res["res_model"]].with_context(**res["context"])
             if len(self.company_id) == 1:
                 wizard_model = wizard_model.with_company(self.company_id)
             wizard = wizard_model.create(vals)
-            wizard.action_post_entry()
+            # sudo: the purchase journal may be hidden from the posting user,
+            # and the wizard would then send a null journal_id.
+            wizard.sudo().action_post_entry()
 
     def _get_default_responsible_for_approval(self):
         # Similar to what happens in hr.expense
