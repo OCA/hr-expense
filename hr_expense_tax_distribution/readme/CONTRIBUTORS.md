@@ -1,0 +1,3 @@
+- [Akretion](https://www.akretion.com/):
+  - Guillaume Masson \<<guillaume.masson@akretion.com>\>
+- Don Kendall \<<dkendall@ledoweb.com>\>
