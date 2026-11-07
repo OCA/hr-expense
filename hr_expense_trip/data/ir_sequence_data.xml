@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- One "hr.trip" sequence per company; new companies get theirs on create -->
+    <function model="res.company" name="setup_company_trip_sequences" />
+</odoo>
