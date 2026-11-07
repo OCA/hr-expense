@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_account_payment_form" model="ir.ui.view">
+        <field name="name">account.payment.form.reimbursed.expenses</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_open_reconciled_expenses"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-money"
+                    invisible="not reconciled_expense_count"
+                >
+                    <field
+                        name="reconciled_expense_count"
+                        widget="statinfo"
+                        string="Reimbursed Expenses"
+                    />
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>
