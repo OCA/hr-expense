@@ -13,19 +13,15 @@ class TestHrExpenseSheetCommon(TestExpenseCommon):
         companies = cls.env.company | cls.company_data_2["company"]
         products = cls.product_a | cls.product_b | cls.product_c
         for company in companies:
-            account = company.expense_account_id or cls.env[
-                "account.account"
-            ].with_company(company).search([("account_type", "=", "expense")], limit=1)
-            if not account:
-                continue
+            account = cls._get_company_expense_account(company)
             if not company.expense_account_id:
                 company.expense_account_id = account
-            products.with_company(company).write(
+            products.product_tmpl_id.with_company(company).write(
                 {"property_account_expense_id": account.id}
             )
-            cls.product_category.with_company(
-                company
-            ).property_account_expense_categ_id = account
+            cls.product_category.with_company(company).write(
+                {"property_account_expense_categ_id": account.id}
+            )
             journals = (
                 cls.env["account.journal"]
                 .with_company(company)
@@ -36,9 +32,38 @@ class TestHrExpenseSheetCommon(TestExpenseCommon):
                     ]
                 )
             )
-            journals.filtered(lambda journal: not journal.default_account_id).write(
-                {"default_account_id": account.id}
-            )
+            journals.filtered(
+                lambda journal: not journal.default_account_id
+            ).default_account_id = account
+
+    @classmethod
+    def _get_company_expense_account(cls, company):
+        """Return an expense account that belongs to this company.
+
+        Mexican charts mostly use ``expense_direct_cost``. Searching only
+        ``expense`` leaves the receipt wizard without an account.
+        """
+        accounts = cls.env["account.account"].with_company(company)
+        company_domain = accounts._check_company_domain(company)
+        current = company.expense_account_id
+        if current and current.filtered_domain(company_domain):
+            return current
+        account = accounts.search(
+            [
+                *company_domain,
+                ("account_type", "in", ("expense", "expense_direct_cost")),
+            ],
+            limit=1,
+        )
+        if account:
+            return account
+        return accounts.create(
+            {
+                "name": "Test expense",
+                "code": f"619{company.id:04d}",
+                "account_type": "expense",
+            }
+        )
 
     def create_expense_report(self, values=None):
         values = values or {}
@@ -60,4 +85,9 @@ class TestHrExpenseSheetCommon(TestExpenseCommon):
                 )
             ],
         }
-        return self.env["hr.expense.sheet"].create({**default_values, **values})
+        sheet = self.env["hr.expense.sheet"].create({**default_values, **values})
+        account = self._get_company_expense_account(sheet.company_id)
+        missing = sheet.expense_line_ids.filtered(lambda line: not line.account_id)
+        if missing:
+            missing.with_company(sheet.company_id).account_id = account
+        return sheet

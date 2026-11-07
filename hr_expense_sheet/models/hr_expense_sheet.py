@@ -823,12 +823,35 @@ class HrExpenseSheet(models.Model):
         )
         self.activity_update()
 
+    def _assign_missing_expense_accounts(self):
+        """Store an expense account on lines that do not have one yet.
+
+        The receipt wizard reads ``account_id`` before the product property.
+        On a Mexican chart that property is often empty, and the company
+        expense account is only used when the line has no product.
+        """
+        for sheet in self:
+            company = sheet.company_id
+            if not company:
+                continue
+            expenses = sheet.with_company(company).expense_line_ids
+            for expense in expenses.filtered(lambda line: not line.account_id):
+                account = company.expense_account_id
+                product = expense.product_id.product_tmpl_id
+                if not account and product:
+                    account = product.with_company(company)._get_product_accounts()[
+                        "expense"
+                    ]
+                if account:
+                    expense.account_id = account
+
     def _do_create_moves(self):
         # Post in the sheet company. Otherwise a Mexican company in the context
         # hides the expense account and the receipt wizard fails with empty hands.
         sheets = self
         if len(self.company_id) == 1:
             sheets = self.with_company(self.company_id)
+        sheets._assign_missing_expense_accounts()
         res = sheets.expense_line_ids.action_post()
         if res:
             vals = (
