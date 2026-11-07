@@ -20,6 +20,12 @@ class AccountPayment(models.Model):
         "payment, by reconciliation or by the payment register.",
     )
 
+    reconciled_expense_count = fields.Integer(
+        string="Reimbursed Expenses Count",
+        compute="_compute_reconciled_expense_count",
+        compute_sudo=True,
+    )
+
     @api.depends(
         "invoice_ids",
         "move_id.line_ids.matched_debit_ids",
@@ -30,6 +36,22 @@ class AccountPayment(models.Model):
             payment.reconciled_expense_ids = (
                 payment.invoice_ids | payment.reconciled_bill_ids
             ).expense_ids
+
+    @api.depends("reconciled_expense_ids")
+    def _compute_reconciled_expense_count(self):
+        for payment in self:
+            payment.reconciled_expense_count = len(payment.reconciled_expense_ids)
+
+    def action_open_reconciled_expenses(self):
+        """Open the employee-paid expenses reimbursed by these payments."""
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("Reimbursed Expenses"),
+            "res_model": "hr.expense",
+            "view_mode": "list,form",
+            "domain": [("payment_ids", "in", self.ids)],
+            "context": {"create": False},
+        }
 
     def _search_reconciled_expense_ids(self, operator, value):
         if operator not in ("in", "="):

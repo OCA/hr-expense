@@ -127,6 +127,30 @@ class TestHrExpensePayment(TestExpenseCommon):
         with_expense = Payment.search([("reconciled_expense_ids", "!=", False)])
         self.assertIn(payment, with_expense)
 
+    def test_payment_count_and_button_action(self):
+        """The smart button counts the payments and its action lists them."""
+        self.assertEqual(self.expense.payment_count, 0)
+        self._get_payment_wizard(self.expense).action_create_payments()
+        self.assertEqual(self.expense.payment_count, 1)
+        action = self.expense.action_open_payments()
+        self.assertEqual(action["res_model"], "account.payment")
+        found = self.env["account.payment"].search(action["domain"])
+        self.assertEqual(found, self.expense.payment_ids)
+        arch = self.env["hr.expense"].get_view(view_type="form")["arch"]
+        self.assertIn("action_open_payments", arch)
+
+    def test_reimbursed_expense_count_and_button_action(self):
+        """The payment mirrors the button, where core's Expense one stays hidden."""
+        self._get_payment_wizard(self.expense).action_create_payments()
+        payment = self.expense.payment_ids
+        self.assertEqual(payment.reconciled_expense_count, 1)
+        self.assertFalse(payment.expense_ids)
+        action = payment.action_open_reconciled_expenses()
+        self.assertEqual(action["res_model"], "hr.expense")
+        self.assertEqual(self.env["hr.expense"].search(action["domain"]), self.expense)
+        arch = self.env["account.payment"].get_view(view_type="form")["arch"]
+        self.assertIn("action_open_reconciled_expenses", arch)
+
     def test_manual_reconcile_link_follows_reconciliation(self):
         """A manually created and reconciled payment links through the
         reconciliation only, so unreconciling dissolves it."""

@@ -27,6 +27,10 @@ class HrExpense(models.Model):
         "reconciled with it or matched by the payment register.",
     )
 
+    payment_count = fields.Integer(
+        string="Payments Count", compute="_compute_payment_count", compute_sudo=True
+    )
+
     @api.depends(
         "account_move_id.line_ids.matched_debit_ids",
         "account_move_id.line_ids.matched_credit_ids",
@@ -35,6 +39,22 @@ class HrExpense(models.Model):
     def _compute_payment_ids(self):
         for expense in self:
             expense.payment_ids = expense.account_move_id.reconciled_payment_ids
+
+    @api.depends("payment_ids")
+    def _compute_payment_count(self):
+        for expense in self:
+            expense.payment_count = len(expense.payment_ids)
+
+    def action_open_payments(self):
+        """Open the payments reimbursing the selected expenses."""
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("Payments"),
+            "res_model": "account.payment",
+            "view_mode": "list,form",
+            "domain": [("reconciled_expense_ids", "in", self.ids)],
+            "context": {"create": False},
+        }
 
     def _search_payment_ids(self, operator, value):
         if operator not in ("in", "="):
