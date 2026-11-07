@@ -13,9 +13,9 @@ class TestHrExpenseSheetCommon(TestExpenseCommon):
         companies = cls.env.company | cls.company_data_2["company"]
         products = cls.product_a | cls.product_b | cls.product_c
         for company in companies:
-            account = company.expense_account_id or cls.env["account.account"].with_company(
-                company
-            ).search([("account_type", "=", "expense")], limit=1)
+            account = company.expense_account_id or cls.env[
+                "account.account"
+            ].with_company(company).search([("account_type", "=", "expense")], limit=1)
             if not account:
                 continue
             if not company.expense_account_id:
@@ -23,14 +23,18 @@ class TestHrExpenseSheetCommon(TestExpenseCommon):
             products.with_company(company).write(
                 {"property_account_expense_id": account.id}
             )
-            cls.product_category.with_company(company).property_account_expense_categ_id = (
-                account
-            )
-            journals = cls.env["account.journal"].with_company(company).search(
-                [
-                    *cls.env["account.journal"]._check_company_domain(company),
-                    ("type", "=", "purchase"),
-                ]
+            cls.product_category.with_company(
+                company
+            ).property_account_expense_categ_id = account
+            journals = (
+                cls.env["account.journal"]
+                .with_company(company)
+                .search(
+                    [
+                        *cls.env["account.journal"]._check_company_domain(company),
+                        ("type", "=", "purchase"),
+                    ]
+                )
             )
             journals.filtered(lambda journal: not journal.default_account_id).write(
                 {"default_account_id": account.id}
