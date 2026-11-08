@@ -22,19 +22,14 @@ class TestHrExpenseSheetCommon(TestExpenseCommon):
             cls.product_category.with_company(company).write(
                 {"property_account_expense_categ_id": account.id}
             )
-            journals = (
-                cls.env["account.journal"]
-                .with_company(company)
-                .search(
-                    [
-                        *cls.env["account.journal"]._check_company_domain(company),
-                        ("type", "=", "purchase"),
-                    ]
-                )
-            )
-            journals.filtered(
-                lambda journal: not journal.default_account_id
-            ).default_account_id = account
+            payable = cls._get_company_payable_account(company)
+            partners = (
+                cls.expense_employee.work_contact_id | company.partner_id
+            ).with_company(company)
+            partners.filtered(
+                lambda partner: partner.property_account_payable_id.account_type
+                != "liability_payable"
+            ).property_account_payable_id = payable
 
     @classmethod
     def _get_company_expense_account(cls, company):
@@ -62,6 +57,33 @@ class TestHrExpenseSheetCommon(TestExpenseCommon):
                 "name": "Test expense",
                 "code": f"619{company.id:04d}",
                 "account_type": "expense",
+            }
+        )
+
+    @classmethod
+    def _get_company_payable_account(cls, company):
+        """Payable account for the employee reimbursement line.
+
+        A purchase journal defaulted to an expense account makes the receipt
+        term line fail the due-date check.
+        """
+        accounts = cls.env["account.account"].with_company(company)
+        company_domain = accounts._check_company_domain(company)
+        account = accounts.search(
+            [
+                *company_domain,
+                ("account_type", "=", "liability_payable"),
+            ],
+            limit=1,
+        )
+        if account:
+            return account
+        return accounts.create(
+            {
+                "name": "Test payable",
+                "code": f"211{company.id:04d}",
+                "account_type": "liability_payable",
+                "reconcile": True,
             }
         )
 
