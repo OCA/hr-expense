@@ -30,6 +30,26 @@ class TestHrExpenseSheetCommon(TestExpenseCommon):
                 lambda partner: partner.property_account_payable_id.account_type
                 != "liability_payable"
             ).property_account_payable_id = payable
+        if not getattr(cls, "outbound_payment_method_line", False):
+            journal = cls.env["account.journal"].search(
+                [
+                    ("company_id", "=", cls.env.company.id),
+                    ("type", "=", "bank"),
+                ],
+                limit=1,
+            )
+            if not journal:
+                journal = cls.env["account.journal"].create(
+                    {
+                        "name": "Test bank",
+                        "type": "bank",
+                        "code": "HBNK",
+                        "company_id": cls.env.company.id,
+                    }
+                )
+            cls.outbound_payment_method_line = (
+                journal.outbound_payment_method_line_ids[:1]
+            )
 
     @classmethod
     def _get_company_expense_account(cls, company):
