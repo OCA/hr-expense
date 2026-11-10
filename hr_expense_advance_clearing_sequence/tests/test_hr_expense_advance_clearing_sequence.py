@@ -22,3 +22,25 @@ class TestHrExpenseAdvanceClearingSequence(TestHrExpenseAdvanceClearing):
         self.assertNotEqual(
             advance_sheet.number, advance_sheet.copy().number, "Numbers are different"
         )
+
+    def test_02_create_several_advances(self):
+        expenses = self.env["hr.expense"]
+        for name in ("Advance A", "Advance B"):
+            expenses |= self._create_expense(
+                name, self.expense_employee, self.emp_advance, 100.0, True
+            )
+        sheets = self.env["hr.expense.sheet"].create(
+            [
+                {
+                    "name": expense.name,
+                    "employee_id": self.expense_employee.id,
+                    "expense_line_ids": [(6, 0, expense.ids)],
+                    "advance": True,
+                }
+                for expense in expenses
+            ]
+        )
+        self.assertEqual(sheets.mapped("name"), ["Advance A", "Advance B"])
+        self.assertIn("AV", sheets[0].number)
+        self.assertIn("AV", sheets[1].number)
+        self.assertNotEqual(sheets[0].number, sheets[1].number)
