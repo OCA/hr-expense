@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    Copyright 2026 Akretion
+    @author Guillaume MASSON <guillaume.masson@akretion.com>
+    License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
+-->
+<odoo>
+    <record id="view_hr_expense_tax_line_tree" model="ir.ui.view">
+        <field name="name">hr.expense.tax.line.tree</field>
+        <field name="model">hr.expense.tax.line</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle" />
+                <field name="tax_ids" widget="many2many_tags" />
+                <field name="base_amount_currency" />
+                <field name="tax_amount_currency" />
+                <field name="total_amount_currency" />
+                <field name="currency_id" column_invisible="True" />
+            </list>
+        </field>
+    </record>
+
+    <record id="hr_expense_view_form_tax_distribution" model="ir.ui.view">
+        <field name="name">hr.expense.form.tax.distribution</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form" />
+        <field name="arch" type="xml">
+            <!-- Add has_tax_distribution as invisible field for domain use -->
+            <xpath expr="//field[@name='tax_ids']" position="before">
+                <field name="has_tax_distribution" invisible="1" />
+            </xpath>
+
+            <!-- After the existing tax_ids + tax_amount_currency row,
+                 insert the distribution lines (visible only when relevant). -->
+            <xpath expr="//field[@name='tax_ids']/.." position="after">
+                <div
+                    invisible="not has_tax_distribution"
+                    class="o_expense_tax_distribution mt-2"
+                >
+                    <div class="o_form_label fw-bold">Tax Distribution</div>
+                    <div class="text-muted fst-italic mb-1" style="font-size:0.85em;">
+                        Distribute the expense total across the applicable tax rates.
+                        The sum of the "Total (Tax Incl.)" column must equal the
+                        expense total.
+                    </div>
+                    <field
+                        name="tax_line_ids"
+                        widget="one2many"
+                        readonly="not is_editable"
+                        context="{'default_expense_id': id}"
+                    >
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle" />
+                            <field name="tax_ids" widget="many2many_tags" />
+                            <field name="base_amount_currency" />
+                            <field name="tax_amount_currency" />
+                            <field name="total_amount_currency" />
+                            <field name="currency_id" column_invisible="True" />
+                        </list>
+                    </field>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
