@@ -1,6 +1,6 @@
 [project]
 name = "odoo-addons-oca-hr-expense"
-version = "18.0.20260604.0"
+version = "18.0.20261110.0"
 dependencies = [
     "odoo-addon-hr_expense_advance_clearing==18.0.*",
     "odoo-addon-hr_expense_advance_clearing_sequence==18.0.*",
@@ -11,6 +11,7 @@ dependencies = [
     "odoo-addon-hr_expense_petty_cash==18.0.*",
     "odoo-addon-hr_expense_sequence==18.0.*",
     "odoo-addon-hr_expense_sequence_option==18.0.*",
+    "odoo-addon-hr_expense_tax_distribution==18.0.*",
     "odoo-addon-hr_expense_tier_validation==18.0.*",
     "odoo-addon-hr_expense_vendor_receipt==18.0.*",
 ]
