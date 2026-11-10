@@ -1,0 +1,166 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* hr_expense_tax_distribution
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__base_amount_currency
+msgid "Base Amount (Tax Excl.)"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__company_id
+msgid "Company"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__currency_id
+msgid "Currency"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model_terms:ir.ui.view,arch_db:hr_expense_tax_distribution.hr_expense_view_form_tax_distribution
+msgid ""
+"Distribute the expense total across the applicable tax rates.\n"
+"                        The sum of the \"Total (Tax Incl.)\" column must equal the\n"
+"                        expense total."
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model,name:hr_expense_tax_distribution.model_hr_expense
+#: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__expense_id
+msgid "Expense"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#. odoo-python
+#: code:addons/hr_expense_tax_distribution/models/hr_expense.py:0
+msgid ""
+"Expense \"%(name)s\" has tax distribution lines with a zero base amount. "
+"Please fill in all base amounts before submitting."
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model,name:hr_expense_tax_distribution.model_hr_expense_sheet
+msgid "Expense Report"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model,name:hr_expense_tax_distribution.model_hr_expense_tax_line
+msgid "Expense Tax Distribution Line"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense__has_tax_distribution
+msgid "Has Tax Distribution"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__id
+msgid "ID"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__tax_amount_currency
+msgid "Tax Amount"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model_terms:ir.ui.view,arch_db:hr_expense_tax_distribution.hr_expense_view_form_tax_distribution
+msgid "Tax Distribution"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense__tax_line_ids
+msgid "Tax Distribution Lines"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense__tax_amount
+msgid "Tax amount"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense__tax_amount_currency
+msgid "Tax amount in Currency"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,help:hr_expense_tax_distribution.field_hr_expense__tax_amount
+msgid "Tax amount in company currency"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,help:hr_expense_tax_distribution.field_hr_expense__tax_amount_currency
+msgid "Tax amount in currency"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__tax_ids
+msgid "Taxes"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#. odoo-python
+#: code:addons/hr_expense_tax_distribution/models/hr_expense_tax_line.py:0
+msgid "The base amount on a tax distribution line cannot be negative."
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#. odoo-python
+#: code:addons/hr_expense_tax_distribution/models/hr_expense.py:0
+msgid ""
+"The sum of tax distribution line totals (%(distributed)s) does not match the"
+" expense total amount (%(total)s) on expense \"%(name)s\". Please adjust the"
+" base amounts so that the totals match."
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__total_amount_currency
+msgid "Total (Tax Incl.)"
+msgstr ""
+
+#. module: hr_expense_tax_distribution
+#: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense__untaxed_amount_currency
+msgid "Total Untaxed Amount In Currency"
+msgstr ""
