@@ -6,43 +6,45 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2026-11-11 12:46+0000\n"
+"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.15.2\n"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__base_amount_currency
 msgid "Base Amount (Tax Excl.)"
-msgstr ""
+msgstr "Importo imponibile"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__company_id
 msgid "Company"
-msgstr ""
+msgstr "Azienda"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__create_uid
 msgid "Created by"
-msgstr ""
+msgstr "Creato da"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__create_date
 msgid "Created on"
-msgstr ""
+msgstr "Creato il"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__currency_id
 msgid "Currency"
-msgstr ""
+msgstr "Valuta"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Nome visualizzato"
 
 #. module: hr_expense_tax_distribution
 #: model_terms:ir.ui.view,arch_db:hr_expense_tax_distribution.hr_expense_view_form_tax_distribution
@@ -51,12 +53,16 @@ msgid ""
 "                        The sum of the \"Total (Tax Incl.)\" column must equal the\n"
 "                        expense total."
 msgstr ""
+"Distribuisce il totale della spesa tra le aliquote fiscali applicabili.\n"
+"                        La somma della colonna \"Totale (IVA inclusa)\" deve "
+"essere uguale al\n"
+"                        totale della spesa."
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model,name:hr_expense_tax_distribution.model_hr_expense
 #: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__expense_id
 msgid "Expense"
-msgstr ""
+msgstr "Spesa"
 
 #. module: hr_expense_tax_distribution
 #. odoo-python
@@ -65,87 +71,92 @@ msgid ""
 "Expense \"%(name)s\" has tax distribution lines with a zero base amount. "
 "Please fill in all base amounts before submitting."
 msgstr ""
+"La spesa \"%(name)s\" contiene righe di ripartizione delle imposte con un "
+"imponibile pari a zero. Inserisci tutti gli importi imponibili prima di "
+"inviare."
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model,name:hr_expense_tax_distribution.model_hr_expense_sheet
 msgid "Expense Report"
-msgstr ""
+msgstr "Nota spese"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model,name:hr_expense_tax_distribution.model_hr_expense_tax_line
 msgid "Expense Tax Distribution Line"
-msgstr ""
+msgstr "Riga di ripartizione delle imposte della spesa"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense__has_tax_distribution
 msgid "Has Tax Distribution"
-msgstr ""
+msgstr "Ha una ripartizione delle imposte"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__write_uid
 msgid "Last Updated by"
-msgstr ""
+msgstr "Ultima modifica di"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__write_date
 msgid "Last Updated on"
-msgstr ""
+msgstr "Ultima modifica il"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__sequence
 msgid "Sequence"
-msgstr ""
+msgstr "Sequenza"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__tax_amount_currency
 msgid "Tax Amount"
-msgstr ""
+msgstr "Importo imposta"
 
 #. module: hr_expense_tax_distribution
 #: model_terms:ir.ui.view,arch_db:hr_expense_tax_distribution.hr_expense_view_form_tax_distribution
 msgid "Tax Distribution"
-msgstr ""
+msgstr "Ripartizione delle imposte"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense__tax_line_ids
 msgid "Tax Distribution Lines"
-msgstr ""
+msgstr "Righe di ripartizione delle imposte"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense__tax_amount
 msgid "Tax amount"
-msgstr ""
+msgstr "Importo imposta"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense__tax_amount_currency
 msgid "Tax amount in Currency"
-msgstr ""
+msgstr "Importo imposta in valuta"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,help:hr_expense_tax_distribution.field_hr_expense__tax_amount
 msgid "Tax amount in company currency"
-msgstr ""
+msgstr "Importo imposta nella valuta aziendale"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,help:hr_expense_tax_distribution.field_hr_expense__tax_amount_currency
 msgid "Tax amount in currency"
-msgstr ""
+msgstr "Importo imposta in valuta"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__tax_ids
 msgid "Taxes"
-msgstr ""
+msgstr "Imposte"
 
 #. module: hr_expense_tax_distribution
 #. odoo-python
 #: code:addons/hr_expense_tax_distribution/models/hr_expense_tax_line.py:0
 msgid "The base amount on a tax distribution line cannot be negative."
 msgstr ""
+"L'importo imponibile di una riga di ripartizione delle imposte non può "
+"essere negativo."
 
 #. module: hr_expense_tax_distribution
 #. odoo-python
@@ -155,13 +166,17 @@ msgid ""
 " expense total amount (%(total)s) on expense \"%(name)s\". Please adjust the"
 " base amounts so that the totals match."
 msgstr ""
+"La somma dei totali delle righe di ripartizione delle imposte (%(distributed)"
+"s) non corrisponde all’importo totale della spesa (%(total)s) nella spesa \"%"
+"(name)s\". Modifica gli importi imponibili in modo che i totali "
+"corrispondano."
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense_tax_line__total_amount_currency
 msgid "Total (Tax Incl.)"
-msgstr ""
+msgstr "Totale (IVA inclusa)"
 
 #. module: hr_expense_tax_distribution
 #: model:ir.model.fields,field_description:hr_expense_tax_distribution.field_hr_expense__untaxed_amount_currency
 msgid "Total Untaxed Amount In Currency"
-msgstr ""
+msgstr "Totale imponibile in valuta"
