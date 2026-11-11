@@ -1,0 +1,162 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* sale_expense_manual_reinvoice
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 15.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2023-10-30 19:36+0000\n"
+"Last-Translator: Ivorra78 <informatica@totmaterial.es>\n"
+"Language-Team: none\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
+
+#. module: sale_expense_manual_reinvoice
+#: model:ir.model,name:sale_expense_manual_reinvoice.model_account_analytic_line
+#: model:ir.model.fields,field_description:sale_expense_manual_reinvoice.field_hr_expense__analytic_line_ids
+msgid "Analytic Line"
+msgstr "Línea Analítica"
+
+#. module: sale_expense_manual_reinvoice
+#: model_terms:ir.ui.view,arch_db:sale_expense_manual_reinvoice.view_hr_expense_toreinvoice_tree
+msgid "Are you sure you don't want to reinvoice these expenses?"
+msgstr "¿Está seguro de que no quiere volver a facturar estos gastos?"
+
+#. module: sale_expense_manual_reinvoice
+#: model:ir.model.fields.selection,name:sale_expense_manual_reinvoice.selection__product_template__expense_mode__auto
+msgid "Automatically"
+msgstr "Automáticamente"
+
+#. module: sale_expense_manual_reinvoice
+#: model:ir.model.fields,help:sale_expense_manual_reinvoice.field_product_product__expense_mode
+#: model:ir.model.fields,help:sale_expense_manual_reinvoice.field_product_template__expense_mode
+msgid ""
+"Choose how to re-invoice expenses:\n"
+"\n"
+"* Automatically: Expenses are automatically re-invoiced when they're posted.\n"
+"* Manually: Expenses have to be manually re-invoiced by a manager.\n"
+msgstr ""
+"Elija cómo refacturar los gastos:\n"
+"\n"
+"* Automáticamente: Los gastos se refacturan automáticamente cuando se "
+"contabilizan.\n"
+"* Manualmente: Los gastos deben ser refacturados manualmente por un gestor.\n"
+
+#. module: sale_expense_manual_reinvoice
+#: model_terms:ir.ui.view,arch_db:sale_expense_manual_reinvoice.view_hr_expense_toreinvoice_tree
+msgid "Discard"
+msgstr "Descartar"
+
+#. module: sale_expense_manual_reinvoice
+#: model:ir.model,name:sale_expense_manual_reinvoice.model_hr_expense
+#: model:ir.model.fields,field_description:sale_expense_manual_reinvoice.field_account_analytic_line__expense_id
+msgid "Expense"
+msgstr "Gasto"
+
+#. module: sale_expense_manual_reinvoice
+#: code:addons/sale_expense_manual_reinvoice/models/account_analytic_line.py:0
+#, python-format
+msgid "Expense already re-invoiced."
+msgstr "Gasto ya refacturado."
+
+#. module: sale_expense_manual_reinvoice
+#: model:ir.model.fields,help:sale_expense_manual_reinvoice.field_account_analytic_line__expense_id
+msgid "Expense where the move line come from"
+msgstr "Gasto del que procede la línea de movimiento"
+
+#. module: sale_expense_manual_reinvoice
+#: model:ir.actions.act_window,name:sale_expense_manual_reinvoice.action_hr_expense_to_reinvoice
+#: model:ir.ui.menu,name:sale_expense_manual_reinvoice.menu_hr_expense_to_reinvoice
+msgid "Expenses to Reinvoice"
+msgstr "Gastos para Refacturar"
+
+#. module: sale_expense_manual_reinvoice
+#: model:ir.model,name:sale_expense_manual_reinvoice.model_account_move_line
+msgid "Journal Item"
+msgstr "Artículo Diario"
+
+#. module: sale_expense_manual_reinvoice
+#: model:ir.model.fields,field_description:sale_expense_manual_reinvoice.field_account_analytic_line__manual_reinvoice
+#: model:ir.model.fields,field_description:sale_expense_manual_reinvoice.field_hr_expense__manual_reinvoice
+msgid "Manual Reinvoice"
+msgstr "Refacturación Manual"
+
+#. module: sale_expense_manual_reinvoice
+#: model:ir.model.fields,field_description:sale_expense_manual_reinvoice.field_account_analytic_line__manual_reinvoice_discarded
+#: model:ir.model.fields,field_description:sale_expense_manual_reinvoice.field_hr_expense__manual_reinvoice_discarded
+msgid "Manual Reinvoice Discarded"
+msgstr "Refacturación Manual Descartada"
+
+#. module: sale_expense_manual_reinvoice
+#: model:ir.model.fields,field_description:sale_expense_manual_reinvoice.field_account_analytic_line__manual_reinvoice_done
+#: model:ir.model.fields,field_description:sale_expense_manual_reinvoice.field_hr_expense__manual_reinvoice_done
+msgid "Manual Reinvoice Done"
+msgstr "Refacturación Manual Realizada"
+
+#. module: sale_expense_manual_reinvoice
+#: model:ir.model.fields.selection,name:sale_expense_manual_reinvoice.selection__product_template__expense_mode__manual
+msgid "Manually"
+msgstr "Manualmente"
+
+#. module: sale_expense_manual_reinvoice
+#: model_terms:ir.ui.view,arch_db:sale_expense_manual_reinvoice.view_hr_expense_toreinvoice_tree
+msgid "Mark to Reinvoice"
+msgstr "Marcar para Refacturar"
+
+#. module: sale_expense_manual_reinvoice
+#: model_terms:ir.actions.act_window,help:sale_expense_manual_reinvoice.action_hr_expense_to_reinvoice
+msgid "Nothing to Reinvoice."
+msgstr "Nada que Refacturar."
+
+#. module: sale_expense_manual_reinvoice
+#: code:addons/sale_expense_manual_reinvoice/models/account_analytic_line.py:0
+#, python-format
+msgid "Only manually re-invoice expenses can be re-invoiced."
+msgstr "Sólo se pueden refacturar gastos manualmente."
+
+#. module: sale_expense_manual_reinvoice
+#: model:ir.model,name:sale_expense_manual_reinvoice.model_product_template
+msgid "Product Template"
+msgstr "Plantilla de Producto"
+
+#. module: sale_expense_manual_reinvoice
+#: model:ir.model.fields,field_description:sale_expense_manual_reinvoice.field_product_product__expense_mode
+#: model:ir.model.fields,field_description:sale_expense_manual_reinvoice.field_product_template__expense_mode
+msgid "Re-invoice Mode"
+msgstr "Modo Re-facturación"
+
+#. module: sale_expense_manual_reinvoice
+#: model_terms:ir.ui.view,arch_db:sale_expense_manual_reinvoice.view_hr_expense_toreinvoice_tree
+msgid "Reinvoice"
+msgstr "Refacturación"
+
+#. module: sale_expense_manual_reinvoice
+#: code:addons/sale_expense_manual_reinvoice/models/hr_expense.py:0
+#, python-format
+msgid ""
+"Some expenses are missing the Customer to Reinvoice, please fill this field "
+"on all lines and try again."
+msgstr ""
+"En algunos gastos falta el campo Cliente a Refacturar, por favor rellene "
+"este campo en todas las líneas e inténtelo de nuevo."
+
+#. module: sale_expense_manual_reinvoice
+#: model:ir.model.fields,help:sale_expense_manual_reinvoice.field_account_analytic_line__manual_reinvoice_discarded
+msgid "Technical field to hide it from pending to reinvoice list."
+msgstr "Campo técnico para ocultarlo de la lista de pendientes a refacturar."
+
+#. module: sale_expense_manual_reinvoice
+#: model_terms:ir.ui.view,arch_db:sale_expense_manual_reinvoice.hr_expense_view_search
+#: model_terms:ir.ui.view,arch_db:sale_expense_manual_reinvoice.view_account_analytic_line_filter
+msgid "To Reinvoice"
+msgstr "Para Refacturar"
+
+#. module: sale_expense_manual_reinvoice
+#: model_terms:ir.ui.view,arch_db:sale_expense_manual_reinvoice.view_hr_expense_toreinvoice_tree
+msgid "View Attachments"
+msgstr "Ver Archivos Adjuntos"
