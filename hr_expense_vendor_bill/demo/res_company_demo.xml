@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="base.main_company" model="res.company">
+        <field
+            name="hr_expense_reimbursement_debit_account_id"
+            search="[('account_type', '=', 'expense'), ('company_ids', 'in', [ref('base.main_company')])]"
+            model="account.account"
+        />
+        <field
+            name="hr_expense_reimbursement_credit_account_id"
+            search="[('account_type', '=', 'liability_payable'), ('company_ids', 'in', [ref('base.main_company')])]"
+            model="account.account"
+        />
+    </record>
+</odoo>
