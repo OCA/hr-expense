@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html -->
+<odoo>
+    <record id="hr_expense_view_form_inherit" model="ir.ui.view">
+        <field name="name">hr.expense.view.form.inherit.hr_expense_account</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form" />
+        <field name="arch" type="xml">
+            <!-- hide split button -->
+            <xpath
+                expr="//button[hasclass('o_expense_split_user')]"
+                position="attributes"
+            >
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath
+                expr="//button[hasclass('o_expense_split_manager')]"
+                position="attributes"
+            >
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Hide the highlighted "Post Journal Entries" button (shown when no attachment yet) -->
+            <xpath
+                expr="//button[@name='action_post' and hasclass('oe_highlight')]"
+                position="attributes"
+            >
+                <attribute name="string">Create Journal Entries</attribute>
+            </xpath>
+            <!-- Hide the secondary "Post Journal Entries" button (shown when attachment present) -->
+            <xpath
+                expr="//button[@name='action_post' and not(hasclass('oe_highlight'))]"
+                position="attributes"
+            >
+                <attribute name="string">Create Journal Entries</attribute>
+            </xpath>
+
+            <xpath expr="//label[@for='tax_ids']" position="attributes">
+                <attribute name="groups">account.group_account_readonly</attribute>
+            </xpath>
+            <xpath expr="//field[@name='tax_ids']/.." position="attributes">
+                <attribute name="groups">account.group_account_readonly</attribute>
+            </xpath>
+            <xpath expr="//span/field[@name='tax_amount']/.." position="attributes">
+                <attribute name="groups">account.group_account_readonly</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
