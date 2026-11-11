@@ -47,3 +47,16 @@ class TestHrExpenseSequenceOption(BaseCommon):
         self.ex_seq_opt1.use_sequence_option = False
         self.ex = self.HrExpenseSheet.create(self.ex_vals.copy())
         self.assertNotIn("EX-1", self.ex.number)
+
+    def test_hr_expense_sequence_options_create_several_sheets(self):
+        self.ex_seq_opt1.use_sequence_option = True
+        sheets = self.HrExpenseSheet.create(
+            [
+                dict(self.ex_vals, name="Test Expense 1"),
+                dict(self.ex_vals, name="Test Expense 2"),
+            ]
+        )
+        self.assertEqual(sheets.mapped("name"), ["Test Expense 1", "Test Expense 2"])
+        self.assertIn("EX-1", sheets[0].number)
+        self.assertIn("EX-1", sheets[1].number)
+        self.assertNotEqual(sheets[0].number, sheets[1].number)
