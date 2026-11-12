@@ -32,10 +32,18 @@ class HRExpenseSheet(models.Model):
         return "expense_sheet_ids"
 
     def detect_exceptions(self):
-        all_exceptions = super().detect_exceptions()
-        lines = self.mapped("expense_line_ids")
-        all_exceptions += lines.detect_exceptions()
-        return all_exceptions
+        # base_exception raises instead of returning ids; both calls below
+        # write onto self.exception_ids (line rules too, via sheet_id).
+        try:
+            super().detect_exceptions()
+        except BaseExceptionError as exc:
+            _logger.info("%s", exc)
+        try:
+            self.mapped("expense_line_ids").detect_exceptions()
+        except BaseExceptionError as exc:
+            _logger.info("%s", exc)
+        self.invalidate_recordset(["exception_ids"])
+        return self.exception_ids.ids
 
     @api.constrains("ignore_exception", "expense_line_ids", "state")
     def expense_check_exception(self):
