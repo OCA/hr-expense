@@ -17,4 +17,4 @@ class HrExpenseSheet(models.Model):
                     or "/"
                 )
                 vals["number"] = number
-        return super().create(vals)
+        return super().create(vals_list)
