@@ -19,7 +19,7 @@ class TestHrExpenseSheetUi(TestHrExpenseSheetCommon, HttpCase):
         )
         with mute_logger("odoo.http"):
             self.start_tour(
-                "/odoo",
+                "/odoo/expenses",
                 "do_not_create_zero_amount_expense_in_sheet",
                 login=self.env.user.login,
             )
@@ -74,6 +74,8 @@ class TestHrExpenseSheetUi(TestHrExpenseSheetCommon, HttpCase):
             )
         )
         self.start_tour(
-            "/odoo", "hr_expense_sheet_access_rights_test_tour", login="test-expense"
+            "/odoo/expenses",
+            "hr_expense_sheet_access_rights_test_tour",
+            login="test-expense",
         )
         self.assertRecordValues(expense_sheet, [{"state": "submitted"}])
