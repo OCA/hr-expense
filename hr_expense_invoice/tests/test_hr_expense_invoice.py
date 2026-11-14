@@ -320,3 +320,22 @@ class TestHrExpenseInvoice(TestExpenseCommon):
         )
         sheet.account_move_ids |= dummy_move
         sheet._reconcile_ap_moves()
+
+    def test_tracking_subtype(self):
+        """The module subtype is used on approval, the core ones otherwise"""
+        sheet = self._action_submit_expenses(self.expense)
+        self.env.cr.precommit.run()
+        sheet = sheet.with_context(tracking_disable=False, mail_notrack=False)
+        sheet.action_submit_sheet()
+        sheet.action_approve_expense_sheets()
+        self.env.cr.precommit.run()
+        self.assertIn(
+            self.env.ref("hr_expense_invoice.mt_expense_approved_inherited"),
+            sheet.message_ids.subtype_id,
+        )
+        sheet.action_reset_expense_sheets()
+        self.assertEqual(sheet.state, "draft")
+        self.env.cr.precommit.run()
+        self.assertIn(
+            self.env.ref("hr_expense.mt_expense_reset"), sheet.message_ids.subtype_id
+        )
