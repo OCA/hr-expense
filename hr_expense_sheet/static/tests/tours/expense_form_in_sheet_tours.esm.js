@@ -2,12 +2,8 @@ import {registry} from "@web/core/registry";
 import {stepUtils} from "@web_tour/tour_utils";
 
 registry.category("web_tour.tours").add("do_not_create_zero_amount_expense_in_sheet", {
-    url: "/odoo",
+    url: "/odoo/expenses",
     steps: () => [
-        ...stepUtils.goToAppSteps(
-            "hr_expense.menu_hr_expense_root",
-            "Go to the Expenses app"
-        ),
         {
             content: "Go to My Reporting",
             trigger: 'button[data-menu-xmlid="hr_expense.menu_hr_expense_reports"]',
@@ -76,12 +72,8 @@ registry.category("web_tour.tours").add("do_not_create_zero_amount_expense_in_sh
     ],
 });
 registry.category("web_tour.tours").add("hr_expense_sheet_access_rights_test_tour", {
-    url: "/odoo",
+    url: "/odoo/expenses",
     steps: () => [
-        ...stepUtils.goToAppSteps(
-            "hr_expense.menu_hr_expense_root",
-            "Go to the Expenses app"
-        ),
         {
             content: "Go to My Expenses",
             trigger: 'button[data-menu-xmlid="hr_expense.menu_hr_expense_my_expenses"]',
