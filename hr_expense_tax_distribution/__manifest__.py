@@ -17,6 +17,7 @@
     "depends": ["hr_expense"],
     "data": [
         "security/ir.model.access.csv",
+        "security/hr_expense_tax_line_rules.xml",
         "views/hr_expense_tax_distribution_views.xml",
     ],
     "installable": True,
