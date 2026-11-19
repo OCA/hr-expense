@@ -64,6 +64,7 @@
                 <field
                     name="invoice_id"
                     groups="account.group_account_readonly"
+                    options="{'no_create': True}"
                     context="{'default_type': 'in_invoice',
                             'type': 'in_invoice',
                             'journal_type': 'purchase',
@@ -91,7 +92,11 @@
                 expr="//field[@name='expense_line_ids']/list/field[@name='name']"
                 position="after"
             >
-                <field name="invoice_id" groups="account.group_account_invoice" />
+                <field
+                    name="invoice_id"
+                    groups="account.group_account_invoice"
+                    options="{'no_create': True}"
+                />
                 <field name="quantity" invisible="1" />
             </xpath>
             <xpath
