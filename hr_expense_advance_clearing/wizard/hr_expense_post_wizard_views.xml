@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="hr_expense_post_wizard_view" model="ir.ui.view">
+        <field name="name">Post Expenses</field>
+        <field name="model">hr.expense.post.wizard</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_post_wizard_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//group" position="inside">
+                <field name="is_advance_clearing" invisible="1" />
+            </xpath>
+            <xpath expr="//field[@name='employee_journal_id']" position="attributes">
+                <attribute name="invisible">is_advance_clearing</attribute>
+                <attribute name="required">not is_advance_clearing</attribute>
+            </xpath>
+            <xpath expr="//field[@name='employee_journal_id']" position="after">
+                <field
+                    name="clearing_journal_id"
+                    invisible="not is_advance_clearing"
+                    required="is_advance_clearing"
+                    domain="[('type', '=', 'general')]"
+                    options="{'no_create': True}"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
