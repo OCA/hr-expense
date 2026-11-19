@@ -4,7 +4,7 @@
 {
     "name": "Expense Sequence Option",
     "summary": "Manage sequence options for hr.expense.sheet",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "license": "AGPL-3",
     "author": "Ecosoft, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/hr-expense",
