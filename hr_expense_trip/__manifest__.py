@@ -3,7 +3,7 @@
 
 {
     "name": "Expense Trip",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "category": "Human Resources",
     "author": "Odoo Community Association (OCA)",
     "maintainers": ["CRogos"],
@@ -26,6 +26,9 @@
         "web.assets_backend": [
             "hr_expense_trip/static/src/views/*.js",
             "hr_expense_trip/static/src/views/trip_list_buttons.xml",
+        ],
+        "web.assets_unit_tests": [
+            "hr_expense_trip/static/tests/**/*.js",
         ],
     },
 }

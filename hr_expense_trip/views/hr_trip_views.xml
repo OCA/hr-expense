@@ -83,7 +83,8 @@
                     <field name="message_main_attachment_id" invisible="1" />
                     <div class="oe_title">
                         <h1>
-                            <field readonly="True" nolabel="1" name="code" />
+                            <field nolabel="1" name="code" />
+                            <span invisible="code">/</span>
                         </h1>
                     </div>
                     <group>
@@ -98,7 +99,7 @@
                         <group>
                             <field
                                 name="start_date"
-                                widget="daterange"
+                                widget="trip_daterange"
                                 options="{'end_date_field': 'end_date'}"
                                 readonly="not can_edit_trip_info"
                             />
@@ -120,7 +121,7 @@
                             <field
                                 name="expense_ids"
                                 mode="list"
-                                widget="expense_lines_widget"
+                                widget="trip_expense_lines_widget"
                                 options="{'reload_on_button': True}"
                                 context="{'default_employee_id': employee_id, 'default_trip_id': id, 'form_view_ref' : 'hr_expense.hr_expense_view_form'}"
                                 force_save="1"

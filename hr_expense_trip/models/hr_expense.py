@@ -30,7 +30,7 @@ class HrExpense(models.Model):
                 self.env._(
                     "Trip '%(trip)s' is done and its expenses can no longer be "
                     "changed. Use 'Add More Receipts' on the trip to reopen it.",
-                    trip=done_trips[0].code,
+                    trip=done_trips[0].display_name,
                 )
             )
 
@@ -71,7 +71,7 @@ class HrExpense(models.Model):
                         "trip '%(trip)s' which is not in 'Done' state. "
                         "Please mark the trip as done first.",
                         expense=expense.name,
-                        trip=expense.trip_id.code,
+                        trip=expense.trip_id.display_name,
                     )
                 )
         return super().action_post()
@@ -104,7 +104,7 @@ class HrExpense(models.Model):
                     else ""
                 )
                 end = trip_id.end_date.strftime("%d.%m.%Y") if trip_id.end_date else ""
-                ref = f"{trip_id.code} ({start} - {end})"
+                ref = " ".join(filter(None, (trip_id.code, f"({start} - {end})")))
                 if trip_id.name:
                     ref = f"{ref}: {trip_id.name}"
                 return_vals.append(

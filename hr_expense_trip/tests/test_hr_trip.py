@@ -1270,6 +1270,45 @@ class TestHrTrip(TestExpenseCommon):
 
         attachment = trip._ensure_trip_report_created()
         self.assertEqual(attachment.name, "TP-2025-0001 - Trip Report.pdf")
+        self.assertEqual(trip.display_name, "TP-2025-0001")
+        self.assertEqual(expense.trip_id.display_name, "TP-2025-0001")
+
+        with self.assertRaisesRegex(ValidationError, "TP-2025-0001") as error:
+            self._create_employee_trip(
+                code="TP-2025-0003",
+                name=False,
+                start=datetime(2025, 5, 1),
+                end=datetime(2025, 5, 2),
+            )
+        self.assertNotIn("False", str(error.exception))
+
+    def test_trip_code_optional(self):
+        """Without a trip sequence the code stays empty instead of "New"."""
+        self.env["ir.sequence"].sudo().search([("code", "=", "hr.trip")]).unlink()
+        trip = self._create_employee_trip(
+            code=False,
+            name="No Code Trip",
+            start=datetime(2025, 6, 1),
+            end=datetime(2025, 6, 2),
+        )
+        self.assertFalse(trip.code)
+        self.assertEqual(trip.display_name, "No Code Trip")
+        trip.name = False
+        self.assertFalse(trip.display_name)
+
+        expense = self._create_own_account_expense(
+            "Taxi", datetime(2025, 6, 1), 20.0, trip=trip
+        )
+        vals = expense._prepare_receipts_vals()
+        self.assertEqual(vals[0]["ref"], "(01.06.2025 - 02.06.2025)")
+        attachment = trip._ensure_trip_report_created()
+        self.assertEqual(attachment.name, "Trip Report.pdf")
+
+    def test_trip_display_name_with_code_and_name(self):
+        self.assertEqual(
+            self.trip_employee.display_name,
+            f"{self.trip_employee.code}: Employee Trip",
+        )
 
     def test_trip_report_shows_amount_in_expense_currency(self):
         """The report prints the expense amount in the expense currency."""

@@ -16,8 +16,7 @@ class HrTrip(models.Model):
     _inherit = ["mail.thread.main.attachment", "mail.activity.mixin"]
 
     code = fields.Char(
-        required=True,
-        default=lambda self: self.env._("New"),
+        readonly=True,
         copy=False,
     )
     name = fields.Text()
@@ -69,18 +68,17 @@ class HrTrip(models.Model):
         readonly=True,
     )
 
-    @api.depends("code")
+    @api.depends("code", "name")
     def _compute_display_name(self):
-        res = super()._compute_display_name()
+        # Neither the code nor the name is mandatory: only join the parts that
+        # are set, so an empty name is not rendered as "False".
         for trip in self:
-            if trip.code:
-                trip.display_name = f"{trip.code}: {trip.display_name}"
-        return res
+            trip.display_name = ": ".join(filter(None, (trip.code, trip.name))) or False
 
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            if not vals.get("code") or vals["code"] == self.env._("New"):
+            if not vals.get("code"):
                 # Quick-create (name_create) only passes the name; the context
                 # defaults are merged by super().create(), so read them here.
                 sequence_vals = self._get_sequence_vals(vals)
@@ -89,11 +87,12 @@ class HrTrip(models.Model):
                     or fields.Datetime.now()
                 )
                 company = self._get_sequence_company(sequence_vals)
-                vals["code"] = self.env["ir.sequence"].with_company(
-                    company
-                ).with_context(ir_sequence_date=sequence_date).next_by_code(
-                    "hr.trip"
-                ) or self.env._("New")
+                vals["code"] = (
+                    self.env["ir.sequence"]
+                    .with_company(company)
+                    .with_context(ir_sequence_date=sequence_date)
+                    .next_by_code("hr.trip")
+                )
         return super().create(vals_list)
 
     @api.model
@@ -165,8 +164,8 @@ class HrTrip(models.Model):
                     self.env._(
                         "Trip '%(trip)s' overlaps with existing trip '%(other)s' "
                         "for employee '%(employee)s'. Trips must not overlap.",
-                        trip=trip.name,
-                        other=overlapping.name,
+                        trip=trip.display_name,
+                        other=overlapping.display_name,
                         employee=trip.employee_id.name,
                     )
                 )
@@ -283,7 +282,7 @@ class HrTrip(models.Model):
                 self.env._(
                     "Trip '%(trip)s' is done and can no longer be modified. "
                     "Use 'Add More Receipts' to reopen it.",
-                    trip=done_trips[0].code,
+                    trip=done_trips[0].display_name,
                 )
             )
 
@@ -294,7 +293,7 @@ class HrTrip(models.Model):
                 raise UserError(
                     self.env._(
                         "Trip '%(trip)s' is done and can no longer be deleted.",
-                        trip=trip.code,
+                        trip=trip.display_name,
                     )
                 )
 
@@ -369,7 +368,9 @@ class HrTrip(models.Model):
             "hr_expense_trip.action_report_hr_trip", res_ids=self.ids
         )
         vals = {
-            "name": self.env._("%s - Trip Report.pdf", self.code),
+            "name": self.env._("%s - Trip Report.pdf", self.code)
+            if self.code
+            else self.env._("Trip Report.pdf"),
             "datas": base64.b64encode(pdf_content),
         }
         if attachment:
