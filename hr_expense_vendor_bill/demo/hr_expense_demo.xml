@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="vendor_bill_expense_sheet_demo" model="hr.expense.sheet">
+        <field name="name">Employee vendor expense (demo)</field>
+        <field name="employee_id" ref="hr.employee_admin" />
+        <field name="payment_mode">own_account</field>
+    </record>
+
+    <record id="vendor_bill_expense_line_demo" model="hr.expense">
+        <field name="name">Hotel paid by employee</field>
+        <field name="employee_id" ref="hr.employee_admin" />
+        <field name="sheet_id" ref="vendor_bill_expense_sheet_demo" />
+        <field
+            name="product_id"
+            ref="hr_expense.expense_product_travel_accommodation"
+        />
+        <field name="vendor_id" ref="expense_vendor_demo" />
+        <field name="payment_mode">own_account</field>
+        <field name="total_amount_currency" eval="150.0" />
+        <field name="date" eval="time.strftime('%Y-%m-%d')" />
+    </record>
+</odoo>

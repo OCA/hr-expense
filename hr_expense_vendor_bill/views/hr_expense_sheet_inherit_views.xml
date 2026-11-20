@@ -1,0 +1,15 @@
+<odoo>
+    <record id="hr_expense_vendor_bill_hide_residual" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.form.hide_residual</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//page[@name='expenses']/group[@name='expense_total']/field[@name='amount_residual']"
+                position="attributes"
+            >
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
