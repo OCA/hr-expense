@@ -19,12 +19,6 @@ class HrExpense(models.Model):
         compute="_compute_has_tax_distribution",
         store=True,
     )
-    # Disable precompute on these fields because they depend on the One2many
-    # relation tax_line_ids, which cannot be precomputed.
-    tax_amount_currency = fields.Monetary(precompute=False)
-    untaxed_amount_currency = fields.Monetary(precompute=False)
-    tax_amount = fields.Monetary(precompute=False)
-    untaxed_amount = fields.Monetary(precompute=False)
 
     # -------------------------------------------------------------------------
     # Compute

@@ -34,10 +34,12 @@ class HrExpenseTaxLine(models.Model):
     currency_id = fields.Many2one(
         related="expense_id.currency_id",
         store=True,
+        precompute=True,
     )
     company_id = fields.Many2one(
         related="expense_id.company_id",
         store=True,
+        precompute=True,
     )
     # Many2many: allows combining taxes on one line (e.g. VAT + eco-tax).
     # By default the onchange creates one line per tax in hr.expense.tax_ids;
@@ -56,17 +58,22 @@ class HrExpenseTaxLine(models.Model):
         required=True,
     )
     # Read-only computed fields -----------------------------------------------
+    # precompute=True so that hr.expense can keep core's precomputed amount
+    # fields: a precomputed field may not depend on a stored computed field that
+    # is not itself precomputed (odoo/orm/fields.py, Field.resolve_depends).
     tax_amount_currency = fields.Monetary(
         string="Tax Amount",
         currency_field="currency_id",
         compute="_compute_amounts",
         store=True,
+        precompute=True,
     )
     total_amount_currency = fields.Monetary(
         string="Total (Tax Incl.)",
         currency_field="currency_id",
         compute="_compute_amounts",
         store=True,
+        precompute=True,
     )
 
     # -------------------------------------------------------------------------
