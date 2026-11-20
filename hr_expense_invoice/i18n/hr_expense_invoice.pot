@@ -155,6 +155,20 @@ msgstr ""
 
 #. module: hr_expense_invoice
 #. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense.py:0
+msgid "The vendor and the vendor bill partner must be the same."
+msgstr ""
+
+#. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
+msgid ""
+"Please set a vendor on the expense or a partner on the "
+"vendor bill before posting the expense report."
+msgstr ""
+
+#. module: hr_expense_invoice
+#. odoo-python
 #: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
 msgid "You can only generate an accounting entry for approved expense(s)."
 msgstr ""

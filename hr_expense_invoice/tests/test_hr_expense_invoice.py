@@ -1,6 +1,7 @@
 # Copyright 2017 Tecnativa - Vicent Cubells
 # Copyright 2021 Tecnativa - Pedro M. Baeza
 # Copyright 2021-2023 Tecnativa - Víctor Martínez
+# Copyright 2026 Gray Matter Logic
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 import base64
 
@@ -320,3 +321,103 @@ class TestHrExpenseInvoice(TestExpenseCommon):
         )
         sheet.account_move_ids |= dummy_move
         sheet._reconcile_ap_moves()
+
+    def test_8_create_invoice_prefills_vendor(self):
+        self.expense.vendor_id = self.partner_a
+        self._action_submit_expenses(self.expense)
+        self.expense.action_expense_create_invoice()
+        self.assertEqual(self.expense.invoice_id.partner_id, self.partner_a)
+        self.assertEqual(self.expense.vendor_id, self.partner_a)
+
+    def test_9_invoice_syncs_vendor(self):
+        self.invoice.action_post()
+        self.expense.invoice_id = self.invoice
+        self.assertEqual(self.expense.vendor_id, self.invoice.partner_id)
+
+    def test_10_vendor_mismatch_raises(self):
+        self.invoice.action_post()
+        self.expense.invoice_id = self.invoice
+        other_vendor = self.env["res.partner"].create({"name": "Other vendor"})
+        with self.assertRaises(UserError):
+            self.expense.vendor_id = other_vendor
+
+    def test_11_vendor_only_own_account_flow(self):
+        self.expense.write(
+            {
+                "vendor_id": self.partner_a.id,
+                "price_unit": 100,
+                "payment_mode": "own_account",
+            }
+        )
+        sheet = self._action_submit_expenses(self.expense)
+        sheet.action_submit_sheet()
+        sheet.action_approve_expense_sheets()
+        self.assertTrue(self.expense.invoice_id)
+        self.assertEqual(self.expense.invoice_id.partner_id, self.partner_a)
+        self.assertEqual(self.expense.invoice_id.state, "draft")
+        self.assertEqual(sheet.invoice_count, 1)
+        self.assertFalse(sheet.account_move_ids)
+        sheet.action_sheet_move_post()
+        self.assertEqual(self.expense.invoice_id.state, "posted")
+        self.assertEqual(self.expense.invoice_id.payment_state, "paid")
+        self.assertEqual(sheet.state, "post")
+        self.assertEqual(sheet.payment_state, "not_paid")
+        self.assertTrue(self.expense.transfer_move_ids)
+        self.assertFalse(
+            self.env["account.payment"].search(
+                [("reconciled_invoice_ids", "in", self.expense.invoice_id.ids)]
+            )
+        )
+
+    def test_12_post_draft_bill_without_partner_raises(self):
+        sheet = self._action_submit_expenses(self.expense)
+        self.expense.action_expense_create_invoice()
+        self.assertFalse(self.expense.invoice_id.partner_id)
+        sheet.action_submit_sheet()
+        sheet.action_approve_expense_sheets()
+        with self.assertRaises(UserError):
+            sheet.action_sheet_move_post()
+
+    def test_13_mixed_vendor_and_invoice(self):
+        self.expense.write({"vendor_id": self.partner_a.id, "price_unit": 100})
+        self.expense2.price_unit = 100
+        self.invoice.action_post()
+        self.expense2.invoice_id = self.invoice
+        sheet = self._action_submit_expenses(self.expense + self.expense2)
+        sheet.action_submit_sheet()
+        sheet.action_approve_expense_sheets()
+        self.assertTrue(self.expense.invoice_id)
+        self.assertEqual(self.expense2.invoice_id, self.invoice)
+        sheet.action_sheet_move_post()
+        self.assertEqual(sheet.state, "post")
+        self.assertEqual(self.expense.invoice_id.payment_state, "paid")
+        self.assertEqual(self.invoice.payment_state, "paid")
+
+    def test_14_onchange_vendor_clears_mismatched_invoice(self):
+        self.invoice.action_post()
+        self._action_submit_expenses(self.expense)
+        other_vendor = self.env["res.partner"].create({"name": "Other vendor"})
+        with Form(self.expense) as expense_form:
+            expense_form.invoice_id = self.invoice
+            self.assertEqual(expense_form.vendor_id, self.invoice.partner_id)
+            expense_form.vendor_id = other_vendor
+            self.assertFalse(expense_form.invoice_id)
+
+    def test_15_onchange_invoice_without_partner(self):
+        self._action_submit_expenses(self.expense)
+        draft_bill = self.env["account.move"].create({"move_type": "in_invoice"})
+        self.expense.invoice_id = draft_bill
+        self.expense._onchange_invoice_id()
+        self.assertFalse(self.expense.vendor_id)
+
+    def test_16_skip_vendor_invoice_sync(self):
+        self.invoice.action_post()
+        self.expense.with_context(
+            skip_vendor_invoice_sync=True
+        )._sync_vendor_from_invoice()
+        self.assertFalse(self.expense.vendor_id)
+        self.expense.with_context(skip_vendor_invoice_sync=True).write(
+            {"invoice_id": self.invoice.id}
+        )
+        self.assertEqual(self.expense.invoice_id, self.invoice)
+        self.assertFalse(self.expense.vendor_id)
