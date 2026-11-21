@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- The lines belong to the employee's own expense, so they follow the same
+         visibility as hr.expense itself (see hr_expense's ir_rule_hr_expense_employee).
+         Without these rules, granting base.group_user access to the model would let
+         every employee read every other employee's tax distribution. -->
+    <record id="hr_expense_tax_line_rule_employee" model="ir.rule">
+        <field name="name">hr.expense.tax.line: own lines only</field>
+        <field name="model_id" ref="model_hr_expense_tax_line" />
+        <field
+            name="domain_force"
+        >[('expense_id.employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]" />
+    </record>
+    <record id="hr_expense_tax_line_rule_approver" model="ir.rule">
+        <field name="name">hr.expense.tax.line: all lines</field>
+        <field name="model_id" ref="model_hr_expense_tax_line" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field
+            name="groups"
+            eval="[(4, ref('hr_expense.group_hr_expense_team_approver'))]"
+        />
+    </record>
+</odoo>
