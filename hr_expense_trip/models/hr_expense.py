@@ -13,6 +13,7 @@ class HrExpense(models.Model):
         comodel_name="hr.trip",
         ondelete="set null",
         index=True,
+        copy=False,
         domain="[('employee_id', '=', employee_id)]",
     )
     # Related fields used by decoration-success / decoration-warning in the trip

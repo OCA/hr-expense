@@ -95,6 +95,19 @@
                             readonly="not can_edit_trip_info"
                         />
                     </group>
+                    <div
+                        class="alert alert-warning"
+                        role="alert"
+                        invisible="not overlapping_trip_ids"
+                    >
+                        This trip overlaps with other trips of the same employee:
+                        <field
+                        name="overlapping_trip_ids"
+                        widget="many2many_tags"
+                        class="d-inline"
+                        readonly="1"
+                    />
+                    </div>
                     <group>
                         <group>
                             <field

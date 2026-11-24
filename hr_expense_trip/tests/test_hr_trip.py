@@ -90,31 +90,23 @@ class TestHrTrip(TestExpenseCommon):
                 }
             )
         )
-        cls.trip_other = (
-            cls.env["hr.trip"]
-            .sudo()
-            .create(
-                {
-                    "name": "Other Trip",
-                    "start_date": datetime(2024, 7, 1),
-                    "end_date": datetime(2024, 7, 10),
-                    "employee_id": cls.employee_other.id,
-                }
-            )
+        cls.trip_other = cls.env["hr.trip"].create(
+            {
+                "name": "Other Trip",
+                "start_date": datetime(2024, 7, 1),
+                "end_date": datetime(2024, 7, 10),
+                "employee_id": cls.employee_other.id,
+            }
         )
 
         # Create test expense
-        cls.expense = (
-            cls.env["hr.expense"]
-            .sudo()
-            .create(
-                {
-                    "name": "Hotel",
-                    "employee_id": cls.employee_employee.id,
-                    "date": datetime(2024, 6, 5),
-                    "total_amount": 100.0,
-                }
-            )
+        cls.expense = cls.env["hr.expense"].create(
+            {
+                "name": "Hotel",
+                "employee_id": cls.employee_employee.id,
+                "date": datetime(2024, 6, 5),
+                "total_amount": 100.0,
+            }
         )
 
         # Use the existing expense account from TestExpenseCommon
@@ -174,8 +166,8 @@ class TestHrTrip(TestExpenseCommon):
 
     def test_trip_sequence_exists_per_company(self):
         """Every company gets its own hr.trip sequence."""
-        Sequence = self.env["ir.sequence"].sudo()
-        for company in self.env["res.company"].sudo().search([]):
+        Sequence = self.env["ir.sequence"]
+        for company in self.env["res.company"].search([]):
             sequences = Sequence.search(
                 [("code", "=", "hr.trip"), ("company_id", "=", company.id)]
             )
@@ -185,11 +177,9 @@ class TestHrTrip(TestExpenseCommon):
 
     def test_trip_sequence_created_for_new_company(self):
         """Creating a company creates its trip sequence and trips use it."""
-        company = self.env["res.company"].sudo().create({"name": "Trip Company"})
-        sequence = (
-            self.env["ir.sequence"]
-            .sudo()
-            .search([("code", "=", "hr.trip"), ("company_id", "=", company.id)])
+        company = self.env["res.company"].create({"name": "Trip Company"})
+        sequence = self.env["ir.sequence"].search(
+            [("code", "=", "hr.trip"), ("company_id", "=", company.id)]
         )
         self.assertEqual(len(sequence), 1)
         self.assertTrue(sequence.use_date_range)
@@ -199,16 +189,12 @@ class TestHrTrip(TestExpenseCommon):
             .sudo()
             .create({"name": "Trip Company Employee", "company_id": company.id})
         )
-        trip = (
-            self.env["hr.trip"]
-            .sudo()
-            .create(
-                {
-                    "start_date": datetime(2024, 3, 1),
-                    "end_date": datetime(2024, 3, 2),
-                    "employee_id": employee.id,
-                }
-            )
+        trip = self.env["hr.trip"].create(
+            {
+                "start_date": datetime(2024, 3, 1),
+                "end_date": datetime(2024, 3, 2),
+                "employee_id": employee.id,
+            }
         )
         # The new company's counter starts fresh, independent of other companies
         self.assertEqual(trip.code, "TP-2024-0001")
@@ -298,7 +284,7 @@ class TestHrTrip(TestExpenseCommon):
         self.assertEqual(trip.state, "done")
 
     def test_auto_approve_enabled(self):
-        self.env["ir.config_parameter"].sudo().set_param(
+        self.env["ir.config_parameter"].set_param(
             "hr_expense_trip.require_approval", False
         )
         trip = self._create_employee_trip(
@@ -310,7 +296,7 @@ class TestHrTrip(TestExpenseCommon):
         self.assertEqual(trip.state, "receipts")
 
     def test_manual_approval_creates_activity_for_employee(self):
-        self.env["ir.config_parameter"].sudo().set_param(
+        self.env["ir.config_parameter"].set_param(
             "hr_expense_trip.require_approval", "True"
         )
         trip = self._create_employee_trip(
@@ -334,7 +320,7 @@ class TestHrTrip(TestExpenseCommon):
         self.assertEqual(activity.summary, "Trip Approval Request")
 
     def test_manager_request_auto_approves_without_activity(self):
-        self.env["ir.config_parameter"].sudo().set_param(
+        self.env["ir.config_parameter"].set_param(
             "hr_expense_trip.require_approval", "True"
         )
         trip = self._create_employee_trip(
@@ -374,17 +360,13 @@ class TestHrTrip(TestExpenseCommon):
     def test_employee_can_edit_expenses_until_done(self):
         trip = self._create_employee_trip(name="Expense Link Trip")
         trip.sudo().write({"state": "receipts"})
-        expense = (
-            self.env["hr.expense"]
-            .sudo()
-            .create(
-                {
-                    "name": "Taxi",
-                    "employee_id": self.employee_employee.id,
-                    "date": datetime(2024, 8, 2),
-                    "total_amount": 42.0,
-                }
-            )
+        expense = self.env["hr.expense"].create(
+            {
+                "name": "Taxi",
+                "employee_id": self.employee_employee.id,
+                "date": datetime(2024, 8, 2),
+                "total_amount": 42.0,
+            }
         )
 
         trip.with_user(self.user_employee).write(
@@ -395,17 +377,13 @@ class TestHrTrip(TestExpenseCommon):
     def test_expenses_cannot_be_edited_after_done(self):
         trip = self._create_employee_trip(name="Done Lock Trip")
         trip.sudo().write({"state": "done"})
-        expense = (
-            self.env["hr.expense"]
-            .sudo()
-            .create(
-                {
-                    "name": "Meal",
-                    "employee_id": self.employee_employee.id,
-                    "date": datetime(2024, 8, 3),
-                    "total_amount": 30.0,
-                }
-            )
+        expense = self.env["hr.expense"].create(
+            {
+                "name": "Meal",
+                "employee_id": self.employee_employee.id,
+                "date": datetime(2024, 8, 3),
+                "total_amount": 30.0,
+            }
         )
         with self.assertRaises(UserError):
             trip.with_user(self.user_employee).write(
@@ -467,17 +445,13 @@ class TestHrTrip(TestExpenseCommon):
         """Not even managers or administrators add expenses to a done trip."""
         trip = self._create_employee_trip(name="Manager Edit Trip")
         trip.sudo().write({"state": "done"})
-        expense = (
-            self.env["hr.expense"]
-            .sudo()
-            .create(
-                {
-                    "name": "Hotel",
-                    "employee_id": self.employee_employee.id,
-                    "date": datetime(2024, 8, 4),
-                    "total_amount": 100.0,
-                }
-            )
+        expense = self.env["hr.expense"].create(
+            {
+                "name": "Hotel",
+                "employee_id": self.employee_employee.id,
+                "date": datetime(2024, 8, 4),
+                "total_amount": 100.0,
+            }
         )
         for user in (self.user_manager, self.env.ref("base.user_admin")):
             with self.assertRaises(UserError):
@@ -581,11 +555,11 @@ class TestHrTrip(TestExpenseCommon):
         )
         trip.sudo().write({"state": "done"})
         # Writing the unchanged trip is fine (e.g. a form save)
-        linked.sudo().write({"trip_id": trip.id})
+        linked.write({"trip_id": trip.id})
         with self.assertRaises(UserError):
-            linked.sudo().write({"trip_id": False})
+            linked.write({"trip_id": False})
         with self.assertRaises(UserError):
-            linked.sudo().write({"trip_id": other_trip.id})
+            linked.write({"trip_id": other_trip.id})
         with self.assertRaises(UserError):
             self._create_own_account_expense(
                 "Late Receipt", datetime(2024, 8, 3), 10.0, trip=trip
@@ -594,9 +568,9 @@ class TestHrTrip(TestExpenseCommon):
             "Unlinked", datetime(2024, 8, 3), 10.0
         )
         with self.assertRaises(UserError):
-            unlinked.sudo().write({"trip_id": trip.id})
-        with self.assertRaises(UserError):
-            linked.sudo().copy()
+            unlinked.write({"trip_id": trip.id})
+        duplicate = linked.copy()
+        self.assertFalse(duplicate.trip_id)
         self.assertEqual(linked.trip_id, trip)
         self.assertFalse(unlinked.trip_id)
 
@@ -613,18 +587,14 @@ class TestHrTrip(TestExpenseCommon):
         trip = self._create_employee_trip(name="Posting Block Trip")
         trip.sudo().write({"state": "request"})
 
-        expense = (
-            self.env["hr.expense"]
-            .sudo()
-            .create(
-                {
-                    "name": "Taxi to Airport",
-                    "employee_id": self.employee_employee.id,
-                    "date": datetime(2024, 8, 5),
-                    "total_amount": 50.0,
-                    "trip_id": trip.id,
-                }
-            )
+        expense = self.env["hr.expense"].create(
+            {
+                "name": "Taxi to Airport",
+                "employee_id": self.employee_employee.id,
+                "date": datetime(2024, 8, 5),
+                "total_amount": 50.0,
+                "trip_id": trip.id,
+            }
         )
 
         # Attempt to post should fail with UserError
@@ -635,22 +605,18 @@ class TestHrTrip(TestExpenseCommon):
         """Expense posting should be allowed if trip is in done state."""
         trip = self._create_employee_trip(name="Posting Allow Trip")
 
-        expense = (
-            self.env["hr.expense"]
-            .sudo()
-            .create(
-                {
-                    "name": "Taxi from Airport",
-                    "employee_id": self.employee_employee.id,
-                    "date": datetime(2024, 8, 6),
-                    "total_amount": 50.0,
-                    "trip_id": trip.id,
-                }
-            )
+        expense = self.env["hr.expense"].create(
+            {
+                "name": "Taxi from Airport",
+                "employee_id": self.employee_employee.id,
+                "date": datetime(2024, 8, 6),
+                "total_amount": 50.0,
+                "trip_id": trip.id,
+            }
         )
 
         # Set approval state to approved so it can be posted
-        expense.sudo().write({"approval_state": "approved"})
+        expense.write({"approval_state": "approved"})
 
         # This should succeed without raising our UserError from the trip validation
         trip.sudo().write({"state": "done"})
@@ -663,21 +629,17 @@ class TestHrTrip(TestExpenseCommon):
 
     def test_expense_posting_allowed_without_trip(self):
         """Expense posting should be allowed if there is no trip."""
-        expense = (
-            self.env["hr.expense"]
-            .sudo()
-            .create(
-                {
-                    "name": "Standalone Expense",
-                    "employee_id": self.employee_employee.id,
-                    "date": datetime(2024, 8, 7),
-                    "total_amount": 25.0,
-                }
-            )
+        expense = self.env["hr.expense"].create(
+            {
+                "name": "Standalone Expense",
+                "employee_id": self.employee_employee.id,
+                "date": datetime(2024, 8, 7),
+                "total_amount": 25.0,
+            }
         )
 
         # Set approval state to approved so it can be posted
-        expense.sudo().write({"approval_state": "approved"})
+        expense.write({"approval_state": "approved"})
 
         # This should succeed without raising our UserError from the trip validation
         try:
@@ -688,17 +650,13 @@ class TestHrTrip(TestExpenseCommon):
 
     def test_employee_cannot_change_when_expenses_exist(self):
         trip = self._create_employee_trip(name="Employee Lock Trip")
-        expense = (
-            self.env["hr.expense"]
-            .sudo()
-            .create(
-                {
-                    "name": "Linked Expense",
-                    "employee_id": self.employee_employee.id,
-                    "date": datetime(2024, 9, 1),
-                    "total_amount": 15.0,
-                }
-            )
+        expense = self.env["hr.expense"].create(
+            {
+                "name": "Linked Expense",
+                "employee_id": self.employee_employee.id,
+                "date": datetime(2024, 9, 1),
+                "total_amount": 15.0,
+            }
         )
         trip.with_user(self.user_employee).write(
             {"expense_ids": [Command.link(expense.id)]}
@@ -718,19 +676,15 @@ class TestHrTrip(TestExpenseCommon):
         )
         self.assertTrue(product, "A product category for expenses is required")
 
-        expense = (
-            self.env["hr.expense"]
-            .sudo()
-            .create(
-                {
-                    "name": "Receipt Expense",
-                    "employee_id": self.employee_employee.id,
-                    "product_id": product.id,
-                    "date": datetime(2024, 9, 2),
-                    "total_amount": 22.0,
-                    "trip_id": trip.id,
-                }
-            )
+        expense = self.env["hr.expense"].create(
+            {
+                "name": "Receipt Expense",
+                "employee_id": self.employee_employee.id,
+                "product_id": product.id,
+                "date": datetime(2024, 9, 2),
+                "total_amount": 22.0,
+                "trip_id": trip.id,
+            }
         )
 
         with patch.object(type(trip), "_ensure_trip_report_created"):
@@ -747,41 +701,29 @@ class TestHrTrip(TestExpenseCommon):
         self.assertEqual(trip.state, "receipts")
 
     def test_create_trip_from_expenses_groups_per_employee(self):
-        expense_a1 = (
-            self.env["hr.expense"]
-            .sudo()
-            .create(
-                {
-                    "name": "Expense A1",
-                    "employee_id": self.employee_employee.id,
-                    "date": datetime(2024, 9, 10),
-                    "total_amount": 10.0,
-                }
-            )
+        expense_a1 = self.env["hr.expense"].create(
+            {
+                "name": "Expense A1",
+                "employee_id": self.employee_employee.id,
+                "date": datetime(2024, 9, 10),
+                "total_amount": 10.0,
+            }
         )
-        expense_a2 = (
-            self.env["hr.expense"]
-            .sudo()
-            .create(
-                {
-                    "name": "Expense A2",
-                    "employee_id": self.employee_employee.id,
-                    "date": datetime(2024, 9, 12),
-                    "total_amount": 20.0,
-                }
-            )
+        expense_a2 = self.env["hr.expense"].create(
+            {
+                "name": "Expense A2",
+                "employee_id": self.employee_employee.id,
+                "date": datetime(2024, 9, 12),
+                "total_amount": 20.0,
+            }
         )
-        expense_b1 = (
-            self.env["hr.expense"]
-            .sudo()
-            .create(
-                {
-                    "name": "Expense B1",
-                    "employee_id": self.employee_other.id,
-                    "date": datetime(2024, 9, 11),
-                    "total_amount": 15.0,
-                }
-            )
+        expense_b1 = self.env["hr.expense"].create(
+            {
+                "name": "Expense B1",
+                "employee_id": self.employee_other.id,
+                "date": datetime(2024, 9, 11),
+                "total_amount": 15.0,
+            }
         )
 
         expenses = expense_a1 | expense_a2 | expense_b1
@@ -797,18 +739,14 @@ class TestHrTrip(TestExpenseCommon):
 
     def test_create_trip_from_expenses_rejects_already_linked(self):
         trip = self._create_employee_trip(name="Already Linked")
-        expense = (
-            self.env["hr.expense"]
-            .sudo()
-            .create(
-                {
-                    "name": "Linked Expense",
-                    "employee_id": self.employee_employee.id,
-                    "date": datetime(2024, 9, 15),
-                    "total_amount": 30.0,
-                    "trip_id": trip.id,
-                }
-            )
+        expense = self.env["hr.expense"].create(
+            {
+                "name": "Linked Expense",
+                "employee_id": self.employee_employee.id,
+                "date": datetime(2024, 9, 15),
+                "total_amount": 30.0,
+                "trip_id": trip.id,
+            }
         )
 
         with self.assertRaises(UserError):
@@ -825,22 +763,18 @@ class TestHrTrip(TestExpenseCommon):
         )
         self.assertTrue(product)
 
-        expense = (
-            self.env["hr.expense"]
-            .sudo()
-            .create(
-                {
-                    "name": "Test Expense",
-                    "employee_id": self.employee_employee.id,
-                    "product_id": product.id,
-                    "date": datetime(2024, 8, 1),
-                    "total_amount": 100.0,
-                    "payment_mode": "company_account",
-                    "trip_id": trip.id,
-                }
-            )
+        expense = self.env["hr.expense"].create(
+            {
+                "name": "Test Expense",
+                "employee_id": self.employee_employee.id,
+                "product_id": product.id,
+                "date": datetime(2024, 8, 1),
+                "total_amount": 100.0,
+                "payment_mode": "company_account",
+                "trip_id": trip.id,
+            }
         )
-        expense.sudo().write({"approval_state": "approved"})
+        expense.write({"approval_state": "approved"})
         trip.sudo().write({"state": "done"})
 
         # Post should create trip PDF
@@ -873,20 +807,16 @@ class TestHrTrip(TestExpenseCommon):
         )
         self.assertTrue(product)
 
-        expense = (
-            self.env["hr.expense"]
-            .sudo()
-            .create(
-                {
-                    "name": "Expense with Receipt",
-                    "employee_id": self.employee_employee.id,
-                    "product_id": product.id,
-                    "date": datetime(2024, 8, 2),
-                    "total_amount": 150.0,
-                    "payment_mode": "company_account",
-                    "trip_id": trip.id,
-                }
-            )
+        expense = self.env["hr.expense"].create(
+            {
+                "name": "Expense with Receipt",
+                "employee_id": self.employee_employee.id,
+                "product_id": product.id,
+                "date": datetime(2024, 8, 2),
+                "total_amount": 150.0,
+                "payment_mode": "company_account",
+                "trip_id": trip.id,
+            }
         )
 
         # Add an attachment to the expense
@@ -900,7 +830,7 @@ class TestHrTrip(TestExpenseCommon):
                 "mimetype": "application/pdf",
             }
         )
-        expense.sudo().write({"approval_state": "approved"})
+        expense.write({"approval_state": "approved"})
 
         trip.sudo().write({"state": "done"})
         # Post trip (company_account expenses should create moves immediately)
@@ -940,22 +870,18 @@ class TestHrTrip(TestExpenseCommon):
         # Create multiple company-paid expenses
         expenses = []
         for i in range(2):
-            expense = (
-                self.env["hr.expense"]
-                .sudo()
-                .create(
-                    {
-                        "name": f"Expense {i + 1}",
-                        "employee_id": self.employee_employee.id,
-                        "product_id": product.id,
-                        "date": datetime(2024, 8, 3 + i),
-                        "total_amount": 100.0 + (i * 50),
-                        "payment_mode": "company_account",
-                        "trip_id": trip.id,
-                    }
-                )
+            expense = self.env["hr.expense"].create(
+                {
+                    "name": f"Expense {i + 1}",
+                    "employee_id": self.employee_employee.id,
+                    "product_id": product.id,
+                    "date": datetime(2024, 8, 3 + i),
+                    "total_amount": 100.0 + (i * 50),
+                    "payment_mode": "company_account",
+                    "trip_id": trip.id,
+                }
             )
-            expense.sudo().write({"approval_state": "approved"})
+            expense.write({"approval_state": "approved"})
             expenses.append(expense)
 
         trip.sudo().write({"state": "done"})
@@ -991,20 +917,16 @@ class TestHrTrip(TestExpenseCommon):
         )
         self.assertTrue(product)
 
-        expense = (
-            self.env["hr.expense"]
-            .sudo()
-            .create(
-                {
-                    "name": "Expense with Receipt",
-                    "employee_id": self.employee_employee.id,
-                    "product_id": product.id,
-                    "date": datetime(2024, 8, 4),
-                    "total_amount": 200.0,
-                    "payment_mode": "company_account",
-                    "trip_id": trip.id,
-                }
-            )
+        expense = self.env["hr.expense"].create(
+            {
+                "name": "Expense with Receipt",
+                "employee_id": self.employee_employee.id,
+                "product_id": product.id,
+                "date": datetime(2024, 8, 4),
+                "total_amount": 200.0,
+                "payment_mode": "company_account",
+                "trip_id": trip.id,
+            }
         )
 
         # Create and add an attachment to both trip and expense
@@ -1034,7 +956,7 @@ class TestHrTrip(TestExpenseCommon):
                 "mimetype": "application/pdf",
             }
         )
-        expense.sudo().write({"approval_state": "approved"})
+        expense.write({"approval_state": "approved"})
 
         trip.sudo().write({"state": "done"})
         # Post trip
@@ -1067,7 +989,7 @@ class TestHrTrip(TestExpenseCommon):
         }
         if trip:
             vals["trip_id"] = trip.id
-        return self.env["hr.expense"].sudo().create(vals)
+        return self.env["hr.expense"].create(vals)
 
     def test_prepare_receipts_vals_ref_includes_trip_name_and_dates(self):
         """_prepare_receipts_vals should prefix ref with trip name and dates."""
@@ -1273,18 +1195,50 @@ class TestHrTrip(TestExpenseCommon):
         self.assertEqual(trip.display_name, "TP-2025-0001")
         self.assertEqual(expense.trip_id.display_name, "TP-2025-0001")
 
-        with self.assertRaisesRegex(ValidationError, "TP-2025-0001") as error:
-            self._create_employee_trip(
-                code="TP-2025-0003",
-                name=False,
-                start=datetime(2025, 5, 1),
-                end=datetime(2025, 5, 2),
-            )
-        self.assertNotIn("False", str(error.exception))
+        overlapping = self._create_employee_trip(
+            code="TP-2025-0003",
+            name=False,
+            start=datetime(2025, 5, 1),
+            end=datetime(2025, 5, 2),
+        )
+        self.assertEqual(overlapping.overlapping_trip_ids.display_name, "TP-2025-0001")
+
+    def test_overlapping_trips_allowed_with_warning(self):
+        """Overlapping trips of an employee are allowed but flagged."""
+        trip = self._create_employee_trip(
+            code="TP-2025-0010",
+            start=datetime(2025, 7, 1),
+            end=datetime(2025, 7, 5),
+        )
+        self.assertFalse(trip.overlapping_trip_ids)
+
+        overlapping = self._create_employee_trip(
+            code="TP-2025-0011",
+            start=datetime(2025, 7, 4),
+            end=datetime(2025, 7, 8),
+        )
+        self.assertEqual(overlapping.overlapping_trip_ids, trip)
+        trip.invalidate_recordset(["overlapping_trip_ids"])
+        self.assertEqual(trip.overlapping_trip_ids, overlapping)
+
+        # Adjacent trips (end == start) do not overlap
+        overlapping.write({"start_date": datetime(2025, 7, 5)})
+        self.assertFalse(overlapping.overlapping_trip_ids)
+
+        # Trips of other employees are ignored
+        other = self.env["hr.trip"].create(
+            {
+                "name": "Other Employee Trip",
+                "start_date": datetime(2025, 7, 1),
+                "end_date": datetime(2025, 7, 5),
+                "employee_id": self.employee_other.id,
+            }
+        )
+        self.assertFalse(other.overlapping_trip_ids)
 
     def test_trip_code_optional(self):
         """Without a trip sequence the code stays empty instead of "New"."""
-        self.env["ir.sequence"].sudo().search([("code", "=", "hr.trip")]).unlink()
+        self.env["ir.sequence"].search([("code", "=", "hr.trip")]).unlink()
         trip = self._create_employee_trip(
             code=False,
             name="No Code Trip",

@@ -20,8 +20,8 @@ class HrTrip(models.Model):
         copy=False,
     )
     name = fields.Text()
-    start_date = fields.Datetime(required=True)
-    end_date = fields.Datetime(required=True)
+    start_date = fields.Datetime(required=True, tracking=True)
+    end_date = fields.Datetime(required=True, tracking=True)
     partner_id = fields.Many2one(comodel_name="res.partner")
     employee_id = fields.Many2one(
         comodel_name="hr.employee",
@@ -60,6 +60,12 @@ class HrTrip(models.Model):
         # Employees have no access to journal entries but must be able to
         # open their trips
         compute_sudo=True,
+    )
+    overlapping_trip_ids = fields.Many2many(
+        comodel_name="hr.trip",
+        string="Overlapping Trips",
+        compute="_compute_overlapping_trip_ids",
+        help="Other trips of the same employee that overlap this trip's period.",
     )
     report_attachment_id = fields.Many2one(
         comodel_name="ir.attachment",
@@ -145,30 +151,24 @@ class HrTrip(models.Model):
         for trip in self:
             trip.account_move_ids = trip.expense_ids.account_move_id
 
-    @api.constrains("employee_id", "start_date", "end_date")
-    def _check_no_overlapping_trips(self):
+    @api.depends("employee_id", "start_date", "end_date")
+    def _compute_overlapping_trip_ids(self):
+        """Other trips of the same employee whose period overlaps this trip.
+
+        Overlapping trips are allowed; the form only warns about them.
+        """
         for trip in self:
             if not trip.employee_id or not trip.start_date or not trip.end_date:
+                trip.overlapping_trip_ids = False
                 continue
-            overlapping = self.search(
+            trip.overlapping_trip_ids = self.search(
                 [
-                    ("id", "!=", trip.id),
+                    ("id", "!=", trip._origin.id),
                     ("employee_id", "=", trip.employee_id.id),
                     ("start_date", "<", trip.end_date),
                     ("end_date", ">", trip.start_date),
-                ],
-                limit=1,
+                ]
             )
-            if overlapping:
-                raise ValidationError(
-                    self.env._(
-                        "Trip '%(trip)s' overlaps with existing trip '%(other)s' "
-                        "for employee '%(employee)s'. Trips must not overlap.",
-                        trip=trip.display_name,
-                        other=overlapping.display_name,
-                        employee=trip.employee_id.name,
-                    )
-                )
 
     def _is_user_trip_approver(self, user=None):
         self.ensure_one()
