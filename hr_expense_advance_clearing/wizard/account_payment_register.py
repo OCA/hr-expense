@@ -30,7 +30,9 @@ class AccountPaymentRegister(models.TransientModel):
     def _create_payments(self):
         if self.env.context.get("hr_return_advance"):
             self.ensure_one()
-            maximum_amount = self._get_total_amounts_to_pay(self.batches)["full_amount"]
+            maximum_amount = self._get_total_amounts_to_pay(self._get_batches())[
+                "full_amount"
+            ]
             if self.currency_id.compare_amounts(self.amount, maximum_amount) > 0:
                 raise UserError(
                     self.env._(

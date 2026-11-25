@@ -3,7 +3,7 @@
 
 {
     "name": "Employee Advance and Clearing",
-    "version": "19.0.1.0.0",
+    "version": "20.0.1.0.0",
     "category": "Human Resources",
     "author": "Ecosoft, Odoo Community Association (OCA)",
     "license": "AGPL-3",
@@ -15,7 +15,6 @@
         "views/account_payment_view.xml",
         "views/hr_expense_views.xml",
         "views/hr_employee_views.xml",
-        "wizard/hr_expense_post_wizard_views.xml",
     ],
     "installable": True,
     "maintainers": ["kittiu", "Saran440"],

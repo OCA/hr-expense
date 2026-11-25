@@ -50,11 +50,12 @@ class TestHrExpenseAdvanceClearing(TestExpenseCommon):
         advance_id=None,
         payment_mode="own_account",
         taxes=None,
+        employee=None,
     ):
         product = product or cls.product_a
         values = {
             "name": name,
-            "employee_id": cls.expense_employee.id,
+            "employee_id": (employee or cls.expense_employee).id,
             "company_id": cls.company_data["company"].id,
             "currency_id": cls.company_data["currency"].id,
             "date": cls.frozen_today.date(),
@@ -70,21 +71,25 @@ class TestHrExpenseAdvanceClearing(TestExpenseCommon):
         return cls.env["hr.expense"].create(values)
 
     @classmethod
-    def _create_advance(cls, amount=1000.0, name="Advance 1,000"):
+    def _create_advance(cls, amount=1000.0, name="Advance 1,000", employee=None):
         return cls._create_expense(
             name,
             amount,
             product=cls.advance_product,
             advance=True,
+            employee=employee,
         )
 
     @classmethod
-    def _create_clearing(cls, advance, amount, name="Advance Clearing", taxes=None):
+    def _create_clearing(
+        cls, advance, amount, name="Advance Clearing", taxes=None, employee=None
+    ):
         return cls._create_expense(
             name,
             amount,
             advance_id=advance,
             taxes=taxes,
+            employee=employee,
         )
 
     def _assert_tax_move(self, move, tax):
@@ -94,26 +99,17 @@ class TestHrExpenseAdvanceClearing(TestExpenseCommon):
 
     def _submit_approve(self, expense):
         expense.action_submit()
-        self.assertEqual(expense.state, "submitted")
+        self.assertEqual(expense.approval_state, "submitted")
         expense.action_approve()
-        self.assertEqual(expense.state, "approved")
+        self.assertEqual(expense.approval_state, "approved")
 
-    def _post_expense(self, expense, journal=None):
+    def _post_expense(self, expense):
         self._submit_approve(expense)
-        action = expense.action_post()
-        wizard = (
-            self.env["hr.expense.post.wizard"]
-            .with_context(**action["context"])
-            .browse(action["res_id"])
-        )
-        wizard.accounting_date = fields.Date.context_today(expense)
-        if expense.advance_id:
-            wizard.clearing_journal_id = journal or self.clearing_journal
-        elif journal:
-            wizard.employee_journal_id = journal
-        wizard.action_post_entry()
-        self.assertEqual(expense.account_move_id.state, "posted")
-        return expense.account_move_id
+        move = expense.account_move_id
+        if not expense.advance_id:
+            move.action_post()
+        self.assertEqual(move.state, "posted")
+        return move
 
     def _create_payment_from_action(self, action, amount):
         payment_register = self.env["account.payment.register"].with_context(
@@ -335,20 +331,84 @@ class TestHrExpenseAdvanceClearing(TestExpenseCommon):
     def test_06_clearing_post_requires_miscellaneous_journal(self):
         advance = self._post_and_pay_advance()
         clearing = self._create_clearing(advance, 500.0, "Clearing without journal")
-        self._submit_approve(clearing)
+        clearing.action_submit()
 
         self.company_data["company"].clearing_journal_id = False
-        action = clearing.action_post()
-        wizard = (
-            self.env["hr.expense.post.wizard"]
-            .with_context(**action["context"])
-            .browse(action["res_id"])
-        )
-        self.assertTrue(wizard.is_advance_clearing)
-        self.assertFalse(wizard.clearing_journal_id)
         with self.assertRaises(UserError):
-            wizard.action_post_entry()
+            clearing.action_approve()
+        self.assertFalse(clearing.account_move_id)
 
-        wizard.clearing_journal_id = self.company_data["default_journal_purchase"]
+        self.company_data["company"].clearing_journal_id = self.company_data[
+            "default_journal_purchase"
+        ]
         with self.assertRaises(ValidationError):
-            wizard.action_post_entry()
+            clearing.action_approve()
+        self.assertFalse(clearing.account_move_id)
+
+    def _create_clearing_of_bill(self, advance, amount, employee=None):
+        clearing = self._create_clearing(
+            advance, amount, "Clearing of a vendor bill", employee=employee
+        )
+        clearing.write({"has_existing_bill": True, "vendor_id": self.partner_a.id})
+        self.assertEqual(
+            clearing.account_id, self.partner_a.property_account_payable_id
+        )
+        return clearing
+
+    def test_07_clearing_of_a_bill_sent_separately(self):
+        advance = self._post_and_pay_advance()
+        clearing = self._create_clearing_of_bill(advance, 1200.0)
+        clearing_move = self._post_expense(clearing)
+
+        # The taxes are on the vendor bill: the clearing only moves the debt
+        self.assertFalse(clearing_move.line_ids.tax_line_id)
+        vendor_line = clearing_move.line_ids.filtered(
+            lambda line: line.partner_id == self.partner_a
+        )
+        self.assertEqual(vendor_line.balance, 1200.0)
+        self.assertEqual(advance.clearing_residual, 0.0)
+        self.assertEqual(clearing.amount_to_pay, 200.0)
+        self.assertEqual(clearing.state, "posted")
+
+        bill = self.init_invoice(
+            "in_invoice", partner=self.partner_a, amounts=[1200.0], taxes=[], post=True
+        )
+        (vendor_line + bill.line_ids).filtered(
+            lambda line: line.account_type == "liability_payable"
+        ).reconcile()
+        self.assertTrue(vendor_line.reconciled)
+        self.assertIn(bill.payment_state, ("paid", "in_payment"))
+
+        self._create_payment_from_action(clearing.action_pay(), 200.0)
+        self.assertEqual(clearing.state, "paid")
+
+    def test_08_employee_without_user(self):
+        # Created as in hr_expense's TestExpenseCommon: the accounting test user
+        # cannot create employees
+        employee = (
+            self.env["hr.employee"]
+            .sudo()
+            .create(
+                {
+                    "name": "Marta Ibáñez",
+                    "company_id": self.company_data["company"].id,
+                    "expense_manager_id": self.expense_user_manager.id,
+                }
+            )
+            .sudo(False)
+        )
+        self.assertFalse(employee.user_id)
+        self.assertTrue(employee.work_contact_id)
+        advance = self._create_advance(employee=employee)
+        self._post_expense(advance)
+        self._pay_expense(advance, 1000.0, reconcile_bank=True)
+        self.assertEqual(advance.state, "paid")
+
+        clearing = self._create_clearing_of_bill(advance, 1200.0, employee=employee)
+        clearing_move = self._post_expense(clearing)
+        employee_lines = clearing_move.line_ids.filtered(
+            lambda line: line.partner_id == employee.work_contact_id
+        )
+        self.assertEqual(sorted(employee_lines.mapped("balance")), [-1000.0, -200.0])
+        self._create_payment_from_action(clearing.action_pay(), 200.0)
+        self.assertEqual(clearing.state, "paid")

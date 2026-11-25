@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import Command, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 
 
 class HrExpense(models.Model):
@@ -115,10 +115,14 @@ class HrExpense(models.Model):
             )
         )
         for expense in clearing_expenses:
+            # Only the employee's side: the vendor line of a clearing paying a
+            # bill stays open until the bill is matched.
+            employee_partner = expense.employee_id.sudo().work_contact_id
             outstanding_lines = expense.account_move_id.line_ids.filtered(
-                lambda line: (
+                lambda line, partner=employee_partner: (
                     line.account_id.account_type
                     in ("asset_receivable", "liability_payable")
+                    and line.partner_id == partner
                     and not line.company_currency_id.is_zero(line.amount_residual)
                 )
             )
@@ -306,6 +310,50 @@ class HrExpense(models.Model):
             }
         ]
 
+    def _prepare_advance_clearing_bill_line_vals(self):
+        """Prepare the line that settles the vendor bill paid with the advance.
+
+        As core does for a bill sent separately: the expense, its taxes and the
+        vendor debt are on the bill, so the clearing only debits the vendor's
+        payable, to be matched with the bill.
+        """
+        self.ensure_one()
+        if not self.vendor_id:
+            raise ValidationError(
+                self.env._(
+                    "Set the vendor of the bill paid with advance %(advance)s.",
+                    advance=self.advance_id.display_name,
+                )
+            )
+        return [
+            {
+                "name": self._get_move_line_name(),
+                "account_id": self.account_id.id,
+                "balance": self.total_amount,
+                "amount_currency": self.total_amount_currency,
+                "currency_id": self.currency_id.id,
+                "partner_id": self.vendor_id.id,
+                "expense_id": self.id,
+            }
+        ]
+
+    def _reconcile_advance_clearing_with_bill(self):
+        for expense in self.filtered("existing_bill_id"):
+            vendor_lines = expense.account_move_id.line_ids.filtered(
+                lambda line, vendor=expense.vendor_id: (
+                    line.account_type == "liability_payable"
+                    and line.partner_id == vendor
+                    and not line.reconciled
+                )
+            )
+            bill_lines = expense.existing_bill_id.line_ids.filtered(
+                lambda line: (
+                    line.account_type == "liability_payable" and not line.reconciled
+                )
+            )
+            if vendor_lines and bill_lines:
+                (vendor_lines + bill_lines).sudo().reconcile()
+
     def _prepare_advance_clearing_move_line_vals(self, accounting_date):
         """Prepare a balanced miscellaneous entry for an advance clearing."""
         self.ensure_one()
@@ -319,8 +367,12 @@ class HrExpense(models.Model):
                 )
             )
 
+        if self.has_existing_bill:
+            expense_lines = self._prepare_advance_clearing_bill_line_vals()
+        else:
+            expense_lines = self._prepare_advance_clearing_expense_line_vals(partner)
         return [
-            *self._prepare_advance_clearing_expense_line_vals(partner),
+            *expense_lines,
             *self._prepare_advance_clearing_advance_line_vals(
                 accounting_date, partner, amounts
             ),
@@ -416,24 +468,37 @@ class HrExpense(models.Model):
             if move_lines.filtered("debit") and move_lines.filtered("credit"):
                 move_lines.sudo().reconcile()
 
-    def _post_wizard(self):
+    def _create_move(self):
+        # Core creates the bill of approved expenses here. A clearing gets its
+        # clearing journal entry instead, posted and reconciled with the advance.
         clearing_expenses = self.filtered("advance_id")
-        if not clearing_expenses:
-            return super()._post_wizard()
-        if clearing_expenses != self:
-            raise ValidationError(
-                self.env._(
-                    "Advance clearing and normal expenses must be posted separately."
-                )
-            )
+        if clearing_expenses:
+            clearing_expenses._create_advance_clearing_entries()
+        other_expenses = self - clearing_expenses
+        if other_expenses:
+            return super(HrExpense, other_expenses)._create_move()
 
-        clearing_expenses = clearing_expenses.with_context(
-            advance_clearing=True,
-            active_model="hr.expense",
-            active_id=clearing_expenses[:1].id,
-            active_ids=clearing_expenses.ids,
-        )
-        return super(HrExpense, clearing_expenses)._post_wizard()
+    def _create_advance_clearing_entries(self):
+        self._check_can_create_move()
+        if not self.env["account.move"].has_access("create"):
+            raise UserError(
+                self.env._("You don't have the rights to create accounting entries.")
+            )
+        accounting_date = fields.Date.context_today(self)
+        for company in self.company_id:
+            journal = company.clearing_journal_id
+            if not journal:
+                raise UserError(
+                    self.env._(
+                        "Please configure a Default Clearing Journal "
+                        "in the Expense settings."
+                    )
+                )
+            expenses = self.filtered_domain([("company_id", "=", company.id)])
+            moves = expenses._create_advance_clearing_moves(journal, accounting_date)
+            moves.action_post()
+            expenses._reconcile_advance_moves()
+            expenses._reconcile_advance_clearing_with_bill()
 
     def _check_can_approve(self):
         res = super()._check_can_approve()

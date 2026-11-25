@@ -1,22 +1,21 @@
-This module creates the "Employee Advance" product automatically. Configure
-its Expense Account with the employee advance account:
+**Employee advance account**
 
-- Open Products and search for "Employee Advance".
-- On the Accounting tab, select the employee advance account.
+1. With **Show Full Accounting Features** enabled, open **Products** and search
+   for **Employee Advance**. The module creates this product automatically.
+2. Open the product and go to **Accounting → Expense Account**. Select the
+   account your company uses for employee advances.
+3. Check that the account is of type **Current Assets** and has **Allow
+   Reconciliation** enabled. If you need to create the account, use these
+   settings.
 
-Note:
+The advance account tracks the amount the employee still needs to account for
+or return.
 
-- You need "Show Full Accounting Features" to access the accounting fields.
-- If the Employee Advance account does not exist, create it with type Current
-  Asset and enable Allow Reconciliation.
+**Clearing journal**
 
-**Clearing Journal**
+1. Go to **Settings → Expenses → Accounting**.
+2. Set **Default Clearing Journal** to a journal of type **Miscellaneous**.
 
-Clearing expenses are posted as miscellaneous journal entries. Configure the
-default journal as follows:
-
-1. Go to Settings \> Expenses \> Accounting.
-2. Set Default Clearing Journal to a Miscellaneous journal.
-
-The journal defaults from this setting and can be changed in the Post Expenses
-wizard for each posting.
+Approving an expense that clears an advance posts its journal entry in this
+journal. Each company has its own setting. The advance itself is posted like
+any other employee expense, in the **Employee Expense Journal**.
