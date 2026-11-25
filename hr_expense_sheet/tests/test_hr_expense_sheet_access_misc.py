@@ -895,3 +895,13 @@ class TestHrExpenseSheetMisc(TestHrExpenseSheetCommon):
         expense_sheet.action_post()
         # Validate the acction_date value after subitting and approving
         self.assertTrue(expense_sheet.accounting_date, date(2024, 5, 30))
+
+    def test_expense_sheet_activity_manager(self):
+        """The approval activity should be assigned to the report manager."""
+        manager = self.env.ref("base.user_admin")
+        sheet = self.create_expense_report()
+        self.assertNotEqual(sheet.manager_id, manager)
+        sheet.manager_id = manager
+        sheet.action_submit()
+        self.assertEqual(sheet.manager_id, manager)
+        self.assertEqual(sheet.activity_ids.user_id, manager)
