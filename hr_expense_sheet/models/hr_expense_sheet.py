@@ -702,9 +702,8 @@ class HrExpenseSheet(models.Model):
             if expense_report.state == "submitted":
                 expense_report.activity_schedule(
                     "hr_expense_sheet.mail_act_expense_approval",
-                    user_id=expense_report.sudo()
-                    ._get_default_responsible_for_approval()
-                    .id
+                    user_id=expense_report.manager_id.id
+                    or expense_report.sudo()._get_default_responsible_for_approval().id
                     or self.env.user.id,
                 )
             elif expense_report.state == "approved":
