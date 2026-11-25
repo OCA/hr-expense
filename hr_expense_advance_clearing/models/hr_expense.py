@@ -110,14 +110,17 @@ class HrExpense(models.Model):
     def _compute_state(self):
         res = super()._compute_state()
         clearing_expenses = self.filtered(
-            lambda expense: expense.advance_id
-            and expense.account_move_id.state == "posted"
+            lambda expense: (
+                expense.advance_id and expense.account_move_id.state == "posted"
+            )
         )
         for expense in clearing_expenses:
             outstanding_lines = expense.account_move_id.line_ids.filtered(
-                lambda line: line.account_id.account_type
-                in ("asset_receivable", "liability_payable")
-                and not line.company_currency_id.is_zero(line.amount_residual)
+                lambda line: (
+                    line.account_id.account_type
+                    in ("asset_receivable", "liability_payable")
+                    and not line.company_currency_id.is_zero(line.amount_residual)
+                )
             )
             expense.state = "posted" if outstanding_lines else "paid"
         return res
@@ -457,9 +460,11 @@ class HrExpense(models.Model):
 
         payable_account_id = self._get_expense_account_destination()
         return self.account_move_id.line_ids.filtered(
-            lambda line: line.account_id.id == payable_account_id
-            and line.amount_residual < 0.0
-            and not line.company_currency_id.is_zero(line.amount_residual)
+            lambda line: (
+                line.account_id.id == payable_account_id
+                and line.amount_residual < 0.0
+                and not line.company_currency_id.is_zero(line.amount_residual)
+            )
         )
 
     def _get_advance_clearing_amount_to_pay(self):
@@ -514,9 +519,11 @@ class HrExpense(models.Model):
             )
 
         advance_lines = self.account_move_id.line_ids.filtered(
-            lambda line: line.account_id == account_advance
-            and line.amount_residual > 0.0
-            and not line.company_currency_id.is_zero(line.amount_residual)
+            lambda line: (
+                line.account_id == account_advance
+                and line.amount_residual > 0.0
+                and not line.company_currency_id.is_zero(line.amount_residual)
+            )
         )
         if not advance_lines:
             raise ValidationError(
