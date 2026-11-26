@@ -1,0 +1,435 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* hr_expense_advance_clearing
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee__advance_count
+msgid "# of Advance"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_employee.py:0
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_account_payment__advance_id
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee__advance_ids
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__advance
+#: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.view_employee_form
+msgid "Advance"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+msgid "Advance %(advance)s has no remaining amount to clear."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_view_search
+msgid "Advance (not cleared)"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+msgid "Advance Clearing"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+msgid "Advance Clearing: %(advance)s"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__advance_residual
+msgid "Advance Remaining"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+msgid "Advance clearing and normal expenses must be posted separately."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+msgid "Allow Reconciliation must be enabled on the employee advance account."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__amount_to_pay
+msgid "Amount to Pay"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__clearing_residual
+msgid "Amount to clear"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense__clearing_residual
+msgid "Amount to clear of this advance in company currency"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+msgid "An expense cannot be both an advance and an advance clearing."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__advance_id
+#: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_view_form
+msgid "Clear Advance"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__clearing_ids
+msgid "Clearing"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__clearing_count
+msgid "Clearing Count"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_post_wizard__clearing_journal_id
+msgid "Clearing Journal"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__clearing_product_id
+msgid "Clearing Product"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_view_form
+msgid "Clearings"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model,name:hr_expense_advance_clearing.model_res_company
+msgid "Companies"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model,name:hr_expense_advance_clearing.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_employee__advance_count
+msgid "Count advances"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model_terms:ir.actions.act_window,help:hr_expense_advance_clearing.action_my_clearing
+msgid "Create an expense and select the advance to clear."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_res_company__clearing_journal_id
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_res_config_settings__clearing_journal_id
+msgid "Default Clearing Journal"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.res_config_settings_view_form
+msgid ""
+"Default Miscellaneous journal used to post the advance clearing journal "
+"entry."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_res_company__clearing_journal_id
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_res_config_settings__clearing_journal_id
+msgid ""
+"Default Miscellaneous journal used when posting the advance clearing journal"
+" entry."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_account_payment__display_name
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_account_payment_register__display_name
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee__display_name
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__display_name
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_post_wizard__display_name
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_res_company__display_name
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_res_config_settings__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model,name:hr_expense_advance_clearing.model_hr_employee
+msgid "Employee"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:product.template,name:hr_expense_advance_clearing.product_emp_advance_product_template
+msgid "Employee Advance"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+msgid "Employee advance product has no advance account."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+msgid "Employee advance product has no payable account"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+msgid "Employee advance, account must be the same payable account"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+msgid "Employee advance, all taxes must be removed"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+msgid "Employee advance, paid by must be employee"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+msgid "Employee advance, selected product is not valid"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model,name:hr_expense_advance_clearing.model_hr_expense
+msgid "Expense"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model,name:hr_expense_advance_clearing.model_hr_expense_post_wizard
+msgid "Expense Posting Wizard"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_account_payment__id
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_account_payment_register__id
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_employee__id
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__id
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_post_wizard__id
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_res_company__id
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_res_config_settings__id
+msgid "ID"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense_post_wizard__is_advance_clearing
+msgid "Is Advance Clearing"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.actions.act_window,name:hr_expense_advance_clearing.action_my_advance
+#: model:ir.ui.menu,name:hr_expense_advance_clearing.menu_my_advance
+#: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_view_search
+msgid "My Advances"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.actions.act_window,name:hr_expense_advance_clearing.action_my_clearing
+#: model:ir.ui.menu,name:hr_expense_advance_clearing.menu_my_clearing
+#: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_view_search
+msgid "My Clearings"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/wizard/hr_expense_post_wizard.py:0
+msgid "New advance clearing entries"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model_terms:ir.actions.act_window,help:hr_expense_advance_clearing.action_my_advance
+msgid "No advance found. Let's create one!"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model_terms:ir.actions.act_window,help:hr_expense_advance_clearing.action_my_clearing
+msgid "No clearing found. Let's create one!"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
+msgid "No employee advance was found to return."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+msgid "No work contact found for employee %(employee)s."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model_terms:ir.actions.act_window,help:hr_expense_advance_clearing.action_my_advance
+msgid ""
+"Once you have created your advance, submit it to your manager\n"
+"                who will validate it."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+msgid "Only a paid employee advance can be returned."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_view_form
+msgid "Optional clearing product is used during clear advance"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense__clearing_product_id
+msgid ""
+"Optional: On the clear advance, the clearing product will create default "
+"product line."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model,name:hr_expense_advance_clearing.model_account_payment_register
+#: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_view_form
+msgid "Pay"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__payment_return_ids
+msgid "Payment Return"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model,name:hr_expense_advance_clearing.model_account_payment
+msgid "Payments"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/wizard/hr_expense_post_wizard.py:0
+msgid "Please configure a Default Clearing Journal in the Expense settings."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense__advance_residual
+msgid "Remaining amount of the selected advance."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense__amount_to_pay
+msgid "Remaining amount to pay when the clearing exceeds the advance."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_view_form
+msgid "Remaining to Clear"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_view_form
+msgid "Return"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+#: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.hr_expense_view_form
+#: model_terms:ir.ui.view,arch_db:hr_expense_advance_clearing.view_account_payment_search
+msgid "Return Advance"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,field_description:hr_expense_advance_clearing.field_hr_expense__return_count
+msgid "Return Count"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense__clearing_ids
+msgid "Show reference clearing on advance"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense__payment_return_ids
+msgid "Show reference return advance on advance"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#: model:ir.model.fields,help:hr_expense_advance_clearing.field_hr_expense__advance_id
+msgid "Show remaining advance of this employee"
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+msgid "The clearing journal and expense must belong to the same company."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/wizard/hr_expense_post_wizard.py:0
+msgid "The clearing journal can only be used for advance clearing expenses."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+msgid "The clearing journal must be a Miscellaneous journal."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+msgid "There is no remaining advance amount to return."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+msgid "There is no remaining amount to pay for this clearing."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/wizard/account_payment_register.py:0
+msgid "You cannot return more than the remaining advance (%(amount)s)."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/wizard/hr_expense_post_wizard.py:0
+msgid "You don't have the rights to create accounting entries."
+msgstr ""
+
+#. module: hr_expense_advance_clearing
+#. odoo-python
+#: code:addons/hr_expense_advance_clearing/models/hr_employee.py:0
+#: code:addons/hr_expense_advance_clearing/models/hr_expense.py:0
+msgid "id"
+msgstr ""
