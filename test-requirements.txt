@@ -1,0 +1,5 @@
+# DO NOT MERGE — temporary pins until upstream deps land.
+# - OCA/server-tools#3514: base_sequence_option 19.0 MIG
+# - OCA/hr-expense#353: hr_expense_sequence 19.0 MIG (this module's sibling)
+odoo-addon-base_sequence_option @ git+https://github.com/OCA/server-tools.git@refs/pull/3514/head#subdirectory=base_sequence_option
+odoo-addon-hr_expense_sequence @ git+https://github.com/OCA/hr-expense.git@refs/pull/353/head#subdirectory=hr_expense_sequence
