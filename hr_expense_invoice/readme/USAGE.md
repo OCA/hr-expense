@@ -1,0 +1,11 @@
+- Create an expense paid by an employee.
+- Select a Vendor Bill or create a new one with "Create Vendor Bill" button.
+- Clic on Post Journal Entries button.
+- At this point:
+  - A new Transfer Entry has been created to transfer the debt from the Vendor to the Employee.
+  - Vendor Bill has been reconciled with the Transfer Entry.
+- Go to the Transfer move by clicking on the "Transfer Moves" button.
+- Pay this Entry clicking on the Gears > Pay.
+- You will see:
+  - Vendor Bill has been reconciled with the Transfer Entry Vendor line.
+  - Transfer Entry Employee line has been paid.

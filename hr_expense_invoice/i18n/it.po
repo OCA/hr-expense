@@ -1,0 +1,141 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* hr_expense_invoice
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 15.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2024-05-30 13:38+0000\n"
+"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
+"Language-Team: none\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
+
+#. module: hr_expense_invoice
+#: model_terms:ir.ui.view,arch_db:hr_expense_invoice.view_move_form
+msgid "<span>Expense</span>"
+msgstr "<span>Spesa</span>"
+
+#. module: hr_expense_invoice
+#: model_terms:ir.ui.view,arch_db:hr_expense_invoice.hr_expense_sheet_form_view_inherit_sale_expense
+msgid "Create Vendor Bill"
+msgstr "Crea una fattura fornitore"
+
+#. module: hr_expense_invoice
+#: model:ir.model,name:hr_expense_invoice.model_hr_expense
+msgid "Expense"
+msgstr "Spesa"
+
+#. module: hr_expense_invoice
+#: model:ir.model,name:hr_expense_invoice.model_hr_expense_sheet
+msgid "Expense Report"
+msgstr "Nota spese"
+
+#. module: hr_expense_invoice
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_account_bank_statement_line__expense_ids
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_account_move__expense_ids
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_account_payment__expense_ids
+msgid "Expenses"
+msgstr "Spese"
+
+#. module: hr_expense_invoice
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_hr_expense_sheet__invoice_count
+msgid "Invoice Count"
+msgstr "Numero fatture"
+
+#. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
+#: model_terms:ir.ui.view,arch_db:hr_expense_invoice.hr_expense_sheet_form_view_inherit_sale_expense
+#, python-format
+msgid "Invoices"
+msgstr "Fatture"
+
+#. module: hr_expense_invoice
+#: model:ir.model,name:hr_expense_invoice.model_account_move
+msgid "Journal Entry"
+msgstr "Registrazione contabile"
+
+#. module: hr_expense_invoice
+#: model:ir.model,name:hr_expense_invoice.model_account_move_line
+msgid "Journal Item"
+msgstr "Movimento contabile"
+
+#. module: hr_expense_invoice
+#: model:ir.model.fields,help:hr_expense_invoice.field_account_bank_statement_line__source_invoice_expense_id
+#: model:ir.model.fields,help:hr_expense_invoice.field_account_move__source_invoice_expense_id
+#: model:ir.model.fields,help:hr_expense_invoice.field_account_payment__source_invoice_expense_id
+msgid ""
+"Reference to the expense with a linked invoice that generated thistransfer "
+"journal entry"
+msgstr ""
+"Riferimento alla spesa con una fattura collegata che ha generato questa "
+"registrazione contabile del trasferimento"
+
+#. module: hr_expense_invoice
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_hr_expense__sheet_id_state
+msgid "Sheet state"
+msgstr "Stato prospetto"
+
+#. module: hr_expense_invoice
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_account_bank_statement_line__source_invoice_expense_id
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_account_move__source_invoice_expense_id
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_account_payment__source_invoice_expense_id
+msgid "Source Invoice Expense"
+msgstr "Fattura spesa origine"
+
+#. module: hr_expense_invoice
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_hr_expense__transfer_move_ids
+msgid "Transfer Move"
+msgstr "Movimento di trasferimento"
+
+#. module: hr_expense_invoice
+#: model:ir.model.fields,field_description:hr_expense_invoice.field_hr_expense__invoice_id
+msgid "Vendor Bill"
+msgstr "Fattura fornitore"
+
+#. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
+#, python-format
+msgid ""
+"Vendor bill amount mismatch!\n"
+"Please make sure amount in vendor bills equal to amount of its expense lines"
+msgstr ""
+"Differenza fattura fornitore!\n"
+"Assicurarsi che il valore nel conto del fornitore sia pari al valore delle "
+"righe di spesa"
+
+#. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/hr_expense.py:0
+#: code:addons/hr_expense_invoice/models/hr_expense_sheet.py:0
+#, python-format
+msgid "Vendor bill state must be Posted"
+msgstr "Lo stato del conto fornitore deve essere Inviato"
+
+#. module: hr_expense_invoice
+#. odoo-python
+#: code:addons/hr_expense_invoice/models/account_move.py:0
+#, python-format
+msgid ""
+"You can't change the total amount, as there's an expense linked to this "
+"invoice."
+msgstr ""
+"Non si può cambiare il valore totale, perché c'è una spesa collegata a "
+"questa fattura."
+
+#~ msgid "Expense Report State"
+#~ msgstr "Stato nota spese"
+
+#~ msgid "Register Payment"
+#~ msgstr "Registra pagamento"
+
+#, python-format
+#~ msgid "Register payment on expense's invoice is not allowed"
+#~ msgstr "Non è consentito registrare il pagamento sulla fattura delle spese"
